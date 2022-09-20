@@ -1,0 +1,85 @@
+name: Build & Integration tests
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3.5.0
+        with:
+          distribution: 'temurin'
+          java-version: 11
+
+      - name: Setup gradle
+        uses: gradle/gradle-build-action@v2
+
+      - name: Ktlint
+        run: ./gradlew lintKotlin --stacktrace
+
+      - name: Check Lint
+        run: ./gradlew lintDebug --stacktrace
+
+      - name: Build all build types
+        run: ./gradlew assemble --stacktrace
+
+      - name: Run Bucketeer unit tests
+        run: ./gradlew :bucketeer:testDebugUnitTest --stacktrace
+
+      - name: upload bucketeer build reports
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: bucketeer-build-reports
+          path: bucketeer/build/reports
+
+  androidTest:
+    needs: build
+    runs-on: macos-latest # enables hardware acceleration in the virtual machine
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3.5.0
+        with:
+          distribution: 'temurin'
+          java-version: 11
+
+      - name: Setup gradle
+        uses: gradle/gradle-build-action@v2
+
+      - name: AVD cache
+        uses: actions/cache@v3
+        id: avd-cache
+        with:
+          path: |
+            ~/.android/avd/*
+            ~/.android/adb*
+          key: avd-29
+      - name: Run instrumentation tests
+        uses: reactivecircus/android-emulator-runner@v2
+        env:
+          API_KEY: ${{ secrets.E2E_API_KEY }}
+          API_URL: ${{ secrets.E2E_API_URL }}
+        with:
+          api-level: 29
+          arch: x86_64
+          script: ./gradlew connectedCheck --stacktrace
+
+      - name: upload bucketeer build reports
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: bucketeer-instrumentation-build-reports
+          path: bucketeer/build/reports
+
+env:
+  GRADLE_OPTS: -Dorg.gradle.daemon=false -Dorg.gradle.configureondemand=true -Dkotlin.incremental=false -Dorg.gradle.jvmargs="-XX:+HeapDumpOnOutOfMemoryError -XX:MetaspaceSize=1g"

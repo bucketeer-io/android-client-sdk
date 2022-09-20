@@ -22,6 +22,21 @@ allprojects {
   version = VERSION_NAME
 }
 
+subprojects {
+  afterEvaluate {
+    // Ktlint ignore generated files
+    // https://github.com/jeremymailen/kotlinter-gradle/issues/242
+    [
+      "lintKotlinDebug", "lintKotlinMain", "lintKotlinRelease",
+      "formatKotlinDebug", "formatKotlinMain", "formatKotlinRelease"
+    ].forEach { name ->
+      tasks.named(name) {
+        exclude { it.file.path.contains("generated/") }
+      }
+    }
+  }
+}
+
 task clean(type: Delete) {
   delete rootProject.buildDir
 }
