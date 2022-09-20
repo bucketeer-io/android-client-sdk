@@ -1,0 +1,16 @@
+root=true
+
+[*]
+insert_final_newline=true
+
+[*.md]
+trim_trailing_whitespace=false
+
+[*.gradle]
+indent_size=2
+
+[*.{kt,kts}]
+indent_size=2
+continuation_indent_size=4
+ij_kotlin_allow_trailing_comma=true
+ij_kotlin_allow_trailing_comma_on_call_site=true
