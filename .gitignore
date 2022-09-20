@@ -2,6 +2,7 @@
 *.iml
 .idea/*
 !.idea/codeStyles/*
+!.idea/dictionaries/*
 .settings
 .project
 .classpath
