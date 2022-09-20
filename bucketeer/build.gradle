@@ -1,3 +1,6 @@
+import java.nio.file.Files
+import java.nio.file.Paths
+
 plugins {
   alias(libs.plugins.android.library)
   alias(libs.plugins.kotlin.android)
@@ -8,7 +11,9 @@ plugins {
 }
 
 def properties = new Properties()
-properties.load(rootProject.file('local.properties').newDataInputStream())
+if (Files.exists(Paths.get("$rootProject.rootDir/local.properties"))) {
+  properties.load(rootProject.file('local.properties').newDataInputStream())
+}
 
 android {
   namespace = "io.bucketeer.sdk.android"
