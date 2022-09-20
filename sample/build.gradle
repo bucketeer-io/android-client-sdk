@@ -1,0 +1,56 @@
+plugins {
+  alias(libs.plugins.android.application)
+  alias(libs.plugins.kotlin.android)
+  alias(libs.plugins.kotlinter)
+}
+
+def properties = new Properties()
+properties.load(rootProject.file('local.properties').newDataInputStream())
+
+android {
+  compileSdkVersion project.findProperty("android.compileSdkVersion") as int
+
+  defaultConfig {
+    applicationId "io.bucketeer.sample"
+    minSdkVersion project.findProperty("android.minSdkVersion") as int
+    targetSdkVersion project.findProperty("android.targetSdkVersion") as int
+    versionCode 1
+    versionName "1.0"
+    testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+    def API_KEY = properties.getProperty("api_key") ?: System.getenv("API_KEY")
+    def API_URL = properties.getProperty("api_url") ?: System.getenv("API_URL")
+    buildConfigField("String", "API_KEY", "\"${API_KEY}\"")
+    buildConfigField("String", "API_URL", "\"${API_URL}\"")
+  }
+  signingConfigs {
+    release {
+      storeFile rootProject.file("debug.keystore")
+      storePassword "android"
+      keyAlias "androiddebugkey"
+      keyPassword "android"
+    }
+  }
+  buildTypes {
+    release {
+      minifyEnabled true
+      proguardFiles getDefaultProguardFile('proguard-android.txt')
+      signingConfig signingConfigs.release
+    }
+  }
+}
+
+dependencies {
+  implementation projects.bucketeer
+
+  implementation libs.stetho
+  implementation libs.androidx.appcompat
+  implementation libs.materialComponents
+  implementation libs.androidx.lifecycle.runtime
+  implementation libs.androidx.lifecycle.process
+
+  implementation libs.kotlin.coroutines.android
+}
+repositories {
+  mavenCentral()
+}

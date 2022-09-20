@@ -1,0 +1,13 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application>
+        <receiver
+            android:name="io.bucketeer.sdk.android.internal.scheduler.EvaluationBackgroundTask"
+            android:enabled="true" />
+        <receiver
+            android:name="io.bucketeer.sdk.android.internal.scheduler.EventBackgroundTask"
+            android:enabled="true" />
+    </application>
+</manifest>

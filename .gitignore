@@ -1,0 +1,22 @@
+# IDEA
+*.iml
+.idea/*
+!.idea/codeStyles/*
+.settings
+.project
+.classpath
+
+# Gradle
+.gradle
+build
+/reports
+
+# Gradle Android
+/local.properties
+/captures
+
+# Mac OS
+.DS_Store
+
+*.hprof
+*.gpg
