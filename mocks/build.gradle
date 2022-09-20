@@ -1,0 +1,20 @@
+plugins {
+  alias(libs.plugins.android.library)
+  alias(libs.plugins.kotlin.android)
+  alias(libs.plugins.kotlinter)
+}
+
+android {
+  namespace = "io.bucketeer.sdk.android.mocks"
+
+  compileSdkVersion project.findProperty("android.compileSdkVersion") as int
+
+  defaultConfig {
+    minSdkVersion project.findProperty("android.minSdkVersion") as int
+    targetSdkVersion project.findProperty("android.targetSdkVersion") as int
+  }
+}
+
+dependencies {
+  implementation projects.bucketeer
+}

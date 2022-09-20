@@ -1,0 +1,108 @@
+plugins {
+  alias(libs.plugins.android.library)
+  alias(libs.plugins.kotlin.android)
+  alias(libs.plugins.ksp)
+  alias(libs.plugins.publish)
+  alias(libs.plugins.kotlin.dokka)
+  alias(libs.plugins.kotlinter)
+}
+
+def properties = new Properties()
+properties.load(rootProject.file('local.properties').newDataInputStream())
+
+android {
+  namespace = "io.bucketeer.sdk.android"
+
+  compileSdkVersion project.findProperty("android.compileSdkVersion") as int
+
+  defaultConfig {
+    minSdkVersion project.findProperty("android.minSdkVersion") as int
+    targetSdkVersion project.findProperty("android.targetSdkVersion") as int
+
+    testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    testInstrumentationRunnerArguments clearPackageData: "true"
+
+    testOptions {
+      execution "ANDROIDX_TEST_ORCHESTRATOR"
+    }
+  }
+
+  buildTypes {
+    debug {
+      def API_KEY = properties.getProperty("api_key") ?: System.getenv("API_KEY")
+      def API_URL = properties.getProperty("api_url") ?: System.getenv("API_URL")
+      buildConfigField("String", "API_KEY", "\"${API_KEY}\"")
+      buildConfigField("String", "API_URL", "\"${API_URL}\"")
+    }
+    release {
+      consumerProguardFiles 'proguard-rules.pro'
+      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+    }
+  }
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+
+  kotlinOptions {
+    jvmTarget = "1.8"
+  }
+
+  lintOptions {
+    disable 'InvalidPackage'
+    xmlReport true
+  }
+}
+
+androidComponents {
+  onVariants(selector().all(), { variant ->
+    // manually add ksp source dir
+    // https://github.com/google/ksp/issues/37
+    def ss = kotlin.sourceSets.findByName(variant.name)
+    if (ss != null) {
+      ss.kotlin.srcDirs(file("$buildDir/generated/ksp/${variant.name}/kotlin"))
+    }
+  })
+}
+
+dependencies {
+  implementation libs.androidx.sqlite
+
+  implementation libs.okhttp.client
+
+  implementation libs.moshi.kotlin
+  ksp(libs.moshi.codegen)
+
+  implementation libs.androidx.lifecycle.process
+
+  // Google Play Services
+  compileOnly libs.googlePlayServices.basement
+
+  testImplementation projects.mocks
+  testImplementation libs.okhttp.mockwebserver
+  testImplementation libs.junit
+  testImplementation libs.truth
+  testImplementation libs.robolectric
+  testImplementation libs.androidx.test.core
+  testImplementation libs.testParameterInjector
+
+  androidTestImplementation libs.androidx.test.rules
+  androidTestImplementation libs.androidx.test.ext
+  androidTestImplementation libs.truth
+  androidTestUtil libs.androidx.test.orchestrator
+}
+
+publishing {
+  repositories {
+    maven {
+      name = "testLocal"
+      url = "${rootProject.buildDir}/localMaven"
+    }
+  }
+}
+
+// https://github.com/Kotlin/dokka/issues/2472
+afterEvaluate {
+  tasks.getByName("javaDocReleaseGeneration").enabled(false)
+}

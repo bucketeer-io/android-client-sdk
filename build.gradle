@@ -1,0 +1,27 @@
+plugins {
+  alias(libs.plugins.android.application) apply false
+  alias(libs.plugins.android.library) apply false
+  alias(libs.plugins.kotlin.android) apply false
+  alias(libs.plugins.kotlin.kapt) apply false
+  alias(libs.plugins.kotlin.dokka) apply false
+  alias(libs.plugins.protobuf) apply false
+  alias(libs.plugins.publish) apply false
+  alias(libs.plugins.ksp) apply false
+  alias(libs.plugins.kotlinter) apply false
+}
+
+apply from: "${rootProject.rootDir}/gradle/publish.gradle"
+
+allprojects {
+  repositories {
+    google()
+    mavenCentral()
+  }
+
+  group = GROUP
+  version = VERSION_NAME
+}
+
+task clean(type: Delete) {
+  delete rootProject.buildDir
+}
