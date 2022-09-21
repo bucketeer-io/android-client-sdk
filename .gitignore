@@ -21,3 +21,5 @@ build
 
 *.hprof
 *.gpg
+
+node_modules
