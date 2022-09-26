@@ -1,5 +1,7 @@
 package io.bucketeer.sdk.android.internal.scheduler
 
+import android.os.Handler
+import android.os.Looper
 import androidx.test.core.app.ApplicationProvider
 import com.google.common.truth.Truth.assertThat
 import com.squareup.moshi.Moshi
@@ -52,7 +54,9 @@ class EventForegroundTaskTest {
         user = user1,
         inMemoryDB = true,
       ),
-      interactorModule = InteractorModule(),
+      interactorModule = InteractorModule(
+        mainHandler = Handler(Looper.getMainLooper()),
+      ),
     )
 
     moshi = component.dataModule.moshi

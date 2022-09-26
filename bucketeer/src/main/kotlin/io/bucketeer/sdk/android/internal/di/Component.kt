@@ -33,6 +33,7 @@ internal class ComponentImpl(
       apiClient = dataModule.apiClient,
       evaluationDao = dataModule.evaluationDao,
       sharedPreferences = dataModule.sharedPreferences,
+      idGenerator = dataModule.idGenerator,
     )
   }
 

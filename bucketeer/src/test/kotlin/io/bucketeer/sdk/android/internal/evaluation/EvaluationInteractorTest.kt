@@ -1,5 +1,7 @@
 package io.bucketeer.sdk.android.internal.evaluation
 
+import android.os.Handler
+import android.os.Looper
 import androidx.test.core.app.ApplicationProvider
 import com.google.common.truth.Truth.assertThat
 import com.squareup.moshi.Moshi
@@ -24,6 +26,9 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.Shadows.shadowOf
+import org.robolectric.annotation.LooperMode
+import org.robolectric.annotation.LooperMode.Mode
 
 @RunWith(RobolectricTestRunner::class)
 class EvaluationInteractorTest {
@@ -49,7 +54,9 @@ class EvaluationInteractorTest {
           .build(),
         inMemoryDB = true,
       ),
-      interactorModule = InteractorModule(),
+      interactorModule = InteractorModule(
+        mainHandler = Handler(Looper.getMainLooper()),
+      ),
     )
 
     interactor = component.evaluationInteractor
@@ -66,6 +73,7 @@ class EvaluationInteractorTest {
   }
 
   @Test
+  @LooperMode(Mode.PAUSED)
   fun `fetch - initial load`() {
     server.enqueue(
       MockResponse()
@@ -82,6 +90,12 @@ class EvaluationInteractorTest {
             ),
         ),
     )
+
+    var listenerCalled = false
+    interactor.addUpdateListener {
+      assertThat(Looper.myLooper()).isEqualTo(Looper.getMainLooper())
+      listenerCalled = true
+    }
 
     assertThat(interactor.currentEvaluationsId).isEmpty()
 
@@ -105,9 +119,14 @@ class EvaluationInteractorTest {
     assertThat(interactor.evaluations[user1.id]).isEqualTo(listOf(evaluation1, evaluation2))
     val latestEvaluations = component.dataModule.evaluationDao.get(user1.id)
     assertThat(latestEvaluations).isEqualTo(listOf(evaluation1, evaluation2))
+
+    shadowOf(Looper.getMainLooper()).idle()
+
+    assertThat(listenerCalled).isTrue()
   }
 
   @Test
+  @LooperMode(Mode.PAUSED)
   fun `fetch - update`() {
     // initial response(for preparation)
     server.enqueue(
@@ -126,6 +145,8 @@ class EvaluationInteractorTest {
         ),
     )
     interactor.fetch(user1, null)
+
+    shadowOf(Looper.getMainLooper()).idle()
 
     val newEvaluation = evaluation1.copy(
       variation_value = evaluation1.variation_value + "_updated",
@@ -149,6 +170,12 @@ class EvaluationInteractorTest {
         ),
     )
 
+    var listenerCalled = false
+    interactor.addUpdateListener {
+      assertThat(Looper.myLooper()).isEqualTo(Looper.getMainLooper())
+      listenerCalled = true
+    }
+
     val result = interactor.fetch(user1, null)
 
     assertThat(server.requestCount).isEqualTo(2)
@@ -160,11 +187,16 @@ class EvaluationInteractorTest {
     assertThat(interactor.evaluations[user1.id]).isEqualTo(listOf(newEvaluation))
     val latestEvaluations = component.dataModule.evaluationDao.get(user1.id)
     assertThat(latestEvaluations).isEqualTo(listOf(newEvaluation))
+
+    shadowOf(Looper.getMainLooper()).idle()
+
+    assertThat(listenerCalled).isTrue()
   }
 
   @Test
+  @LooperMode(Mode.PAUSED)
   fun `fetch - no update`() {
-// initial response(for preparation)
+    // initial response(for preparation)
     server.enqueue(
       MockResponse()
         .setResponseCode(200)
@@ -181,6 +213,8 @@ class EvaluationInteractorTest {
         ),
     )
     interactor.fetch(user1, null)
+
+    shadowOf(Looper.getMainLooper()).idle()
 
     // second response(test target)
     server.enqueue(
@@ -199,6 +233,12 @@ class EvaluationInteractorTest {
         ),
     )
 
+    var listenerCalled = false
+    interactor.addUpdateListener {
+      // should not reach here, as there's no update
+      listenerCalled = true
+    }
+
     val result = interactor.fetch(user1, null)
 
     assertThat(server.requestCount).isEqualTo(2)
@@ -210,6 +250,10 @@ class EvaluationInteractorTest {
     assertThat(interactor.evaluations[user1.id]).isEqualTo(listOf(evaluation1, evaluation2))
     val latestEvaluations = component.dataModule.evaluationDao.get(user1.id)
     assertThat(latestEvaluations).isEqualTo(listOf(evaluation1, evaluation2))
+
+    shadowOf(Looper.getMainLooper()).idle()
+
+    assertThat(listenerCalled).isFalse()
   }
 
   @Test
@@ -254,5 +298,39 @@ class EvaluationInteractorTest {
     val actual = interactor.getLatest(user1.id, "invalid_feature_id")
 
     assertThat(actual).isNull()
+  }
+
+  @Test
+  fun addUpdateListener() {
+    val key1 = interactor.addUpdateListener { /* listener1 */ }
+    val key2 = interactor.addUpdateListener { /* listener2 */ }
+
+    assertThat(interactor.updateListeners).hasSize(2)
+    assertThat(interactor.updateListeners.keys).containsExactly(key1, key2)
+  }
+
+  @Test
+  fun removeUpdateListener() {
+    val key1 = interactor.addUpdateListener { /* listener1 */ }
+    val key2 = interactor.addUpdateListener { /* listener2 */ }
+
+    assertThat(interactor.updateListeners).hasSize(2)
+
+    interactor.removeUpdateListener(key2)
+
+    assertThat(interactor.updateListeners).hasSize(1)
+    assertThat(interactor.updateListeners.keys).containsExactly(key1)
+  }
+
+  @Test
+  fun clearUpdateListener() {
+    interactor.addUpdateListener { /* listener1 */ }
+    interactor.addUpdateListener { /* listener2 */ }
+
+    assertThat(interactor.updateListeners).hasSize(2)
+
+    interactor.clearUpdateListeners()
+
+    assertThat(interactor.updateListeners).isEmpty()
   }
 }

@@ -1,6 +1,8 @@
 package io.bucketeer.sdk.android.internal.event
 
 import android.app.Application
+import android.os.Handler
+import android.os.Looper
 import androidx.test.core.app.ApplicationProvider
 import com.google.common.truth.Truth.assertThat
 import com.squareup.moshi.Moshi
@@ -66,7 +68,9 @@ class EventInteractorTest {
           .build(),
         defaultRequestTimeoutMillis = TimeUnit.SECONDS.toMillis(1),
       ),
-      interactorModule = InteractorModule(),
+      interactorModule = InteractorModule(
+        mainHandler = Handler(Looper.getMainLooper()),
+      ),
     )
 
     interactor = component.eventInteractor

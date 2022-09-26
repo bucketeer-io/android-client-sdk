@@ -33,6 +33,12 @@ interface BKTClient {
 
   fun evaluationDetails(featureId: String): BKTEvaluation?
 
+  fun addEvaluationUpdateListener(listener: EvaluationUpdateListener): String
+
+  fun removeEvaluationUpdateListener(key: String)
+
+  fun clearEvaluationUpdateListeners()
+
   companion object {
 
     @Volatile
@@ -77,5 +83,10 @@ interface BKTClient {
         instance = null
       }
     }
+  }
+
+  fun interface EvaluationUpdateListener {
+    @MainThread
+    fun onUpdate()
   }
 }

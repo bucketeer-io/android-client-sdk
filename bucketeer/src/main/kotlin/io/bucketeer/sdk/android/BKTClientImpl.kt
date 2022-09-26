@@ -2,6 +2,8 @@ package io.bucketeer.sdk.android
 
 import android.app.Application
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import androidx.annotation.MainThread
 import androidx.lifecycle.ProcessLifecycleOwner
 import io.bucketeer.sdk.android.internal.di.Component
@@ -32,7 +34,7 @@ internal class BKTClientImpl(
       user = user.toUser(),
       config = config,
     ),
-    interactorModule = InteractorModule(),
+    interactorModule = InteractorModule(mainHandler = Handler(Looper.getMainLooper())),
   ),
 ) : BKTClient {
 
@@ -104,6 +106,18 @@ internal class BKTClientImpl(
       variationValue = raw.variation_value,
       reason = BKTEvaluation.Reason.from(raw.reason.type.value),
     )
+  }
+
+  override fun addEvaluationUpdateListener(listener: BKTClient.EvaluationUpdateListener): String {
+    return component.evaluationInteractor.addUpdateListener(listener)
+  }
+
+  override fun removeEvaluationUpdateListener(key: String) {
+    component.evaluationInteractor.removeUpdateListener(key)
+  }
+
+  override fun clearEvaluationUpdateListeners() {
+    component.evaluationInteractor.clearUpdateListeners()
   }
 
   private fun refreshCache() {
