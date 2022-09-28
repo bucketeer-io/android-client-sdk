@@ -2,8 +2,11 @@ package io.bucketeer.sdk.android.internal.evaluation
 
 import android.annotation.SuppressLint
 import android.content.SharedPreferences
+import android.os.Handler
 import androidx.annotation.VisibleForTesting
+import io.bucketeer.sdk.android.BKTClient
 import io.bucketeer.sdk.android.internal.Constants
+import io.bucketeer.sdk.android.internal.IdGenerator
 import io.bucketeer.sdk.android.internal.evaluation.db.EvaluationDao
 import io.bucketeer.sdk.android.internal.logd
 import io.bucketeer.sdk.android.internal.loge
@@ -21,10 +24,15 @@ internal class EvaluationInteractor(
   private val apiClient: ApiClient,
   private val evaluationDao: EvaluationDao,
   private val sharedPrefs: SharedPreferences,
+  private val idGenerator: IdGenerator,
+  private val mainHandler: Handler,
 ) {
   // key: userId
   @VisibleForTesting
   internal val evaluations = mutableMapOf<String, List<Evaluation>>()
+
+  @VisibleForTesting
+  internal val updateListeners = mutableMapOf<String, BKTClient.EvaluationUpdateListener>()
 
   @VisibleForTesting
   internal var currentEvaluationsId: String
@@ -63,6 +71,12 @@ internal class EvaluationInteractor(
         this.currentEvaluationsId = newEvaluationsId
 
         evaluations[user.id] = newEvaluations
+
+        // Update listeners should be called on the main thread
+        // to avoid unintentional lock on Interactor's execution thread.
+        mainHandler.post {
+          updateListeners.forEach { it.value.onUpdate() }
+        }
       }
       is GetEvaluationsResult.Failure -> {
         logd(result.error) { "ApiError: ${result.error.message}" }
@@ -73,6 +87,20 @@ internal class EvaluationInteractor(
 
   fun refreshCache(userId: String) {
     evaluations[userId] = evaluationDao.get(userId)
+  }
+
+  fun addUpdateListener(listener: BKTClient.EvaluationUpdateListener): String {
+    val key = idGenerator.newId()
+    updateListeners[key] = listener
+    return key
+  }
+
+  fun removeUpdateListener(key: String) {
+    updateListeners.remove(key)
+  }
+
+  fun clearUpdateListeners() {
+    updateListeners.clear()
   }
 
   fun getLatest(userId: String, featureId: String): Evaluation? {
