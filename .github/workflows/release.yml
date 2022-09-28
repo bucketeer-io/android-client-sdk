@@ -24,4 +24,5 @@ jobs:
             ]
           release-type: simple
           bump-minor-pre-major: true
+          release-as: 2.0.0
           token: ${{ secrets.WORKFLOW_TOKEN }}
