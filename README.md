@@ -22,12 +22,6 @@ api_url=<API_URL> # e.g. api-media.bucketeer.jp
 # sample
 sample.use_released_sdk=false
 sample.sdk_version=<SDK_VERSION>
-
-# publish (if needed)
-# sdk.version=<SDK_VERSION>
-# signing.keyId=<SIGNING_KEY_ID>
-# signing.password=<SIGNING_PASSWORD>
-# signing.secretKeyRingFile=<SIGNING_SECRET_KEY_RING_FILE>
 ```
 
 ## Development
