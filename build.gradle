@@ -10,8 +10,6 @@ plugins {
   alias(libs.plugins.kotlinter) apply false
 }
 
-apply from: "${rootProject.rootDir}/gradle/publish.gradle"
-
 allprojects {
   repositories {
     google()
