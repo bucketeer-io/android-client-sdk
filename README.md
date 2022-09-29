@@ -17,7 +17,7 @@ sdk.dir=<SDK_DIR_PATH> # e.g. /Users/<USER_NAME>/Library/Android/sdk
 
 # test
 api_key=<API_KEY>
-api_url=<API_URL> # e.g. api-media.bucketeer.jp
+api_endpoint=<API_ENDPOINT> # e.g. api-media.bucketeer.jp
 
 # sample
 sample.use_released_sdk=false

@@ -32,7 +32,7 @@ class BKTClientVariationTest {
 
     config = BKTConfig.builder()
       .apiKey(BuildConfig.API_KEY)
-      .endpoint(BuildConfig.API_URL)
+      .endpoint(BuildConfig.API_ENDPOINT)
       .featureTag(FEATURE_TAG)
       .build()
 
