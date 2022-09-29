@@ -1,4 +1,4 @@
-[![Build Status](https://app.bitrise.io/app/16337d5c0c8d6081/status.svg?token=l2E3TXU8-dnAmep6MJ8cIA&branch=master)](https://app.bitrise.io/app/16337d5c0c8d6081)
+[![Build & Integration tests](https://github.com/bucketeer-io/android-client-sdk/actions/workflows/build.yml/badge.svg)](https://github.com/bucketeer-io/android-client-sdk/actions/workflows/build.yml)
 
 # Bucketeer Client-side SDK for Android
 
@@ -64,14 +64,6 @@ Installs and runs the e2e tests for debug on connected devices. Open Android Emu
 ./gradlew :bucketeer:connectedCheck
 ```
 
-Publishes SDK to Sonatype repository and releases to Maven Central.
-(Usually you don't need to publish manually because CI/CD workflow publishes automatically.)
-
-```
-./gradlew :bucketeer:publish --no-daemon --no-parallel -PmavenCentralUsername=$SONATYPE_USERNAME -PmavenCentralPassword=$SONATYPE_PASSWORD
-./gradlew closeAndReleaseRepository
-```
-
 #### project :sample (Sample)
 
 Displays the tasks runnable from project ':sample'.
@@ -108,9 +100,5 @@ then build and start the sample app.
 
 ## SDK User Docs
 
-- [Tutorial](https://bucketeer.io/docs/#/./client-side-sdk-tutorial-android)
-- [Integration](https://bucketeer.io/docs/#/./client-side-sdk-reference-guides-android)
+- [Tutorial](https://docs.bucketeer.io/sdk/client-side/android)
 
-## Samples
-
-[Bucketeer Samples](https://github.com/ca-dp/bucketeer-samples)
