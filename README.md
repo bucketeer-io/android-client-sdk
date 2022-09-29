@@ -17,7 +17,7 @@ sdk.dir=<SDK_DIR_PATH> # e.g. /Users/<USER_NAME>/Library/Android/sdk
 
 # test
 api_key=<API_KEY>
-api_url=<API_URL> # e.g. api-media.bucketeer.jp
+api_endpoint=<API_ENDPOINT> # e.g. api.example.jp
 
 # sample
 sample.use_released_sdk=false
@@ -28,7 +28,7 @@ sample.sdk_version=<SDK_VERSION>
 
 ### Development with Android Studio
 
-Open Android Studio and import `bucketeer-android-sdk`.
+Open Android Studio and import `android-client-sdk`.
 
 ### Development with command line
 
