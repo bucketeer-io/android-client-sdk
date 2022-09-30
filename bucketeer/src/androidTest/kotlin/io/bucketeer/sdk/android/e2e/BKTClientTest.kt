@@ -62,7 +62,7 @@ class BKTClientTest {
     assertThat(client.stringVariation(FEATURE_ID_STRING, ""))
       .isEqualTo("value-1")
 
-    client.setUserAttributes(mapOf("app_version" to "0.0.1"))
+    client.updateUserAttributes(mapOf("app_version" to "0.0.1"))
 
     client.fetchEvaluations().get()
 

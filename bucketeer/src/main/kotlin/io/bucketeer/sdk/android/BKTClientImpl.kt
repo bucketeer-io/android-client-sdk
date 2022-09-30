@@ -77,7 +77,7 @@ internal class BKTClientImpl(
     return component.userHolder.get().toBKTUser()
   }
 
-  override fun setUserAttributes(attributes: Map<String, String>) {
+  override fun updateUserAttributes(attributes: Map<String, String>) {
     component.userHolder.updateAttributes { attributes }
   }
 

@@ -632,7 +632,7 @@ class BKTClientImplTest {
       "custom_key_2" to "custom_key_value_2",
     )
 
-    BKTClient.getInstance().setUserAttributes(attributes)
+    BKTClient.getInstance().updateUserAttributes(attributes)
 
     assertThat(BKTClient.getInstance().currentUser())
       .isEqualTo(user1.toBKTUser().copy(attributes = attributes))

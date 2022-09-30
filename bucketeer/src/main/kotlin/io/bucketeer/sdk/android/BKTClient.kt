@@ -25,7 +25,7 @@ interface BKTClient {
 
   fun currentUser(): BKTUser
 
-  fun setUserAttributes(attributes: Map<String, String>)
+  fun updateUserAttributes(attributes: Map<String, String>)
 
   fun fetchEvaluations(timeoutMillis: Long? = null): Future<BKTException?>
 
