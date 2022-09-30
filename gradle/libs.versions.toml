@@ -1,7 +1,7 @@
 [versions]
 agp = "7.3.0"
 grpc = "1.47.0"
-kotlin = "1.7.10"
+kotlin = "1.7.20"
 espresso = "3.4.0"
 androidxLifecycle = "2.5.1"
 androidxTest = "1.4.0"
