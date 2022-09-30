@@ -38,7 +38,7 @@ internal inline fun <reified T> MockWebServer.enqueueResponse(
  */
 internal fun createTestBKTConfig(
   apiKey: String,
-  endpoint: String,
+  apiEndpoint: String,
   featureTag: String,
   eventsFlushInterval: Long = DEFAULT_FLUSH_INTERVAL_MILLIS,
   eventsMaxBatchQueueCount: Int = DEFAULT_MAX_QUEUE_SIZE,
@@ -48,7 +48,7 @@ internal fun createTestBKTConfig(
 ): BKTConfig {
   return BKTConfig(
     apiKey = apiKey,
-    endpoint = endpoint,
+    apiEndpoint = apiEndpoint,
     featureTag = featureTag,
     eventsFlushInterval = eventsFlushInterval,
     eventsMaxBatchQueueCount = eventsMaxBatchQueueCount,

@@ -44,7 +44,7 @@ internal open class DataModule(
 
   open val apiClient: ApiClient by lazy {
     ApiClientImpl(
-      endpoint = config.endpoint,
+      apiEndpoint = config.apiEndpoint,
       apiKey = config.apiKey,
       featureTag = config.featureTag,
       moshi = moshi,

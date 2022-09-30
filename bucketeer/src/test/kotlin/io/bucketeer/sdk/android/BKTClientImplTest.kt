@@ -46,7 +46,7 @@ class BKTClientImplTest {
     server = MockWebServer()
 
     config = BKTConfig.builder()
-      .endpoint(server.url("").toString())
+      .apiEndpoint(server.url("").toString())
       .apiKey("api_key_value")
       .featureTag("feature_tag_value")
       .build()

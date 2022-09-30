@@ -43,7 +43,7 @@ class EvaluationForegroundTaskTest {
         application = ApplicationProvider.getApplicationContext(),
         config = createTestBKTConfig(
           apiKey = "api_key_value",
-          endpoint = server.url("").toString(),
+          apiEndpoint = server.url("").toString(),
           featureTag = "feature_tag_value",
           eventsMaxBatchQueueCount = 3,
           pollingInterval = 1000,

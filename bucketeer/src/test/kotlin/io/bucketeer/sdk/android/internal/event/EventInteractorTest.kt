@@ -61,7 +61,7 @@ class EventInteractorTest {
       dataModule = TestDataModule(
         application = ApplicationProvider.getApplicationContext(),
         config = BKTConfig.builder()
-          .endpoint(server.url("").toString())
+          .apiEndpoint(server.url("").toString())
           .apiKey("api_key_value")
           .featureTag("feature_tag_value")
           .eventsMaxQueueSize(3)
@@ -704,7 +704,7 @@ private class TestDataModule(
 
   override val apiClient: ApiClient by lazy {
     ApiClientImpl(
-      endpoint = config.endpoint,
+      apiEndpoint = config.apiEndpoint,
       apiKey = config.apiKey,
       featureTag = config.featureTag,
       moshi = moshi,
