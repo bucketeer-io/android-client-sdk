@@ -53,7 +53,7 @@ class BKTConfigTest {
   }
 
   @Test
-  fun `endpoint - unset`() {
+  fun `apiEndpoint - unset`() {
     val error = assertThrows(BKTException.IllegalArgumentException::class.java) {
       BKTConfig.builder()
         .apiKey("api-key")
@@ -65,7 +65,7 @@ class BKTConfigTest {
   }
 
   @Test
-  fun `endpoint - invalid`() {
+  fun `apiEndpoint - invalid`() {
     val error = assertThrows(BKTException.IllegalArgumentException::class.java) {
       BKTConfig.builder()
         .apiKey("api-key")
