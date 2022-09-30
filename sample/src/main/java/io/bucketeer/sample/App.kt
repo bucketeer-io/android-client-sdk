@@ -32,7 +32,7 @@ class App : Application(), LifecycleObserver {
   private fun initBucketeer() {
     val config = BKTConfig.builder()
       .apiKey(BuildConfig.API_KEY)
-      .endpoint(BuildConfig.API_ENDPOINT)
+      .apiEndpoint(BuildConfig.API_ENDPOINT)
       .featureTag(getTag())
       .eventsMaxQueueSize(10)
       .pollingInterval(TimeUnit.SECONDS.toMillis(20))

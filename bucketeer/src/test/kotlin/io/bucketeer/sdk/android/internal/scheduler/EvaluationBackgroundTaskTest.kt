@@ -34,7 +34,7 @@ class EvaluationBackgroundTaskTest {
 
     config = createTestBKTConfig(
       apiKey = "api_key_value",
-      endpoint = server.url("").toString(),
+      apiEndpoint = server.url("").toString(),
       featureTag = "feature_tag_value",
     )
 

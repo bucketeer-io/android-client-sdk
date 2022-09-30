@@ -76,7 +76,7 @@ internal class ApiClientImplTest {
     )
 
     client = ApiClientImpl(
-      endpoint = endpoint,
+      apiEndpoint = endpoint,
       apiKey = "api_key_value",
       featureTag = "feature_tag_value",
       moshi = moshi,
@@ -116,7 +116,7 @@ internal class ApiClientImplTest {
   @Test
   fun `getEvaluations - default timeout`() {
     client = ApiClientImpl(
-      endpoint = endpoint,
+      apiEndpoint = endpoint,
       apiKey = "api_key_value",
       featureTag = "feature_tag_value",
       moshi = moshi,
@@ -143,7 +143,7 @@ internal class ApiClientImplTest {
   @Test
   fun `getEvaluations - custom timeout`() {
     client = ApiClientImpl(
-      endpoint = endpoint,
+      apiEndpoint = endpoint,
       apiKey = "api_key_value",
       featureTag = "feature_tag_value",
       moshi = moshi,
@@ -170,7 +170,7 @@ internal class ApiClientImplTest {
   @Test
   fun `getEvaluations - network error`() {
     client = ApiClientImpl(
-      endpoint = "https://thisdoesnotexist.bucketeer.io",
+      apiEndpoint = "https://thisdoesnotexist.bucketeer.io",
       apiKey = "api_key_value",
       featureTag = "feature_tag_value",
       moshi = moshi,
@@ -206,7 +206,7 @@ internal class ApiClientImplTest {
         ),
     )
     client = ApiClientImpl(
-      endpoint = endpoint,
+      apiEndpoint = endpoint,
       apiKey = "api_key_value",
       featureTag = "feature_tag_value",
       moshi = moshi,
@@ -233,7 +233,7 @@ internal class ApiClientImplTest {
         .setBody("error: ${case.code}"),
     )
     client = ApiClientImpl(
-      endpoint = endpoint,
+      apiEndpoint = endpoint,
       apiKey = "api_key_value",
       featureTag = "feature_tag_value",
       moshi = moshi,
@@ -274,7 +274,7 @@ internal class ApiClientImplTest {
         ),
     )
     client = ApiClientImpl(
-      endpoint = endpoint,
+      apiEndpoint = endpoint,
       apiKey = "api_key_value",
       featureTag = "feature_tag_value",
       moshi = moshi,
@@ -312,7 +312,7 @@ internal class ApiClientImplTest {
   @Test
   fun `registerEvents - timeout`() {
     client = ApiClientImpl(
-      endpoint = endpoint,
+      apiEndpoint = endpoint,
       apiKey = "api_key_value",
       featureTag = "feature_tag_value",
       moshi = moshi,
@@ -335,7 +335,7 @@ internal class ApiClientImplTest {
   @Test
   fun `registerEvents - network error`() {
     client = ApiClientImpl(
-      endpoint = "https://thisdoesnotexist.bucketeer.io",
+      apiEndpoint = "https://thisdoesnotexist.bucketeer.io",
       apiKey = "api_key_value",
       featureTag = "feature_tag_value",
       moshi = moshi,
@@ -367,7 +367,7 @@ internal class ApiClientImplTest {
         ),
     )
     client = ApiClientImpl(
-      endpoint = endpoint,
+      apiEndpoint = endpoint,
       apiKey = "api_key_value",
       featureTag = "feature_tag_value",
       moshi = moshi,
@@ -391,7 +391,7 @@ internal class ApiClientImplTest {
         .setBody("error: ${case.code}"),
     )
     client = ApiClientImpl(
-      endpoint = endpoint,
+      apiEndpoint = endpoint,
       apiKey = "api_key_value",
       featureTag = "feature_tag_value",
       moshi = moshi,

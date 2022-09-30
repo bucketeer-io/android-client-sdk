@@ -9,14 +9,14 @@ class BKTConfigTest {
   fun build() {
     val actual = BKTConfig.builder()
       .apiKey("api-key")
-      .endpoint("https://example.com")
+      .apiEndpoint("https://example.com")
       .featureTag("feature-tag")
       .build()
 
     assertThat(actual).isEqualTo(
       BKTConfig(
         apiKey = "api-key",
-        endpoint = "https://example.com",
+        apiEndpoint = "https://example.com",
         featureTag = "feature-tag",
         eventsFlushInterval = DEFAULT_FLUSH_INTERVAL_MILLIS,
         eventsMaxBatchQueueCount = DEFAULT_MAX_QUEUE_SIZE,
@@ -31,7 +31,7 @@ class BKTConfigTest {
   fun `apiKey - unset`() {
     val error = assertThrows(BKTException.IllegalArgumentException::class.java) {
       BKTConfig.builder()
-        .endpoint("https://example.com")
+        .apiEndpoint("https://example.com")
         .featureTag("feature-tag")
         .build()
     }
@@ -44,7 +44,7 @@ class BKTConfigTest {
     val error = assertThrows(BKTException.IllegalArgumentException::class.java) {
       BKTConfig.builder()
         .apiKey("")
-        .endpoint("https://example.com")
+        .apiEndpoint("https://example.com")
         .featureTag("feature-tag")
         .build()
     }
@@ -61,7 +61,7 @@ class BKTConfigTest {
         .build()
     }
 
-    assertThat(error).hasMessageThat().isEqualTo("endpoint is invalid")
+    assertThat(error).hasMessageThat().isEqualTo("apiEndpoint is invalid")
   }
 
   @Test
@@ -69,12 +69,12 @@ class BKTConfigTest {
     val error = assertThrows(BKTException.IllegalArgumentException::class.java) {
       BKTConfig.builder()
         .apiKey("api-key")
-        .endpoint("some invalid value")
+        .apiEndpoint("some invalid value")
         .featureTag("feature-tag")
         .build()
     }
 
-    assertThat(error).hasMessageThat().isEqualTo("endpoint is invalid")
+    assertThat(error).hasMessageThat().isEqualTo("apiEndpoint is invalid")
   }
 
   @Test
@@ -82,7 +82,7 @@ class BKTConfigTest {
     val error = assertThrows(BKTException.IllegalArgumentException::class.java) {
       BKTConfig.builder()
         .apiKey("api-key")
-        .endpoint("https://example.com")
+        .apiEndpoint("https://example.com")
         .build()
     }
 
@@ -94,7 +94,7 @@ class BKTConfigTest {
     val error = assertThrows(BKTException.IllegalArgumentException::class.java) {
       BKTConfig.builder()
         .apiKey("api-key")
-        .endpoint("https://example.com")
+        .apiEndpoint("https://example.com")
         .featureTag("")
         .build()
     }
@@ -106,7 +106,7 @@ class BKTConfigTest {
   fun eventsFlushInterval() {
     val actual = BKTConfig.builder()
       .apiKey("api-key")
-      .endpoint("https://example.com")
+      .apiEndpoint("https://example.com")
       .featureTag("feature-tag")
       .eventsFlushInterval(70_000)
       .build()
@@ -118,7 +118,7 @@ class BKTConfigTest {
   fun `eventsFlushInterval - sooner than min value`() {
     val actual = BKTConfig.builder()
       .apiKey("api-key")
-      .endpoint("https://example.com")
+      .apiEndpoint("https://example.com")
       .featureTag("feature-tag")
       .eventsFlushInterval(10)
       .build()
@@ -130,7 +130,7 @@ class BKTConfigTest {
   fun pollingInterval() {
     val actual = BKTConfig.builder()
       .apiKey("api-key")
-      .endpoint("https://example.com")
+      .apiEndpoint("https://example.com")
       .featureTag("feature-tag")
       .pollingInterval(70_000)
       .build()
@@ -142,7 +142,7 @@ class BKTConfigTest {
   fun `pollingInterval - sooner than min value`() {
     val actual = BKTConfig.builder()
       .apiKey("api-key")
-      .endpoint("https://example.com")
+      .apiEndpoint("https://example.com")
       .featureTag("feature-tag")
       .pollingInterval(10)
       .build()
@@ -154,7 +154,7 @@ class BKTConfigTest {
   fun backgroundPollingInterval() {
     val actual = BKTConfig.builder()
       .apiKey("api-key")
-      .endpoint("https://example.com")
+      .apiEndpoint("https://example.com")
       .featureTag("feature-tag")
       .backgroundPollingInterval(1_300_000)
       .build()
@@ -167,7 +167,7 @@ class BKTConfigTest {
   fun `backgroundPollingInterval - sooner than min value`() {
     val actual = BKTConfig.builder()
       .apiKey("api-key")
-      .endpoint("https://example.com")
+      .apiEndpoint("https://example.com")
       .featureTag("feature-tag")
       .backgroundPollingInterval(10)
       .build()
@@ -180,7 +180,7 @@ class BKTConfigTest {
   fun `logger - can be null`() {
     val actual = BKTConfig.builder()
       .apiKey("api-key")
-      .endpoint("https://example.com")
+      .apiEndpoint("https://example.com")
       .featureTag("feature-tag")
       .logger(null)
       .build()
@@ -188,7 +188,7 @@ class BKTConfigTest {
     assertThat(actual).isEqualTo(
       BKTConfig(
         apiKey = "api-key",
-        endpoint = "https://example.com",
+        apiEndpoint = "https://example.com",
         featureTag = "feature-tag",
         eventsFlushInterval = DEFAULT_FLUSH_INTERVAL_MILLIS,
         eventsMaxBatchQueueCount = DEFAULT_MAX_QUEUE_SIZE,

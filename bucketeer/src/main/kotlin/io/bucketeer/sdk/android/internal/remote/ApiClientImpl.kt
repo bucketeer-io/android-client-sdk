@@ -24,14 +24,14 @@ import java.util.concurrent.TimeUnit
 internal const val DEFAULT_REQUEST_TIMEOUT_MILLIS: Long = 30_000
 
 internal class ApiClientImpl(
-  endpoint: String,
+  apiEndpoint: String,
   private val apiKey: String,
   private val featureTag: String,
   private val moshi: Moshi,
   defaultRequestTimeoutMillis: Long = DEFAULT_REQUEST_TIMEOUT_MILLIS,
 ) : ApiClient {
 
-  private val endpoint = endpoint.toHttpUrl()
+  private val apiEndpoint = apiEndpoint.toHttpUrl()
 
   private val client: OkHttpClient = OkHttpClient.Builder()
     .addNetworkInterceptor(FixJsonContentTypeInterceptor())
@@ -55,7 +55,7 @@ internal class ApiClientImpl(
 
     val request = Request.Builder()
       .url(
-        endpoint.newBuilder()
+        apiEndpoint.newBuilder()
           .addPathSegments("v1/gateway/evaluations")
           .build(),
       )
@@ -111,7 +111,7 @@ internal class ApiClientImpl(
 
     val request = Request.Builder()
       .url(
-        endpoint.newBuilder()
+        apiEndpoint.newBuilder()
           .addPathSegments("v1/gateway/events")
           .build(),
       )

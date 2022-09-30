@@ -14,7 +14,7 @@ internal const val DEFAULT_BACKGROUND_POLLING_INTERVAL_MILLIS: Long = 3_600_000 
 
 data class BKTConfig internal constructor(
   val apiKey: String,
-  val endpoint: String,
+  val apiEndpoint: String,
   val featureTag: String,
   val eventsFlushInterval: Long,
   val eventsMaxBatchQueueCount: Int,
@@ -29,7 +29,7 @@ data class BKTConfig internal constructor(
 
   class Builder internal constructor() {
     private var apiKey: String? = null
-    private var endpoint: String? = null
+    private var apiEndpoint: String? = null
     private var featureTag: String? = null
     private var eventsFlushInterval: Long = DEFAULT_FLUSH_INTERVAL_MILLIS
     private var eventsMaxQueueSize: Int = DEFAULT_MAX_QUEUE_SIZE
@@ -42,8 +42,8 @@ data class BKTConfig internal constructor(
       return this
     }
 
-    fun endpoint(endpoint: String): Builder {
-      this.endpoint = endpoint
+    fun apiEndpoint(apiEndpoint: String): Builder {
+      this.apiEndpoint = apiEndpoint
       return this
     }
 
@@ -79,7 +79,7 @@ data class BKTConfig internal constructor(
 
     fun build(): BKTConfig {
       require(!this.apiKey.isNullOrEmpty()) { "apiKey is required" }
-      require(this.endpoint?.toHttpUrlOrNull() != null) { "endpoint is invalid" }
+      require(this.apiEndpoint?.toHttpUrlOrNull() != null) { "apiEndpoint is invalid" }
       require(!this.featureTag.isNullOrEmpty()) { "featureTag is required" }
 
       if (this.pollingInterval < MINIMUM_POLLING_INTERVAL_MILLIS) {
@@ -99,7 +99,7 @@ data class BKTConfig internal constructor(
 
       return BKTConfig(
         apiKey = this.apiKey!!,
-        endpoint = this.endpoint!!,
+        apiEndpoint = this.apiEndpoint!!,
         featureTag = this.featureTag!!,
         eventsFlushInterval = this.eventsFlushInterval,
         eventsMaxBatchQueueCount = this.eventsMaxQueueSize,
