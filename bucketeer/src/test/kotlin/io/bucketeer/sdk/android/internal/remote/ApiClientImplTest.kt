@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit
 internal class ApiClientImplTest {
   private lateinit var server: MockWebServer
   private lateinit var client: ApiClientImpl
-  private lateinit var endpoint: String
+  private lateinit var apiEndpoint: String
   private lateinit var moshi: Moshi
 
   @Suppress("unused")
@@ -49,7 +49,7 @@ internal class ApiClientImplTest {
   @Before
   fun setup() {
     server = MockWebServer()
-    endpoint = server.url("").toString()
+    apiEndpoint = server.url("").toString()
     moshi = DataModule.createMoshi()
   }
 
@@ -76,7 +76,7 @@ internal class ApiClientImplTest {
     )
 
     client = ApiClientImpl(
-      apiEndpoint = endpoint,
+      apiEndpoint = apiEndpoint,
       apiKey = "api_key_value",
       featureTag = "feature_tag_value",
       moshi = moshi,
@@ -116,7 +116,7 @@ internal class ApiClientImplTest {
   @Test
   fun `getEvaluations - default timeout`() {
     client = ApiClientImpl(
-      apiEndpoint = endpoint,
+      apiEndpoint = apiEndpoint,
       apiKey = "api_key_value",
       featureTag = "feature_tag_value",
       moshi = moshi,
@@ -143,7 +143,7 @@ internal class ApiClientImplTest {
   @Test
   fun `getEvaluations - custom timeout`() {
     client = ApiClientImpl(
-      apiEndpoint = endpoint,
+      apiEndpoint = apiEndpoint,
       apiKey = "api_key_value",
       featureTag = "feature_tag_value",
       moshi = moshi,
@@ -206,7 +206,7 @@ internal class ApiClientImplTest {
         ),
     )
     client = ApiClientImpl(
-      apiEndpoint = endpoint,
+      apiEndpoint = apiEndpoint,
       apiKey = "api_key_value",
       featureTag = "feature_tag_value",
       moshi = moshi,
@@ -233,7 +233,7 @@ internal class ApiClientImplTest {
         .setBody("error: ${case.code}"),
     )
     client = ApiClientImpl(
-      apiEndpoint = endpoint,
+      apiEndpoint = apiEndpoint,
       apiKey = "api_key_value",
       featureTag = "feature_tag_value",
       moshi = moshi,
@@ -274,7 +274,7 @@ internal class ApiClientImplTest {
         ),
     )
     client = ApiClientImpl(
-      apiEndpoint = endpoint,
+      apiEndpoint = apiEndpoint,
       apiKey = "api_key_value",
       featureTag = "feature_tag_value",
       moshi = moshi,
@@ -312,7 +312,7 @@ internal class ApiClientImplTest {
   @Test
   fun `registerEvents - timeout`() {
     client = ApiClientImpl(
-      apiEndpoint = endpoint,
+      apiEndpoint = apiEndpoint,
       apiKey = "api_key_value",
       featureTag = "feature_tag_value",
       moshi = moshi,
@@ -367,7 +367,7 @@ internal class ApiClientImplTest {
         ),
     )
     client = ApiClientImpl(
-      apiEndpoint = endpoint,
+      apiEndpoint = apiEndpoint,
       apiKey = "api_key_value",
       featureTag = "feature_tag_value",
       moshi = moshi,
@@ -391,7 +391,7 @@ internal class ApiClientImplTest {
         .setBody("error: ${case.code}"),
     )
     client = ApiClientImpl(
-      apiEndpoint = endpoint,
+      apiEndpoint = apiEndpoint,
       apiKey = "api_key_value",
       featureTag = "feature_tag_value",
       moshi = moshi,
