@@ -23,5 +23,4 @@ jobs:
               {"type":"revert","section":"Reverts","hidden":false}
             ]
           release-type: simple
-          release-as: 2.0.0
           token: ${{ secrets.WORKFLOW_TOKEN }}
