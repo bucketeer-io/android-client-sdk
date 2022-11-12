@@ -28,7 +28,8 @@ class MetricsEventAdapterFactoryTest {
         |      "key2": "value2"
         |    },
         |    "duration": 5
-        |  }
+        |  },
+        |  "sdk_version": "2.0.1"
         |}
       """.trimMargin(),
       event = EventData.MetricsEvent(
@@ -41,6 +42,7 @@ class MetricsEventAdapterFactoryTest {
           ),
           duration = 5,
         ),
+        sdk_version = "2.0.1",
       ),
     ),
     GetEvaluationSize(
@@ -54,7 +56,8 @@ class MetricsEventAdapterFactoryTest {
         |      "key2": "value2"
         |    },
         |    "size_byte": 1234
-        |  }
+        |  },
+        |  "sdk_version": "2.0.1"
         |}
       """.trimMargin(),
       event = EventData.MetricsEvent(
@@ -67,6 +70,7 @@ class MetricsEventAdapterFactoryTest {
           ),
           size_byte = 1234,
         ),
+        sdk_version = "2.0.1",
       ),
     ),
     TimeoutErrorCount(
@@ -76,7 +80,8 @@ class MetricsEventAdapterFactoryTest {
         |  "type": 3,
         |  "event": {
         |    "tag": "tag_value"
-        |  }
+        |  },
+        |  "sdk_version": "2.0.1"
         |}
       """.trimMargin(),
       event = EventData.MetricsEvent(
@@ -85,6 +90,7 @@ class MetricsEventAdapterFactoryTest {
         event = MetricsEventData.TimeoutErrorCountMetricsEvent(
           tag = "tag_value",
         ),
+        sdk_version = "2.0.1",
       ),
     ),
     InternalErrorCount(
@@ -94,7 +100,8 @@ class MetricsEventAdapterFactoryTest {
         |  "type": 4,
         |  "event": {
         |    "tag": "tag_value"
-        |  }
+        |  },
+        |  "sdk_version": "2.0.1"
         |}
       """.trimMargin(),
       event = EventData.MetricsEvent(
@@ -103,6 +110,7 @@ class MetricsEventAdapterFactoryTest {
         event = MetricsEventData.InternalErrorCountMetricsEvent(
           tag = "tag_value",
         ),
+        sdk_version = "2.0.1",
       ),
     ),
   }

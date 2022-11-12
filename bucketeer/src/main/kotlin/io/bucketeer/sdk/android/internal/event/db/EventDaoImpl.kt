@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.sqlite.db.SupportSQLiteOpenHelper
 import com.squareup.moshi.Moshi
+import io.bucketeer.sdk.android.BuildConfig
 import io.bucketeer.sdk.android.internal.database.asSequence
 import io.bucketeer.sdk.android.internal.database.getString
 import io.bucketeer.sdk.android.internal.database.select
@@ -13,6 +14,7 @@ import io.bucketeer.sdk.android.internal.event.EventEntity.Companion.COLUMN_EVEN
 import io.bucketeer.sdk.android.internal.event.EventEntity.Companion.COLUMN_ID
 import io.bucketeer.sdk.android.internal.event.EventEntity.Companion.TABLE_NAME
 import io.bucketeer.sdk.android.internal.model.Event
+import io.bucketeer.sdk.android.internal.model.EventData
 
 internal class EventDaoImpl(
   private val sqLiteOpenHelper: SupportSQLiteOpenHelper,
@@ -41,6 +43,7 @@ internal class EventDaoImpl(
     return c.use {
       c.asSequence()
         .mapNotNull { eventAdapter.fromJson(it.getString(COLUMN_EVENT)) }
+        .map { it.copy(event = updateSdkVersion(it.event)) }
         .toList()
     }
   }
@@ -68,5 +71,13 @@ internal class EventDaoImpl(
       SQLiteDatabase.CONFLICT_REPLACE,
       contentValues,
     )
+  }
+
+  private fun updateSdkVersion(eventData: EventData): EventData {
+    return when (eventData) {
+      is EventData.EvaluationEvent -> eventData.copy(sdk_version = BuildConfig.SDK_VERSION)
+      is EventData.GoalEvent -> eventData.copy(sdk_version = BuildConfig.SDK_VERSION)
+      is EventData.MetricsEvent -> eventData.copy(sdk_version = BuildConfig.SDK_VERSION)
+    }
   }
 }

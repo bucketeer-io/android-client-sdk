@@ -23,6 +23,7 @@ val evaluationEvent1: Event by lazy {
       reason = Reason(type = ReasonType.DEFAULT),
       tag = "",
       source_id = SourceID.ANDROID,
+      sdk_version = io.bucketeer.sdk.android.BuildConfig.SDK_VERSION,
     ),
   )
 }
@@ -39,6 +40,7 @@ val evaluationEvent2: Event by lazy {
       reason = Reason(type = ReasonType.DEFAULT),
       tag = "",
       source_id = SourceID.ANDROID,
+      sdk_version = io.bucketeer.sdk.android.BuildConfig.SDK_VERSION,
     ),
   )
 }
@@ -55,6 +57,7 @@ val goalEvent1: Event by lazy {
       value = 0.0,
       tag = "",
       source_id = SourceID.ANDROID,
+      sdk_version = io.bucketeer.sdk.android.BuildConfig.SDK_VERSION,
     ),
   )
 }
@@ -71,6 +74,7 @@ val goalEvent2: Event by lazy {
       value = 0.0,
       tag = "",
       source_id = SourceID.ANDROID,
+      sdk_version = io.bucketeer.sdk.android.BuildConfig.SDK_VERSION,
     ),
   )
 }
@@ -83,6 +87,7 @@ val metricsEvent1: Event by lazy {
       timestamp = 1661823274, // 2022-08-30 01:34:34
       event = getEvaluationLatencyMetricsEvent1,
       type = MetricsEventType.GET_EVALUATION_LATENCY,
+      sdk_version = io.bucketeer.sdk.android.BuildConfig.SDK_VERSION,
     ),
   )
 }

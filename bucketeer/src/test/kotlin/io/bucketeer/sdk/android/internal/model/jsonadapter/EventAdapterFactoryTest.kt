@@ -43,7 +43,8 @@ class EventAdapterFactoryTest {
         |      }
         |    },
         |    "tag": "tag_value",
-        |    "source_id": 1
+        |    "source_id": 1,
+        |    "sdk_version": "2.0.1"
         |  }
         |}
       """.trimMargin(),
@@ -64,6 +65,7 @@ class EventAdapterFactoryTest {
           ),
           tag = "tag_value",
           source_id = SourceID.ANDROID,
+          sdk_version = "2.0.1",
         ),
       ),
     ),
@@ -90,7 +92,8 @@ class EventAdapterFactoryTest {
         |      "rule_id": "rule_id_value"
         |    },
         |    "tag": "tag_value",
-        |    "source_id": 1
+        |    "source_id": 1,
+        |    "sdk_version": "2.0.1"
         |  }
         |}
       """.trimMargin(),
@@ -116,6 +119,7 @@ class EventAdapterFactoryTest {
           ),
           tag = "tag_value",
           source_id = SourceID.ANDROID,
+          sdk_version = "2.0.1",
         ),
       ),
     ),
@@ -133,7 +137,8 @@ class EventAdapterFactoryTest {
         |        "key2": "value2"
         |      },
         |      "duration": 5
-        |    }
+        |    },
+        |    "sdk_version": "2.0.1"
         |  }
         |}
       """.trimMargin(),
@@ -150,6 +155,7 @@ class EventAdapterFactoryTest {
             ),
             duration = 5,
           ),
+          sdk_version = "2.0.1",
         ),
       ),
     ),

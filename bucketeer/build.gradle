@@ -38,10 +38,13 @@ android {
       def API_ENDPOINT = properties.getProperty("api_endpoint") ?: System.getenv("API_ENDPOINT")
       buildConfigField("String", "API_KEY", "\"${API_KEY}\"")
       buildConfigField("String", "API_ENDPOINT", "\"${API_ENDPOINT}\"")
+      buildConfigField("String", "SDK_VERSION", "\"${VERSION_NAME}\"")
     }
     release {
       consumerProguardFiles 'proguard-rules.pro'
       proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+      buildConfigField("String", "SDK_VERSION", "\"${VERSION_NAME}\"")
     }
   }
 

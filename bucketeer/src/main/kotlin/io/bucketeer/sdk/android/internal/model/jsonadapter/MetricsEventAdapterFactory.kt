@@ -50,6 +50,7 @@ class MetricsEventAdapterFactory : JsonAdapter.Factory {
           timestamp = (jsonObj["timestamp"] as Double).toLong(),
           event = adapter.fromJsonValue(jsonObj["event"]) as MetricsEventData,
           type = eventType,
+          sdk_version = jsonObj["sdk_version"].toString(),
         )
       }
 
@@ -95,6 +96,11 @@ class MetricsEventAdapterFactory : JsonAdapter.Factory {
             )
           }
         }
+
+        // This value is serialized but going to be overwritten
+        // with `BuildConfig.SDK_VERSION` when it is sent to the server.
+        writer.name("sdk_version")
+        writer.jsonValue(value.sdk_version)
 
         writer.endObject()
       }
