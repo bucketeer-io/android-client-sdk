@@ -70,7 +70,7 @@ class EventAdapterFactoryTest {
       ),
     ),
 
-    @Suppress("EnumEntryName")
+    @Suppress("EnumEntryName", "ktlint:enum-entry-name-case")
     Goal_NoSdkVersion(
       json = """
         |{
@@ -169,7 +169,7 @@ class EventAdapterFactoryTest {
       ),
     ),
 
-    @Suppress("EnumEntryName")
+    @Suppress("EnumEntryName", "ktlint:enum-entry-name-case")
     Evaluation_NoSdkVersion(
       json = """
         |{
@@ -260,7 +260,7 @@ class EventAdapterFactoryTest {
       ),
     ),
 
-    @Suppress("EnumEntryName")
+    @Suppress("EnumEntryName", "ktlint:enum-entry-name-case")
     Metrics_NoSdkVersion(
       json = """
         |{
