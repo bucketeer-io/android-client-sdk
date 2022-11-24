@@ -1,5 +1,30 @@
 # Changelog
 
+## [2.1.0](https://github.com/bucketeer-io/android-client-sdk/compare/v2.0.0...v2.1.0) (2022-11-24)
+
+
+### Features
+
+* send sdk_version ([#33](https://github.com/bucketeer-io/android-client-sdk/issues/33)) ([f7fd846](https://github.com/bucketeer-io/android-client-sdk/commit/f7fd846b4821bb93564969a3117cef060a371306))
+
+
+### Bug Fixes
+
+* **deps:** update dependency com.google.testparameterinjector:test-parameter-injector to v1.9 ([#32](https://github.com/bucketeer-io/android-client-sdk/issues/32)) ([bf6933f](https://github.com/bucketeer-io/android-client-sdk/commit/bf6933f46bd17e2bca6888960f47fcf74003dbef))
+* **deps:** update dependency org.robolectric:robolectric to v4.9 ([#34](https://github.com/bucketeer-io/android-client-sdk/issues/34)) ([1cd4239](https://github.com/bucketeer-io/android-client-sdk/commit/1cd4239ba36f7f7db3b8e5bf2e7a6767d1dd528b))
+
+
+### Build System
+
+* **deps:** update agp to v7.3.1 ([#26](https://github.com/bucketeer-io/android-client-sdk/issues/26)) ([30c70a5](https://github.com/bucketeer-io/android-client-sdk/commit/30c70a5efde54ebdc8b3652fd5c7a9592b7d707b))
+
+
+### Miscellaneous
+
+* **deps:** update actions/setup-java action to v3.6.0 ([#29](https://github.com/bucketeer-io/android-client-sdk/issues/29)) ([7ba510a](https://github.com/bucketeer-io/android-client-sdk/commit/7ba510ae1c8a4126dab95185317cde14383baeb8))
+* **deps:** update amannn/action-semantic-pull-request action to v5 ([#31](https://github.com/bucketeer-io/android-client-sdk/issues/31)) ([69d45eb](https://github.com/bucketeer-io/android-client-sdk/commit/69d45ebcb7e6888800e3a3e1e294d1385e32a128))
+* **deps:** update google-github-actions/release-please-action action to v3.6.0 ([#30](https://github.com/bucketeer-io/android-client-sdk/issues/30)) ([c4b35f4](https://github.com/bucketeer-io/android-client-sdk/commit/c4b35f49bc98c37e4f83e14dbfc6abfb6e8a6646))
+
 ## 2.0.0 (2022-10-04)
 
 
