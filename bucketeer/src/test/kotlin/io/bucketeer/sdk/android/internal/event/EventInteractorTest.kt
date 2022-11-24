@@ -8,6 +8,7 @@ import com.google.common.truth.Truth.assertThat
 import com.squareup.moshi.Moshi
 import io.bucketeer.sdk.android.BKTConfig
 import io.bucketeer.sdk.android.BKTException
+import io.bucketeer.sdk.android.BuildConfig
 import io.bucketeer.sdk.android.internal.Clock
 import io.bucketeer.sdk.android.internal.ClockImpl
 import io.bucketeer.sdk.android.internal.IdGenerator
@@ -115,6 +116,7 @@ class EventInteractorTest {
           reason = evaluation1.reason,
           tag = "feature_tag_value",
           source_id = SourceID.ANDROID,
+          sdk_version = BuildConfig.SDK_VERSION,
         ),
       ),
     )
@@ -148,6 +150,7 @@ class EventInteractorTest {
           reason = Reason(ReasonType.CLIENT),
           tag = "feature_tag_value",
           source_id = SourceID.ANDROID,
+          sdk_version = BuildConfig.SDK_VERSION,
         ),
       ),
     )
@@ -181,6 +184,7 @@ class EventInteractorTest {
           user = user1,
           tag = "feature_tag_value",
           source_id = SourceID.ANDROID,
+          sdk_version = BuildConfig.SDK_VERSION,
         ),
       ),
     )
@@ -215,6 +219,7 @@ class EventInteractorTest {
             ),
             duration = 1,
           ),
+          sdk_version = BuildConfig.SDK_VERSION,
         ),
       ),
     )
@@ -234,6 +239,7 @@ class EventInteractorTest {
             ),
             size_byte = 723,
           ),
+          sdk_version = BuildConfig.SDK_VERSION,
         ),
       ),
     )
@@ -268,6 +274,7 @@ class EventInteractorTest {
           event = MetricsEventData.TimeoutErrorCountMetricsEvent(
             tag = "feature_tag_value",
           ),
+          sdk_version = BuildConfig.SDK_VERSION,
         ),
       ),
     )
@@ -302,6 +309,7 @@ class EventInteractorTest {
           event = MetricsEventData.InternalErrorCountMetricsEvent(
             tag = "feature_tag_value",
           ),
+          sdk_version = BuildConfig.SDK_VERSION,
         ),
       ),
     )
@@ -349,6 +357,7 @@ class EventInteractorTest {
                 ),
                 duration = 1,
               ),
+              sdk_version = BuildConfig.SDK_VERSION,
             ),
           ),
           Event(
@@ -363,6 +372,7 @@ class EventInteractorTest {
                 ),
                 size_byte = 723,
               ),
+              sdk_version = BuildConfig.SDK_VERSION,
             ),
           ),
           Event(
@@ -376,6 +386,7 @@ class EventInteractorTest {
               user = user1,
               tag = "feature_tag_value",
               source_id = SourceID.ANDROID,
+              sdk_version = BuildConfig.SDK_VERSION,
             ),
           ),
         ),
@@ -510,6 +521,7 @@ class EventInteractorTest {
                 ),
                 duration = 1,
               ),
+              sdk_version = BuildConfig.SDK_VERSION,
             ),
           ),
           Event(
@@ -524,6 +536,7 @@ class EventInteractorTest {
                 ),
                 size_byte = 723,
               ),
+              sdk_version = BuildConfig.SDK_VERSION,
             ),
           ),
         ),
@@ -582,6 +595,7 @@ class EventInteractorTest {
                 ),
                 duration = 1,
               ),
+              sdk_version = BuildConfig.SDK_VERSION,
             ),
           ),
           Event(
@@ -596,6 +610,7 @@ class EventInteractorTest {
                 ),
                 size_byte = 723,
               ),
+              sdk_version = BuildConfig.SDK_VERSION,
             ),
           ),
           Event(
@@ -609,6 +624,7 @@ class EventInteractorTest {
               user = user1,
               tag = "feature_tag_value",
               source_id = SourceID.ANDROID,
+              sdk_version = BuildConfig.SDK_VERSION,
             ),
           ),
         ),
@@ -633,6 +649,7 @@ class EventInteractorTest {
               ),
               duration = 1,
             ),
+            sdk_version = BuildConfig.SDK_VERSION,
           ),
         ),
         Event(
@@ -646,6 +663,7 @@ class EventInteractorTest {
             user = user1,
             tag = "feature_tag_value",
             source_id = SourceID.ANDROID,
+            sdk_version = BuildConfig.SDK_VERSION,
           ),
         ),
       ),

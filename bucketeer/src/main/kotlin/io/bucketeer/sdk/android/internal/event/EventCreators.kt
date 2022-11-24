@@ -1,5 +1,6 @@
 package io.bucketeer.sdk.android.internal.event
 
+import io.bucketeer.sdk.android.BuildConfig
 import io.bucketeer.sdk.android.internal.Clock
 import io.bucketeer.sdk.android.internal.IdGenerator
 import io.bucketeer.sdk.android.internal.model.Evaluation
@@ -33,6 +34,7 @@ internal fun newEvaluationEvent(
       reason = evaluation.reason,
       tag = featureTag,
       source_id = SourceID.ANDROID,
+      sdk_version = BuildConfig.SDK_VERSION,
     ),
   )
 }
@@ -57,6 +59,7 @@ internal fun newDefaultEvaluationEvent(
       ),
       tag = featureTag,
       source_id = SourceID.ANDROID,
+      sdk_version = BuildConfig.SDK_VERSION,
     ),
   )
 }
@@ -80,6 +83,7 @@ internal fun newGoalEvent(
       user = user,
       tag = featureTag,
       source_id = SourceID.ANDROID,
+      sdk_version = BuildConfig.SDK_VERSION,
     ),
   )
 }
@@ -102,6 +106,7 @@ internal fun newGetEvaluationLatencyMetricsEvent(
         ),
         duration = seconds,
       ),
+      sdk_version = BuildConfig.SDK_VERSION,
     ),
   )
 }
@@ -124,6 +129,7 @@ internal fun newGetEvaluationSizeMetricsEvent(
         ),
         size_byte = sizeByte,
       ),
+      sdk_version = BuildConfig.SDK_VERSION,
     ),
   )
 }
@@ -142,6 +148,7 @@ internal fun newTimeoutErrorCountMetricsEvent(
       event = MetricsEventData.TimeoutErrorCountMetricsEvent(
         tag = featureTag,
       ),
+      sdk_version = BuildConfig.SDK_VERSION,
     ),
   )
 }
@@ -160,6 +167,7 @@ internal fun newInternalErrorCountMetricsEvent(
       event = MetricsEventData.InternalErrorCountMetricsEvent(
         tag = featureTag,
       ),
+      sdk_version = BuildConfig.SDK_VERSION,
     ),
   )
 }

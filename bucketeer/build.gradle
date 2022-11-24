@@ -24,6 +24,8 @@ android {
     minSdkVersion project.findProperty("android.minSdkVersion") as int
     targetSdkVersion project.findProperty("android.targetSdkVersion") as int
 
+    buildConfigField("String", "SDK_VERSION", "\"${VERSION_NAME}\"")
+
     testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     testInstrumentationRunnerArguments clearPackageData: "true"
 

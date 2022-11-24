@@ -43,6 +43,52 @@ class EventAdapterFactoryTest {
         |      }
         |    },
         |    "tag": "tag_value",
+        |    "source_id": 1,
+        |    "sdk_version": "2.0.1"
+        |  }
+        |}
+      """.trimMargin(),
+      event = Event(
+        id = "event_id",
+        type = EventType.GOAL,
+        event = EventData.GoalEvent(
+          timestamp = 1660210923777,
+          goal_id = "goal_id_value",
+          user_id = "user_id_value",
+          value = 1.04,
+          user = User(
+            id = "user_id_value",
+            data = mapOf(
+              "gender" to "male",
+              "age" to "40",
+            ),
+          ),
+          tag = "tag_value",
+          source_id = SourceID.ANDROID,
+          sdk_version = "2.0.1",
+        ),
+      ),
+    ),
+
+    @Suppress("EnumEntryName", "ktlint:enum-entry-name-case")
+    Goal_NoSdkVersion(
+      json = """
+        |{
+        |  "id": "event_id",
+        |  "type": 1,
+        |  "event": {
+        |    "timestamp": 1660210923777,
+        |    "goal_id": "goal_id_value",
+        |    "user_id": "user_id_value",
+        |    "value": 1.04,
+        |    "user": {
+        |      "id": "user_id_value",
+        |      "data": {
+        |        "gender": "male",
+        |        "age": "40"
+        |      }
+        |    },
+        |    "tag": "tag_value",
         |    "source_id": 1
         |  }
         |}
@@ -64,10 +110,67 @@ class EventAdapterFactoryTest {
           ),
           tag = "tag_value",
           source_id = SourceID.ANDROID,
+          sdk_version = null,
         ),
       ),
     ),
     Evaluation(
+      json = """
+        |{
+        |  "id": "event_id",
+        |  "type": 3,
+        |  "event": {
+        |    "timestamp": 1660210923777,
+        |    "feature_id": "feature_id_value",
+        |    "feature_version": 2,
+        |    "user_id": "user_id_value",
+        |    "variation_id": "variation_id_value",
+        |    "user": {
+        |      "id": "user_id_value",
+        |      "data": {
+        |        "gender": "male",
+        |        "age": "40"
+        |      }
+        |    },
+        |    "reason": {
+        |      "type": 4,
+        |      "rule_id": "rule_id_value"
+        |    },
+        |    "tag": "tag_value",
+        |    "source_id": 1,
+        |    "sdk_version": "2.0.1"
+        |  }
+        |}
+      """.trimMargin(),
+      event = Event(
+        id = "event_id",
+        type = EventType.EVALUATION,
+        event = EventData.EvaluationEvent(
+          timestamp = 1660210923777,
+          feature_id = "feature_id_value",
+          feature_version = 2,
+          user_id = "user_id_value",
+          variation_id = "variation_id_value",
+          user = User(
+            id = "user_id_value",
+            data = mapOf(
+              "gender" to "male",
+              "age" to "40",
+            ),
+          ),
+          reason = Reason(
+            type = ReasonType.CLIENT,
+            rule_id = "rule_id_value",
+          ),
+          tag = "tag_value",
+          source_id = SourceID.ANDROID,
+          sdk_version = "2.0.1",
+        ),
+      ),
+    ),
+
+    @Suppress("EnumEntryName", "ktlint:enum-entry-name-case")
+    Evaluation_NoSdkVersion(
       json = """
         |{
         |  "id": "event_id",
@@ -116,10 +219,49 @@ class EventAdapterFactoryTest {
           ),
           tag = "tag_value",
           source_id = SourceID.ANDROID,
+          sdk_version = null,
         ),
       ),
     ),
     Metrics(
+      json = """
+        |{
+        |  "id": "event_id",
+        |  "type": 4,
+        |  "event": {
+        |    "timestamp": 1660210923777,
+        |    "type": 1,
+        |    "event": {
+        |      "labels": {
+        |        "key1": "value1",
+        |        "key2": "value2"
+        |      },
+        |      "duration": 5
+        |    },
+        |    "sdk_version": "2.0.1"
+        |  }
+        |}
+      """.trimMargin(),
+      event = Event(
+        id = "event_id",
+        type = EventType.METRICS,
+        event = EventData.MetricsEvent(
+          timestamp = 1660210923777,
+          type = MetricsEventType.GET_EVALUATION_LATENCY,
+          event = MetricsEventData.GetEvaluationLatencyMetricsEvent(
+            labels = mapOf(
+              "key1" to "value1",
+              "key2" to "value2",
+            ),
+            duration = 5,
+          ),
+          sdk_version = "2.0.1",
+        ),
+      ),
+    ),
+
+    @Suppress("EnumEntryName", "ktlint:enum-entry-name-case")
+    Metrics_NoSdkVersion(
       json = """
         |{
         |  "id": "event_id",
@@ -150,6 +292,7 @@ class EventAdapterFactoryTest {
             ),
             duration = 5,
           ),
+          sdk_version = null,
         ),
       ),
     ),

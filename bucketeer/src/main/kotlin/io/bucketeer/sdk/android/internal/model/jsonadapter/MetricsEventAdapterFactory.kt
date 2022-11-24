@@ -50,6 +50,7 @@ class MetricsEventAdapterFactory : JsonAdapter.Factory {
           timestamp = (jsonObj["timestamp"] as Double).toLong(),
           event = adapter.fromJsonValue(jsonObj["event"]) as MetricsEventData,
           type = eventType,
+          sdk_version = jsonObj["sdk_version"]?.toString(),
         )
       }
 
@@ -94,6 +95,11 @@ class MetricsEventAdapterFactory : JsonAdapter.Factory {
               value.event as MetricsEventData.InternalErrorCountMetricsEvent,
             )
           }
+        }
+
+        if (value.sdk_version != null) {
+          writer.name("sdk_version")
+          writer.jsonValue(value.sdk_version)
         }
 
         writer.endObject()
