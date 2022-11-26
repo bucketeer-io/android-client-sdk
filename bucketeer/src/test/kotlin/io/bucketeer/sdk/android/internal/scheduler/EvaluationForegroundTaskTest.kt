@@ -47,6 +47,7 @@ class EvaluationForegroundTaskTest {
           featureTag = "feature_tag_value",
           eventsMaxBatchQueueCount = 3,
           pollingInterval = 1000,
+          appVersion = "1.2.3",
         ),
         user = user1,
         inMemoryDB = true,

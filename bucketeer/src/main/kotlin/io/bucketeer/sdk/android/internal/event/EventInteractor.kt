@@ -17,6 +17,7 @@ internal class EventInteractor(
   private val eventDao: EventDao,
   private val clock: Clock,
   private val idGenerator: IdGenerator,
+  private val appVersion: String,
 ) {
 
   private var eventUpdateListener: EventUpdateListener? = null
@@ -27,7 +28,7 @@ internal class EventInteractor(
 
   fun trackEvaluationEvent(featureTag: String, user: User, evaluation: Evaluation) {
     eventDao.addEvent(
-      newEvaluationEvent(clock, idGenerator, featureTag, user, evaluation),
+      newEvaluationEvent(clock, idGenerator, featureTag, user, evaluation, appVersion),
     )
 
     updateEventsAndNotify()
@@ -35,7 +36,7 @@ internal class EventInteractor(
 
   fun trackDefaultEvaluationEvent(featureTag: String, user: User, featureId: String) {
     eventDao.addEvent(
-      newDefaultEvaluationEvent(clock, idGenerator, featureTag, user, featureId),
+      newDefaultEvaluationEvent(clock, idGenerator, featureTag, user, featureId, appVersion),
     )
 
     updateEventsAndNotify()
@@ -43,7 +44,7 @@ internal class EventInteractor(
 
   fun trackGoalEvent(featureTag: String, user: User, goalId: String, value: Double) {
     eventDao.addEvent(
-      newGoalEvent(clock, idGenerator, goalId, value, featureTag, user),
+      newGoalEvent(clock, idGenerator, goalId, value, featureTag, user, appVersion),
     )
 
     updateEventsAndNotify()
