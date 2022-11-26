@@ -1,5 +1,6 @@
 package io.bucketeer.sdk.android.internal.event
 
+import android.os.Build
 import io.bucketeer.sdk.android.BuildConfig
 import io.bucketeer.sdk.android.internal.Clock
 import io.bucketeer.sdk.android.internal.IdGenerator
@@ -14,12 +15,21 @@ import io.bucketeer.sdk.android.internal.model.ReasonType
 import io.bucketeer.sdk.android.internal.model.SourceID
 import io.bucketeer.sdk.android.internal.model.User
 
+internal fun newMetadata(appVersion: String): Map<String, String> {
+  return mapOf(
+    "app_version" to appVersion,
+    "os_version" to Build.VERSION.SDK_INT.toString(),
+    "device_model" to Build.DEVICE,
+  )
+}
+
 internal fun newEvaluationEvent(
   clock: Clock,
   idGenerator: IdGenerator,
   featureTag: String,
   user: User,
   evaluation: Evaluation,
+  appVersion: String,
 ): Event {
   return Event(
     id = idGenerator.newId(),
@@ -35,6 +45,7 @@ internal fun newEvaluationEvent(
       tag = featureTag,
       source_id = SourceID.ANDROID,
       sdk_version = BuildConfig.SDK_VERSION,
+      metadata = newMetadata(appVersion),
     ),
   )
 }
@@ -45,6 +56,7 @@ internal fun newDefaultEvaluationEvent(
   featureTag: String,
   user: User,
   featureId: String,
+  appVersion: String,
 ): Event {
   return Event(
     id = idGenerator.newId(),
@@ -60,6 +72,7 @@ internal fun newDefaultEvaluationEvent(
       tag = featureTag,
       source_id = SourceID.ANDROID,
       sdk_version = BuildConfig.SDK_VERSION,
+      metadata = newMetadata(appVersion),
     ),
   )
 }
@@ -71,6 +84,7 @@ internal fun newGoalEvent(
   value: Double,
   featureTag: String,
   user: User,
+  appVersion: String,
 ): Event {
   return Event(
     id = idGenerator.newId(),
@@ -84,6 +98,7 @@ internal fun newGoalEvent(
       tag = featureTag,
       source_id = SourceID.ANDROID,
       sdk_version = BuildConfig.SDK_VERSION,
+      metadata = newMetadata(appVersion),
     ),
   )
 }

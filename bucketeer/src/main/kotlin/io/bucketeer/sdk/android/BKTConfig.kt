@@ -20,6 +20,7 @@ data class BKTConfig internal constructor(
   val eventsMaxBatchQueueCount: Int,
   val pollingInterval: Long,
   val backgroundPollingInterval: Long,
+  val appVersion: String,
   val logger: BKTLogger?,
 ) {
 
@@ -35,6 +36,7 @@ data class BKTConfig internal constructor(
     private var eventsMaxQueueSize: Int = DEFAULT_MAX_QUEUE_SIZE
     private var pollingInterval: Long = DEFAULT_POLLING_INTERVAL_MILLIS
     private var backgroundPollingInterval: Long = DEFAULT_BACKGROUND_POLLING_INTERVAL_MILLIS
+    private var appVersion: String? = null
     private var logger: BKTLogger? = DefaultLogger()
 
     fun apiKey(apiKey: String): Builder {
@@ -72,6 +74,11 @@ data class BKTConfig internal constructor(
       return this
     }
 
+    fun appVersion(version: String): Builder {
+      this.appVersion = version
+      return this
+    }
+
     fun logger(logger: BKTLogger?): Builder {
       this.logger = logger
       return this
@@ -81,6 +88,7 @@ data class BKTConfig internal constructor(
       require(!this.apiKey.isNullOrEmpty()) { "apiKey is required" }
       require(this.apiEndpoint?.toHttpUrlOrNull() != null) { "apiEndpoint is invalid" }
       require(!this.featureTag.isNullOrEmpty()) { "featureTag is required" }
+      require(!this.appVersion.isNullOrEmpty()) { "appVersion is required" }
 
       if (this.pollingInterval < MINIMUM_POLLING_INTERVAL_MILLIS) {
         logw { "pollingInterval: $pollingInterval is set but must be above $MINIMUM_POLLING_INTERVAL_MILLIS" }
@@ -105,6 +113,7 @@ data class BKTConfig internal constructor(
         eventsMaxBatchQueueCount = this.eventsMaxQueueSize,
         pollingInterval = this.pollingInterval,
         backgroundPollingInterval = this.backgroundPollingInterval,
+        appVersion = this.appVersion!!,
         logger = this.logger,
       )
     }

@@ -44,6 +44,7 @@ internal class ComponentImpl(
       eventDao = dataModule.eventDao,
       clock = dataModule.clock,
       idGenerator = dataModule.idGenerator,
+      appVersion = dataModule.config.appVersion,
     )
   }
 }
