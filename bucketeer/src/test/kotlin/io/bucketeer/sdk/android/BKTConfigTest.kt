@@ -11,6 +11,7 @@ class BKTConfigTest {
       .apiKey("api-key")
       .apiEndpoint("https://example.com")
       .featureTag("feature-tag")
+      .appVersion("1.2.3")
       .build()
 
     assertThat(actual).isEqualTo(
@@ -22,6 +23,7 @@ class BKTConfigTest {
         eventsMaxBatchQueueCount = DEFAULT_MAX_QUEUE_SIZE,
         pollingInterval = DEFAULT_POLLING_INTERVAL_MILLIS,
         backgroundPollingInterval = DEFAULT_BACKGROUND_POLLING_INTERVAL_MILLIS,
+        appVersion = "1.2.3",
         logger = DefaultLogger("Bucketeer"),
       ),
     )
@@ -33,6 +35,7 @@ class BKTConfigTest {
       BKTConfig.builder()
         .apiEndpoint("https://example.com")
         .featureTag("feature-tag")
+        .appVersion("1.2.3")
         .build()
     }
 
@@ -46,6 +49,7 @@ class BKTConfigTest {
         .apiKey("")
         .apiEndpoint("https://example.com")
         .featureTag("feature-tag")
+        .appVersion("1.2.3")
         .build()
     }
 
@@ -58,6 +62,7 @@ class BKTConfigTest {
       BKTConfig.builder()
         .apiKey("api-key")
         .featureTag("feature-tag")
+        .appVersion("1.2.3")
         .build()
     }
 
@@ -71,6 +76,7 @@ class BKTConfigTest {
         .apiKey("api-key")
         .apiEndpoint("some invalid value")
         .featureTag("feature-tag")
+        .appVersion("1.2.3")
         .build()
     }
 
@@ -83,6 +89,7 @@ class BKTConfigTest {
       BKTConfig.builder()
         .apiKey("api-key")
         .apiEndpoint("https://example.com")
+        .appVersion("1.2.3")
         .build()
     }
 
@@ -96,6 +103,7 @@ class BKTConfigTest {
         .apiKey("api-key")
         .apiEndpoint("https://example.com")
         .featureTag("")
+        .appVersion("1.2.3")
         .build()
     }
 
@@ -109,6 +117,7 @@ class BKTConfigTest {
       .apiEndpoint("https://example.com")
       .featureTag("feature-tag")
       .eventsFlushInterval(70_000)
+      .appVersion("1.2.3")
       .build()
 
     assertThat(actual.eventsFlushInterval).isEqualTo(70_000)
@@ -121,6 +130,7 @@ class BKTConfigTest {
       .apiEndpoint("https://example.com")
       .featureTag("feature-tag")
       .eventsFlushInterval(10)
+      .appVersion("1.2.3")
       .build()
 
     assertThat(actual.eventsFlushInterval).isEqualTo(MINIMUM_FLUSH_INTERVAL_MILLIS)
@@ -133,6 +143,7 @@ class BKTConfigTest {
       .apiEndpoint("https://example.com")
       .featureTag("feature-tag")
       .pollingInterval(70_000)
+      .appVersion("1.2.3")
       .build()
 
     assertThat(actual.pollingInterval).isEqualTo(70_000)
@@ -145,6 +156,7 @@ class BKTConfigTest {
       .apiEndpoint("https://example.com")
       .featureTag("feature-tag")
       .pollingInterval(10)
+      .appVersion("1.2.3")
       .build()
 
     assertThat(actual.pollingInterval).isEqualTo(MINIMUM_POLLING_INTERVAL_MILLIS)
@@ -157,6 +169,7 @@ class BKTConfigTest {
       .apiEndpoint("https://example.com")
       .featureTag("feature-tag")
       .backgroundPollingInterval(1_300_000)
+      .appVersion("1.2.3")
       .build()
 
     assertThat(actual.backgroundPollingInterval)
@@ -170,6 +183,7 @@ class BKTConfigTest {
       .apiEndpoint("https://example.com")
       .featureTag("feature-tag")
       .backgroundPollingInterval(10)
+      .appVersion("1.2.3")
       .build()
 
     assertThat(actual.backgroundPollingInterval)
@@ -183,6 +197,7 @@ class BKTConfigTest {
       .apiEndpoint("https://example.com")
       .featureTag("feature-tag")
       .logger(null)
+      .appVersion("1.2.3")
       .build()
 
     assertThat(actual).isEqualTo(
@@ -194,8 +209,36 @@ class BKTConfigTest {
         eventsMaxBatchQueueCount = DEFAULT_MAX_QUEUE_SIZE,
         pollingInterval = DEFAULT_POLLING_INTERVAL_MILLIS,
         backgroundPollingInterval = DEFAULT_BACKGROUND_POLLING_INTERVAL_MILLIS,
+        appVersion = "1.2.3",
         logger = null,
       ),
     )
+  }
+
+  @Test
+  fun `appVersion - unset`() {
+    val error = assertThrows(BKTException.IllegalArgumentException::class.java) {
+      BKTConfig.builder()
+        .apiKey("api-key")
+        .apiEndpoint("https://example.com")
+        .featureTag("feature-tag")
+        .build()
+    }
+
+    assertThat(error).hasMessageThat().isEqualTo("appVersion is required")
+  }
+
+  @Test
+  fun `appVersion - empty`() {
+    val error = assertThrows(BKTException.IllegalArgumentException::class.java) {
+      BKTConfig.builder()
+        .apiKey("api-key")
+        .apiEndpoint("https://example.com")
+        .featureTag("feature-tag")
+        .appVersion("")
+        .build()
+    }
+
+    assertThat(error).hasMessageThat().isEqualTo("appVersion is required")
   }
 }
