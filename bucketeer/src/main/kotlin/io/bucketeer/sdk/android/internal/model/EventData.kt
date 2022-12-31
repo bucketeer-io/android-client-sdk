@@ -41,5 +41,6 @@ sealed class EventData {
     val event: MetricsEventData,
     val type: MetricsEventType,
     val sdk_version: String? = null,
+    val metadata: Map<String, String>? = null,
   ) : EventData()
 }

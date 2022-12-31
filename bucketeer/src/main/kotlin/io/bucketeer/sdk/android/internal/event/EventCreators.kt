@@ -108,6 +108,7 @@ internal fun newGetEvaluationLatencyMetricsEvent(
   idGenerator: IdGenerator,
   seconds: Long,
   featureTag: String,
+  appVersion: String,
 ): Event {
   return Event(
     id = idGenerator.newId(),
@@ -122,6 +123,7 @@ internal fun newGetEvaluationLatencyMetricsEvent(
         duration = seconds,
       ),
       sdk_version = BuildConfig.SDK_VERSION,
+      metadata = newMetadata(appVersion),
     ),
   )
 }
@@ -131,6 +133,7 @@ internal fun newGetEvaluationSizeMetricsEvent(
   idGenerator: IdGenerator,
   sizeByte: Int,
   featureTag: String,
+  appVersion: String,
 ): Event {
   return Event(
     id = idGenerator.newId(),
@@ -145,6 +148,7 @@ internal fun newGetEvaluationSizeMetricsEvent(
         size_byte = sizeByte,
       ),
       sdk_version = BuildConfig.SDK_VERSION,
+      metadata = newMetadata(appVersion),
     ),
   )
 }
@@ -153,6 +157,7 @@ internal fun newTimeoutErrorCountMetricsEvent(
   clock: Clock,
   idGenerator: IdGenerator,
   featureTag: String,
+  appVersion: String,
 ): Event {
   return Event(
     id = idGenerator.newId(),
@@ -164,6 +169,7 @@ internal fun newTimeoutErrorCountMetricsEvent(
         tag = featureTag,
       ),
       sdk_version = BuildConfig.SDK_VERSION,
+      metadata = newMetadata(appVersion),
     ),
   )
 }
@@ -172,6 +178,7 @@ internal fun newInternalErrorCountMetricsEvent(
   clock: Clock,
   idGenerator: IdGenerator,
   featureTag: String,
+  appVersion: String,
 ): Event {
   return Event(
     id = idGenerator.newId(),
@@ -183,6 +190,7 @@ internal fun newInternalErrorCountMetricsEvent(
         tag = featureTag,
       ),
       sdk_version = BuildConfig.SDK_VERSION,
+      metadata = newMetadata(appVersion),
     ),
   )
 }

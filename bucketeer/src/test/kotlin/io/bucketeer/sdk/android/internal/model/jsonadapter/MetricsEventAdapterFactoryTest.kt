@@ -29,7 +29,12 @@ class MetricsEventAdapterFactoryTest {
         |    },
         |    "duration": 5
         |  },
-        |  "sdk_version": "2.0.1"
+        |  "sdk_version": "2.0.1",
+        |  "metadata": {
+        |    "app_version": "1.2.3",
+        |    "os_version": "os_version_value",
+        |    "device_model": "device_model_value"
+        |  }
         |}
       """.trimMargin(),
       event = EventData.MetricsEvent(
@@ -43,6 +48,11 @@ class MetricsEventAdapterFactoryTest {
           duration = 5,
         ),
         sdk_version = "2.0.1",
+        metadata = mapOf(
+          "app_version" to "1.2.3",
+          "os_version" to "os_version_value",
+          "device_model" to "device_model_value",
+        ),
       ),
     ),
     GetEvaluationSize(
@@ -57,7 +67,12 @@ class MetricsEventAdapterFactoryTest {
         |    },
         |    "size_byte": 1234
         |  },
-        |  "sdk_version": "2.0.1"
+        |  "sdk_version": "2.0.1",
+        |  "metadata": {
+        |    "app_version": "1.2.3",
+        |    "os_version": "os_version_value",
+        |    "device_model": "device_model_value"
+        |  }
         |}
       """.trimMargin(),
       event = EventData.MetricsEvent(
@@ -71,6 +86,11 @@ class MetricsEventAdapterFactoryTest {
           size_byte = 1234,
         ),
         sdk_version = "2.0.1",
+        metadata = mapOf(
+          "app_version" to "1.2.3",
+          "os_version" to "os_version_value",
+          "device_model" to "device_model_value",
+        ),
       ),
     ),
     TimeoutErrorCount(
@@ -81,7 +101,12 @@ class MetricsEventAdapterFactoryTest {
         |  "event": {
         |    "tag": "tag_value"
         |  },
-        |  "sdk_version": "2.0.1"
+        |  "sdk_version": "2.0.1",
+        |  "metadata": {
+        |    "app_version": "1.2.3",
+        |    "os_version": "os_version_value",
+        |    "device_model": "device_model_value"
+        |  }
         |}
       """.trimMargin(),
       event = EventData.MetricsEvent(
@@ -91,6 +116,11 @@ class MetricsEventAdapterFactoryTest {
           tag = "tag_value",
         ),
         sdk_version = "2.0.1",
+        metadata = mapOf(
+          "app_version" to "1.2.3",
+          "os_version" to "os_version_value",
+          "device_model" to "device_model_value",
+        ),
       ),
     ),
     InternalErrorCount(
@@ -101,7 +131,12 @@ class MetricsEventAdapterFactoryTest {
         |  "event": {
         |    "tag": "tag_value"
         |  },
-        |  "sdk_version": "2.0.1"
+        |  "sdk_version": "2.0.1",
+        |  "metadata": {
+        |    "app_version": "1.2.3",
+        |    "os_version": "os_version_value",
+        |    "device_model": "device_model_value"
+        |  }
         |}
       """.trimMargin(),
       event = EventData.MetricsEvent(
@@ -111,6 +146,11 @@ class MetricsEventAdapterFactoryTest {
           tag = "tag_value",
         ),
         sdk_version = "2.0.1",
+        metadata = mapOf(
+          "app_version" to "1.2.3",
+          "os_version" to "os_version_value",
+          "device_model" to "device_model_value",
+        ),
       ),
     ),
   }

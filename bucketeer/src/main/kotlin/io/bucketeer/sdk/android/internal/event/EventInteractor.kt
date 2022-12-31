@@ -57,8 +57,8 @@ internal class EventInteractor(
   ) {
     eventDao.addEvents(
       listOf(
-        newGetEvaluationLatencyMetricsEvent(clock, idGenerator, seconds, featureTag),
-        newGetEvaluationSizeMetricsEvent(clock, idGenerator, sizeByte, featureTag),
+        newGetEvaluationLatencyMetricsEvent(clock, idGenerator, seconds, featureTag, appVersion),
+        newGetEvaluationSizeMetricsEvent(clock, idGenerator, sizeByte, featureTag, appVersion),
       ),
     )
 
@@ -76,8 +76,9 @@ internal class EventInteractor(
         clock,
         idGenerator,
         featureTag,
+        appVersion,
       )
-      else -> newInternalErrorCountMetricsEvent(clock, idGenerator, featureTag)
+      else -> newInternalErrorCountMetricsEvent(clock, idGenerator, featureTag, appVersion)
     }
 
     eventDao.addEvent(event)

@@ -5,6 +5,7 @@ import com.squareup.moshi.JsonReader
 import com.squareup.moshi.JsonWriter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
+import com.squareup.moshi.adapter
 import io.bucketeer.sdk.android.BKTException
 import io.bucketeer.sdk.android.internal.model.EventData
 import io.bucketeer.sdk.android.internal.model.MetricsEventData
@@ -31,6 +32,16 @@ class MetricsEventAdapterFactory : JsonAdapter.Factory {
         moshi.adapter(MetricsEventData.TimeoutErrorCountMetricsEvent::class.java)
       private val internalErrorCountAdapter =
         moshi.adapter(MetricsEventData.InternalErrorCountMetricsEvent::class.java)
+      private val metadataAdapter: JsonAdapter<Map<String, String>?> =
+        moshi.adapter(
+          Types.newParameterizedType(
+            Map::class.java,
+            String::class.java,
+            String::class.java,
+          ),
+          emptySet(),
+          "metadata",
+        )
 
       @Suppress("UNCHECKED_CAST")
       override fun fromJson(reader: JsonReader): EventData.MetricsEvent? {
@@ -51,6 +62,7 @@ class MetricsEventAdapterFactory : JsonAdapter.Factory {
           event = adapter.fromJsonValue(jsonObj["event"]) as MetricsEventData,
           type = eventType,
           sdk_version = jsonObj["sdk_version"]?.toString(),
+          metadata = metadataAdapter.fromJsonValue(jsonObj["metadata"]),
         )
       }
 
@@ -100,6 +112,11 @@ class MetricsEventAdapterFactory : JsonAdapter.Factory {
         if (value.sdk_version != null) {
           writer.name("sdk_version")
           writer.jsonValue(value.sdk_version)
+        }
+
+        if (value.metadata != null) {
+          writer.name("metadata")
+          metadataAdapter.toJson(writer, value.metadata)
         }
 
         writer.endObject()
