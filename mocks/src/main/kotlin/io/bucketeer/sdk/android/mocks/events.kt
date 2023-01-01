@@ -41,6 +41,11 @@ val evaluationEvent2: Event by lazy {
       tag = "",
       source_id = SourceID.ANDROID,
       sdk_version = io.bucketeer.sdk.android.BuildConfig.SDK_VERSION,
+      metadata = mapOf(
+        "app_version" to "1.2.3",
+        "os_version" to "os_version_value",
+        "device_model" to "device_model_value",
+      ),
     ),
   )
 }
@@ -58,6 +63,11 @@ val goalEvent1: Event by lazy {
       tag = "",
       source_id = SourceID.ANDROID,
       sdk_version = io.bucketeer.sdk.android.BuildConfig.SDK_VERSION,
+      metadata = mapOf(
+        "app_version" to "1.2.3",
+        "os_version" to "os_version_value",
+        "device_model" to "device_model_value",
+      ),
     ),
   )
 }
@@ -75,6 +85,11 @@ val goalEvent2: Event by lazy {
       tag = "",
       source_id = SourceID.ANDROID,
       sdk_version = io.bucketeer.sdk.android.BuildConfig.SDK_VERSION,
+      metadata = mapOf(
+        "app_version" to "1.2.3",
+        "os_version" to "os_version_value",
+        "device_model" to "device_model_value",
+      ),
     ),
   )
 }
@@ -88,6 +103,11 @@ val metricsEvent1: Event by lazy {
       event = getEvaluationLatencyMetricsEvent1,
       type = MetricsEventType.GET_EVALUATION_LATENCY,
       sdk_version = io.bucketeer.sdk.android.BuildConfig.SDK_VERSION,
+      metadata = mapOf(
+        "app_version" to "1.2.3",
+        "os_version" to "os_version_value",
+        "device_model" to "device_model_value",
+      ),
     ),
   )
 }

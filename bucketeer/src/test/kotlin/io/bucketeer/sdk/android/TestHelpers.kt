@@ -44,6 +44,7 @@ internal fun createTestBKTConfig(
   eventsMaxBatchQueueCount: Int = DEFAULT_MAX_QUEUE_SIZE,
   pollingInterval: Long = DEFAULT_POLLING_INTERVAL_MILLIS,
   backgroundPollingInterval: Long = DEFAULT_BACKGROUND_POLLING_INTERVAL_MILLIS,
+  appVersion: String = "1.2.3",
   logger: BKTLogger? = null,
 ): BKTConfig {
   return BKTConfig(
@@ -54,6 +55,7 @@ internal fun createTestBKTConfig(
     eventsMaxBatchQueueCount = eventsMaxBatchQueueCount,
     pollingInterval = pollingInterval,
     backgroundPollingInterval = backgroundPollingInterval,
+    appVersion = appVersion,
     logger = logger,
   )
 }

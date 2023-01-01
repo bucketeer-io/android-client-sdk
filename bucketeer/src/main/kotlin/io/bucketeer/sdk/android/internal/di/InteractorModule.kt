@@ -34,6 +34,7 @@ internal class InteractorModule(
     eventDao: EventDao,
     clock: Clock,
     idGenerator: IdGenerator,
+    appVersion: String,
   ): EventInteractor {
     return EventInteractor(
       eventsMaxBatchQueueCount = eventsMaxBatchQueueCount,
@@ -41,6 +42,7 @@ internal class InteractorModule(
       eventDao = eventDao,
       clock = clock,
       idGenerator = idGenerator,
+      appVersion = appVersion,
     )
   }
 }

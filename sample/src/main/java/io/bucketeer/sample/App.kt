@@ -34,6 +34,7 @@ class App : Application(), LifecycleObserver {
       .apiKey(BuildConfig.API_KEY)
       .apiEndpoint(BuildConfig.API_ENDPOINT)
       .featureTag(getTag())
+      .appVersion(BuildConfig.VERSION_NAME)
       .eventsMaxQueueSize(10)
       .pollingInterval(TimeUnit.SECONDS.toMillis(20))
       .backgroundPollingInterval(TimeUnit.SECONDS.toMillis(60))

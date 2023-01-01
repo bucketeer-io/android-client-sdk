@@ -16,6 +16,7 @@ sealed class EventData {
     val tag: String,
     val source_id: SourceID,
     val sdk_version: String? = null,
+    val metadata: Map<String, String>? = null,
   ) : EventData()
 
   @JsonClass(generateAdapter = true)
@@ -30,6 +31,7 @@ sealed class EventData {
     val tag: String,
     val source_id: SourceID,
     val sdk_version: String? = null,
+    val metadata: Map<String, String>? = null,
   ) : EventData()
 
   // we can't use codegen here
@@ -39,5 +41,6 @@ sealed class EventData {
     val event: MetricsEventData,
     val type: MetricsEventType,
     val sdk_version: String? = null,
+    val metadata: Map<String, String>? = null,
   ) : EventData()
 }

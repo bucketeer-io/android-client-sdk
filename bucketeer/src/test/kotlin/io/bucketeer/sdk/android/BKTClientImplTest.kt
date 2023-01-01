@@ -49,6 +49,7 @@ class BKTClientImplTest {
       .apiEndpoint(server.url("").toString())
       .apiKey("api_key_value")
       .featureTag("feature_tag_value")
+      .appVersion("1.2.3")
       .build()
 
     moshi = DataModule.createMoshi()

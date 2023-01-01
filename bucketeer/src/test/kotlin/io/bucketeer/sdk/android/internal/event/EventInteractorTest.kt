@@ -66,6 +66,7 @@ class EventInteractorTest {
           .apiKey("api_key_value")
           .featureTag("feature_tag_value")
           .eventsMaxQueueSize(3)
+          .appVersion("1.2.3")
           .build(),
         defaultRequestTimeoutMillis = TimeUnit.SECONDS.toMillis(1),
       ),
@@ -117,6 +118,11 @@ class EventInteractorTest {
           tag = "feature_tag_value",
           source_id = SourceID.ANDROID,
           sdk_version = BuildConfig.SDK_VERSION,
+          metadata = mapOf(
+            "app_version" to "1.2.3",
+            "os_version" to "16",
+            "device_model" to "robolectric",
+          ),
         ),
       ),
     )
@@ -151,6 +157,11 @@ class EventInteractorTest {
           tag = "feature_tag_value",
           source_id = SourceID.ANDROID,
           sdk_version = BuildConfig.SDK_VERSION,
+          metadata = mapOf(
+            "app_version" to "1.2.3",
+            "os_version" to "16",
+            "device_model" to "robolectric",
+          ),
         ),
       ),
     )
@@ -185,6 +196,11 @@ class EventInteractorTest {
           tag = "feature_tag_value",
           source_id = SourceID.ANDROID,
           sdk_version = BuildConfig.SDK_VERSION,
+          metadata = mapOf(
+            "app_version" to "1.2.3",
+            "os_version" to "16",
+            "device_model" to "robolectric",
+          ),
         ),
       ),
     )
@@ -220,6 +236,11 @@ class EventInteractorTest {
             duration = 1,
           ),
           sdk_version = BuildConfig.SDK_VERSION,
+          metadata = mapOf(
+            "app_version" to "1.2.3",
+            "os_version" to "16",
+            "device_model" to "robolectric",
+          ),
         ),
       ),
     )
@@ -240,6 +261,11 @@ class EventInteractorTest {
             size_byte = 723,
           ),
           sdk_version = BuildConfig.SDK_VERSION,
+          metadata = mapOf(
+            "app_version" to "1.2.3",
+            "os_version" to "16",
+            "device_model" to "robolectric",
+          ),
         ),
       ),
     )
@@ -275,6 +301,11 @@ class EventInteractorTest {
             tag = "feature_tag_value",
           ),
           sdk_version = BuildConfig.SDK_VERSION,
+          metadata = mapOf(
+            "app_version" to "1.2.3",
+            "os_version" to "16",
+            "device_model" to "robolectric",
+          ),
         ),
       ),
     )
@@ -310,6 +341,11 @@ class EventInteractorTest {
             tag = "feature_tag_value",
           ),
           sdk_version = BuildConfig.SDK_VERSION,
+          metadata = mapOf(
+            "app_version" to "1.2.3",
+            "os_version" to "16",
+            "device_model" to "robolectric",
+          ),
         ),
       ),
     )
@@ -358,6 +394,11 @@ class EventInteractorTest {
                 duration = 1,
               ),
               sdk_version = BuildConfig.SDK_VERSION,
+              metadata = mapOf(
+                "app_version" to "1.2.3",
+                "os_version" to "16",
+                "device_model" to "robolectric",
+              ),
             ),
           ),
           Event(
@@ -373,6 +414,11 @@ class EventInteractorTest {
                 size_byte = 723,
               ),
               sdk_version = BuildConfig.SDK_VERSION,
+              metadata = mapOf(
+                "app_version" to "1.2.3",
+                "os_version" to "16",
+                "device_model" to "robolectric",
+              ),
             ),
           ),
           Event(
@@ -387,6 +433,11 @@ class EventInteractorTest {
               tag = "feature_tag_value",
               source_id = SourceID.ANDROID,
               sdk_version = BuildConfig.SDK_VERSION,
+              metadata = mapOf(
+                "app_version" to "1.2.3",
+                "os_version" to "16",
+                "device_model" to "robolectric",
+              ),
             ),
           ),
         ),
@@ -522,6 +573,11 @@ class EventInteractorTest {
                 duration = 1,
               ),
               sdk_version = BuildConfig.SDK_VERSION,
+              metadata = mapOf(
+                "app_version" to "1.2.3",
+                "os_version" to "16",
+                "device_model" to "robolectric",
+              ),
             ),
           ),
           Event(
@@ -537,6 +593,11 @@ class EventInteractorTest {
                 size_byte = 723,
               ),
               sdk_version = BuildConfig.SDK_VERSION,
+              metadata = mapOf(
+                "app_version" to "1.2.3",
+                "os_version" to "16",
+                "device_model" to "robolectric",
+              ),
             ),
           ),
         ),
@@ -596,6 +657,11 @@ class EventInteractorTest {
                 duration = 1,
               ),
               sdk_version = BuildConfig.SDK_VERSION,
+              metadata = mapOf(
+                "app_version" to "1.2.3",
+                "os_version" to "16",
+                "device_model" to "robolectric",
+              ),
             ),
           ),
           Event(
@@ -611,6 +677,11 @@ class EventInteractorTest {
                 size_byte = 723,
               ),
               sdk_version = BuildConfig.SDK_VERSION,
+              metadata = mapOf(
+                "app_version" to "1.2.3",
+                "os_version" to "16",
+                "device_model" to "robolectric",
+              ),
             ),
           ),
           Event(
@@ -625,6 +696,11 @@ class EventInteractorTest {
               tag = "feature_tag_value",
               source_id = SourceID.ANDROID,
               sdk_version = BuildConfig.SDK_VERSION,
+              metadata = mapOf(
+                "app_version" to "1.2.3",
+                "os_version" to "16",
+                "device_model" to "robolectric",
+              ),
             ),
           ),
         ),
@@ -650,6 +726,11 @@ class EventInteractorTest {
               duration = 1,
             ),
             sdk_version = BuildConfig.SDK_VERSION,
+            metadata = mapOf(
+              "app_version" to "1.2.3",
+              "os_version" to "16",
+              "device_model" to "robolectric",
+            ),
           ),
         ),
         Event(
@@ -664,6 +745,11 @@ class EventInteractorTest {
             tag = "feature_tag_value",
             source_id = SourceID.ANDROID,
             sdk_version = BuildConfig.SDK_VERSION,
+            metadata = mapOf(
+              "app_version" to "1.2.3",
+              "os_version" to "16",
+              "device_model" to "robolectric",
+            ),
           ),
         ),
       ),

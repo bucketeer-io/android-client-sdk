@@ -34,6 +34,7 @@ class BKTClientVariationTest {
       .apiKey(BuildConfig.API_KEY)
       .apiEndpoint(BuildConfig.API_ENDPOINT)
       .featureTag(FEATURE_TAG)
+      .appVersion("1.2.3")
       .build()
 
     user = BKTUser.builder()

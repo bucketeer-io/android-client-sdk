@@ -44,7 +44,12 @@ class EventAdapterFactoryTest {
         |    },
         |    "tag": "tag_value",
         |    "source_id": 1,
-        |    "sdk_version": "2.0.1"
+        |    "sdk_version": "2.0.1",
+        |    "metadata": {
+        |      "app_version": "1.2.3",
+        |      "os_version": "os_version_value",
+        |      "device_model": "device_model_value"
+        |    }
         |  }
         |}
       """.trimMargin(),
@@ -66,12 +71,17 @@ class EventAdapterFactoryTest {
           tag = "tag_value",
           source_id = SourceID.ANDROID,
           sdk_version = "2.0.1",
+          metadata = mapOf(
+            "app_version" to "1.2.3",
+            "os_version" to "os_version_value",
+            "device_model" to "device_model_value",
+          ),
         ),
       ),
     ),
 
     @Suppress("EnumEntryName", "ktlint:enum-entry-name-case")
-    Goal_NoSdkVersion(
+    Goal_NoSdkVersion_NoMetadata(
       json = """
         |{
         |  "id": "event_id",
@@ -111,6 +121,7 @@ class EventAdapterFactoryTest {
           tag = "tag_value",
           source_id = SourceID.ANDROID,
           sdk_version = null,
+          metadata = null,
         ),
       ),
     ),
@@ -138,7 +149,12 @@ class EventAdapterFactoryTest {
         |    },
         |    "tag": "tag_value",
         |    "source_id": 1,
-        |    "sdk_version": "2.0.1"
+        |    "sdk_version": "2.0.1",
+        |    "metadata": {
+        |      "app_version": "1.2.3",
+        |      "os_version": "os_version_value",
+        |      "device_model": "device_model_value"
+        |    }
         |  }
         |}
       """.trimMargin(),
@@ -165,12 +181,17 @@ class EventAdapterFactoryTest {
           tag = "tag_value",
           source_id = SourceID.ANDROID,
           sdk_version = "2.0.1",
+          metadata = mapOf(
+            "app_version" to "1.2.3",
+            "os_version" to "os_version_value",
+            "device_model" to "device_model_value",
+          ),
         ),
       ),
     ),
 
     @Suppress("EnumEntryName", "ktlint:enum-entry-name-case")
-    Evaluation_NoSdkVersion(
+    Evaluation_NoSdkVersion_NoMetadata(
       json = """
         |{
         |  "id": "event_id",
@@ -238,7 +259,12 @@ class EventAdapterFactoryTest {
         |      },
         |      "duration": 5
         |    },
-        |    "sdk_version": "2.0.1"
+        |    "sdk_version": "2.0.1",
+        |    "metadata": {
+        |      "app_version": "1.2.3",
+        |      "os_version": "os_version_value",
+        |      "device_model": "device_model_value"
+        |    }
         |  }
         |}
       """.trimMargin(),
@@ -256,12 +282,17 @@ class EventAdapterFactoryTest {
             duration = 5,
           ),
           sdk_version = "2.0.1",
+          metadata = mapOf(
+            "app_version" to "1.2.3",
+            "os_version" to "os_version_value",
+            "device_model" to "device_model_value",
+          ),
         ),
       ),
     ),
 
     @Suppress("EnumEntryName", "ktlint:enum-entry-name-case")
-    Metrics_NoSdkVersion(
+    Metrics_NoSdkVersion_NoMetadata(
       json = """
         |{
         |  "id": "event_id",
@@ -293,6 +324,7 @@ class EventAdapterFactoryTest {
             duration = 5,
           ),
           sdk_version = null,
+          metadata = null,
         ),
       ),
     ),
