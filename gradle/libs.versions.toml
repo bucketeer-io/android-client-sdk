@@ -27,7 +27,7 @@ testParameterInjector = { module = "com.google.testparameterinjector:test-parame
 
 androidx-test-core = { module = "androidx.test:core", version.ref = "androidxTest" }
 androidx-test-rules = { module = "androidx.test:rules", version.ref = "androidxTest" }
-androidx-test-ext = { module = "androidx.test.ext:junit", version = "1.1.4" }
+androidx-test-ext = { module = "androidx.test.ext:junit", version = "1.1.5" }
 androidx-test-orchestrator = { module = "androidx.test:orchestrator", version = "1.4.2" }
 android-test-accessibility = { module = "com.google.android.apps.common.testing.accessibility.framework:accessibility-test-framework", version = "4.0.0" }
 
