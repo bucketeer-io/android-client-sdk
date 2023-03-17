@@ -637,6 +637,10 @@ class BKTClientImplTest {
 
     assertThat(BKTClient.getInstance().currentUser())
       .isEqualTo(user1.toBKTUser().copy(attributes = attributes))
+
+    val client = BKTClient.getInstance() as BKTClientImpl
+    assertThat(client.componentImpl.evaluationInteractor.currentEvaluationsId)
+      .isEmpty()
   }
 }
 

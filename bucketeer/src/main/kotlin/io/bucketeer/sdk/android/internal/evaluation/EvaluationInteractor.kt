@@ -89,6 +89,10 @@ internal class EvaluationInteractor(
     evaluations[userId] = evaluationDao.get(userId)
   }
 
+  fun clearCurrentEvaluationsId() {
+    this.currentEvaluationsId = ""
+  }
+
   fun addUpdateListener(listener: BKTClient.EvaluationUpdateListener): String {
     val key = idGenerator.newId()
     updateListeners[key] = listener

@@ -79,6 +79,8 @@ internal class BKTClientImpl(
 
   override fun updateUserAttributes(attributes: Map<String, String>) {
     component.userHolder.updateAttributes { attributes }
+    // Force to re-evaluate the user on the server in the next request.
+    component.evaluationInteractor.clearCurrentEvaluationsId()
   }
 
   override fun fetchEvaluations(timeoutMillis: Long?): Future<BKTException?> {
