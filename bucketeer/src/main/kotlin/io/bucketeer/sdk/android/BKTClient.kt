@@ -21,7 +21,7 @@ interface BKTClient {
 
   fun jsonVariation(featureId: String, defaultValue: JSONObject): JSONObject
 
-  fun track(goalId: String, value: Double)
+  fun track(goalId: String, value: Double = 0.0)
 
   fun currentUser(): BKTUser
 
