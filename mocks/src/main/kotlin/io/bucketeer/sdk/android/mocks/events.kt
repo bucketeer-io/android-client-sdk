@@ -17,13 +17,13 @@ val evaluationEvent1: Event by lazy {
     type = EventType.EVALUATION,
     event = EventData.EvaluationEvent(
       timestamp = 1661780821,
-      feature_id = "evaluation1",
-      user_id = user1.id,
+      featureId = "evaluation1",
+      userId = user1.id,
       user = user1,
       reason = Reason(type = ReasonType.DEFAULT),
       tag = "",
-      source_id = SourceID.ANDROID,
-      sdk_version = io.bucketeer.sdk.android.BuildConfig.SDK_VERSION,
+      sourceId = SourceID.ANDROID,
+      sdkVersion = io.bucketeer.sdk.android.BuildConfig.SDK_VERSION,
     ),
   )
 }
@@ -34,13 +34,13 @@ val evaluationEvent2: Event by lazy {
     type = EventType.EVALUATION,
     event = EventData.EvaluationEvent(
       timestamp = 1661780821,
-      feature_id = "evaluation2",
-      user_id = user1.id,
+      featureId = "evaluation2",
+      userId = user1.id,
       user = user1,
       reason = Reason(type = ReasonType.DEFAULT),
       tag = "",
-      source_id = SourceID.ANDROID,
-      sdk_version = io.bucketeer.sdk.android.BuildConfig.SDK_VERSION,
+      sourceId = SourceID.ANDROID,
+      sdkVersion = io.bucketeer.sdk.android.BuildConfig.SDK_VERSION,
       metadata = mapOf(
         "app_version" to "1.2.3",
         "os_version" to "os_version_value",
@@ -56,13 +56,13 @@ val goalEvent1: Event by lazy {
     type = EventType.GOAL,
     event = EventData.GoalEvent(
       timestamp = 1661780821,
-      goal_id = "goal1",
-      user_id = user1.id,
+      goalId = "goal1",
+      userId = user1.id,
       user = user1,
       value = 0.0,
       tag = "",
-      source_id = SourceID.ANDROID,
-      sdk_version = io.bucketeer.sdk.android.BuildConfig.SDK_VERSION,
+      sourceId = SourceID.ANDROID,
+      sdkVersion = io.bucketeer.sdk.android.BuildConfig.SDK_VERSION,
       metadata = mapOf(
         "app_version" to "1.2.3",
         "os_version" to "os_version_value",
@@ -78,13 +78,13 @@ val goalEvent2: Event by lazy {
     type = EventType.GOAL,
     event = EventData.GoalEvent(
       timestamp = 1661780821,
-      goal_id = "goal2",
-      user_id = user1.id,
+      goalId = "goal2",
+      userId = user1.id,
       user = user1,
       value = 0.0,
       tag = "",
-      source_id = SourceID.ANDROID,
-      sdk_version = io.bucketeer.sdk.android.BuildConfig.SDK_VERSION,
+      sourceId = SourceID.ANDROID,
+      sdkVersion = io.bucketeer.sdk.android.BuildConfig.SDK_VERSION,
       metadata = mapOf(
         "app_version" to "1.2.3",
         "os_version" to "os_version_value",
@@ -102,7 +102,7 @@ val metricsEvent1: Event by lazy {
       timestamp = 1661823274, // 2022-08-30 01:34:34
       event = getEvaluationLatencyMetricsEvent1,
       type = MetricsEventType.GET_EVALUATION_LATENCY,
-      sdk_version = io.bucketeer.sdk.android.BuildConfig.SDK_VERSION,
+      sdkVersion = io.bucketeer.sdk.android.BuildConfig.SDK_VERSION,
       metadata = mapOf(
         "app_version" to "1.2.3",
         "os_version" to "os_version_value",

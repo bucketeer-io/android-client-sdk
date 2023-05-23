@@ -14,6 +14,7 @@ sealed class MetricsEventData {
   @JsonClass(generateAdapter = true)
   data class GetEvaluationSizeMetricsEvent(
     val labels: Map<String, String> = emptyMap(),
+    //TODO: kenji will change it later
     val size_byte: Int,
   ) : MetricsEventData()
 

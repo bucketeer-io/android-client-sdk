@@ -50,7 +50,7 @@ internal class ApiClientImpl(
     val body = GetEvaluationsRequest(
       tag = featureTag,
       user = user,
-      user_evaluations_id = userEvaluationsId,
+      userEvaluationsId = userEvaluationsId,
     )
 
     val request = Request.Builder()

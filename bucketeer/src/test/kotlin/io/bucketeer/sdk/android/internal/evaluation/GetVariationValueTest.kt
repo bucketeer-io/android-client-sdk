@@ -183,11 +183,11 @@ class GetVariationValueTest_Json(
 private fun buildEvaluation(value: String): Evaluation {
   return Evaluation(
     id = "evaluation_id_value",
-    feature_id = "feature_id_value",
-    feature_version = 1,
-    user_id = "user_id_value",
-    variation_id = "variation_id",
-    variation_value = value,
+    featureId = "feature_id_value",
+    featureVersion = 1,
+    userId = "user_id_value",
+    variationId = "variation_id",
+    variationValue = value,
     variation = Variation(
       id = "variation_id_value",
       value = "value",

@@ -63,7 +63,7 @@ internal class ApiClientImplTest {
     val expected = GetEvaluationsResponse(
       data = GetEvaluationsDataResponse(
         evaluations = user1Evaluations,
-        user_evaluations_id = "user_evaluation_id",
+        userEvaluationsId = "user_evaluation_id",
       ),
     )
     server.enqueue(
@@ -99,8 +99,8 @@ internal class ApiClientImplTest {
       GetEvaluationsRequest(
         tag = "feature_tag_value",
         user = user1,
-        user_evaluations_id = "user_evaluation_id",
-        source_id = SourceID.ANDROID,
+        userEvaluationsId = "user_evaluation_id",
+        sourceId = SourceID.ANDROID,
       ),
     )
 

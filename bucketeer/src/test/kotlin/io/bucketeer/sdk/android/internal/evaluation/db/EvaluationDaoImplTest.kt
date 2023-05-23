@@ -51,7 +51,7 @@ class EvaluationDaoImplTest {
       it.moveToFirst()
 
       assertThat(it.getString(EvaluationEntity.COLUMN_FEATURE_ID))
-        .isEqualTo(evaluation1.feature_id)
+        .isEqualTo(evaluation1.featureId)
 
       val jsonStr = it.getString(EvaluationEntity.COLUMN_EVALUATION)
       val evaluation = moshi.adapter(Evaluation::class.java).fromJson(jsonStr)
@@ -66,7 +66,7 @@ class EvaluationDaoImplTest {
     val sourceEvaluation = evaluation1
     val updatedValue = "updated value"
     val updatedEvaluation = sourceEvaluation.copy(
-      variation_value = updatedValue,
+      variationValue = updatedValue,
       variation = sourceEvaluation.variation.copy(value = updatedValue),
     )
 
@@ -77,7 +77,7 @@ class EvaluationDaoImplTest {
       it.moveToFirst()
 
       assertThat(it.getString(EvaluationEntity.COLUMN_FEATURE_ID))
-        .isEqualTo(evaluation1.feature_id)
+        .isEqualTo(evaluation1.featureId)
 
       val jsonStr = it.getString(EvaluationEntity.COLUMN_EVALUATION)
       val evaluation = moshi.adapter(Evaluation::class.java).fromJson(jsonStr)
@@ -93,7 +93,7 @@ class EvaluationDaoImplTest {
       it.moveToFirst()
 
       assertThat(it.getString(EvaluationEntity.COLUMN_FEATURE_ID))
-        .isEqualTo(evaluation1.feature_id)
+        .isEqualTo(evaluation1.featureId)
 
       val jsonStr = it.getString(EvaluationEntity.COLUMN_EVALUATION)
       val evaluation = moshi.adapter(Evaluation::class.java).fromJson(jsonStr)

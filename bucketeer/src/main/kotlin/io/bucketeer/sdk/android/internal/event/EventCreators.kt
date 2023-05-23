@@ -36,15 +36,15 @@ internal fun newEvaluationEvent(
     type = EventType.EVALUATION,
     event = EventData.EvaluationEvent(
       timestamp = clock.currentTimeSeconds(),
-      feature_id = evaluation.feature_id,
-      feature_version = evaluation.feature_version,
-      user_id = user.id,
-      variation_id = evaluation.variation_id,
+      featureId = evaluation.featureId,
+      feature_version = evaluation.featureVersion,
+      userId = user.id,
+      variationId = evaluation.variationId,
       user = user,
       reason = evaluation.reason,
       tag = featureTag,
-      source_id = SourceID.ANDROID,
-      sdk_version = BuildConfig.SDK_VERSION,
+      sourceId = SourceID.ANDROID,
+      sdkVersion = BuildConfig.SDK_VERSION,
       metadata = newMetadata(appVersion),
     ),
   )
@@ -63,15 +63,15 @@ internal fun newDefaultEvaluationEvent(
     type = EventType.EVALUATION,
     event = EventData.EvaluationEvent(
       timestamp = clock.currentTimeSeconds(),
-      feature_id = featureId,
-      user_id = user.id,
+      featureId = featureId,
+      userId = user.id,
       user = user,
       reason = Reason(
         type = ReasonType.CLIENT,
       ),
       tag = featureTag,
-      source_id = SourceID.ANDROID,
-      sdk_version = BuildConfig.SDK_VERSION,
+      sourceId = SourceID.ANDROID,
+      sdkVersion = BuildConfig.SDK_VERSION,
       metadata = newMetadata(appVersion),
     ),
   )
@@ -91,13 +91,13 @@ internal fun newGoalEvent(
     type = EventType.GOAL,
     event = EventData.GoalEvent(
       timestamp = clock.currentTimeSeconds(),
-      goal_id = goalId,
-      user_id = user.id,
+      goalId = goalId,
+      userId = user.id,
       value = value,
       user = user,
       tag = featureTag,
-      source_id = SourceID.ANDROID,
-      sdk_version = BuildConfig.SDK_VERSION,
+      sourceId = SourceID.ANDROID,
+      sdkVersion = BuildConfig.SDK_VERSION,
       metadata = newMetadata(appVersion),
     ),
   )
@@ -122,7 +122,7 @@ internal fun newGetEvaluationLatencyMetricsEvent(
         ),
         duration = seconds,
       ),
-      sdk_version = BuildConfig.SDK_VERSION,
+      sdkVersion = BuildConfig.SDK_VERSION,
       metadata = newMetadata(appVersion),
     ),
   )
@@ -147,7 +147,7 @@ internal fun newGetEvaluationSizeMetricsEvent(
         ),
         size_byte = sizeByte,
       ),
-      sdk_version = BuildConfig.SDK_VERSION,
+      sdkVersion = BuildConfig.SDK_VERSION,
       metadata = newMetadata(appVersion),
     ),
   )
@@ -168,7 +168,7 @@ internal fun newTimeoutErrorCountMetricsEvent(
       event = MetricsEventData.TimeoutErrorCountMetricsEvent(
         tag = featureTag,
       ),
-      sdk_version = BuildConfig.SDK_VERSION,
+      sdkVersion = BuildConfig.SDK_VERSION,
       metadata = newMetadata(appVersion),
     ),
   )
@@ -189,7 +189,7 @@ internal fun newInternalErrorCountMetricsEvent(
       event = MetricsEventData.InternalErrorCountMetricsEvent(
         tag = featureTag,
       ),
-      sdk_version = BuildConfig.SDK_VERSION,
+      sdkVersion = BuildConfig.SDK_VERSION,
       metadata = newMetadata(appVersion),
     ),
   )

@@ -9,28 +9,28 @@ sealed class EventData {
   @JsonClass(generateAdapter = true)
   data class GoalEvent(
     val timestamp: Long,
-    val goal_id: String,
-    val user_id: String,
+    val goalId: String,
+    val userId: String,
     val value: Double,
     val user: User,
     val tag: String,
-    val source_id: SourceID,
-    val sdk_version: String? = null,
+    val sourceId: SourceID,
+    val sdkVersion: String? = null,
     val metadata: Map<String, String>? = null,
   ) : EventData()
 
   @JsonClass(generateAdapter = true)
   data class EvaluationEvent(
     val timestamp: Long,
-    val feature_id: String,
+    val featureId: String,
     val feature_version: Int = 0,
-    val user_id: String,
-    val variation_id: String = "",
+    val userId: String,
+    val variationId: String = "",
     val user: User,
     val reason: Reason,
     val tag: String,
-    val source_id: SourceID,
-    val sdk_version: String? = null,
+    val sourceId: SourceID,
+    val sdkVersion: String? = null,
     val metadata: Map<String, String>? = null,
   ) : EventData()
 
@@ -40,7 +40,7 @@ sealed class EventData {
     val timestamp: Long,
     val event: MetricsEventData,
     val type: MetricsEventType,
-    val sdk_version: String? = null,
+    val sdkVersion: String? = null,
     val metadata: Map<String, String>? = null,
   ) : EventData()
 }

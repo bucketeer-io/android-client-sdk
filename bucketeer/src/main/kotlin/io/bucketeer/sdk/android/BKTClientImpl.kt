@@ -101,11 +101,11 @@ internal class BKTClientImpl(
 
     return BKTEvaluation(
       id = raw.id,
-      featureId = raw.feature_id,
-      featureVersion = raw.feature_version,
-      userId = raw.user_id,
-      variationId = raw.variation_id,
-      variationValue = raw.variation_value,
+      featureId = raw.featureId,
+      featureVersion = raw.featureVersion,
+      userId = raw.userId,
+      variationId = raw.variationId,
+      variationValue = raw.variationValue,
       reason = BKTEvaluation.Reason.from(raw.reason.type.value),
     )
   }

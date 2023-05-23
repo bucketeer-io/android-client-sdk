@@ -76,7 +76,7 @@ class BKTClientImplTest {
               GetEvaluationsResponse(
                 GetEvaluationsDataResponse(
                   evaluations = user1Evaluations,
-                  user_evaluations_id = "user_evaluations_id_value",
+                  userEvaluationsId = "user_evaluations_id_value",
                 ),
               ),
             ),
@@ -128,7 +128,7 @@ class BKTClientImplTest {
               GetEvaluationsResponse(
                 GetEvaluationsDataResponse(
                   evaluations = user1Evaluations,
-                  user_evaluations_id = "user_evaluations_id_value",
+                  userEvaluationsId = "user_evaluations_id_value",
                 ),
               ),
             ),
@@ -178,7 +178,7 @@ class BKTClientImplTest {
               GetEvaluationsResponse(
                 GetEvaluationsDataResponse(
                   evaluations = user1Evaluations,
-                  user_evaluations_id = "user_evaluations_id_value",
+                  userEvaluationsId = "user_evaluations_id_value",
                 ),
               ),
             ),
@@ -221,7 +221,7 @@ class BKTClientImplTest {
               GetEvaluationsResponse(
                 GetEvaluationsDataResponse(
                   evaluations = user1Evaluations,
-                  user_evaluations_id = "user_evaluations_id_value",
+                  userEvaluationsId = "user_evaluations_id_value",
                 ),
               ),
             ),
@@ -255,7 +255,7 @@ class BKTClientImplTest {
               GetEvaluationsResponse(
                 GetEvaluationsDataResponse(
                   evaluations = user1Evaluations,
-                  user_evaluations_id = "user_evaluations_id_value",
+                  userEvaluationsId = "user_evaluations_id_value",
                 ),
               ),
             ),
@@ -319,7 +319,7 @@ class BKTClientImplTest {
               GetEvaluationsResponse(
                 GetEvaluationsDataResponse(
                   evaluations = user1Evaluations,
-                  user_evaluations_id = "user_evaluations_id_value",
+                  userEvaluationsId = "user_evaluations_id_value",
                 ),
               ),
             ),
@@ -382,7 +382,7 @@ class BKTClientImplTest {
               GetEvaluationsResponse(
                 GetEvaluationsDataResponse(
                   evaluations = user1Evaluations,
-                  user_evaluations_id = "user_evaluations_id_value",
+                  userEvaluationsId = "user_evaluations_id_value",
                 ),
               ),
             ),
@@ -421,7 +421,7 @@ class BKTClientImplTest {
               GetEvaluationsResponse(
                 GetEvaluationsDataResponse(
                   evaluations = user1Evaluations,
-                  user_evaluations_id = "user_evaluations_id_value",
+                  userEvaluationsId = "user_evaluations_id_value",
                 ),
               ),
             ),
@@ -436,16 +436,16 @@ class BKTClientImplTest {
     )
     initializeFuture.get()
 
-    val actual = BKTClient.getInstance().evaluationDetails(evaluation1.feature_id)
+    val actual = BKTClient.getInstance().evaluationDetails(evaluation1.featureId)
 
     assertThat(actual).isEqualTo(
       BKTEvaluation(
         id = evaluation1.id,
-        featureId = evaluation1.feature_id,
-        featureVersion = evaluation1.feature_version,
-        userId = evaluation1.user_id,
-        variationId = evaluation1.variation_id,
-        variationValue = evaluation1.variation_value,
+        featureId = evaluation1.featureId,
+        featureVersion = evaluation1.featureVersion,
+        userId = evaluation1.userId,
+        variationId = evaluation1.variationId,
+        variationValue = evaluation1.variationValue,
         reason = BKTEvaluation.Reason.DEFAULT,
       ),
     )
@@ -462,7 +462,7 @@ class BKTClientImplTest {
               GetEvaluationsResponse(
                 GetEvaluationsDataResponse(
                   evaluations = user1Evaluations,
-                  user_evaluations_id = "user_evaluations_id_value",
+                  userEvaluationsId = "user_evaluations_id_value",
                 ),
               ),
             ),
@@ -496,14 +496,14 @@ class BKTClientImplTest {
                     id = "id_value",
                     evaluations = listOf(evaluation1),
                   ),
-                  user_evaluations_id = "user_evaluations_id_value",
+                  userEvaluationsId = "user_evaluations_id_value",
                 ),
               ),
             ),
         ),
     )
     val updatedEvaluation1 = evaluation1.copy(
-      variation_value = "test variation value1 updated",
+      variationValue = "test variation value1 updated",
       variation = evaluation1.variation.copy(
         value = "test variation value1 updated",
       ),
@@ -519,7 +519,7 @@ class BKTClientImplTest {
                   evaluations = user1Evaluations.copy(
                     evaluations = listOf(updatedEvaluation1),
                   ),
-                  user_evaluations_id = "user_evaluations_id_value_updated",
+                  userEvaluationsId = "user_evaluations_id_value_updated",
                 ),
               ),
             ),
@@ -561,7 +561,7 @@ class BKTClientImplTest {
               GetEvaluationsResponse(
                 GetEvaluationsDataResponse(
                   evaluations = user1Evaluations,
-                  user_evaluations_id = "user_evaluations_id_value",
+                  userEvaluationsId = "user_evaluations_id_value",
                 ),
               ),
             ),
@@ -707,7 +707,7 @@ fun assertGoalEvent(
   assertThat(actual.type).isEqualTo(EventType.GOAL)
   val actualEventData = actual.event as EventData.GoalEvent
 
-  assertThat(actualEventData.goal_id).isEqualTo(expectedGoalId)
+  assertThat(actualEventData.goalId).isEqualTo(expectedGoalId)
   assertThat(actualEventData.value).isEqualTo(expectedValue)
   assertThat(actualEventData.user).isEqualTo(expectedUser)
   assertThat(actualEventData.tag).isEqualTo(expectedFeatureTag)

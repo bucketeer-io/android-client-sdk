@@ -54,7 +54,7 @@ internal class EvaluationInteractor(
     when (result) {
       is GetEvaluationsResult.Success -> {
         val response = result.value.data
-        val newEvaluationsId = response.user_evaluations_id
+        val newEvaluationsId = response.userEvaluationsId
         if (currentEvaluationsId == newEvaluationsId) {
           logd { "Nothing to sync" }
           return result
@@ -109,6 +109,6 @@ internal class EvaluationInteractor(
 
   fun getLatest(userId: String, featureId: String): Evaluation? {
     val evaluations = evaluations[userId] ?: return null
-    return evaluations.firstOrNull { it.feature_id == featureId }
+    return evaluations.firstOrNull { it.featureId == featureId }
   }
 }

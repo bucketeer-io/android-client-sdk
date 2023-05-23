@@ -79,7 +79,7 @@ class EvaluationForegroundTaskTest {
       GetEvaluationsResponse(
         GetEvaluationsDataResponse(
           evaluations = user1Evaluations,
-          user_evaluations_id = "user_evaluations_id_value",
+          userEvaluationsId = "user_evaluations_id_value",
         ),
       ),
     )
@@ -101,7 +101,7 @@ class EvaluationForegroundTaskTest {
       GetEvaluationsResponse(
         GetEvaluationsDataResponse(
           evaluations = user1Evaluations,
-          user_evaluations_id = "user_evaluations_id_value",
+          userEvaluationsId = "user_evaluations_id_value",
         ),
       ),
     )
@@ -134,7 +134,7 @@ class EvaluationForegroundTaskTest {
       GetEvaluationsResponse(
         GetEvaluationsDataResponse(
           evaluations = user1Evaluations,
-          user_evaluations_id = "user_evaluations_id_value",
+          userEvaluationsId = "user_evaluations_id_value",
         ),
       ),
     )
@@ -188,7 +188,7 @@ class EvaluationForegroundTaskTest {
       GetEvaluationsResponse(
         GetEvaluationsDataResponse(
           evaluations = user1Evaluations,
-          user_evaluations_id = "user_evaluations_id_value",
+          userEvaluationsId = "user_evaluations_id_value",
         ),
       ),
     )
@@ -198,7 +198,7 @@ class EvaluationForegroundTaskTest {
       GetEvaluationsResponse(
         GetEvaluationsDataResponse(
           evaluations = user1Evaluations,
-          user_evaluations_id = "user_evaluations_id_value",
+          userEvaluationsId = "user_evaluations_id_value",
         ),
       ),
     )

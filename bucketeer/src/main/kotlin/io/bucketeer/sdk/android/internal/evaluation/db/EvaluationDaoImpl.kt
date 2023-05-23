@@ -40,7 +40,7 @@ internal class EvaluationDaoImpl(
   ): Long {
     val contentValue = ContentValues().apply {
       put(COLUMN_USER_ID, userId)
-      put(COLUMN_FEATURE_ID, evaluation.feature_id)
+      put(COLUMN_FEATURE_ID, evaluation.featureId)
       put(COLUMN_EVALUATION, adapter.toJson(evaluation))
     }
     return database.insert(TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE, contentValue)
@@ -59,7 +59,7 @@ internal class EvaluationDaoImpl(
       SQLiteDatabase.CONFLICT_REPLACE,
       contentValues,
       "$COLUMN_USER_ID=? AND $COLUMN_FEATURE_ID=?",
-      arrayOf(userId, evaluation.feature_id),
+      arrayOf(userId, evaluation.featureId),
     )
   }
 

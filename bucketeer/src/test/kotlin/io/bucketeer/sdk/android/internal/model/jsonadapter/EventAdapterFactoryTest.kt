@@ -58,8 +58,8 @@ class EventAdapterFactoryTest {
         type = EventType.GOAL,
         event = EventData.GoalEvent(
           timestamp = 1660210923777,
-          goal_id = "goal_id_value",
-          user_id = "user_id_value",
+          goalId = "goal_id_value",
+          userId = "user_id_value",
           value = 1.04,
           user = User(
             id = "user_id_value",
@@ -69,8 +69,8 @@ class EventAdapterFactoryTest {
             ),
           ),
           tag = "tag_value",
-          source_id = SourceID.ANDROID,
-          sdk_version = "2.0.1",
+          sourceId = SourceID.ANDROID,
+          sdkVersion = "2.0.1",
           metadata = mapOf(
             "app_version" to "1.2.3",
             "os_version" to "os_version_value",
@@ -108,8 +108,8 @@ class EventAdapterFactoryTest {
         type = EventType.GOAL,
         event = EventData.GoalEvent(
           timestamp = 1660210923777,
-          goal_id = "goal_id_value",
-          user_id = "user_id_value",
+          goalId = "goal_id_value",
+          userId = "user_id_value",
           value = 1.04,
           user = User(
             id = "user_id_value",
@@ -119,8 +119,8 @@ class EventAdapterFactoryTest {
             ),
           ),
           tag = "tag_value",
-          source_id = SourceID.ANDROID,
-          sdk_version = null,
+          sourceId = SourceID.ANDROID,
+          sdkVersion = null,
           metadata = null,
         ),
       ),
@@ -163,10 +163,10 @@ class EventAdapterFactoryTest {
         type = EventType.EVALUATION,
         event = EventData.EvaluationEvent(
           timestamp = 1660210923777,
-          feature_id = "feature_id_value",
+          featureId = "feature_id_value",
           feature_version = 2,
-          user_id = "user_id_value",
-          variation_id = "variation_id_value",
+          userId = "user_id_value",
+          variationId = "variation_id_value",
           user = User(
             id = "user_id_value",
             data = mapOf(
@@ -176,11 +176,11 @@ class EventAdapterFactoryTest {
           ),
           reason = Reason(
             type = ReasonType.CLIENT,
-            rule_id = "rule_id_value",
+            ruleId = "rule_id_value",
           ),
           tag = "tag_value",
-          source_id = SourceID.ANDROID,
-          sdk_version = "2.0.1",
+          sourceId = SourceID.ANDROID,
+          sdkVersion = "2.0.1",
           metadata = mapOf(
             "app_version" to "1.2.3",
             "os_version" to "os_version_value",
@@ -223,10 +223,10 @@ class EventAdapterFactoryTest {
         type = EventType.EVALUATION,
         event = EventData.EvaluationEvent(
           timestamp = 1660210923777,
-          feature_id = "feature_id_value",
+          featureId = "feature_id_value",
           feature_version = 2,
-          user_id = "user_id_value",
-          variation_id = "variation_id_value",
+          userId = "user_id_value",
+          variationId = "variation_id_value",
           user = User(
             id = "user_id_value",
             data = mapOf(
@@ -236,11 +236,11 @@ class EventAdapterFactoryTest {
           ),
           reason = Reason(
             type = ReasonType.CLIENT,
-            rule_id = "rule_id_value",
+            ruleId = "rule_id_value",
           ),
           tag = "tag_value",
-          source_id = SourceID.ANDROID,
-          sdk_version = null,
+          sourceId = SourceID.ANDROID,
+          sdkVersion = null,
         ),
       ),
     ),
@@ -281,7 +281,7 @@ class EventAdapterFactoryTest {
             ),
             duration = 5,
           ),
-          sdk_version = "2.0.1",
+          sdkVersion = "2.0.1",
           metadata = mapOf(
             "app_version" to "1.2.3",
             "os_version" to "os_version_value",
@@ -323,7 +323,7 @@ class EventAdapterFactoryTest {
             ),
             duration = 5,
           ),
-          sdk_version = null,
+          sdkVersion = null,
           metadata = null,
         ),
       ),

@@ -47,7 +47,7 @@ class MetricsEventAdapterFactoryTest {
           ),
           duration = 5,
         ),
-        sdk_version = "2.0.1",
+        sdkVersion = "2.0.1",
         metadata = mapOf(
           "app_version" to "1.2.3",
           "os_version" to "os_version_value",
@@ -85,7 +85,7 @@ class MetricsEventAdapterFactoryTest {
           ),
           size_byte = 1234,
         ),
-        sdk_version = "2.0.1",
+        sdkVersion = "2.0.1",
         metadata = mapOf(
           "app_version" to "1.2.3",
           "os_version" to "os_version_value",
@@ -115,7 +115,7 @@ class MetricsEventAdapterFactoryTest {
         event = MetricsEventData.TimeoutErrorCountMetricsEvent(
           tag = "tag_value",
         ),
-        sdk_version = "2.0.1",
+        sdkVersion = "2.0.1",
         metadata = mapOf(
           "app_version" to "1.2.3",
           "os_version" to "os_version_value",
@@ -145,7 +145,7 @@ class MetricsEventAdapterFactoryTest {
         event = MetricsEventData.InternalErrorCountMetricsEvent(
           tag = "tag_value",
         ),
-        sdk_version = "2.0.1",
+        sdkVersion = "2.0.1",
         metadata = mapOf(
           "app_version" to "1.2.3",
           "os_version" to "os_version_value",

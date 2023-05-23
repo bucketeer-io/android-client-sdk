@@ -85,7 +85,7 @@ class EvaluationInteractorTest {
               GetEvaluationsResponse(
                 GetEvaluationsDataResponse(
                   evaluations = user1Evaluations,
-                  user_evaluations_id = "user_evaluations_id_value",
+                  userEvaluationsId = "user_evaluations_id_value",
                 ),
               ),
             ),
@@ -108,7 +108,7 @@ class EvaluationInteractorTest {
     val requestBody = moshi.adapter(GetEvaluationsRequest::class.java)
       .fromJson(request.body.readString(Charsets.UTF_8))
 
-    assertThat(requestBody!!.user_evaluations_id).isEmpty()
+    assertThat(requestBody!!.userEvaluationsId).isEmpty()
     assertThat(requestBody.tag).isEqualTo(component.dataModule.config.featureTag)
     assertThat(requestBody.user).isEqualTo(user1)
 
@@ -139,7 +139,7 @@ class EvaluationInteractorTest {
               GetEvaluationsResponse(
                 GetEvaluationsDataResponse(
                   evaluations = user1Evaluations,
-                  user_evaluations_id = "user_evaluations_id_value",
+                  userEvaluationsId = "user_evaluations_id_value",
                 ),
               ),
             ),
@@ -150,7 +150,7 @@ class EvaluationInteractorTest {
     shadowOf(Looper.getMainLooper()).idle()
 
     val newEvaluation = evaluation1.copy(
-      variation_value = evaluation1.variation_value + "_updated",
+      variationValue = evaluation1.variationValue + "_updated",
     )
     // second response(test target)
     server.enqueue(
@@ -164,7 +164,7 @@ class EvaluationInteractorTest {
                   evaluations = user1Evaluations.copy(
                     evaluations = listOf(newEvaluation),
                   ),
-                  user_evaluations_id = "user_evaluations_id_value_updated",
+                  userEvaluationsId = "user_evaluations_id_value_updated",
                 ),
               ),
             ),
@@ -207,7 +207,7 @@ class EvaluationInteractorTest {
               GetEvaluationsResponse(
                 GetEvaluationsDataResponse(
                   evaluations = user1Evaluations,
-                  user_evaluations_id = "user_evaluations_id_value",
+                  userEvaluationsId = "user_evaluations_id_value",
                 ),
               ),
             ),
@@ -227,7 +227,7 @@ class EvaluationInteractorTest {
               GetEvaluationsResponse(
                 GetEvaluationsDataResponse(
                   evaluations = user1Evaluations,
-                  user_evaluations_id = "user_evaluations_id_value",
+                  userEvaluationsId = "user_evaluations_id_value",
                 ),
               ),
             ),
@@ -278,14 +278,14 @@ class EvaluationInteractorTest {
 
     interactor.refreshCache(user1.id)
 
-    val actual = interactor.getLatest(user1.id, evaluation1.feature_id)
+    val actual = interactor.getLatest(user1.id, evaluation1.featureId)
 
     assertThat(actual).isEqualTo(evaluation1)
   }
 
   @Test
   fun `getLatest - no cache`() {
-    val actual = interactor.getLatest(user1.id, evaluation1.feature_id)
+    val actual = interactor.getLatest(user1.id, evaluation1.featureId)
 
     assertThat(actual).isNull()
   }
