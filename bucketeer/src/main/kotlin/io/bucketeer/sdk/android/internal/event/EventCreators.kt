@@ -145,7 +145,7 @@ internal fun newGetEvaluationSizeMetricsEvent(
         labels = mapOf(
           "tag" to featureTag,
         ),
-        size_byte = sizeByte,
+        sizeByte = sizeByte,
       ),
       sdkVersion = BuildConfig.SDK_VERSION,
       metadata = newMetadata(appVersion),
@@ -164,7 +164,7 @@ internal fun newTimeoutErrorCountMetricsEvent(
     type = EventType.METRICS,
     event = EventData.MetricsEvent(
       timestamp = clock.currentTimeSeconds(),
-      type = MetricsEventType.TIMEOUT_ERROR_COUNT,
+      type = MetricsEventType.TIMEOUT_ERROR,
       event = MetricsEventData.TimeoutErrorCountMetricsEvent(
         tag = featureTag,
       ),
@@ -185,7 +185,7 @@ internal fun newInternalErrorCountMetricsEvent(
     type = EventType.METRICS,
     event = EventData.MetricsEvent(
       timestamp = clock.currentTimeSeconds(),
-      type = MetricsEventType.INTERNAL_ERROR_COUNT,
+      type = MetricsEventType.INTERNAL_ERROR,
       event = MetricsEventData.InternalErrorCountMetricsEvent(
         tag = featureTag,
       ),

@@ -258,7 +258,7 @@ class EventInteractorTest {
             labels = mapOf(
               "tag" to "feature_tag_value",
             ),
-            size_byte = 723,
+            sizeByte = 723,
           ),
           sdkVersion = BuildConfig.SDK_VERSION,
           metadata = mapOf(
@@ -296,7 +296,7 @@ class EventInteractorTest {
         type = EventType.METRICS,
         event = EventData.MetricsEvent(
           timestamp = clock.currentTimeSecondsCalls[0],
-          type = MetricsEventType.TIMEOUT_ERROR_COUNT,
+          type = MetricsEventType.TIMEOUT_ERROR,
           event = MetricsEventData.TimeoutErrorCountMetricsEvent(
             tag = "feature_tag_value",
           ),
@@ -336,7 +336,7 @@ class EventInteractorTest {
         type = EventType.METRICS,
         event = EventData.MetricsEvent(
           timestamp = clock.currentTimeSecondsCalls[0],
-          type = MetricsEventType.INTERNAL_ERROR_COUNT,
+          type = MetricsEventType.INTERNAL_ERROR,
           event = MetricsEventData.InternalErrorCountMetricsEvent(
             tag = "feature_tag_value",
           ),
@@ -411,7 +411,7 @@ class EventInteractorTest {
                 labels = mapOf(
                   "tag" to "feature_tag_value",
                 ),
-                size_byte = 723,
+                sizeByte = 723,
               ),
               sdkVersion = BuildConfig.SDK_VERSION,
               metadata = mapOf(
@@ -590,7 +590,7 @@ class EventInteractorTest {
                 labels = mapOf(
                   "tag" to "feature_tag_value",
                 ),
-                size_byte = 723,
+                sizeByte = 723,
               ),
               sdkVersion = BuildConfig.SDK_VERSION,
               metadata = mapOf(
@@ -674,7 +674,7 @@ class EventInteractorTest {
                 labels = mapOf(
                   "tag" to "feature_tag_value",
                 ),
-                size_byte = 723,
+                sizeByte = 723,
               ),
               sdkVersion = BuildConfig.SDK_VERSION,
               metadata = mapOf(

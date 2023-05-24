@@ -83,7 +83,7 @@ class MetricsEventAdapterFactoryTest {
             "key1" to "value1",
             "key2" to "value2",
           ),
-          size_byte = 1234,
+          sizeByte = 1234,
         ),
         sdkVersion = "2.0.1",
         metadata = mapOf(
@@ -111,7 +111,7 @@ class MetricsEventAdapterFactoryTest {
       """.trimMargin(),
       event = EventData.MetricsEvent(
         timestamp = 1660210923777,
-        type = MetricsEventType.TIMEOUT_ERROR_COUNT,
+        type = MetricsEventType.TIMEOUT_ERROR,
         event = MetricsEventData.TimeoutErrorCountMetricsEvent(
           tag = "tag_value",
         ),
@@ -141,7 +141,7 @@ class MetricsEventAdapterFactoryTest {
       """.trimMargin(),
       event = EventData.MetricsEvent(
         timestamp = 1660210923777,
-        type = MetricsEventType.INTERNAL_ERROR_COUNT,
+        type = MetricsEventType.INTERNAL_ERROR,
         event = MetricsEventData.InternalErrorCountMetricsEvent(
           tag = "tag_value",
         ),
