@@ -26,7 +26,6 @@ import io.bucketeer.sdk.android.internal.model.ReasonType
 import io.bucketeer.sdk.android.internal.model.SourceID
 import io.bucketeer.sdk.android.internal.model.request.RegisterEventsRequest
 import io.bucketeer.sdk.android.internal.model.response.ErrorResponse
-import io.bucketeer.sdk.android.internal.model.response.RegisterEventsDataResponse
 import io.bucketeer.sdk.android.internal.model.response.RegisterEventsErrorResponse
 import io.bucketeer.sdk.android.internal.model.response.RegisterEventsResponse
 import io.bucketeer.sdk.android.internal.remote.ApiClient
@@ -358,7 +357,7 @@ class EventInteractorTest {
         .setResponseCode(200)
         .setBody(
           moshi.adapter(RegisterEventsResponse::class.java).toJson(
-            RegisterEventsResponse(RegisterEventsDataResponse(errors = emptyMap())),
+            RegisterEventsResponse(errors = emptyMap()),
           ),
         ),
     )
@@ -489,7 +488,7 @@ class EventInteractorTest {
         .setResponseCode(200)
         .setBody(
           moshi.adapter(RegisterEventsResponse::class.java).toJson(
-            RegisterEventsResponse(RegisterEventsDataResponse(errors = emptyMap())),
+            RegisterEventsResponse(errors = emptyMap()),
           ),
         ),
     )
@@ -513,7 +512,7 @@ class EventInteractorTest {
         .setResponseCode(200)
         .setBody(
           moshi.adapter(RegisterEventsResponse::class.java).toJson(
-            RegisterEventsResponse(RegisterEventsDataResponse(errors = emptyMap())),
+            RegisterEventsResponse(errors = emptyMap()),
           ),
         ),
     )
@@ -539,7 +538,7 @@ class EventInteractorTest {
         .setResponseCode(200)
         .setBody(
           moshi.adapter(RegisterEventsResponse::class.java).toJson(
-            RegisterEventsResponse(RegisterEventsDataResponse(errors = emptyMap())),
+            RegisterEventsResponse(errors = emptyMap()),
           ),
         ),
     )
@@ -619,11 +618,9 @@ class EventInteractorTest {
         .setBody(
           moshi.adapter(RegisterEventsResponse::class.java).toJson(
             RegisterEventsResponse(
-              RegisterEventsDataResponse(
                 errors = mapOf(
                   idGenerator.calls[0] to RegisterEventsErrorResponse(retriable = true, "error"),
                   idGenerator.calls[1] to RegisterEventsErrorResponse(retriable = false, "error"),
-                ),
               ),
             ),
           ),

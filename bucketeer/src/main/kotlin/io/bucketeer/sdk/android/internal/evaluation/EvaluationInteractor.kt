@@ -53,7 +53,7 @@ internal class EvaluationInteractor(
 
     when (result) {
       is GetEvaluationsResult.Success -> {
-        val response = result.value.data
+        val response = result.value
         val newEvaluationsId = response.userEvaluationsId
         if (currentEvaluationsId == newEvaluationsId) {
           logd { "Nothing to sync" }

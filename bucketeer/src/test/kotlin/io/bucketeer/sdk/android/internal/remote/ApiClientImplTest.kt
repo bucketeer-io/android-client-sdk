@@ -10,9 +10,7 @@ import io.bucketeer.sdk.android.internal.model.SourceID
 import io.bucketeer.sdk.android.internal.model.request.GetEvaluationsRequest
 import io.bucketeer.sdk.android.internal.model.request.RegisterEventsRequest
 import io.bucketeer.sdk.android.internal.model.response.ErrorResponse
-import io.bucketeer.sdk.android.internal.model.response.GetEvaluationsDataResponse
 import io.bucketeer.sdk.android.internal.model.response.GetEvaluationsResponse
-import io.bucketeer.sdk.android.internal.model.response.RegisterEventsDataResponse
 import io.bucketeer.sdk.android.internal.model.response.RegisterEventsErrorResponse
 import io.bucketeer.sdk.android.internal.model.response.RegisterEventsResponse
 import io.bucketeer.sdk.android.mocks.evaluationEvent1
@@ -61,10 +59,8 @@ internal class ApiClientImplTest {
   @Test
   fun `getEvaluations - success`() {
     val expected = GetEvaluationsResponse(
-      data = GetEvaluationsDataResponse(
         evaluations = user1Evaluations,
         userEvaluationsId = "user_evaluation_id",
-      ),
     )
     server.enqueue(
       MockResponse()
@@ -261,14 +257,12 @@ internal class ApiClientImplTest {
           moshi.adapter(RegisterEventsResponse::class.java)
             .toJson(
               RegisterEventsResponse(
-                RegisterEventsDataResponse(
                   errors = mapOf(
                     evaluationEvent1.id to RegisterEventsErrorResponse(
                       retriable = true,
                       message = "error",
                     ),
                   ),
-                ),
               ),
             ),
         ),
@@ -297,13 +291,11 @@ internal class ApiClientImplTest {
     val success = result as RegisterEventsResult.Success
     assertThat(success.value).isEqualTo(
       RegisterEventsResponse(
-        RegisterEventsDataResponse(
           errors = mapOf(
             evaluationEvent1.id to RegisterEventsErrorResponse(
               retriable = true,
               message = "error",
             ),
-          ),
         ),
       ),
     )

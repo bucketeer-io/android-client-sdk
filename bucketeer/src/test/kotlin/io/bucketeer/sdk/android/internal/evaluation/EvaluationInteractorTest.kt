@@ -10,7 +10,6 @@ import io.bucketeer.sdk.android.internal.di.ComponentImpl
 import io.bucketeer.sdk.android.internal.di.DataModule
 import io.bucketeer.sdk.android.internal.di.InteractorModule
 import io.bucketeer.sdk.android.internal.model.request.GetEvaluationsRequest
-import io.bucketeer.sdk.android.internal.model.response.GetEvaluationsDataResponse
 import io.bucketeer.sdk.android.internal.model.response.GetEvaluationsResponse
 import io.bucketeer.sdk.android.internal.remote.GetEvaluationsResult
 import io.bucketeer.sdk.android.mocks.evaluation1
@@ -83,10 +82,8 @@ class EvaluationInteractorTest {
           moshi.adapter(GetEvaluationsResponse::class.java)
             .toJson(
               GetEvaluationsResponse(
-                GetEvaluationsDataResponse(
                   evaluations = user1Evaluations,
                   userEvaluationsId = "user_evaluations_id_value",
-                ),
               ),
             ),
         ),
@@ -137,10 +134,8 @@ class EvaluationInteractorTest {
           moshi.adapter(GetEvaluationsResponse::class.java)
             .toJson(
               GetEvaluationsResponse(
-                GetEvaluationsDataResponse(
                   evaluations = user1Evaluations,
                   userEvaluationsId = "user_evaluations_id_value",
-                ),
               ),
             ),
         ),
@@ -160,12 +155,10 @@ class EvaluationInteractorTest {
           moshi.adapter(GetEvaluationsResponse::class.java)
             .toJson(
               GetEvaluationsResponse(
-                GetEvaluationsDataResponse(
                   evaluations = user1Evaluations.copy(
                     evaluations = listOf(newEvaluation),
                   ),
                   userEvaluationsId = "user_evaluations_id_value_updated",
-                ),
               ),
             ),
         ),
@@ -205,10 +198,8 @@ class EvaluationInteractorTest {
           moshi.adapter(GetEvaluationsResponse::class.java)
             .toJson(
               GetEvaluationsResponse(
-                GetEvaluationsDataResponse(
                   evaluations = user1Evaluations,
                   userEvaluationsId = "user_evaluations_id_value",
-                ),
               ),
             ),
         ),
@@ -225,10 +216,8 @@ class EvaluationInteractorTest {
           moshi.adapter(GetEvaluationsResponse::class.java)
             .toJson(
               GetEvaluationsResponse(
-                GetEvaluationsDataResponse(
                   evaluations = user1Evaluations,
                   userEvaluationsId = "user_evaluations_id_value",
-                ),
               ),
             ),
         ),
