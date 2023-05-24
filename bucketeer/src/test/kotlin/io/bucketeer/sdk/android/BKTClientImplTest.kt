@@ -11,6 +11,7 @@ import io.bucketeer.sdk.android.internal.model.EventData
 import io.bucketeer.sdk.android.internal.model.EventType
 import io.bucketeer.sdk.android.internal.model.MetricsEventData
 import io.bucketeer.sdk.android.internal.model.MetricsEventType
+import io.bucketeer.sdk.android.internal.model.ReasonType
 import io.bucketeer.sdk.android.internal.model.User
 import io.bucketeer.sdk.android.internal.model.UserEvaluations
 import io.bucketeer.sdk.android.internal.model.request.RegisterEventsRequest
@@ -446,7 +447,7 @@ class BKTClientImplTest {
         userId = evaluation1.userId,
         variationId = evaluation1.variationId,
         variationValue = evaluation1.variationValue,
-        reason = BKTEvaluation.Reason.DEFAULT,
+        reason = ReasonType.DEFAULT,
       ),
     )
   }
@@ -602,7 +603,7 @@ class BKTClientImplTest {
     val lastEvent = actualEvents.last()
     assertThat(lastEvent.type).isEqualTo(EventType.METRICS)
     assertThat((lastEvent.event as EventData.MetricsEvent).type)
-      .isEqualTo(MetricsEventType.INTERNAL_ERROR)
+      .isEqualTo(MetricsEventType.INTERNAL_ERROR_COUNT)
   }
 
   @Test
@@ -693,7 +694,7 @@ fun assertTimeoutErrorCountMetricsEvent(
 ) {
   assertThat(actual.type).isEqualTo(EventType.METRICS)
   val actualMetricsEvent = actual.event as EventData.MetricsEvent
-  assertThat(actualMetricsEvent.type).isEqualTo(MetricsEventType.TIMEOUT_ERROR)
+  assertThat(actualMetricsEvent.type).isEqualTo(MetricsEventType.TIMEOUT_ERROR_COUNT)
   assertThat(actualMetricsEvent.event).isEqualTo(expectedMetricsEvent)
 }
 

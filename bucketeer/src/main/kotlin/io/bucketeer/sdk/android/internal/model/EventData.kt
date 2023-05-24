@@ -17,13 +17,14 @@ sealed class EventData {
     val sourceId: SourceID,
     val sdkVersion: String? = null,
     val metadata: Map<String, String>? = null,
+    val protobufType: String? = "type.googleapis.com/bucketeer.event.client.GoalEvent"
   ) : EventData()
 
   @JsonClass(generateAdapter = true)
   data class EvaluationEvent(
     val timestamp: Long,
     val featureId: String,
-    val feature_version: Int = 0,
+    val featureVersion: Int = 0,
     val userId: String,
     val variationId: String = "",
     val user: User,
@@ -32,6 +33,7 @@ sealed class EventData {
     val sourceId: SourceID,
     val sdkVersion: String? = null,
     val metadata: Map<String, String>? = null,
+    val protobufType: String? = "type.googleapis.com/bucketeer.event.client.EvaluationEvent"
   ) : EventData()
 
   // we can't use codegen here
@@ -42,5 +44,6 @@ sealed class EventData {
     val type: MetricsEventType,
     val sdkVersion: String? = null,
     val metadata: Map<String, String>? = null,
+    val protobufType: String? = "type.googleapis.com/bucketeer.event.client.MetricsEvent"
   ) : EventData()
 }

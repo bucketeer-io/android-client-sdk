@@ -110,7 +110,7 @@ class EventInteractorTest {
         event = EventData.EvaluationEvent(
           timestamp = clock.currentTimeSecondsCalls[0],
           featureId = evaluation1.featureId,
-          feature_version = evaluation1.featureVersion,
+          featureVersion = evaluation1.featureVersion,
           userId = user1.id,
           variationId = evaluation1.variationId,
           user = user1,
@@ -296,7 +296,7 @@ class EventInteractorTest {
         type = EventType.METRICS,
         event = EventData.MetricsEvent(
           timestamp = clock.currentTimeSecondsCalls[0],
-          type = MetricsEventType.TIMEOUT_ERROR,
+          type = MetricsEventType.TIMEOUT_ERROR_COUNT,
           event = MetricsEventData.TimeoutErrorCountMetricsEvent(
             tag = "feature_tag_value",
           ),
@@ -336,7 +336,7 @@ class EventInteractorTest {
         type = EventType.METRICS,
         event = EventData.MetricsEvent(
           timestamp = clock.currentTimeSecondsCalls[0],
-          type = MetricsEventType.INTERNAL_ERROR,
+          type = MetricsEventType.INTERNAL_ERROR_COUNT,
           event = MetricsEventData.InternalErrorCountMetricsEvent(
             tag = "feature_tag_value",
           ),

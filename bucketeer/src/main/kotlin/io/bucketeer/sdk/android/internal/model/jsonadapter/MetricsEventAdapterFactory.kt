@@ -51,8 +51,8 @@ class MetricsEventAdapterFactory : JsonAdapter.Factory {
         val adapter = when (eventType) {
           MetricsEventType.GET_EVALUATION_LATENCY -> getEvaluationLatencyAdapter
           MetricsEventType.GET_EVALUATION_SIZE -> getEvaluationSizeAdapter
-          MetricsEventType.TIMEOUT_ERROR -> timeoutErrorCountAdapter
-          MetricsEventType.INTERNAL_ERROR -> internalErrorCountAdapter
+          MetricsEventType.TIMEOUT_ERROR_COUNT -> timeoutErrorCountAdapter
+          MetricsEventType.INTERNAL_ERROR_COUNT -> internalErrorCountAdapter
           null -> throw BKTException.IllegalStateException("unexpected type: $type")
         }
 
@@ -94,13 +94,13 @@ class MetricsEventAdapterFactory : JsonAdapter.Factory {
               value.event as MetricsEventData.GetEvaluationSizeMetricsEvent,
             )
           }
-          MetricsEventType.TIMEOUT_ERROR -> {
+          MetricsEventType.TIMEOUT_ERROR_COUNT -> {
             timeoutErrorCountAdapter.toJson(
               writer,
               value.event as MetricsEventData.TimeoutErrorCountMetricsEvent,
             )
           }
-          MetricsEventType.INTERNAL_ERROR -> {
+          MetricsEventType.INTERNAL_ERROR_COUNT -> {
             internalErrorCountAdapter.toJson(
               writer,
               value.event as MetricsEventData.InternalErrorCountMetricsEvent,

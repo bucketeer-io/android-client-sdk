@@ -164,7 +164,7 @@ class EventAdapterFactoryTest {
         event = EventData.EvaluationEvent(
           timestamp = 1660210923777,
           featureId = "feature_id_value",
-          feature_version = 2,
+          featureVersion = 2,
           userId = "user_id_value",
           variationId = "variation_id_value",
           user = User(
@@ -224,7 +224,7 @@ class EventAdapterFactoryTest {
         event = EventData.EvaluationEvent(
           timestamp = 1660210923777,
           featureId = "feature_id_value",
-          feature_version = 2,
+          featureVersion = 2,
           userId = "user_id_value",
           variationId = "variation_id_value",
           user = User(

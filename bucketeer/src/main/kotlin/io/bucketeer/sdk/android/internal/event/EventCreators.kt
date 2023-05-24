@@ -37,7 +37,7 @@ internal fun newEvaluationEvent(
     event = EventData.EvaluationEvent(
       timestamp = clock.currentTimeSeconds(),
       featureId = evaluation.featureId,
-      feature_version = evaluation.featureVersion,
+      featureVersion = evaluation.featureVersion,
       userId = user.id,
       variationId = evaluation.variationId,
       user = user,
@@ -164,7 +164,7 @@ internal fun newTimeoutErrorCountMetricsEvent(
     type = EventType.METRICS,
     event = EventData.MetricsEvent(
       timestamp = clock.currentTimeSeconds(),
-      type = MetricsEventType.TIMEOUT_ERROR,
+      type = MetricsEventType.TIMEOUT_ERROR_COUNT,
       event = MetricsEventData.TimeoutErrorCountMetricsEvent(
         tag = featureTag,
       ),
@@ -185,7 +185,7 @@ internal fun newInternalErrorCountMetricsEvent(
     type = EventType.METRICS,
     event = EventData.MetricsEvent(
       timestamp = clock.currentTimeSeconds(),
-      type = MetricsEventType.INTERNAL_ERROR,
+      type = MetricsEventType.INTERNAL_ERROR_COUNT,
       event = MetricsEventData.InternalErrorCountMetricsEvent(
         tag = featureTag,
       ),

@@ -111,7 +111,7 @@ class MetricsEventAdapterFactoryTest {
       """.trimMargin(),
       event = EventData.MetricsEvent(
         timestamp = 1660210923777,
-        type = MetricsEventType.TIMEOUT_ERROR,
+        type = MetricsEventType.TIMEOUT_ERROR_COUNT,
         event = MetricsEventData.TimeoutErrorCountMetricsEvent(
           tag = "tag_value",
         ),
@@ -141,7 +141,7 @@ class MetricsEventAdapterFactoryTest {
       """.trimMargin(),
       event = EventData.MetricsEvent(
         timestamp = 1660210923777,
-        type = MetricsEventType.INTERNAL_ERROR,
+        type = MetricsEventType.INTERNAL_ERROR_COUNT,
         event = MetricsEventData.InternalErrorCountMetricsEvent(
           tag = "tag_value",
         ),

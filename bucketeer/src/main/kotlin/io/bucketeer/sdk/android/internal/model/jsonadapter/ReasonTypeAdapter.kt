@@ -6,8 +6,8 @@ import io.bucketeer.sdk.android.internal.model.ReasonType
 
 class ReasonTypeAdapter {
   @ToJson
-  fun toJson(type: ReasonType): Int = type.value
+  fun toJson(type: ReasonType): String = type.value
 
   @FromJson
-  fun fromJson(value: Int): ReasonType = ReasonType.from(value)
+  fun fromJson(value: String): ReasonType = ReasonType.from(value)
 }

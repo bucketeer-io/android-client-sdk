@@ -1,16 +1,14 @@
 package io.bucketeer.sdk.android.internal.model
 
-enum class ReasonType(val value: Int) {
-  TARGET(0),
-  RULE(1),
-  DEFAULT(3),
-  CLIENT(4),
-  OFF_VARIATION(5),
-  PREREQUISITE(6),
-
-  ;
+enum class ReasonType(val value: String) {
+  TARGET("TARGET"),
+  RULE("RULE"),
+  DEFAULT("DEFAULT"),
+  CLIENT("CLIENT"),
+  OFF_VARIATION("OFF_VARIATION"),
+  PREREQUISITE("PREREQUISITE");
 
   companion object {
-    fun from(value: Int): ReasonType = values().first { it.value == value }
+    fun from(value: String): ReasonType = values().first { it.value == value }
   }
 }
