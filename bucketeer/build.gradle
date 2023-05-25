@@ -79,6 +79,7 @@ dependencies {
   implementation libs.okhttp.client
 
   implementation libs.moshi.kotlin
+  implementation libs.moshi.adapters
   ksp(libs.moshi.codegen)
 
   implementation libs.androidx.lifecycle.process
