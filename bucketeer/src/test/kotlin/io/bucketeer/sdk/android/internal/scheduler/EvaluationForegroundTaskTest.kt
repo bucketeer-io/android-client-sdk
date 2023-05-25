@@ -76,8 +76,8 @@ class EvaluationForegroundTaskTest {
       moshi,
       200,
       GetEvaluationsResponse(
-          evaluations = user1Evaluations,
-          userEvaluationsId = "user_evaluations_id_value",
+        evaluations = user1Evaluations,
+        userEvaluationsId = "user_evaluations_id_value",
       ),
     )
 
@@ -96,8 +96,8 @@ class EvaluationForegroundTaskTest {
       moshi,
       200,
       GetEvaluationsResponse(
-          evaluations = user1Evaluations,
-          userEvaluationsId = "user_evaluations_id_value",
+        evaluations = user1Evaluations,
+        userEvaluationsId = "user_evaluations_id_value",
       ),
     )
 
@@ -127,8 +127,8 @@ class EvaluationForegroundTaskTest {
       moshi,
       500,
       GetEvaluationsResponse(
-          evaluations = user1Evaluations,
-          userEvaluationsId = "user_evaluations_id_value",
+        evaluations = user1Evaluations,
+        userEvaluationsId = "user_evaluations_id_value",
       ),
     )
 
@@ -179,16 +179,16 @@ class EvaluationForegroundTaskTest {
       moshi,
       200,
       GetEvaluationsResponse(
-          evaluations = user1Evaluations,
-          userEvaluationsId = "user_evaluations_id_value",
+        evaluations = user1Evaluations,
+        userEvaluationsId = "user_evaluations_id_value",
       ),
     )
     server.enqueueResponse(
       moshi,
       200,
       GetEvaluationsResponse(
-          evaluations = user1Evaluations,
-          userEvaluationsId = "user_evaluations_id_value",
+        evaluations = user1Evaluations,
+        userEvaluationsId = "user_evaluations_id_value",
       ),
     )
 

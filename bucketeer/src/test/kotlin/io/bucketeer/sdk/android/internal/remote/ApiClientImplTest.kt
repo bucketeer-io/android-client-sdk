@@ -59,8 +59,8 @@ internal class ApiClientImplTest {
   @Test
   fun `getEvaluations - success`() {
     val expected = GetEvaluationsResponse(
-        evaluations = user1Evaluations,
-        userEvaluationsId = "user_evaluation_id",
+      evaluations = user1Evaluations,
+      userEvaluationsId = "user_evaluation_id",
     )
     server.enqueue(
       MockResponse()
@@ -257,12 +257,12 @@ internal class ApiClientImplTest {
           moshi.adapter(RegisterEventsResponse::class.java)
             .toJson(
               RegisterEventsResponse(
-                  errors = mapOf(
-                    evaluationEvent1.id to RegisterEventsErrorResponse(
-                      retriable = true,
-                      message = "error",
-                    ),
+                errors = mapOf(
+                  evaluationEvent1.id to RegisterEventsErrorResponse(
+                    retriable = true,
+                    message = "error",
                   ),
+                ),
               ),
             ),
         ),
@@ -291,11 +291,11 @@ internal class ApiClientImplTest {
     val success = result as RegisterEventsResult.Success
     assertThat(success.value).isEqualTo(
       RegisterEventsResponse(
-          errors = mapOf(
-            evaluationEvent1.id to RegisterEventsErrorResponse(
-              retriable = true,
-              message = "error",
-            ),
+        errors = mapOf(
+          evaluationEvent1.id to RegisterEventsErrorResponse(
+            retriable = true,
+            message = "error",
+          ),
         ),
       ),
     )

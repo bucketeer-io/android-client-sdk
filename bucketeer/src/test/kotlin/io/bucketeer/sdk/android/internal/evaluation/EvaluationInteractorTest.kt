@@ -82,8 +82,8 @@ class EvaluationInteractorTest {
           moshi.adapter(GetEvaluationsResponse::class.java)
             .toJson(
               GetEvaluationsResponse(
-                  evaluations = user1Evaluations,
-                  userEvaluationsId = "user_evaluations_id_value",
+                evaluations = user1Evaluations,
+                userEvaluationsId = "user_evaluations_id_value",
               ),
             ),
         ),
@@ -134,8 +134,8 @@ class EvaluationInteractorTest {
           moshi.adapter(GetEvaluationsResponse::class.java)
             .toJson(
               GetEvaluationsResponse(
-                  evaluations = user1Evaluations,
-                  userEvaluationsId = "user_evaluations_id_value",
+                evaluations = user1Evaluations,
+                userEvaluationsId = "user_evaluations_id_value",
               ),
             ),
         ),
@@ -155,10 +155,10 @@ class EvaluationInteractorTest {
           moshi.adapter(GetEvaluationsResponse::class.java)
             .toJson(
               GetEvaluationsResponse(
-                  evaluations = user1Evaluations.copy(
-                    evaluations = listOf(newEvaluation),
-                  ),
-                  userEvaluationsId = "user_evaluations_id_value_updated",
+                evaluations = user1Evaluations.copy(
+                  evaluations = listOf(newEvaluation),
+                ),
+                userEvaluationsId = "user_evaluations_id_value_updated",
               ),
             ),
         ),
@@ -198,8 +198,8 @@ class EvaluationInteractorTest {
           moshi.adapter(GetEvaluationsResponse::class.java)
             .toJson(
               GetEvaluationsResponse(
-                  evaluations = user1Evaluations,
-                  userEvaluationsId = "user_evaluations_id_value",
+                evaluations = user1Evaluations,
+                userEvaluationsId = "user_evaluations_id_value",
               ),
             ),
         ),
@@ -216,8 +216,8 @@ class EvaluationInteractorTest {
           moshi.adapter(GetEvaluationsResponse::class.java)
             .toJson(
               GetEvaluationsResponse(
-                  evaluations = user1Evaluations,
-                  userEvaluationsId = "user_evaluations_id_value",
+                evaluations = user1Evaluations,
+                userEvaluationsId = "user_evaluations_id_value",
               ),
             ),
         ),

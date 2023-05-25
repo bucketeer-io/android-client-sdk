@@ -618,9 +618,9 @@ class EventInteractorTest {
         .setBody(
           moshi.adapter(RegisterEventsResponse::class.java).toJson(
             RegisterEventsResponse(
-                errors = mapOf(
-                  idGenerator.calls[0] to RegisterEventsErrorResponse(retriable = true, "error"),
-                  idGenerator.calls[1] to RegisterEventsErrorResponse(retriable = false, "error"),
+              errors = mapOf(
+                idGenerator.calls[0] to RegisterEventsErrorResponse(retriable = true, "error"),
+                idGenerator.calls[1] to RegisterEventsErrorResponse(retriable = false, "error"),
               ),
             ),
           ),

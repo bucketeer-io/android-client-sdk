@@ -18,7 +18,6 @@ import io.bucketeer.sdk.android.internal.evaluation.db.EvaluationDao
 import io.bucketeer.sdk.android.internal.evaluation.db.EvaluationDaoImpl
 import io.bucketeer.sdk.android.internal.event.db.EventDao
 import io.bucketeer.sdk.android.internal.event.db.EventDaoImpl
-import io.bucketeer.sdk.android.internal.model.ReasonType
 import io.bucketeer.sdk.android.internal.model.User
 import io.bucketeer.sdk.android.internal.model.jsonadapter.EventAdapterFactory
 import io.bucketeer.sdk.android.internal.model.jsonadapter.EventTypeAdapter
