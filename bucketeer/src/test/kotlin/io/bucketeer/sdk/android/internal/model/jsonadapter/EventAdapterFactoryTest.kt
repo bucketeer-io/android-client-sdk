@@ -32,8 +32,8 @@ class EventAdapterFactoryTest {
         |  "type": 1,
         |  "event": {
         |    "timestamp": 1660210923777,
-        |    "goal_id": "goal_id_value",
-        |    "user_id": "user_id_value",
+        |    "goalId": "goal_id_value",
+        |    "userId": "user_id_value",
         |    "value": 1.04,
         |    "user": {
         |      "id": "user_id_value",
@@ -43,8 +43,8 @@ class EventAdapterFactoryTest {
         |      }
         |    },
         |    "tag": "tag_value",
-        |    "source_id": 1,
-        |    "sdk_version": "2.0.1",
+        |    "sourceId": 1,
+        |    "sdkVersion": "2.0.1",
         |    "metadata": {
         |      "app_version": "1.2.3",
         |      "os_version": "os_version_value",
@@ -88,8 +88,8 @@ class EventAdapterFactoryTest {
         |  "type": 1,
         |  "event": {
         |    "timestamp": 1660210923777,
-        |    "goal_id": "goal_id_value",
-        |    "user_id": "user_id_value",
+        |    "goalId": "goal_id_value",
+        |    "userId": "user_id_value",
         |    "value": 1.04,
         |    "user": {
         |      "id": "user_id_value",
@@ -99,7 +99,7 @@ class EventAdapterFactoryTest {
         |      }
         |    },
         |    "tag": "tag_value",
-        |    "source_id": 1
+        |    "sourceId": 1
         |  }
         |}
       """.trimMargin(),
@@ -132,10 +132,10 @@ class EventAdapterFactoryTest {
         |  "type": 3,
         |  "event": {
         |    "timestamp": 1660210923777,
-        |    "feature_id": "feature_id_value",
-        |    "feature_version": 2,
-        |    "user_id": "user_id_value",
-        |    "variation_id": "variation_id_value",
+        |    "featureId": "feature_id_value",
+        |    "featureVersion": 2,
+        |    "userId": "user_id_value",
+        |    "variationId": "variation_id_value",
         |    "user": {
         |      "id": "user_id_value",
         |      "data": {
@@ -144,12 +144,12 @@ class EventAdapterFactoryTest {
         |      }
         |    },
         |    "reason": {
-        |      "type": 4,
+        |      "type": "CLIENT",
         |      "rule_id": "rule_id_value"
         |    },
         |    "tag": "tag_value",
-        |    "source_id": 1,
-        |    "sdk_version": "2.0.1",
+        |    "sourceId": 1,
+        |    "sdkVersion": "2.0.1",
         |    "metadata": {
         |      "app_version": "1.2.3",
         |      "os_version": "os_version_value",
@@ -198,10 +198,10 @@ class EventAdapterFactoryTest {
         |  "type": 3,
         |  "event": {
         |    "timestamp": 1660210923777,
-        |    "feature_id": "feature_id_value",
-        |    "feature_version": 2,
-        |    "user_id": "user_id_value",
-        |    "variation_id": "variation_id_value",
+        |    "featureId": "feature_id_value",
+        |    "featureVersion": 2,
+        |    "userId": "user_id_value",
+        |    "variationId": "variation_id_value",
         |    "user": {
         |      "id": "user_id_value",
         |      "data": {
@@ -210,11 +210,11 @@ class EventAdapterFactoryTest {
         |      }
         |    },
         |    "reason": {
-        |      "type": 4,
+        |      "type": "CLIENT",
         |      "rule_id": "rule_id_value"
         |    },
         |    "tag": "tag_value",
-        |    "source_id": 1
+        |    "sourceId": 1
         |  }
         |}
       """.trimMargin(),
@@ -259,7 +259,7 @@ class EventAdapterFactoryTest {
         |      },
         |      "duration": 5
         |    },
-        |    "sdk_version": "2.0.1",
+        |    "sdkVersion": "2.0.1",
         |    "metadata": {
         |      "app_version": "1.2.3",
         |      "os_version": "os_version_value",
