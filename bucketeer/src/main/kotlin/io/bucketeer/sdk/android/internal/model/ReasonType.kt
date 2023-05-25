@@ -6,7 +6,9 @@ enum class ReasonType(val value: String) {
   DEFAULT("DEFAULT"),
   CLIENT("CLIENT"),
   OFF_VARIATION("OFF_VARIATION"),
-  PREREQUISITE("PREREQUISITE");
+  PREREQUISITE("PREREQUISITE"),
+
+  ;
 
   companion object {
     fun from(value: String): ReasonType = values().first { it.value == value }

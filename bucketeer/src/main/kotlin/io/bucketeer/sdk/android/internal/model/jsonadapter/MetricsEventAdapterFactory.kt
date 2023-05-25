@@ -118,6 +118,11 @@ class MetricsEventAdapterFactory : JsonAdapter.Factory {
           metadataAdapter.toJson(writer, value.metadata)
         }
 
+        if (value.protobufType != null) {
+          writer.name("@type")
+          writer.jsonValue(value.protobufType)
+        }
+
         writer.endObject()
       }
     }

@@ -1,5 +1,6 @@
 package io.bucketeer.sdk.android.internal.model
 
+import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 // we can't use codegen here
@@ -17,7 +18,8 @@ sealed class EventData {
     val sourceId: SourceID,
     val sdkVersion: String? = null,
     val metadata: Map<String, String>? = null,
-    val protobufType: String? = "type.googleapis.com/bucketeer.event.client.GoalEvent"
+    @Json(name = "@type")
+    val protobufType: String? = "type.googleapis.com/bucketeer.event.client.GoalEvent",
   ) : EventData()
 
   @JsonClass(generateAdapter = true)
@@ -33,7 +35,8 @@ sealed class EventData {
     val sourceId: SourceID,
     val sdkVersion: String? = null,
     val metadata: Map<String, String>? = null,
-    val protobufType: String? = "type.googleapis.com/bucketeer.event.client.EvaluationEvent"
+    @Json(name = "@type")
+    val protobufType: String? = "type.googleapis.com/bucketeer.event.client.EvaluationEvent",
   ) : EventData()
 
   // we can't use codegen here
@@ -44,6 +47,6 @@ sealed class EventData {
     val type: MetricsEventType,
     val sdkVersion: String? = null,
     val metadata: Map<String, String>? = null,
-    val protobufType: String? = "type.googleapis.com/bucketeer.event.client.MetricsEvent"
+    val protobufType: String? = "type.googleapis.com/bucketeer.event.client.MetricsEvent",
   ) : EventData()
 }
