@@ -49,7 +49,8 @@ class EventAdapterFactoryTest {
         |      "app_version": "1.2.3",
         |      "os_version": "os_version_value",
         |      "device_model": "device_model_value"
-        |    }
+        |    },
+        |    "@type": "type.googleapis.com/bucketeer.event.client.GoalEvent"
         |  }
         |}
       """.trimMargin(),
@@ -99,7 +100,8 @@ class EventAdapterFactoryTest {
         |      }
         |    },
         |    "tag": "tag_value",
-        |    "sourceId": 1
+        |    "sourceId": 1,
+        |    "@type": "type.googleapis.com/bucketeer.event.client.GoalEvent"
         |  }
         |}
       """.trimMargin(),
@@ -145,7 +147,7 @@ class EventAdapterFactoryTest {
         |    },
         |    "reason": {
         |      "type": "CLIENT",
-        |      "rule_id": "rule_id_value"
+        |      "ruleId": "rule_id_value"
         |    },
         |    "tag": "tag_value",
         |    "sourceId": 1,
@@ -154,7 +156,8 @@ class EventAdapterFactoryTest {
         |      "app_version": "1.2.3",
         |      "os_version": "os_version_value",
         |      "device_model": "device_model_value"
-        |    }
+        |    },
+        |    "@type": "type.googleapis.com/bucketeer.event.client.EvaluationEvent"
         |  }
         |}
       """.trimMargin(),
@@ -211,10 +214,11 @@ class EventAdapterFactoryTest {
         |    },
         |    "reason": {
         |      "type": "CLIENT",
-        |      "rule_id": "rule_id_value"
+        |      "ruleId": "rule_id_value"
         |    },
         |    "tag": "tag_value",
-        |    "sourceId": 1
+        |    "sourceId": 1,
+        |    "@type": "type.googleapis.com/bucketeer.event.client.EvaluationEvent"
         |  }
         |}
       """.trimMargin(),
@@ -235,6 +239,9 @@ class EventAdapterFactoryTest {
             ),
           ),
           reason = Reason(
+            // Kenji: we don't need ReasonTypeAdapterTest anymore
+            // ReasonTypeAdapter is autogenerate by Moshi
+            // We could validate ReasonType toJson and fromJson in this test file.
             type = ReasonType.CLIENT,
             ruleId = "rule_id_value",
           ),
@@ -257,14 +264,16 @@ class EventAdapterFactoryTest {
         |        "key1": "value1",
         |        "key2": "value2"
         |      },
-        |      "duration": 5
+        |      "duration": 5,
+        |      "@type": "type.googleapis.com/bucketeer.event.client.GetEvaluationLatencyMetricsEvent"
         |    },
         |    "sdkVersion": "2.0.1",
         |    "metadata": {
         |      "app_version": "1.2.3",
         |      "os_version": "os_version_value",
         |      "device_model": "device_model_value"
-        |    }
+        |    },
+        |    "@type": "type.googleapis.com/bucketeer.event.client.MetricsEvent"
         |  }
         |}
       """.trimMargin(),
@@ -305,8 +314,10 @@ class EventAdapterFactoryTest {
         |        "key1": "value1",
         |        "key2": "value2"
         |      },
-        |      "duration": 5
-        |    }
+        |      "duration": 5,
+        |      "@type": "type.googleapis.com/bucketeer.event.client.GetEvaluationLatencyMetricsEvent"
+        |    },
+        |    "@type": "type.googleapis.com/bucketeer.event.client.MetricsEvent"
         |  }
         |}
       """.trimMargin(),

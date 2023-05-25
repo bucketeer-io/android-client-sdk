@@ -87,7 +87,7 @@ internal class ApiClientImplTest {
     assertThat(server.requestCount).isEqualTo(1)
     val request = server.takeRequest()
     assertThat(request.method).isEqualTo("POST")
-    assertThat(request.path).isEqualTo("/v1/gateway/evaluations")
+    assertThat(request.path).isEqualTo("/get_evaluations")
     assertThat(
       moshi.adapter(GetEvaluationsRequest::class.java)
         .fromJson(request.body.readString(Charsets.UTF_8)),
@@ -105,7 +105,7 @@ internal class ApiClientImplTest {
     val success = result as GetEvaluationsResult.Success
     assertThat(success.value).isEqualTo(expected)
     assertThat(success.seconds).isAtLeast(1)
-    assertThat(success.sizeByte).isEqualTo(727)
+    assertThat(success.sizeByte).isEqualTo(720)
     assertThat(success.featureTag).isEqualTo("feature_tag_value")
   }
 
@@ -280,7 +280,7 @@ internal class ApiClientImplTest {
     val request = server.takeRequest()
     assertThat(server.requestCount).isEqualTo(1)
     assertThat(request.method).isEqualTo("POST")
-    assertThat(request.path).isEqualTo("/v1/gateway/events")
+    assertThat(request.path).isEqualTo("/register_events")
     assertThat(
       moshi.adapter(RegisterEventsRequest::class.java)
         .fromJson(request.body.readString(Charsets.UTF_8)),

@@ -18,12 +18,12 @@ import io.bucketeer.sdk.android.internal.evaluation.db.EvaluationDao
 import io.bucketeer.sdk.android.internal.evaluation.db.EvaluationDaoImpl
 import io.bucketeer.sdk.android.internal.event.db.EventDao
 import io.bucketeer.sdk.android.internal.event.db.EventDaoImpl
+import io.bucketeer.sdk.android.internal.model.ReasonType
 import io.bucketeer.sdk.android.internal.model.User
 import io.bucketeer.sdk.android.internal.model.jsonadapter.EventAdapterFactory
 import io.bucketeer.sdk.android.internal.model.jsonadapter.EventTypeAdapter
 import io.bucketeer.sdk.android.internal.model.jsonadapter.MetricsEventAdapterFactory
 import io.bucketeer.sdk.android.internal.model.jsonadapter.MetricsEventTypeAdapter
-import io.bucketeer.sdk.android.internal.model.jsonadapter.ReasonTypeAdapter
 import io.bucketeer.sdk.android.internal.model.jsonadapter.SourceIDAdapter
 import io.bucketeer.sdk.android.internal.remote.ApiClient
 import io.bucketeer.sdk.android.internal.remote.ApiClientImpl
@@ -78,7 +78,6 @@ internal open class DataModule(
       return Moshi.Builder()
         .add(EventTypeAdapter())
         .add(MetricsEventTypeAdapter())
-        .add(ReasonTypeAdapter())
         .add(SourceIDAdapter())
         .add(EventAdapterFactory())
         .add(MetricsEventAdapterFactory())

@@ -60,7 +60,7 @@ class MetricsEventAdapterFactory : JsonAdapter.Factory {
           timestamp = (jsonObj["timestamp"] as Double).toLong(),
           event = adapter.fromJsonValue(jsonObj["event"]) as MetricsEventData,
           type = eventType,
-          sdkVersion = jsonObj["sdk_version"]?.toString(),
+          sdkVersion = jsonObj["sdkVersion"]?.toString(),
           metadata = metadataAdapter.fromJsonValue(jsonObj["metadata"]),
         )
       }
@@ -109,7 +109,7 @@ class MetricsEventAdapterFactory : JsonAdapter.Factory {
         }
 
         if (value.sdkVersion != null) {
-          writer.name("sdk_version")
+          writer.name("sdkVersion")
           writer.jsonValue(value.sdkVersion)
         }
 

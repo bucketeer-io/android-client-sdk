@@ -107,9 +107,10 @@ class BKTClientImplTest {
     val dbEvents = client.componentImpl.dataModule.eventDao.getEvents()
     assertThat(dbEvents).hasSize(2)
     assertGetEvaluationLatencyMetricsEvent(dbEvents[0], mapOf("tag" to config.featureTag))
+    val lastEvent = dbEvents[1]
     assertGetEvaluationSizeMetricsEvent(
-      dbEvents[1],
-      MetricsEventData.GetEvaluationSizeMetricsEvent(mapOf("tag" to config.featureTag), 734),
+      lastEvent,
+      MetricsEventData.GetEvaluationSizeMetricsEvent(mapOf("tag" to config.featureTag), 727),
     )
   }
 

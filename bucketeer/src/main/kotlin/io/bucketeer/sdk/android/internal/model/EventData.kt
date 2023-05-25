@@ -47,6 +47,7 @@ sealed class EventData {
     val type: MetricsEventType,
     val sdkVersion: String? = null,
     val metadata: Map<String, String>? = null,
+    @Json(name = "@type")
     val protobufType: String? = "type.googleapis.com/bucketeer.event.client.MetricsEvent",
   ) : EventData()
 }

@@ -107,7 +107,7 @@ internal class BKTClientImpl(
       userId = raw.userId,
       variationId = raw.variationId,
       variationValue = raw.variationValue,
-      reason = ReasonType.from(raw.reason.type.value),
+      reason = ReasonType.from(raw.reason.type.name),
     )
   }
 

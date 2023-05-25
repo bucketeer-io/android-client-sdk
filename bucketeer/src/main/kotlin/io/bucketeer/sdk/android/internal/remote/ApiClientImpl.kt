@@ -56,7 +56,7 @@ internal class ApiClientImpl(
     val request = Request.Builder()
       .url(
         apiEndpoint.newBuilder()
-          .addPathSegments("v1/gateway/evaluations")
+          .addPathSegments("get_evaluations")
           .build(),
       )
       .applyHeaders()
@@ -112,7 +112,7 @@ internal class ApiClientImpl(
     val request = Request.Builder()
       .url(
         apiEndpoint.newBuilder()
-          .addPathSegments("v1/gateway/events")
+          .addPathSegments("register_events")
           .build(),
       )
       .applyHeaders()

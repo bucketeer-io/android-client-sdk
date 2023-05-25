@@ -27,14 +27,16 @@ class MetricsEventAdapterFactoryTest {
         |      "key1": "value1",
         |      "key2": "value2"
         |    },
-        |    "duration": 5
+        |    "duration": 5,
+        |    "@type": "type.googleapis.com/bucketeer.event.client.GetEvaluationLatencyMetricsEvent"
         |  },
-        |  "sdk_version": "2.0.1",
+        |  "sdkVersion": "2.0.1",
         |  "metadata": {
         |    "app_version": "1.2.3",
         |    "os_version": "os_version_value",
         |    "device_model": "device_model_value"
-        |  }
+        |  },
+        |  "@type": "type.googleapis.com/bucketeer.event.client.MetricsEvent"
         |}
       """.trimMargin(),
       event = EventData.MetricsEvent(
@@ -65,14 +67,16 @@ class MetricsEventAdapterFactoryTest {
         |      "key1": "value1",
         |      "key2": "value2"
         |    },
-        |    "sizeByte": 1234
+        |    "sizeByte": 1234,
+        |    "@type": "type.googleapis.com/bucketeer.event.client.GetEvaluationSizeMetricsEvent"
         |  },
-        |  "sdk_version": "2.0.1",
+        |  "sdkVersion": "2.0.1",
         |  "metadata": {
         |    "app_version": "1.2.3",
         |    "os_version": "os_version_value",
         |    "device_model": "device_model_value"
-        |  }
+        |  },
+        |  "@type": "type.googleapis.com/bucketeer.event.client.MetricsEvent"
         |}
       """.trimMargin(),
       event = EventData.MetricsEvent(
@@ -101,12 +105,13 @@ class MetricsEventAdapterFactoryTest {
         |  "event": {
         |    "tag": "tag_value"
         |  },
-        |  "sdk_version": "2.0.1",
+        |  "sdkVersion": "2.0.1",
         |  "metadata": {
         |    "app_version": "1.2.3",
         |    "os_version": "os_version_value",
         |    "device_model": "device_model_value"
-        |  }
+        |  },
+        |  "@type": "type.googleapis.com/bucketeer.event.client.MetricsEvent"
         |}
       """.trimMargin(),
       event = EventData.MetricsEvent(
@@ -131,12 +136,13 @@ class MetricsEventAdapterFactoryTest {
         |  "event": {
         |    "tag": "tag_value"
         |  },
-        |  "sdk_version": "2.0.1",
+        |  "sdkVersion": "2.0.1",
         |  "metadata": {
         |    "app_version": "1.2.3",
         |    "os_version": "os_version_value",
         |    "device_model": "device_model_value"
-        |  }
+        |  },
+        |  "@type": "type.googleapis.com/bucketeer.event.client.MetricsEvent"
         |}
       """.trimMargin(),
       event = EventData.MetricsEvent(
