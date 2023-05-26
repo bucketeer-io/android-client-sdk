@@ -21,9 +21,9 @@ import io.bucketeer.sdk.android.internal.event.db.EventDao
 import io.bucketeer.sdk.android.internal.event.db.EventDaoImpl
 import io.bucketeer.sdk.android.internal.model.ReasonType
 import io.bucketeer.sdk.android.internal.model.User
+import io.bucketeer.sdk.android.internal.model.jsonadapter.EvaluationLatencyMetricsEventAdapterFactory
 import io.bucketeer.sdk.android.internal.model.jsonadapter.EventAdapterFactory
 import io.bucketeer.sdk.android.internal.model.jsonadapter.EventTypeAdapter
-import io.bucketeer.sdk.android.internal.model.jsonadapter.GetEvaluationLatencyMetricsEventAdapterFactory
 import io.bucketeer.sdk.android.internal.model.jsonadapter.MetricsEventAdapterFactory
 import io.bucketeer.sdk.android.internal.model.jsonadapter.MetricsEventTypeAdapter
 import io.bucketeer.sdk.android.internal.model.jsonadapter.SourceIDAdapter
@@ -84,7 +84,7 @@ internal open class DataModule(
         .add(EventAdapterFactory())
         .add(MetricsEventAdapterFactory())
         .add(ReasonType::class.java, EnumJsonAdapter.create(ReasonType::class.java).withUnknownFallback(ReasonType.DEFAULT))
-        .add(GetEvaluationLatencyMetricsEventAdapterFactory())
+        .add(EvaluationLatencyMetricsEventAdapterFactory())
         .build()
     }
   }

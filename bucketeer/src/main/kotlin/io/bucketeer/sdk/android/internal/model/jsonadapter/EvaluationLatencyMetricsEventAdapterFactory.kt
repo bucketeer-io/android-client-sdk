@@ -5,11 +5,11 @@ import com.squareup.moshi.JsonReader
 import com.squareup.moshi.JsonWriter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
+import io.bucketeer.sdk.android.BKTException
 import io.bucketeer.sdk.android.internal.model.MetricsEventData
 import java.lang.reflect.Type
-import com.squareup.moshi.internal.Util
 
-class GetEvaluationLatencyMetricsEventAdapterFactory : JsonAdapter.Factory {
+class EvaluationLatencyMetricsEventAdapterFactory : JsonAdapter.Factory {
 
   override fun create(
     type: Type,
@@ -20,16 +20,26 @@ class GetEvaluationLatencyMetricsEventAdapterFactory : JsonAdapter.Factory {
       return null
     }
 
-     return object : JsonAdapter<MetricsEventData.GetEvaluationLatencyMetricsEvent>() {
+    return object : JsonAdapter<MetricsEventData.GetEvaluationLatencyMetricsEvent>() {
 
       private val options: JsonReader.Options = JsonReader.Options.of("labels", "duration")
 
       private val mapOfStringStringAdapter: JsonAdapter<Map<String, String>> =
-        moshi.adapter(Types.newParameterizedType(Map::class.java, String::class.java,
-          String::class.java), emptySet(), "labels")
+        moshi.adapter(
+          Types.newParameterizedType(
+            Map::class.java,
+            String::class.java,
+            String::class.java,
+          ),
+          emptySet(),
+          "labels",
+        )
 
-      private val durationAdapter: JsonAdapter<String?> = moshi.adapter(String::class.java, emptySet(),
-        "duration")
+      private val durationAdapter: JsonAdapter<String?> = moshi.adapter(
+        String::class.java,
+        emptySet(),
+        "duration",
+      )
 
       override fun fromJson(reader: JsonReader): MetricsEventData.GetEvaluationLatencyMetricsEvent? {
         var labels: Map<String, String>? = null
@@ -38,12 +48,10 @@ class GetEvaluationLatencyMetricsEventAdapterFactory : JsonAdapter.Factory {
         while (reader.hasNext()) {
           when (reader.selectName(options)) {
             0 -> {
-              labels = mapOfStringStringAdapter.fromJson(reader) ?: throw Util.unexpectedNull("labels",
-                "labels", reader)
+              labels = mapOfStringStringAdapter.fromJson(reader) ?: throw BKTException.IllegalStateException("unexpected type: $type")
             }
             1 -> {
-              duration = durationAdapter.fromJson(reader)?.protobufDurationToLong() ?: throw Util.unexpectedNull("duration",
-                "duration", reader)
+              duration = durationAdapter.fromJson(reader)?.protobufDurationToLong() ?: throw BKTException.IllegalStateException("unexpected type: $type")
             }
             -1 -> {
               // Unknown name, skip it.
@@ -53,9 +61,9 @@ class GetEvaluationLatencyMetricsEventAdapterFactory : JsonAdapter.Factory {
           }
         }
         reader.endObject()
-        return  MetricsEventData.GetEvaluationLatencyMetricsEvent(
+        return MetricsEventData.GetEvaluationLatencyMetricsEvent(
           labels = labels as Map<String, String>,
-          duration = duration ?: throw Util.missingProperty("duration", "duration", reader),
+          duration = duration ?: throw BKTException.IllegalStateException("unexpected type: $type"),
         )
       }
 
@@ -71,23 +79,23 @@ class GetEvaluationLatencyMetricsEventAdapterFactory : JsonAdapter.Factory {
         // Kenji : because duration is in `second`, we are safe to do that
         // `GetEvaluationLatencyMetricsEvent` were deprecated in backend
         // Convert Long to the protobuf `Duration` format
-        writer.jsonValue( "${value.duration}s")
+        writer.jsonValue("${value.duration}s")
         writer.name("@type")
-        writer.jsonValue( value.protobufType)
+        writer.jsonValue(value.protobufType)
         writer.endObject()
       }
     }
   }
 }
 
-fun String.protobufDurationToLong() : Long {
+fun String.protobufDurationToLong(): Long {
   // Kenji : because duration is in `second`, we are safe to do that
   // `GetEvaluationLatencyMetricsEvent` were deprecated in backend
   // We could use google.protobuf lib but I don't want add more dependency to our lib.
   val durationProto = this.removeSuffix("s")
   return try {
     durationProto.toLong()
-  } catch (ex : NumberFormatException) {
+  } catch (ex: NumberFormatException) {
     0L
   }
 }
