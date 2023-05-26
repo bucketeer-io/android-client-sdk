@@ -5,7 +5,7 @@ import com.squareup.moshi.JsonClass
 
 sealed class MetricsEventData {
 
-  @JsonClass(generateAdapter = true)
+  @JsonClass(generateAdapter = false)
   data class GetEvaluationLatencyMetricsEvent(
     val labels: Map<String, String> = emptyMap(),
     // in seconds

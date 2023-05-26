@@ -27,7 +27,7 @@ class MetricsEventAdapterFactoryTest {
         |      "key1": "value1",
         |      "key2": "value2"
         |    },
-        |    "duration": 5,
+        |    "duration": "5s",
         |    "@type": "type.googleapis.com/bucketeer.event.client.GetEvaluationLatencyMetricsEvent"
         |  },
         |  "sdkVersion": "2.0.1",
