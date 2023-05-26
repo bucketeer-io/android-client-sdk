@@ -11,6 +11,13 @@ enum class ReasonType {
   ;
 
   companion object {
-    fun from(value: String): ReasonType = values().first { it.name == value }
+    fun from(value: String): ReasonType {
+      return try {
+        values().first { it.name == value }
+      } catch (ex: NoSuchElementException) {
+        // FALLBACK
+        DEFAULT
+      }
+    }
   }
 }
