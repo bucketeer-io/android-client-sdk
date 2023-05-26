@@ -25,12 +25,12 @@ sealed class MetricsEventData {
   @JsonClass(generateAdapter = true)
   data class TimeoutErrorCountMetricsEvent(
     val tag: String,
-    // TODO: update me when doing this issue https://github.com/bucketeer-io/android-client-sdk/issues/55
+    // TODO: update me when doing this issue https://github.com/bucketeer-io/android-client-sdk/issues/56
   ) : MetricsEventData()
 
   @JsonClass(generateAdapter = true)
   data class InternalErrorCountMetricsEvent(
     val tag: String,
-    // TODO: update me when doing this issue https://github.com/bucketeer-io/android-client-sdk/issues/55
+    // TODO: update me when doing this issue https://github.com/bucketeer-io/android-client-sdk/issues/56
   ) : MetricsEventData()
 }
