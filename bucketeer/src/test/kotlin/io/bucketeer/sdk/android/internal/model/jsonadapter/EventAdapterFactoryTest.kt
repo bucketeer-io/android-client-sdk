@@ -4,6 +4,7 @@ import com.google.common.truth.Truth
 import com.google.testing.junit.testparameterinjector.TestParameter
 import com.google.testing.junit.testparameterinjector.TestParameterInjector
 import com.squareup.moshi.JsonAdapter
+import io.bucketeer.sdk.android.ReasonType
 import io.bucketeer.sdk.android.internal.di.DataModule
 import io.bucketeer.sdk.android.internal.model.Event
 import io.bucketeer.sdk.android.internal.model.EventData
@@ -11,7 +12,6 @@ import io.bucketeer.sdk.android.internal.model.EventType
 import io.bucketeer.sdk.android.internal.model.MetricsEventData
 import io.bucketeer.sdk.android.internal.model.MetricsEventType
 import io.bucketeer.sdk.android.internal.model.Reason
-import io.bucketeer.sdk.android.ReasonType
 import io.bucketeer.sdk.android.internal.model.SourceID
 import io.bucketeer.sdk.android.internal.model.User
 import org.junit.Before
