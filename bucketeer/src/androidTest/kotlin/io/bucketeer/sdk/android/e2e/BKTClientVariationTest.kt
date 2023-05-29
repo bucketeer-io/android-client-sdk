@@ -10,9 +10,9 @@ import io.bucketeer.sdk.android.BKTConfig
 import io.bucketeer.sdk.android.BKTEvaluation
 import io.bucketeer.sdk.android.BKTUser
 import io.bucketeer.sdk.android.BuildConfig
+import io.bucketeer.sdk.android.ReasonType
 import io.bucketeer.sdk.android.internal.Constants
 import io.bucketeer.sdk.android.internal.database.OpenHelperCallback
-import io.bucketeer.sdk.android.ReasonType
 import org.json.JSONObject
 import org.junit.After
 import org.junit.Before
