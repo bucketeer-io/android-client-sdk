@@ -239,7 +239,7 @@ class EventAdapterFactoryTest {
             ),
           ),
           reason = Reason(
-            // Kenji: we don't need ReasonTypeAdapterTest anymore
+            // Note: we don't need ReasonTypeAdapterTest anymore
             // ReasonTypeAdapter is autogenerate by Moshi
             // We could validate ReasonType toJson and fromJson in this test file.
             type = ReasonType.CLIENT,
