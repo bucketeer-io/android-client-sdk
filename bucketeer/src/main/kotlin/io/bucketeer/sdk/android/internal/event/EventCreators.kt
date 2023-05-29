@@ -2,6 +2,7 @@ package io.bucketeer.sdk.android.internal.event
 
 import android.os.Build
 import io.bucketeer.sdk.android.BuildConfig
+import io.bucketeer.sdk.android.ReasonType
 import io.bucketeer.sdk.android.internal.Clock
 import io.bucketeer.sdk.android.internal.IdGenerator
 import io.bucketeer.sdk.android.internal.model.Evaluation
@@ -11,7 +12,6 @@ import io.bucketeer.sdk.android.internal.model.EventType
 import io.bucketeer.sdk.android.internal.model.MetricsEventData
 import io.bucketeer.sdk.android.internal.model.MetricsEventType
 import io.bucketeer.sdk.android.internal.model.Reason
-import io.bucketeer.sdk.android.ReasonType
 import io.bucketeer.sdk.android.internal.model.SourceID
 import io.bucketeer.sdk.android.internal.model.User
 
