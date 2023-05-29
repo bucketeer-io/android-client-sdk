@@ -8,7 +8,7 @@ import io.bucketeer.sdk.android.internal.model.EventType
 import io.bucketeer.sdk.android.internal.model.MetricsEventData
 import io.bucketeer.sdk.android.internal.model.MetricsEventType
 import io.bucketeer.sdk.android.internal.model.Reason
-import io.bucketeer.sdk.android.internal.model.ReasonType
+import io.bucketeer.sdk.android.ReasonType
 import io.bucketeer.sdk.android.internal.model.SourceID
 
 val evaluationEvent1: Event by lazy {

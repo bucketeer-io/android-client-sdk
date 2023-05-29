@@ -1,7 +1,5 @@
 package io.bucketeer.sdk.android
 
-import io.bucketeer.sdk.android.internal.model.ReasonType
-
 data class BKTEvaluation(
   var id: String,
   val featureId: String,

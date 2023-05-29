@@ -12,7 +12,7 @@ import io.bucketeer.sdk.android.BKTUser
 import io.bucketeer.sdk.android.BuildConfig
 import io.bucketeer.sdk.android.internal.Constants
 import io.bucketeer.sdk.android.internal.database.OpenHelperCallback
-import io.bucketeer.sdk.android.internal.model.ReasonType
+import io.bucketeer.sdk.android.ReasonType
 import org.junit.After
 import org.junit.Before
 import org.junit.Test

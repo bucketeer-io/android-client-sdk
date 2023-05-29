@@ -76,7 +76,7 @@ class EvaluationLatencyMetricsEventAdapterFactory : JsonAdapter.Factory {
         writer.name("labels")
         writer.jsonValue(value.labels)
         writer.name("duration")
-        // Kenji : because duration is in `second`, we are safe to do that
+        // note : because duration is in `second`, we are safe to do that
         // `GetEvaluationLatencyMetricsEvent` were deprecated in backend
         // Convert Long to the protobuf `Duration` format
         writer.jsonValue("${value.duration}s")
@@ -89,7 +89,7 @@ class EvaluationLatencyMetricsEventAdapterFactory : JsonAdapter.Factory {
 }
 
 fun String.protobufDurationToLong(): Long {
-  // Kenji : because duration is in `second`, we are safe to do that
+  // note : because duration is in `second`, we are safe to do that
   // `GetEvaluationLatencyMetricsEvent` were deprecated in backend
   // We could use google.protobuf lib but I don't want add more dependency to our lib.
   val durationProto = this.removeSuffix("s")

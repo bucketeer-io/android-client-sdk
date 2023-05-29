@@ -4,7 +4,7 @@ package io.bucketeer.sdk.android.mocks
 
 import io.bucketeer.sdk.android.internal.model.Evaluation
 import io.bucketeer.sdk.android.internal.model.Reason
-import io.bucketeer.sdk.android.internal.model.ReasonType
+import io.bucketeer.sdk.android.ReasonType
 import io.bucketeer.sdk.android.internal.model.UserEvaluations
 import io.bucketeer.sdk.android.internal.model.Variation
 
