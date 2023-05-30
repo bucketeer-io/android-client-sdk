@@ -1,4 +1,4 @@
-package io.bucketeer.sdk.android
+package io.bucketeer.sdk.android.internal.model
 
 enum class ReasonType {
   TARGET,

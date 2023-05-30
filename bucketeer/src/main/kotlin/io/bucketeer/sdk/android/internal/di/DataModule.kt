@@ -8,7 +8,6 @@ import androidx.sqlite.db.SupportSQLiteOpenHelper
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapters.EnumJsonAdapter
 import io.bucketeer.sdk.android.BKTConfig
-import io.bucketeer.sdk.android.ReasonType
 import io.bucketeer.sdk.android.internal.Clock
 import io.bucketeer.sdk.android.internal.ClockImpl
 import io.bucketeer.sdk.android.internal.Constants
@@ -20,6 +19,7 @@ import io.bucketeer.sdk.android.internal.evaluation.db.EvaluationDao
 import io.bucketeer.sdk.android.internal.evaluation.db.EvaluationDaoImpl
 import io.bucketeer.sdk.android.internal.event.db.EventDao
 import io.bucketeer.sdk.android.internal.event.db.EventDaoImpl
+import io.bucketeer.sdk.android.internal.model.ReasonType
 import io.bucketeer.sdk.android.internal.model.User
 import io.bucketeer.sdk.android.internal.model.jsonadapter.EvaluationLatencyMetricsEventAdapterFactory
 import io.bucketeer.sdk.android.internal.model.jsonadapter.EventAdapterFactory

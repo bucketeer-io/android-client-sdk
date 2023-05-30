@@ -10,7 +10,6 @@ import io.bucketeer.sdk.android.BKTConfig
 import io.bucketeer.sdk.android.BKTEvaluation
 import io.bucketeer.sdk.android.BKTUser
 import io.bucketeer.sdk.android.BuildConfig
-import io.bucketeer.sdk.android.ReasonType
 import io.bucketeer.sdk.android.internal.Constants
 import io.bucketeer.sdk.android.internal.database.OpenHelperCallback
 import org.junit.After
@@ -81,7 +80,7 @@ class BKTClientTest {
         userId = USER_ID,
         variationId = "b59a19d5-f4b1-47f8-a46e-6d9ca14740c1",
         variationValue = "value-2",
-        reason = ReasonType.RULE,
+        reason = BKTEvaluation.Reason.RULE,
       ),
     )
   }

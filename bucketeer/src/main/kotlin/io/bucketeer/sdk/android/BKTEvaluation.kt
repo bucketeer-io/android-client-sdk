@@ -7,5 +7,20 @@ data class BKTEvaluation(
   val userId: String,
   val variationId: String,
   val variationValue: String,
-  val reason: ReasonType,
-)
+  val reason: Reason,
+) {
+  enum class Reason {
+    TARGET,
+    RULE,
+    DEFAULT,
+    CLIENT,
+    OFF_VARIATION,
+    PREREQUISITE,
+
+    ;
+
+    companion object {
+      fun from(value: String): Reason = values().firstOrNull { it.name == value } ?: DEFAULT
+    }
+  }
+}
