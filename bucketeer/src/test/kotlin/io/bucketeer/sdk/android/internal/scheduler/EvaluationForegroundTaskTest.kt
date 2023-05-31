@@ -11,7 +11,6 @@ import io.bucketeer.sdk.android.internal.di.ComponentImpl
 import io.bucketeer.sdk.android.internal.di.DataModule
 import io.bucketeer.sdk.android.internal.di.InteractorModule
 import io.bucketeer.sdk.android.internal.model.response.ErrorResponse
-import io.bucketeer.sdk.android.internal.model.response.GetEvaluationsDataResponse
 import io.bucketeer.sdk.android.internal.model.response.GetEvaluationsResponse
 import io.bucketeer.sdk.android.internal.remote.measureTimeMillisWithResult
 import io.bucketeer.sdk.android.mocks.user1
@@ -77,10 +76,8 @@ class EvaluationForegroundTaskTest {
       moshi,
       200,
       GetEvaluationsResponse(
-        GetEvaluationsDataResponse(
-          evaluations = user1Evaluations,
-          user_evaluations_id = "user_evaluations_id_value",
-        ),
+        evaluations = user1Evaluations,
+        userEvaluationsId = "user_evaluations_id_value",
       ),
     )
 
@@ -99,10 +96,8 @@ class EvaluationForegroundTaskTest {
       moshi,
       200,
       GetEvaluationsResponse(
-        GetEvaluationsDataResponse(
-          evaluations = user1Evaluations,
-          user_evaluations_id = "user_evaluations_id_value",
-        ),
+        evaluations = user1Evaluations,
+        userEvaluationsId = "user_evaluations_id_value",
       ),
     )
 
@@ -132,10 +127,8 @@ class EvaluationForegroundTaskTest {
       moshi,
       500,
       GetEvaluationsResponse(
-        GetEvaluationsDataResponse(
-          evaluations = user1Evaluations,
-          user_evaluations_id = "user_evaluations_id_value",
-        ),
+        evaluations = user1Evaluations,
+        userEvaluationsId = "user_evaluations_id_value",
       ),
     )
 
@@ -186,20 +179,16 @@ class EvaluationForegroundTaskTest {
       moshi,
       200,
       GetEvaluationsResponse(
-        GetEvaluationsDataResponse(
-          evaluations = user1Evaluations,
-          user_evaluations_id = "user_evaluations_id_value",
-        ),
+        evaluations = user1Evaluations,
+        userEvaluationsId = "user_evaluations_id_value",
       ),
     )
     server.enqueueResponse(
       moshi,
       200,
       GetEvaluationsResponse(
-        GetEvaluationsDataResponse(
-          evaluations = user1Evaluations,
-          user_evaluations_id = "user_evaluations_id_value",
-        ),
+        evaluations = user1Evaluations,
+        userEvaluationsId = "user_evaluations_id_value",
       ),
     )
 

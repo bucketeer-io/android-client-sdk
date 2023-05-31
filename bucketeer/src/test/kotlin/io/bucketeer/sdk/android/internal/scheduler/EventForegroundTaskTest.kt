@@ -12,7 +12,6 @@ import io.bucketeer.sdk.android.internal.di.DataModule
 import io.bucketeer.sdk.android.internal.di.InteractorModule
 import io.bucketeer.sdk.android.internal.model.EventType
 import io.bucketeer.sdk.android.internal.model.request.RegisterEventsRequest
-import io.bucketeer.sdk.android.internal.model.response.RegisterEventsDataResponse
 import io.bucketeer.sdk.android.internal.model.response.RegisterEventsResponse
 import io.bucketeer.sdk.android.internal.remote.measureTimeMillisWithResult
 import io.bucketeer.sdk.android.mocks.evaluation1
@@ -78,7 +77,7 @@ class EventForegroundTaskTest {
     server.enqueueResponse(
       moshi,
       200,
-      RegisterEventsResponse(RegisterEventsDataResponse(errors = emptyMap())),
+      RegisterEventsResponse(errors = emptyMap()),
     )
 
     task.start()
@@ -98,12 +97,12 @@ class EventForegroundTaskTest {
     server.enqueueResponse(
       moshi,
       200,
-      RegisterEventsResponse(RegisterEventsDataResponse(errors = emptyMap())),
+      RegisterEventsResponse(errors = emptyMap()),
     )
     server.enqueueResponse(
       moshi,
       200,
-      RegisterEventsResponse(RegisterEventsDataResponse(errors = emptyMap())),
+      RegisterEventsResponse(errors = emptyMap()),
     )
 
     task.start()
@@ -147,7 +146,7 @@ class EventForegroundTaskTest {
     server.enqueueResponse(
       moshi,
       200,
-      RegisterEventsResponse(RegisterEventsDataResponse(errors = emptyMap())),
+      RegisterEventsResponse(errors = emptyMap()),
     )
 
     task.start()

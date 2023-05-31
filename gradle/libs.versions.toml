@@ -19,6 +19,7 @@ googlePlayServices-basement = { module = "com.google.android.gms:play-services-b
 
 moshi-kotlin = { module = "com.squareup.moshi:moshi-kotlin", version.ref = "moshi" }
 moshi-codegen = { module = "com.squareup.moshi:moshi-kotlin-codegen", version.ref = "moshi" }
+moshi-adapters = { module = "com.squareup.moshi:moshi-adapters", version.ref = "moshi" }
 
 junit = { module = "junit:junit", version = "4.13.2" }
 robolectric = { module = "org.robolectric:robolectric", version = "4.9.2" }

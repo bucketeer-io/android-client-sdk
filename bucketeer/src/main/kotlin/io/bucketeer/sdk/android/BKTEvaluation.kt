@@ -9,18 +9,18 @@ data class BKTEvaluation(
   val variationValue: String,
   val reason: Reason,
 ) {
-  enum class Reason(val value: Int) {
-    TARGET(0),
-    RULE(1),
-    DEFAULT(3),
-    CLIENT(4),
-    OFF_VARIATION(5),
-    PREREQUISITE(6),
+  enum class Reason {
+    TARGET,
+    RULE,
+    DEFAULT,
+    CLIENT,
+    OFF_VARIATION,
+    PREREQUISITE,
 
     ;
 
     companion object {
-      fun from(value: Int): Reason = values().first { it.value == value }
+      fun from(value: String): Reason = values().firstOrNull { it.name == value } ?: DEFAULT
     }
   }
 }

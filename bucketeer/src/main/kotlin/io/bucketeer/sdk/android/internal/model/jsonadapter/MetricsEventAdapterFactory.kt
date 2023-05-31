@@ -5,7 +5,6 @@ import com.squareup.moshi.JsonReader
 import com.squareup.moshi.JsonWriter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
-import com.squareup.moshi.adapter
 import io.bucketeer.sdk.android.BKTException
 import io.bucketeer.sdk.android.internal.model.EventData
 import io.bucketeer.sdk.android.internal.model.MetricsEventData
@@ -61,7 +60,7 @@ class MetricsEventAdapterFactory : JsonAdapter.Factory {
           timestamp = (jsonObj["timestamp"] as Double).toLong(),
           event = adapter.fromJsonValue(jsonObj["event"]) as MetricsEventData,
           type = eventType,
-          sdk_version = jsonObj["sdk_version"]?.toString(),
+          sdkVersion = jsonObj["sdkVersion"]?.toString(),
           metadata = metadataAdapter.fromJsonValue(jsonObj["metadata"]),
         )
       }
@@ -109,14 +108,19 @@ class MetricsEventAdapterFactory : JsonAdapter.Factory {
           }
         }
 
-        if (value.sdk_version != null) {
-          writer.name("sdk_version")
-          writer.jsonValue(value.sdk_version)
+        if (value.sdkVersion != null) {
+          writer.name("sdkVersion")
+          writer.jsonValue(value.sdkVersion)
         }
 
         if (value.metadata != null) {
           writer.name("metadata")
           metadataAdapter.toJson(writer, value.metadata)
+        }
+
+        if (value.protobufType != null) {
+          writer.name("@type")
+          writer.jsonValue(value.protobufType)
         }
 
         writer.endObject()

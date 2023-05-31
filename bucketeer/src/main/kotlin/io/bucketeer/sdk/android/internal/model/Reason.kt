@@ -5,5 +5,5 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class Reason(
   val type: ReasonType,
-  val rule_id: String = "",
+  val ruleId: String = "",
 )

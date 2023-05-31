@@ -10,9 +10,7 @@ import io.bucketeer.sdk.android.internal.model.SourceID
 import io.bucketeer.sdk.android.internal.model.request.GetEvaluationsRequest
 import io.bucketeer.sdk.android.internal.model.request.RegisterEventsRequest
 import io.bucketeer.sdk.android.internal.model.response.ErrorResponse
-import io.bucketeer.sdk.android.internal.model.response.GetEvaluationsDataResponse
 import io.bucketeer.sdk.android.internal.model.response.GetEvaluationsResponse
-import io.bucketeer.sdk.android.internal.model.response.RegisterEventsDataResponse
 import io.bucketeer.sdk.android.internal.model.response.RegisterEventsErrorResponse
 import io.bucketeer.sdk.android.internal.model.response.RegisterEventsResponse
 import io.bucketeer.sdk.android.mocks.evaluationEvent1
@@ -61,10 +59,8 @@ internal class ApiClientImplTest {
   @Test
   fun `getEvaluations - success`() {
     val expected = GetEvaluationsResponse(
-      data = GetEvaluationsDataResponse(
-        evaluations = user1Evaluations,
-        user_evaluations_id = "user_evaluation_id",
-      ),
+      evaluations = user1Evaluations,
+      userEvaluationsId = "user_evaluation_id",
     )
     server.enqueue(
       MockResponse()
@@ -91,7 +87,7 @@ internal class ApiClientImplTest {
     assertThat(server.requestCount).isEqualTo(1)
     val request = server.takeRequest()
     assertThat(request.method).isEqualTo("POST")
-    assertThat(request.path).isEqualTo("/v1/gateway/evaluations")
+    assertThat(request.path).isEqualTo("/get_evaluations")
     assertThat(
       moshi.adapter(GetEvaluationsRequest::class.java)
         .fromJson(request.body.readString(Charsets.UTF_8)),
@@ -99,8 +95,8 @@ internal class ApiClientImplTest {
       GetEvaluationsRequest(
         tag = "feature_tag_value",
         user = user1,
-        user_evaluations_id = "user_evaluation_id",
-        source_id = SourceID.ANDROID,
+        userEvaluationsId = "user_evaluation_id",
+        sourceId = SourceID.ANDROID,
       ),
     )
 
@@ -109,7 +105,7 @@ internal class ApiClientImplTest {
     val success = result as GetEvaluationsResult.Success
     assertThat(success.value).isEqualTo(expected)
     assertThat(success.seconds).isAtLeast(1)
-    assertThat(success.sizeByte).isEqualTo(727)
+    assertThat(success.sizeByte).isEqualTo(720)
     assertThat(success.featureTag).isEqualTo("feature_tag_value")
   }
 
@@ -261,12 +257,10 @@ internal class ApiClientImplTest {
           moshi.adapter(RegisterEventsResponse::class.java)
             .toJson(
               RegisterEventsResponse(
-                RegisterEventsDataResponse(
-                  errors = mapOf(
-                    evaluationEvent1.id to RegisterEventsErrorResponse(
-                      retriable = true,
-                      message = "error",
-                    ),
+                errors = mapOf(
+                  evaluationEvent1.id to RegisterEventsErrorResponse(
+                    retriable = true,
+                    message = "error",
                   ),
                 ),
               ),
@@ -286,7 +280,7 @@ internal class ApiClientImplTest {
     val request = server.takeRequest()
     assertThat(server.requestCount).isEqualTo(1)
     assertThat(request.method).isEqualTo("POST")
-    assertThat(request.path).isEqualTo("/v1/gateway/events")
+    assertThat(request.path).isEqualTo("/register_events")
     assertThat(
       moshi.adapter(RegisterEventsRequest::class.java)
         .fromJson(request.body.readString(Charsets.UTF_8)),
@@ -297,12 +291,10 @@ internal class ApiClientImplTest {
     val success = result as RegisterEventsResult.Success
     assertThat(success.value).isEqualTo(
       RegisterEventsResponse(
-        RegisterEventsDataResponse(
-          errors = mapOf(
-            evaluationEvent1.id to RegisterEventsErrorResponse(
-              retriable = true,
-              message = "error",
-            ),
+        errors = mapOf(
+          evaluationEvent1.id to RegisterEventsErrorResponse(
+            retriable = true,
+            message = "error",
           ),
         ),
       ),

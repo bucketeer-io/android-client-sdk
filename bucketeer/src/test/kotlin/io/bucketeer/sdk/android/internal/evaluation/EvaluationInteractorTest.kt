@@ -10,7 +10,6 @@ import io.bucketeer.sdk.android.internal.di.ComponentImpl
 import io.bucketeer.sdk.android.internal.di.DataModule
 import io.bucketeer.sdk.android.internal.di.InteractorModule
 import io.bucketeer.sdk.android.internal.model.request.GetEvaluationsRequest
-import io.bucketeer.sdk.android.internal.model.response.GetEvaluationsDataResponse
 import io.bucketeer.sdk.android.internal.model.response.GetEvaluationsResponse
 import io.bucketeer.sdk.android.internal.remote.GetEvaluationsResult
 import io.bucketeer.sdk.android.mocks.evaluation1
@@ -83,10 +82,8 @@ class EvaluationInteractorTest {
           moshi.adapter(GetEvaluationsResponse::class.java)
             .toJson(
               GetEvaluationsResponse(
-                GetEvaluationsDataResponse(
-                  evaluations = user1Evaluations,
-                  user_evaluations_id = "user_evaluations_id_value",
-                ),
+                evaluations = user1Evaluations,
+                userEvaluationsId = "user_evaluations_id_value",
               ),
             ),
         ),
@@ -108,7 +105,7 @@ class EvaluationInteractorTest {
     val requestBody = moshi.adapter(GetEvaluationsRequest::class.java)
       .fromJson(request.body.readString(Charsets.UTF_8))
 
-    assertThat(requestBody!!.user_evaluations_id).isEmpty()
+    assertThat(requestBody!!.userEvaluationsId).isEmpty()
     assertThat(requestBody.tag).isEqualTo(component.dataModule.config.featureTag)
     assertThat(requestBody.user).isEqualTo(user1)
 
@@ -137,10 +134,8 @@ class EvaluationInteractorTest {
           moshi.adapter(GetEvaluationsResponse::class.java)
             .toJson(
               GetEvaluationsResponse(
-                GetEvaluationsDataResponse(
-                  evaluations = user1Evaluations,
-                  user_evaluations_id = "user_evaluations_id_value",
-                ),
+                evaluations = user1Evaluations,
+                userEvaluationsId = "user_evaluations_id_value",
               ),
             ),
         ),
@@ -150,7 +145,7 @@ class EvaluationInteractorTest {
     shadowOf(Looper.getMainLooper()).idle()
 
     val newEvaluation = evaluation1.copy(
-      variation_value = evaluation1.variation_value + "_updated",
+      variationValue = evaluation1.variationValue + "_updated",
     )
     // second response(test target)
     server.enqueue(
@@ -160,12 +155,10 @@ class EvaluationInteractorTest {
           moshi.adapter(GetEvaluationsResponse::class.java)
             .toJson(
               GetEvaluationsResponse(
-                GetEvaluationsDataResponse(
-                  evaluations = user1Evaluations.copy(
-                    evaluations = listOf(newEvaluation),
-                  ),
-                  user_evaluations_id = "user_evaluations_id_value_updated",
+                evaluations = user1Evaluations.copy(
+                  evaluations = listOf(newEvaluation),
                 ),
+                userEvaluationsId = "user_evaluations_id_value_updated",
               ),
             ),
         ),
@@ -205,10 +198,8 @@ class EvaluationInteractorTest {
           moshi.adapter(GetEvaluationsResponse::class.java)
             .toJson(
               GetEvaluationsResponse(
-                GetEvaluationsDataResponse(
-                  evaluations = user1Evaluations,
-                  user_evaluations_id = "user_evaluations_id_value",
-                ),
+                evaluations = user1Evaluations,
+                userEvaluationsId = "user_evaluations_id_value",
               ),
             ),
         ),
@@ -225,10 +216,8 @@ class EvaluationInteractorTest {
           moshi.adapter(GetEvaluationsResponse::class.java)
             .toJson(
               GetEvaluationsResponse(
-                GetEvaluationsDataResponse(
-                  evaluations = user1Evaluations,
-                  user_evaluations_id = "user_evaluations_id_value",
-                ),
+                evaluations = user1Evaluations,
+                userEvaluationsId = "user_evaluations_id_value",
               ),
             ),
         ),
@@ -278,14 +267,14 @@ class EvaluationInteractorTest {
 
     interactor.refreshCache(user1.id)
 
-    val actual = interactor.getLatest(user1.id, evaluation1.feature_id)
+    val actual = interactor.getLatest(user1.id, evaluation1.featureId)
 
     assertThat(actual).isEqualTo(evaluation1)
   }
 
   @Test
   fun `getLatest - no cache`() {
-    val actual = interactor.getLatest(user1.id, evaluation1.feature_id)
+    val actual = interactor.getLatest(user1.id, evaluation1.featureId)
 
     assertThat(actual).isNull()
   }

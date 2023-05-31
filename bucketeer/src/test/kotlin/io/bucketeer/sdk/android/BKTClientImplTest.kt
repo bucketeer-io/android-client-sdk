@@ -15,9 +15,7 @@ import io.bucketeer.sdk.android.internal.model.User
 import io.bucketeer.sdk.android.internal.model.UserEvaluations
 import io.bucketeer.sdk.android.internal.model.request.RegisterEventsRequest
 import io.bucketeer.sdk.android.internal.model.response.ErrorResponse
-import io.bucketeer.sdk.android.internal.model.response.GetEvaluationsDataResponse
 import io.bucketeer.sdk.android.internal.model.response.GetEvaluationsResponse
-import io.bucketeer.sdk.android.internal.model.response.RegisterEventsDataResponse
 import io.bucketeer.sdk.android.internal.model.response.RegisterEventsResponse
 import io.bucketeer.sdk.android.internal.user.toBKTUser
 import io.bucketeer.sdk.android.mocks.evaluation1
@@ -74,10 +72,8 @@ class BKTClientImplTest {
           moshi.adapter(GetEvaluationsResponse::class.java)
             .toJson(
               GetEvaluationsResponse(
-                GetEvaluationsDataResponse(
-                  evaluations = user1Evaluations,
-                  user_evaluations_id = "user_evaluations_id_value",
-                ),
+                evaluations = user1Evaluations,
+                userEvaluationsId = "user_evaluations_id_value",
               ),
             ),
         ),
@@ -110,9 +106,10 @@ class BKTClientImplTest {
     val dbEvents = client.componentImpl.dataModule.eventDao.getEvents()
     assertThat(dbEvents).hasSize(2)
     assertGetEvaluationLatencyMetricsEvent(dbEvents[0], mapOf("tag" to config.featureTag))
+    val lastEvent = dbEvents[1]
     assertGetEvaluationSizeMetricsEvent(
-      dbEvents[1],
-      MetricsEventData.GetEvaluationSizeMetricsEvent(mapOf("tag" to config.featureTag), 734),
+      lastEvent,
+      MetricsEventData.GetEvaluationSizeMetricsEvent(mapOf("tag" to config.featureTag), 727),
     )
   }
 
@@ -126,10 +123,8 @@ class BKTClientImplTest {
           moshi.adapter(GetEvaluationsResponse::class.java)
             .toJson(
               GetEvaluationsResponse(
-                GetEvaluationsDataResponse(
-                  evaluations = user1Evaluations,
-                  user_evaluations_id = "user_evaluations_id_value",
-                ),
+                evaluations = user1Evaluations,
+                userEvaluationsId = "user_evaluations_id_value",
               ),
             ),
         ),
@@ -176,10 +171,8 @@ class BKTClientImplTest {
           moshi.adapter(GetEvaluationsResponse::class.java)
             .toJson(
               GetEvaluationsResponse(
-                GetEvaluationsDataResponse(
-                  evaluations = user1Evaluations,
-                  user_evaluations_id = "user_evaluations_id_value",
-                ),
+                evaluations = user1Evaluations,
+                userEvaluationsId = "user_evaluations_id_value",
               ),
             ),
         ),
@@ -219,10 +212,8 @@ class BKTClientImplTest {
           moshi.adapter(GetEvaluationsResponse::class.java)
             .toJson(
               GetEvaluationsResponse(
-                GetEvaluationsDataResponse(
-                  evaluations = user1Evaluations,
-                  user_evaluations_id = "user_evaluations_id_value",
-                ),
+                evaluations = user1Evaluations,
+                userEvaluationsId = "user_evaluations_id_value",
               ),
             ),
         ),
@@ -253,10 +244,8 @@ class BKTClientImplTest {
           moshi.adapter(GetEvaluationsResponse::class.java)
             .toJson(
               GetEvaluationsResponse(
-                GetEvaluationsDataResponse(
-                  evaluations = user1Evaluations,
-                  user_evaluations_id = "user_evaluations_id_value",
-                ),
+                evaluations = user1Evaluations,
+                userEvaluationsId = "user_evaluations_id_value",
               ),
             ),
         ),
@@ -266,7 +255,7 @@ class BKTClientImplTest {
         .setResponseCode(200)
         .setBody(
           moshi.adapter(RegisterEventsResponse::class.java).toJson(
-            RegisterEventsResponse(RegisterEventsDataResponse(errors = emptyMap())),
+            RegisterEventsResponse(errors = emptyMap()),
           ),
         ),
     )
@@ -317,10 +306,8 @@ class BKTClientImplTest {
           moshi.adapter(GetEvaluationsResponse::class.java)
             .toJson(
               GetEvaluationsResponse(
-                GetEvaluationsDataResponse(
-                  evaluations = user1Evaluations,
-                  user_evaluations_id = "user_evaluations_id_value",
-                ),
+                evaluations = user1Evaluations,
+                userEvaluationsId = "user_evaluations_id_value",
               ),
             ),
         ),
@@ -380,10 +367,8 @@ class BKTClientImplTest {
           moshi.adapter(GetEvaluationsResponse::class.java)
             .toJson(
               GetEvaluationsResponse(
-                GetEvaluationsDataResponse(
-                  evaluations = user1Evaluations,
-                  user_evaluations_id = "user_evaluations_id_value",
-                ),
+                evaluations = user1Evaluations,
+                userEvaluationsId = "user_evaluations_id_value",
               ),
             ),
         ),
@@ -419,10 +404,8 @@ class BKTClientImplTest {
           moshi.adapter(GetEvaluationsResponse::class.java)
             .toJson(
               GetEvaluationsResponse(
-                GetEvaluationsDataResponse(
-                  evaluations = user1Evaluations,
-                  user_evaluations_id = "user_evaluations_id_value",
-                ),
+                evaluations = user1Evaluations,
+                userEvaluationsId = "user_evaluations_id_value",
               ),
             ),
         ),
@@ -436,16 +419,16 @@ class BKTClientImplTest {
     )
     initializeFuture.get()
 
-    val actual = BKTClient.getInstance().evaluationDetails(evaluation1.feature_id)
+    val actual = BKTClient.getInstance().evaluationDetails(evaluation1.featureId)
 
     assertThat(actual).isEqualTo(
       BKTEvaluation(
         id = evaluation1.id,
-        featureId = evaluation1.feature_id,
-        featureVersion = evaluation1.feature_version,
-        userId = evaluation1.user_id,
-        variationId = evaluation1.variation_id,
-        variationValue = evaluation1.variation_value,
+        featureId = evaluation1.featureId,
+        featureVersion = evaluation1.featureVersion,
+        userId = evaluation1.userId,
+        variationId = evaluation1.variationId,
+        variationValue = evaluation1.variationValue,
         reason = BKTEvaluation.Reason.DEFAULT,
       ),
     )
@@ -460,10 +443,8 @@ class BKTClientImplTest {
           moshi.adapter(GetEvaluationsResponse::class.java)
             .toJson(
               GetEvaluationsResponse(
-                GetEvaluationsDataResponse(
-                  evaluations = user1Evaluations,
-                  user_evaluations_id = "user_evaluations_id_value",
-                ),
+                evaluations = user1Evaluations,
+                userEvaluationsId = "user_evaluations_id_value",
               ),
             ),
         ),
@@ -491,19 +472,17 @@ class BKTClientImplTest {
           moshi.adapter(GetEvaluationsResponse::class.java)
             .toJson(
               GetEvaluationsResponse(
-                GetEvaluationsDataResponse(
-                  evaluations = UserEvaluations(
-                    id = "id_value",
-                    evaluations = listOf(evaluation1),
-                  ),
-                  user_evaluations_id = "user_evaluations_id_value",
+                evaluations = UserEvaluations(
+                  id = "id_value",
+                  evaluations = listOf(evaluation1),
                 ),
+                userEvaluationsId = "user_evaluations_id_value",
               ),
             ),
         ),
     )
     val updatedEvaluation1 = evaluation1.copy(
-      variation_value = "test variation value1 updated",
+      variationValue = "test variation value1 updated",
       variation = evaluation1.variation.copy(
         value = "test variation value1 updated",
       ),
@@ -515,12 +494,10 @@ class BKTClientImplTest {
           moshi.adapter(GetEvaluationsResponse::class.java)
             .toJson(
               GetEvaluationsResponse(
-                GetEvaluationsDataResponse(
-                  evaluations = user1Evaluations.copy(
-                    evaluations = listOf(updatedEvaluation1),
-                  ),
-                  user_evaluations_id = "user_evaluations_id_value_updated",
+                evaluations = user1Evaluations.copy(
+                  evaluations = listOf(updatedEvaluation1),
                 ),
+                userEvaluationsId = "user_evaluations_id_value_updated",
               ),
             ),
         ),
@@ -559,10 +536,8 @@ class BKTClientImplTest {
           moshi.adapter(GetEvaluationsResponse::class.java)
             .toJson(
               GetEvaluationsResponse(
-                GetEvaluationsDataResponse(
-                  evaluations = user1Evaluations,
-                  user_evaluations_id = "user_evaluations_id_value",
-                ),
+                evaluations = user1Evaluations,
+                userEvaluationsId = "user_evaluations_id_value",
               ),
             ),
         ),
@@ -707,7 +682,7 @@ fun assertGoalEvent(
   assertThat(actual.type).isEqualTo(EventType.GOAL)
   val actualEventData = actual.event as EventData.GoalEvent
 
-  assertThat(actualEventData.goal_id).isEqualTo(expectedGoalId)
+  assertThat(actualEventData.goalId).isEqualTo(expectedGoalId)
   assertThat(actualEventData.value).isEqualTo(expectedValue)
   assertThat(actualEventData.user).isEqualTo(expectedUser)
   assertThat(actualEventData.tag).isEqualTo(expectedFeatureTag)

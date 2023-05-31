@@ -8,7 +8,7 @@ import java.util.Locale
 internal inline fun <reified T : Any> Evaluation?.getVariationValue(
   defaultValue: T,
 ): T {
-  val value = this?.variation_value
+  val value = this?.variationValue
   val typedValue: T = if (value != null) {
     @Suppress("IMPLICIT_CAST_TO_ANY")
     val anyValue = when (T::class) {
@@ -44,7 +44,7 @@ internal inline fun <reified T : Any> Evaluation?.getVariationValue(
         this == null -> {
           "Evaluation is null"
         }
-        this.variation_value.isEmpty() -> {
+        this.variationValue.isEmpty() -> {
           "Variation value is null or empty"
         }
         else -> {

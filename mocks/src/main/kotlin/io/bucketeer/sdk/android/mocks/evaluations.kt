@@ -28,11 +28,11 @@ val user2Evaluations: UserEvaluations by lazy {
 val evaluation1: Evaluation by lazy {
   Evaluation(
     id = "test-feature-1:9:user id 1",
-    feature_id = "test-feature-1",
-    feature_version = 9,
-    user_id = "user id 1",
-    variation_id = "test-feature-1-variation-A",
-    variation_value = "test variation value1",
+    featureId = "test-feature-1",
+    featureVersion = 9,
+    userId = "user id 1",
+    variationId = "test-feature-1-variation-A",
+    variationValue = "test variation value1",
     variation = Variation(
       id = "test-feature-1-variation-A",
       value = "test variation value1",
@@ -46,11 +46,11 @@ val evaluation1: Evaluation by lazy {
 val evaluation2: Evaluation by lazy {
   Evaluation(
     id = "test-feature-2:9:user id 1",
-    feature_id = "test-feature-2",
-    feature_version = 9,
-    user_id = "user id 1",
-    variation_id = "test-feature-2-variation-A",
-    variation_value = "test variation value2",
+    featureId = "test-feature-2",
+    featureVersion = 9,
+    userId = "user id 1",
+    variationId = "test-feature-2-variation-A",
+    variationValue = "test variation value2",
     variation = Variation(
       id = "test-feature-2-variation-A",
       value = "test variation value2",
@@ -64,11 +64,11 @@ val evaluation2: Evaluation by lazy {
 val evaluation3: Evaluation by lazy {
   Evaluation(
     id = "test-feature-1:9:user id 2",
-    feature_id = "test-feature-3",
-    feature_version = 9,
-    user_id = "user id 2",
-    variation_id = "test-feature-1-variation-A",
-    variation_value = "test variation value2",
+    featureId = "test-feature-3",
+    featureVersion = 9,
+    userId = "user id 2",
+    variationId = "test-feature-1-variation-A",
+    variationValue = "test variation value2",
     variation = Variation(
       id = "test-feature-1-variation-A",
       value = "test variation value2",

@@ -26,7 +26,6 @@ import io.bucketeer.sdk.android.internal.model.ReasonType
 import io.bucketeer.sdk.android.internal.model.SourceID
 import io.bucketeer.sdk.android.internal.model.request.RegisterEventsRequest
 import io.bucketeer.sdk.android.internal.model.response.ErrorResponse
-import io.bucketeer.sdk.android.internal.model.response.RegisterEventsDataResponse
 import io.bucketeer.sdk.android.internal.model.response.RegisterEventsErrorResponse
 import io.bucketeer.sdk.android.internal.model.response.RegisterEventsResponse
 import io.bucketeer.sdk.android.internal.remote.ApiClient
@@ -109,15 +108,15 @@ class EventInteractorTest {
         type = EventType.EVALUATION,
         event = EventData.EvaluationEvent(
           timestamp = clock.currentTimeSecondsCalls[0],
-          feature_id = evaluation1.feature_id,
-          feature_version = evaluation1.feature_version,
-          user_id = user1.id,
-          variation_id = evaluation1.variation_id,
+          featureId = evaluation1.featureId,
+          featureVersion = evaluation1.featureVersion,
+          userId = user1.id,
+          variationId = evaluation1.variationId,
           user = user1,
           reason = evaluation1.reason,
           tag = "feature_tag_value",
-          source_id = SourceID.ANDROID,
-          sdk_version = BuildConfig.SDK_VERSION,
+          sourceId = SourceID.ANDROID,
+          sdkVersion = BuildConfig.SDK_VERSION,
           metadata = mapOf(
             "app_version" to "1.2.3",
             "os_version" to "16",
@@ -150,13 +149,13 @@ class EventInteractorTest {
         type = EventType.EVALUATION,
         event = EventData.EvaluationEvent(
           timestamp = clock.currentTimeSecondsCalls[0],
-          feature_id = "feature_id_value",
-          user_id = user1.id,
+          featureId = "feature_id_value",
+          userId = user1.id,
           user = user1,
           reason = Reason(ReasonType.CLIENT),
           tag = "feature_tag_value",
-          source_id = SourceID.ANDROID,
-          sdk_version = BuildConfig.SDK_VERSION,
+          sourceId = SourceID.ANDROID,
+          sdkVersion = BuildConfig.SDK_VERSION,
           metadata = mapOf(
             "app_version" to "1.2.3",
             "os_version" to "16",
@@ -189,13 +188,13 @@ class EventInteractorTest {
         type = EventType.GOAL,
         event = EventData.GoalEvent(
           timestamp = clock.currentTimeSecondsCalls[0],
-          goal_id = "goal_id_value",
-          user_id = user1.id,
+          goalId = "goal_id_value",
+          userId = user1.id,
           value = 0.5,
           user = user1,
           tag = "feature_tag_value",
-          source_id = SourceID.ANDROID,
-          sdk_version = BuildConfig.SDK_VERSION,
+          sourceId = SourceID.ANDROID,
+          sdkVersion = BuildConfig.SDK_VERSION,
           metadata = mapOf(
             "app_version" to "1.2.3",
             "os_version" to "16",
@@ -235,7 +234,7 @@ class EventInteractorTest {
             ),
             duration = 1,
           ),
-          sdk_version = BuildConfig.SDK_VERSION,
+          sdkVersion = BuildConfig.SDK_VERSION,
           metadata = mapOf(
             "app_version" to "1.2.3",
             "os_version" to "16",
@@ -258,9 +257,9 @@ class EventInteractorTest {
             labels = mapOf(
               "tag" to "feature_tag_value",
             ),
-            size_byte = 723,
+            sizeByte = 723,
           ),
-          sdk_version = BuildConfig.SDK_VERSION,
+          sdkVersion = BuildConfig.SDK_VERSION,
           metadata = mapOf(
             "app_version" to "1.2.3",
             "os_version" to "16",
@@ -300,7 +299,7 @@ class EventInteractorTest {
           event = MetricsEventData.TimeoutErrorCountMetricsEvent(
             tag = "feature_tag_value",
           ),
-          sdk_version = BuildConfig.SDK_VERSION,
+          sdkVersion = BuildConfig.SDK_VERSION,
           metadata = mapOf(
             "app_version" to "1.2.3",
             "os_version" to "16",
@@ -340,7 +339,7 @@ class EventInteractorTest {
           event = MetricsEventData.InternalErrorCountMetricsEvent(
             tag = "feature_tag_value",
           ),
-          sdk_version = BuildConfig.SDK_VERSION,
+          sdkVersion = BuildConfig.SDK_VERSION,
           metadata = mapOf(
             "app_version" to "1.2.3",
             "os_version" to "16",
@@ -358,7 +357,7 @@ class EventInteractorTest {
         .setResponseCode(200)
         .setBody(
           moshi.adapter(RegisterEventsResponse::class.java).toJson(
-            RegisterEventsResponse(RegisterEventsDataResponse(errors = emptyMap())),
+            RegisterEventsResponse(errors = emptyMap()),
           ),
         ),
     )
@@ -393,7 +392,7 @@ class EventInteractorTest {
                 ),
                 duration = 1,
               ),
-              sdk_version = BuildConfig.SDK_VERSION,
+              sdkVersion = BuildConfig.SDK_VERSION,
               metadata = mapOf(
                 "app_version" to "1.2.3",
                 "os_version" to "16",
@@ -411,9 +410,9 @@ class EventInteractorTest {
                 labels = mapOf(
                   "tag" to "feature_tag_value",
                 ),
-                size_byte = 723,
+                sizeByte = 723,
               ),
-              sdk_version = BuildConfig.SDK_VERSION,
+              sdkVersion = BuildConfig.SDK_VERSION,
               metadata = mapOf(
                 "app_version" to "1.2.3",
                 "os_version" to "16",
@@ -426,13 +425,13 @@ class EventInteractorTest {
             type = EventType.GOAL,
             event = EventData.GoalEvent(
               timestamp = clock.currentTimeSecondsCalls[2],
-              goal_id = "goal_id_value",
-              user_id = user1.id,
+              goalId = "goal_id_value",
+              userId = user1.id,
               value = 0.5,
               user = user1,
               tag = "feature_tag_value",
-              source_id = SourceID.ANDROID,
-              sdk_version = BuildConfig.SDK_VERSION,
+              sourceId = SourceID.ANDROID,
+              sdkVersion = BuildConfig.SDK_VERSION,
               metadata = mapOf(
                 "app_version" to "1.2.3",
                 "os_version" to "16",
@@ -451,7 +450,7 @@ class EventInteractorTest {
     assertThat(actualEvents).hasSize(1)
 
     val eventData = actualEvents.first().event as EventData.GoalEvent
-    assertThat(eventData.goal_id).isEqualTo("goal_id_value2")
+    assertThat(eventData.goalId).isEqualTo("goal_id_value2")
     assertThat(eventData.value).isEqualTo(0.4)
   }
 
@@ -489,7 +488,7 @@ class EventInteractorTest {
         .setResponseCode(200)
         .setBody(
           moshi.adapter(RegisterEventsResponse::class.java).toJson(
-            RegisterEventsResponse(RegisterEventsDataResponse(errors = emptyMap())),
+            RegisterEventsResponse(errors = emptyMap()),
           ),
         ),
     )
@@ -513,7 +512,7 @@ class EventInteractorTest {
         .setResponseCode(200)
         .setBody(
           moshi.adapter(RegisterEventsResponse::class.java).toJson(
-            RegisterEventsResponse(RegisterEventsDataResponse(errors = emptyMap())),
+            RegisterEventsResponse(errors = emptyMap()),
           ),
         ),
     )
@@ -539,7 +538,7 @@ class EventInteractorTest {
         .setResponseCode(200)
         .setBody(
           moshi.adapter(RegisterEventsResponse::class.java).toJson(
-            RegisterEventsResponse(RegisterEventsDataResponse(errors = emptyMap())),
+            RegisterEventsResponse(errors = emptyMap()),
           ),
         ),
     )
@@ -572,7 +571,7 @@ class EventInteractorTest {
                 ),
                 duration = 1,
               ),
-              sdk_version = BuildConfig.SDK_VERSION,
+              sdkVersion = BuildConfig.SDK_VERSION,
               metadata = mapOf(
                 "app_version" to "1.2.3",
                 "os_version" to "16",
@@ -590,9 +589,9 @@ class EventInteractorTest {
                 labels = mapOf(
                   "tag" to "feature_tag_value",
                 ),
-                size_byte = 723,
+                sizeByte = 723,
               ),
-              sdk_version = BuildConfig.SDK_VERSION,
+              sdkVersion = BuildConfig.SDK_VERSION,
               metadata = mapOf(
                 "app_version" to "1.2.3",
                 "os_version" to "16",
@@ -619,11 +618,9 @@ class EventInteractorTest {
         .setBody(
           moshi.adapter(RegisterEventsResponse::class.java).toJson(
             RegisterEventsResponse(
-              RegisterEventsDataResponse(
-                errors = mapOf(
-                  idGenerator.calls[0] to RegisterEventsErrorResponse(retriable = true, "error"),
-                  idGenerator.calls[1] to RegisterEventsErrorResponse(retriable = false, "error"),
-                ),
+              errors = mapOf(
+                idGenerator.calls[0] to RegisterEventsErrorResponse(retriable = true, "error"),
+                idGenerator.calls[1] to RegisterEventsErrorResponse(retriable = false, "error"),
               ),
             ),
           ),
@@ -656,7 +653,7 @@ class EventInteractorTest {
                 ),
                 duration = 1,
               ),
-              sdk_version = BuildConfig.SDK_VERSION,
+              sdkVersion = BuildConfig.SDK_VERSION,
               metadata = mapOf(
                 "app_version" to "1.2.3",
                 "os_version" to "16",
@@ -674,9 +671,9 @@ class EventInteractorTest {
                 labels = mapOf(
                   "tag" to "feature_tag_value",
                 ),
-                size_byte = 723,
+                sizeByte = 723,
               ),
-              sdk_version = BuildConfig.SDK_VERSION,
+              sdkVersion = BuildConfig.SDK_VERSION,
               metadata = mapOf(
                 "app_version" to "1.2.3",
                 "os_version" to "16",
@@ -689,13 +686,13 @@ class EventInteractorTest {
             type = EventType.GOAL,
             event = EventData.GoalEvent(
               timestamp = clock.currentTimeSecondsCalls[2],
-              goal_id = "goal_id_value",
-              user_id = user1.id,
+              goalId = "goal_id_value",
+              userId = user1.id,
               value = 0.5,
               user = user1,
               tag = "feature_tag_value",
-              source_id = SourceID.ANDROID,
-              sdk_version = BuildConfig.SDK_VERSION,
+              sourceId = SourceID.ANDROID,
+              sdkVersion = BuildConfig.SDK_VERSION,
               metadata = mapOf(
                 "app_version" to "1.2.3",
                 "os_version" to "16",
@@ -725,7 +722,7 @@ class EventInteractorTest {
               ),
               duration = 1,
             ),
-            sdk_version = BuildConfig.SDK_VERSION,
+            sdkVersion = BuildConfig.SDK_VERSION,
             metadata = mapOf(
               "app_version" to "1.2.3",
               "os_version" to "16",
@@ -738,13 +735,13 @@ class EventInteractorTest {
           type = EventType.GOAL,
           event = EventData.GoalEvent(
             timestamp = clock.currentTimeSecondsCalls[3],
-            goal_id = "goal_id_value2",
-            user_id = user1.id,
+            goalId = "goal_id_value2",
+            userId = user1.id,
             value = 0.4,
             user = user1,
             tag = "feature_tag_value",
-            source_id = SourceID.ANDROID,
-            sdk_version = BuildConfig.SDK_VERSION,
+            sourceId = SourceID.ANDROID,
+            sdkVersion = BuildConfig.SDK_VERSION,
             metadata = mapOf(
               "app_version" to "1.2.3",
               "os_version" to "16",
