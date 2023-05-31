@@ -4,6 +4,7 @@ import android.os.Build
 import io.bucketeer.sdk.android.BuildConfig
 import io.bucketeer.sdk.android.internal.Clock
 import io.bucketeer.sdk.android.internal.IdGenerator
+import io.bucketeer.sdk.android.internal.model.ApiID
 import io.bucketeer.sdk.android.internal.model.Evaluation
 import io.bucketeer.sdk.android.internal.model.Event
 import io.bucketeer.sdk.android.internal.model.EventData
@@ -103,94 +104,124 @@ internal fun newGoalEvent(
   )
 }
 
-internal fun newGetEvaluationLatencyMetricsEvent(
+internal fun newMetricsEvent(
   clock: Clock,
   idGenerator: IdGenerator,
-  seconds: Long,
-  featureTag: String,
+  featureTag: String?,
   appVersion: String,
+  metricsEventType: MetricsEventType,
+  apiID: ApiID,
+  // note: only available on success request
+  latencySecond : Long? = null,
+  // note: only available on success request
+  sizeByte: Int? = null
 ): Event {
   return Event(
     id = idGenerator.newId(),
     type = EventType.METRICS,
     event = EventData.MetricsEvent(
       timestamp = clock.currentTimeSeconds(),
-      type = MetricsEventType.GET_EVALUATION_LATENCY,
-      event = MetricsEventData.GetEvaluationLatencyMetricsEvent(
-        labels = mapOf(
-          "tag" to featureTag,
-        ),
-        duration = seconds,
-      ),
+      type = metricsEventType,
+      event = newMetricsEventData(featureTag, apiID, metricsEventType, latencySecond, sizeByte),
       sdkVersion = BuildConfig.SDK_VERSION,
       metadata = newMetadata(appVersion),
     ),
   )
+}
+internal fun newMetricsEventData(
+  featureTag: String?,
+  apiID: ApiID,
+  type: MetricsEventType,
+  // note: only available on success request
+  latencySecond : Long? = null,
+  // note: only available on success request
+  sizeByte: Int? = null
+) : MetricsEventData {
+
+  // note: featureTag only available from `GET_EVALUATIONS`
+  val labels = if (featureTag != null) mapOf(
+    "tag" to featureTag,
+  ) else mapOf()
+
+  return when (type) {
+    MetricsEventType.UNKNOWN -> MetricsEventData.UnknownErrorMetricsEvent(
+      apiID = apiID,
+      labels = labels,
+    )
+
+    MetricsEventType.RESPONSE_LATENCY -> {
+      if (latencySecond == null) {
+        // note: this exception for SDK developer only, must not throw to the user of the SDK.
+        throw Exception("Create LatencyMetricsEvent fail because missing `latency`")
+      }
+      MetricsEventData.LatencyMetricsEvent(
+        apiID = apiID,
+        labels = labels,
+        latencySecond = latencySecond.toDouble()
+      )
+    }
+
+    MetricsEventType.RESPONSE_SIZE -> {
+      if (sizeByte == null) {
+        // note: this exception for SDK developer only, must not throw to the user of the SDK.
+        throw Exception("Create SizeMetricsEvent fail because missing `sizeByte`")
+      }
+      MetricsEventData.SizeMetricsEvent(
+        apiID = apiID,
+        labels = labels,
+        sizeByte = sizeByte
+      )
+    }
+
+    MetricsEventType.TIMEOUT_ERROR -> MetricsEventData.TimeoutErrorMetricsEvent(
+      apiID = apiID,
+      labels = labels,
+    )
+
+    MetricsEventType.NETWORK_ERROR -> MetricsEventData.NetworkErrorMetricsEvent(
+      apiID = apiID,
+      labels = labels,
+    )
+
+    MetricsEventType.INTERNAL_ERROR -> MetricsEventData.InternalSdkErrorMetricsEvent(
+      apiID = apiID,
+      labels = labels,
+    )
+
+    MetricsEventType.BAD_REQUEST_ERROR -> MetricsEventData.BadRequestErrorMetricsEvent(
+      apiID = apiID,
+      labels = labels,
+    )
+
+    MetricsEventType.UNAUTHORIZED_ERROR -> MetricsEventData.UnauthorizedErrorMetricsEvent(
+      apiID = apiID,
+      labels = labels,
+    )
+
+    MetricsEventType.FORBIDDEN_ERROR -> MetricsEventData.ForbiddenErrorMetricsEvent(
+      apiID = apiID,
+      labels = labels,
+    )
+
+    MetricsEventType.NOT_FOUND_ERROR -> MetricsEventData.NotFoundErrorMetricsEvent(
+      apiID = apiID,
+      labels = labels,
+    )
+
+    MetricsEventType.CLIENT_CLOSED_REQUEST_ERROR -> MetricsEventData.ClientClosedRequestErrorMetricsEvent(
+      apiID = apiID,
+      labels = labels,
+    )
+
+    MetricsEventType.SERVICE_UNAVAILABLE_ERROR -> MetricsEventData.ServiceUnavailableErrorMetricsEvent(
+      apiID = apiID,
+      labels = labels,
+    )
+
+    MetricsEventType.INTERNAL_SERVER_ERROR -> MetricsEventData.InternalServerErrorMetricsEvent(
+      apiID = apiID,
+      labels = labels,
+    )
+  }
 }
 
-internal fun newGetEvaluationSizeMetricsEvent(
-  clock: Clock,
-  idGenerator: IdGenerator,
-  sizeByte: Int,
-  featureTag: String,
-  appVersion: String,
-): Event {
-  return Event(
-    id = idGenerator.newId(),
-    type = EventType.METRICS,
-    event = EventData.MetricsEvent(
-      timestamp = clock.currentTimeSeconds(),
-      type = MetricsEventType.GET_EVALUATION_SIZE,
-      event = MetricsEventData.GetEvaluationSizeMetricsEvent(
-        labels = mapOf(
-          "tag" to featureTag,
-        ),
-        sizeByte = sizeByte,
-      ),
-      sdkVersion = BuildConfig.SDK_VERSION,
-      metadata = newMetadata(appVersion),
-    ),
-  )
-}
-
-internal fun newTimeoutErrorCountMetricsEvent(
-  clock: Clock,
-  idGenerator: IdGenerator,
-  featureTag: String,
-  appVersion: String,
-): Event {
-  return Event(
-    id = idGenerator.newId(),
-    type = EventType.METRICS,
-    event = EventData.MetricsEvent(
-      timestamp = clock.currentTimeSeconds(),
-      type = MetricsEventType.TIMEOUT_ERROR_COUNT,
-      event = MetricsEventData.TimeoutErrorCountMetricsEvent(
-        tag = featureTag,
-      ),
-      sdkVersion = BuildConfig.SDK_VERSION,
-      metadata = newMetadata(appVersion),
-    ),
-  )
-}
-
-internal fun newInternalErrorCountMetricsEvent(
-  clock: Clock,
-  idGenerator: IdGenerator,
-  featureTag: String,
-  appVersion: String,
-): Event {
-  return Event(
-    id = idGenerator.newId(),
-    type = EventType.METRICS,
-    event = EventData.MetricsEvent(
-      timestamp = clock.currentTimeSeconds(),
-      type = MetricsEventType.INTERNAL_ERROR_COUNT,
-      event = MetricsEventData.InternalErrorCountMetricsEvent(
-        tag = featureTag,
-      ),
-      sdkVersion = BuildConfig.SDK_VERSION,
-      metadata = newMetadata(appVersion),
-    ),
-  )
-}

@@ -16,6 +16,7 @@ import io.bucketeer.sdk.android.internal.IdGeneratorImpl
 import io.bucketeer.sdk.android.internal.di.ComponentImpl
 import io.bucketeer.sdk.android.internal.di.DataModule
 import io.bucketeer.sdk.android.internal.di.InteractorModule
+import io.bucketeer.sdk.android.internal.model.ApiID
 import io.bucketeer.sdk.android.internal.model.Event
 import io.bucketeer.sdk.android.internal.model.EventData
 import io.bucketeer.sdk.android.internal.model.EventType
@@ -42,6 +43,7 @@ import org.robolectric.RobolectricTestRunner
 import java.net.SocketTimeoutException
 import java.util.concurrent.TimeUnit
 
+// TODO : Kenji : need thinking and add more test to this test file
 @RunWith(RobolectricTestRunner::class)
 class EventInteractorTest {
   private lateinit var server: MockWebServer
@@ -227,12 +229,13 @@ class EventInteractorTest {
         type = EventType.METRICS,
         event = EventData.MetricsEvent(
           timestamp = clock.currentTimeSecondsCalls[0],
-          type = MetricsEventType.GET_EVALUATION_LATENCY,
-          event = MetricsEventData.GetEvaluationLatencyMetricsEvent(
+          type = MetricsEventType.RESPONSE_LATENCY,
+          event = MetricsEventData.LatencyMetricsEvent(
+            ApiID.GET_EVALUATIONS,
             labels = mapOf(
               "tag" to "feature_tag_value",
             ),
-            duration = 1,
+            latencySecond = 1.0,
           ),
           sdkVersion = BuildConfig.SDK_VERSION,
           metadata = mapOf(
@@ -252,8 +255,9 @@ class EventInteractorTest {
         type = EventType.METRICS,
         event = EventData.MetricsEvent(
           timestamp = clock.currentTimeSecondsCalls[1],
-          type = MetricsEventType.GET_EVALUATION_SIZE,
-          event = MetricsEventData.GetEvaluationSizeMetricsEvent(
+          type = MetricsEventType.RESPONSE_SIZE,
+          event = MetricsEventData.SizeMetricsEvent(
+            ApiID.GET_EVALUATIONS,
             labels = mapOf(
               "tag" to "feature_tag_value",
             ),
@@ -295,9 +299,12 @@ class EventInteractorTest {
         type = EventType.METRICS,
         event = EventData.MetricsEvent(
           timestamp = clock.currentTimeSecondsCalls[0],
-          type = MetricsEventType.TIMEOUT_ERROR_COUNT,
-          event = MetricsEventData.TimeoutErrorCountMetricsEvent(
-            tag = "feature_tag_value",
+          type = MetricsEventType.TIMEOUT_ERROR,
+          event = MetricsEventData.TimeoutErrorMetricsEvent(
+            ApiID.GET_EVALUATIONS,
+            mapOf(
+              "tag" to "feature_tag_value",
+            ),
           ),
           sdkVersion = BuildConfig.SDK_VERSION,
           metadata = mapOf(
@@ -335,9 +342,12 @@ class EventInteractorTest {
         type = EventType.METRICS,
         event = EventData.MetricsEvent(
           timestamp = clock.currentTimeSecondsCalls[0],
-          type = MetricsEventType.INTERNAL_ERROR_COUNT,
-          event = MetricsEventData.InternalErrorCountMetricsEvent(
-            tag = "feature_tag_value",
+          type = MetricsEventType.BAD_REQUEST_ERROR,
+          event = MetricsEventData.BadRequestErrorMetricsEvent(
+            ApiID.GET_EVALUATIONS,
+            mapOf(
+              "tag" to "feature_tag_value",
+            ),
           ),
           sdkVersion = BuildConfig.SDK_VERSION,
           metadata = mapOf(
@@ -385,12 +395,13 @@ class EventInteractorTest {
             type = EventType.METRICS,
             event = EventData.MetricsEvent(
               timestamp = clock.currentTimeSecondsCalls[0],
-              type = MetricsEventType.GET_EVALUATION_LATENCY,
-              event = MetricsEventData.GetEvaluationLatencyMetricsEvent(
+              type = MetricsEventType.RESPONSE_LATENCY,
+              event = MetricsEventData.LatencyMetricsEvent(
+                ApiID.GET_EVALUATIONS,
                 labels = mapOf(
                   "tag" to "feature_tag_value",
                 ),
-                duration = 1,
+                latencySecond = 1.0,
               ),
               sdkVersion = BuildConfig.SDK_VERSION,
               metadata = mapOf(
@@ -405,8 +416,9 @@ class EventInteractorTest {
             type = EventType.METRICS,
             event = EventData.MetricsEvent(
               timestamp = clock.currentTimeSecondsCalls[1],
-              type = MetricsEventType.GET_EVALUATION_SIZE,
-              event = MetricsEventData.GetEvaluationSizeMetricsEvent(
+              type = MetricsEventType.RESPONSE_SIZE,
+              event = MetricsEventData.SizeMetricsEvent(
+                ApiID.GET_EVALUATIONS,
                 labels = mapOf(
                   "tag" to "feature_tag_value",
                 ),
@@ -478,7 +490,93 @@ class EventInteractorTest {
     require(result is SendEventsResult.Failure)
     assertThat(result.error).isInstanceOf(BKTException.BadRequestException::class.java)
 
-    assertThat(component.dataModule.eventDao.getEvents()).hasSize(3)
+    val events = component.dataModule.eventDao.getEvents()
+    // Note: because `register_event` fail ,
+    // So there will be one more auto tracked event
+    // For MetricsEventData.BadRequestErrorMetricsEvent
+    assertThat(component.dataModule.eventDao.getEvents()).hasSize(4)
+
+    val expectedEvents = listOf(
+      Event(
+        id = idGenerator.calls[0],
+        type = EventType.METRICS,
+        event = EventData.MetricsEvent(
+          timestamp = clock.currentTimeSecondsCalls[0],
+          type = MetricsEventType.RESPONSE_LATENCY,
+          event = MetricsEventData.LatencyMetricsEvent(
+            ApiID.GET_EVALUATIONS,
+            labels = mapOf(
+              "tag" to "feature_tag_value",
+            ),
+            latencySecond = 1.0,
+          ),
+          sdkVersion = BuildConfig.SDK_VERSION,
+          metadata = mapOf(
+            "app_version" to "1.2.3",
+            "os_version" to "16",
+            "device_model" to "robolectric",
+          ),
+        ),
+      ),
+      Event(
+        id = idGenerator.calls[1],
+        type = EventType.METRICS,
+        event = EventData.MetricsEvent(
+          timestamp = clock.currentTimeSecondsCalls[1],
+          type = MetricsEventType.RESPONSE_SIZE,
+          event = MetricsEventData.SizeMetricsEvent(
+            ApiID.GET_EVALUATIONS,
+            labels = mapOf(
+              "tag" to "feature_tag_value",
+            ),
+            sizeByte = 723,
+          ),
+          sdkVersion = BuildConfig.SDK_VERSION,
+          metadata = mapOf(
+            "app_version" to "1.2.3",
+            "os_version" to "16",
+            "device_model" to "robolectric",
+          ),
+        ),
+      ),
+      Event(
+        id = idGenerator.calls[2],
+        type = EventType.GOAL,
+        event = EventData.GoalEvent(
+          timestamp = clock.currentTimeSecondsCalls[2],
+          goalId = "goal_id_value",
+          userId = user1.id,
+          value = 0.5,
+          user = user1,
+          tag = "feature_tag_value",
+          sourceId = SourceID.ANDROID,
+          sdkVersion = BuildConfig.SDK_VERSION,
+          metadata = mapOf(
+            "app_version" to "1.2.3",
+            "os_version" to "16",
+            "device_model" to "robolectric",
+          ),
+        ),
+      ),
+      Event(
+        id = idGenerator.calls[3],
+        type = EventType.METRICS,
+        event = EventData.MetricsEvent(
+          timestamp = clock.currentTimeSecondsCalls[3],
+          type = MetricsEventType.BAD_REQUEST_ERROR,
+          event = MetricsEventData.BadRequestErrorMetricsEvent(
+            ApiID.REGISTER_EVENTS,
+          ),
+          sdkVersion = BuildConfig.SDK_VERSION,
+          metadata = mapOf(
+            "app_version" to "1.2.3",
+            "os_version" to "16",
+            "device_model" to "robolectric",
+          ),
+        ),
+      ),
+    )
+    assertThat(events).isEqualTo(expectedEvents)
   }
 
   @Test
@@ -564,12 +662,13 @@ class EventInteractorTest {
             type = EventType.METRICS,
             event = EventData.MetricsEvent(
               timestamp = clock.currentTimeSecondsCalls[0],
-              type = MetricsEventType.GET_EVALUATION_LATENCY,
-              event = MetricsEventData.GetEvaluationLatencyMetricsEvent(
+              type = MetricsEventType.RESPONSE_LATENCY,
+              event = MetricsEventData.LatencyMetricsEvent(
+                ApiID.GET_EVALUATIONS,
                 labels = mapOf(
                   "tag" to "feature_tag_value",
                 ),
-                duration = 1,
+                latencySecond = 1.0,
               ),
               sdkVersion = BuildConfig.SDK_VERSION,
               metadata = mapOf(
@@ -584,8 +683,9 @@ class EventInteractorTest {
             type = EventType.METRICS,
             event = EventData.MetricsEvent(
               timestamp = clock.currentTimeSecondsCalls[1],
-              type = MetricsEventType.GET_EVALUATION_SIZE,
-              event = MetricsEventData.GetEvaluationSizeMetricsEvent(
+              type = MetricsEventType.RESPONSE_SIZE,
+              event = MetricsEventData.SizeMetricsEvent(
+                ApiID.GET_EVALUATIONS,
                 labels = mapOf(
                   "tag" to "feature_tag_value",
                 ),
@@ -619,6 +719,7 @@ class EventInteractorTest {
           moshi.adapter(RegisterEventsResponse::class.java).toJson(
             RegisterEventsResponse(
               errors = mapOf(
+                // TODO: Kenji check RegisterEventsErrorResponse on iOS ref
                 idGenerator.calls[0] to RegisterEventsErrorResponse(retriable = true, "error"),
                 idGenerator.calls[1] to RegisterEventsErrorResponse(retriable = false, "error"),
               ),
@@ -646,12 +747,13 @@ class EventInteractorTest {
             type = EventType.METRICS,
             event = EventData.MetricsEvent(
               timestamp = clock.currentTimeSecondsCalls[0],
-              type = MetricsEventType.GET_EVALUATION_LATENCY,
-              event = MetricsEventData.GetEvaluationLatencyMetricsEvent(
+              type = MetricsEventType.RESPONSE_LATENCY,
+              event = MetricsEventData.LatencyMetricsEvent(
+                ApiID.GET_EVALUATIONS,
                 labels = mapOf(
                   "tag" to "feature_tag_value",
                 ),
-                duration = 1,
+                latencySecond = 1.0,
               ),
               sdkVersion = BuildConfig.SDK_VERSION,
               metadata = mapOf(
@@ -666,8 +768,9 @@ class EventInteractorTest {
             type = EventType.METRICS,
             event = EventData.MetricsEvent(
               timestamp = clock.currentTimeSecondsCalls[1],
-              type = MetricsEventType.GET_EVALUATION_SIZE,
-              event = MetricsEventData.GetEvaluationSizeMetricsEvent(
+              type = MetricsEventType.RESPONSE_SIZE,
+              event = MetricsEventData.SizeMetricsEvent(
+                ApiID.GET_EVALUATIONS,
                 labels = mapOf(
                   "tag" to "feature_tag_value",
                 ),
@@ -715,12 +818,13 @@ class EventInteractorTest {
           type = EventType.METRICS,
           event = EventData.MetricsEvent(
             timestamp = clock.currentTimeSecondsCalls[0],
-            type = MetricsEventType.GET_EVALUATION_LATENCY,
-            event = MetricsEventData.GetEvaluationLatencyMetricsEvent(
+            type = MetricsEventType.RESPONSE_LATENCY,
+            event = MetricsEventData.LatencyMetricsEvent(
+              ApiID.GET_EVALUATIONS,
               labels = mapOf(
                 "tag" to "feature_tag_value",
               ),
-              duration = 1,
+              latencySecond = 1.0,
             ),
             sdkVersion = BuildConfig.SDK_VERSION,
             metadata = mapOf(

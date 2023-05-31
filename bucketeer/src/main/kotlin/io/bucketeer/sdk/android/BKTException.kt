@@ -10,9 +10,12 @@ sealed class BKTException(
   // server errors
   class BadRequestException(message: String) : BKTException(message)
   class UnauthorizedException(message: String) : BKTException(message)
+  class ForbiddenException(message: String) : BKTException(message)
   class FeatureNotFoundException(message: String) : BKTException(message)
+  class ClientClosedRequestException(message: String) : BKTException(message)
   class InvalidHttpMethodException(message: String) : BKTException(message)
-  class ApiServerException(message: String) : BKTException(message)
+  class InternalServerErrorException(message: String) : BKTException(message)
+  class ServiceUnavailableException(message: String) : BKTException(message)
 
   // network errors
   class TimeoutException(message: String, cause: Throwable) : BKTException(message, cause)

@@ -39,9 +39,12 @@ internal class ApiClientImplTest {
   ) {
     BAD_REQUEST(400, BKTException.BadRequestException::class.java),
     UNAUTHORIZED(401, BKTException.UnauthorizedException::class.java),
+    FORBIDDEN(403, BKTException.ForbiddenException::class.java),
     NOT_FOUND(404, BKTException.FeatureNotFoundException::class.java),
     METHOD_NOT_ALLOWED(405, BKTException.InvalidHttpMethodException::class.java),
-    INTERNAL_SERVER_ERROR(500, BKTException.ApiServerException::class.java),
+    CLIENT_CLOSED_REQUEST(499, BKTException.ClientClosedRequestException::class.java),
+    INTERNAL_SERVER_ERROR(500, BKTException.InternalServerErrorException::class.java),
+    SERVICE_UNAVAILABLE(503, BKTException.ServiceUnavailableException::class.java),
   }
 
   @Before

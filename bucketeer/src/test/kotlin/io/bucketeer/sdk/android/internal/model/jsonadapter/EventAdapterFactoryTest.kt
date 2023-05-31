@@ -5,6 +5,7 @@ import com.google.testing.junit.testparameterinjector.TestParameter
 import com.google.testing.junit.testparameterinjector.TestParameterInjector
 import com.squareup.moshi.JsonAdapter
 import io.bucketeer.sdk.android.internal.di.DataModule
+import io.bucketeer.sdk.android.internal.model.ApiID
 import io.bucketeer.sdk.android.internal.model.Event
 import io.bucketeer.sdk.android.internal.model.EventData
 import io.bucketeer.sdk.android.internal.model.EventType
@@ -282,13 +283,14 @@ class EventAdapterFactoryTest {
         type = EventType.METRICS,
         event = EventData.MetricsEvent(
           timestamp = 1660210923777,
-          type = MetricsEventType.GET_EVALUATION_LATENCY,
-          event = MetricsEventData.GetEvaluationLatencyMetricsEvent(
+          type = MetricsEventType.RESPONSE_LATENCY,
+          event = MetricsEventData.LatencyMetricsEvent(
+            ApiID.GET_EVALUATIONS,
             labels = mapOf(
               "key1" to "value1",
               "key2" to "value2",
             ),
-            duration = 5,
+            latencySecond = 5.0,
           ),
           sdkVersion = "2.0.1",
           metadata = mapOf(
@@ -326,13 +328,14 @@ class EventAdapterFactoryTest {
         type = EventType.METRICS,
         event = EventData.MetricsEvent(
           timestamp = 1660210923777,
-          type = MetricsEventType.GET_EVALUATION_LATENCY,
-          event = MetricsEventData.GetEvaluationLatencyMetricsEvent(
+          type = MetricsEventType.RESPONSE_LATENCY,
+          event = MetricsEventData.LatencyMetricsEvent(
+            ApiID.GET_EVALUATIONS,
             labels = mapOf(
               "key1" to "value1",
               "key2" to "value2",
             ),
-            duration = 5,
+            latencySecond = 5.0,
           ),
           sdkVersion = null,
           metadata = null,

@@ -5,6 +5,7 @@ import com.google.testing.junit.testparameterinjector.TestParameter
 import com.google.testing.junit.testparameterinjector.TestParameterInjector
 import com.squareup.moshi.JsonAdapter
 import io.bucketeer.sdk.android.internal.di.DataModule
+import io.bucketeer.sdk.android.internal.model.ApiID
 import io.bucketeer.sdk.android.internal.model.EventData
 import io.bucketeer.sdk.android.internal.model.MetricsEventData
 import io.bucketeer.sdk.android.internal.model.MetricsEventType
@@ -41,13 +42,14 @@ class MetricsEventAdapterFactoryTest {
       """.trimMargin(),
       event = EventData.MetricsEvent(
         timestamp = 1660210923777,
-        type = MetricsEventType.GET_EVALUATION_LATENCY,
-        event = MetricsEventData.GetEvaluationLatencyMetricsEvent(
+        type = MetricsEventType.RESPONSE_LATENCY,
+        event = MetricsEventData.LatencyMetricsEvent(
+          ApiID.GET_EVALUATIONS,
           labels = mapOf(
             "key1" to "value1",
             "key2" to "value2",
           ),
-          duration = 5,
+          latencySecond = 5.0,
         ),
         sdkVersion = "2.0.1",
         metadata = mapOf(
@@ -81,7 +83,7 @@ class MetricsEventAdapterFactoryTest {
       """.trimMargin(),
       event = EventData.MetricsEvent(
         timestamp = 1660210923777,
-        type = MetricsEventType.GET_EVALUATION_SIZE,
+        type = MetricsEventType.RESPONSE_SIZE,
         event = MetricsEventData.GetEvaluationSizeMetricsEvent(
           labels = mapOf(
             "key1" to "value1",
@@ -116,7 +118,7 @@ class MetricsEventAdapterFactoryTest {
       """.trimMargin(),
       event = EventData.MetricsEvent(
         timestamp = 1660210923777,
-        type = MetricsEventType.TIMEOUT_ERROR_COUNT,
+        type = MetricsEventType.TIMEOUT_ERROR,
         event = MetricsEventData.TimeoutErrorCountMetricsEvent(
           tag = "tag_value",
         ),
@@ -147,7 +149,7 @@ class MetricsEventAdapterFactoryTest {
       """.trimMargin(),
       event = EventData.MetricsEvent(
         timestamp = 1660210923777,
-        type = MetricsEventType.INTERNAL_ERROR_COUNT,
+        type = MetricsEventType.INTERNAL_ERROR,
         event = MetricsEventData.InternalErrorCountMetricsEvent(
           tag = "tag_value",
         ),
