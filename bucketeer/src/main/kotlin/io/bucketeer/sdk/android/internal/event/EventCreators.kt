@@ -112,9 +112,9 @@ internal fun newMetricsEvent(
   metricsEventType: MetricsEventType,
   apiID: ApiID,
   // note: only available on success request
-  latencySecond : Long? = null,
+  latencySecond: Long? = null,
   // note: only available on success request
-  sizeByte: Int? = null
+  sizeByte: Int? = null,
 ): Event {
   return Event(
     id = idGenerator.newId(),
@@ -133,15 +133,12 @@ internal fun newMetricsEventData(
   apiID: ApiID,
   type: MetricsEventType,
   // note: only available on success request
-  latencySecond : Long? = null,
+  latencySecond: Long? = null,
   // note: only available on success request
-  sizeByte: Int? = null
-) : MetricsEventData {
-
+  sizeByte: Int? = null,
+): MetricsEventData {
   // note: featureTag only available from `GET_EVALUATIONS`
-  val labels = if (featureTag != null) mapOf(
-    "tag" to featureTag,
-  ) else mapOf()
+  val labels = if (featureTag != null) mapOf("tag" to featureTag) else mapOf()
 
   return when (type) {
     MetricsEventType.UNKNOWN -> MetricsEventData.UnknownErrorMetricsEvent(
