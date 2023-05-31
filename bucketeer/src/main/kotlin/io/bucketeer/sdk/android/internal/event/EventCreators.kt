@@ -157,7 +157,7 @@ internal fun newMetricsEventData(
       MetricsEventData.LatencyMetricsEvent(
         apiID = apiID,
         labels = labels,
-        latencySecond = latencySecond.toDouble()
+        latencySecond = latencySecond.toDouble(),
       )
     }
 
@@ -169,7 +169,7 @@ internal fun newMetricsEventData(
       MetricsEventData.SizeMetricsEvent(
         apiID = apiID,
         labels = labels,
-        sizeByte = sizeByte
+        sizeByte = sizeByte,
       )
     }
 
@@ -224,4 +224,3 @@ internal fun newMetricsEventData(
     )
   }
 }
-

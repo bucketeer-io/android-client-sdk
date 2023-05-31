@@ -156,7 +156,7 @@ class BKTClientImplTest {
     // timeout event should be saved
     val dbEvents = client.componentImpl.dataModule.eventDao.getEvents()
     assertThat(dbEvents).hasSize(1)
-    assertTimeoutErrorCountMetricsEvent(
+    assertTimeoutErrorMetricsEvent(
       dbEvents[0],
       MetricsEventData.TimeoutErrorMetricsEvent(ApiID.GET_EVALUATIONS, mapOf("tag" to config.featureTag)),
     )
@@ -664,7 +664,7 @@ fun assertSizeMetricsEvent(
   assertThat(actualSizeEvent).isEqualTo(expectedSizeEvent)
 }
 
-fun assertTimeoutErrorCountMetricsEvent(
+fun assertTimeoutErrorMetricsEvent(
   actual: Event,
   expectedMetricsEvent: MetricsEventData.TimeoutErrorMetricsEvent,
 ) {

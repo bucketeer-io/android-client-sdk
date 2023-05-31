@@ -261,12 +261,13 @@ class EventAdapterFactoryTest {
         |    "timestamp": 1660210923777,
         |    "type": 1,
         |    "event": {
+        |      "apiID": 2,
         |      "labels": {
         |        "key1": "value1",
         |        "key2": "value2"
         |      },
-        |      "duration": "5s",
-        |      "@type": "type.googleapis.com/bucketeer.event.client.GetEvaluationLatencyMetricsEvent"
+        |      "latencySecond": 5.0,
+        |      "@type": "type.googleapis.com/bucketeer.event.client.LatencyMetricsEvent"
         |    },
         |    "sdkVersion": "2.0.1",
         |    "metadata": {
@@ -312,12 +313,13 @@ class EventAdapterFactoryTest {
         |    "timestamp": 1660210923777,
         |    "type": 1,
         |    "event": {
+        |      "apiID": 2,
         |      "labels": {
         |        "key1": "value1",
         |        "key2": "value2"
         |      },
-        |      "duration": "5s",
-        |      "@type": "type.googleapis.com/bucketeer.event.client.GetEvaluationLatencyMetricsEvent"
+        |      "latencySecond": 5.0,
+        |      "@type": "type.googleapis.com/bucketeer.event.client.LatencyMetricsEvent"
         |    },
         |    "@type": "type.googleapis.com/bucketeer.event.client.MetricsEvent"
         |  }

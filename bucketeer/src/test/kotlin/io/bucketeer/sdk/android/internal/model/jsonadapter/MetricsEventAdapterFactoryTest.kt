@@ -18,18 +18,19 @@ class MetricsEventAdapterFactoryTest {
 
   @Suppress("unused")
   enum class TestCase(val json: String, val event: EventData.MetricsEvent) {
-    GetEvaluationLatency(
+    LatencyMetric(
       json = """
         |{
         |  "timestamp": 1660210923777,
         |  "type": 1,
         |  "event": {
+        |    "apiID": 2,
         |    "labels": {
         |      "key1": "value1",
         |      "key2": "value2"
         |    },
-        |    "duration": "5s",
-        |    "@type": "type.googleapis.com/bucketeer.event.client.GetEvaluationLatencyMetricsEvent"
+        |    "latencySecond": 5.0,
+        |    "@type": "type.googleapis.com/bucketeer.event.client.LatencyMetricsEvent"
         |  },
         |  "sdkVersion": "2.0.1",
         |  "metadata": {
@@ -59,18 +60,19 @@ class MetricsEventAdapterFactoryTest {
         ),
       ),
     ),
-    GetEvaluationSize(
+    SizeMetricsEvent(
       json = """
         |{
         |  "timestamp": 1660210923777,
         |  "type": 2,
         |  "event": {
+        |    "apiID": 2,
         |    "labels": {
         |      "key1": "value1",
         |      "key2": "value2"
         |    },
         |    "sizeByte": 1234,
-        |    "@type": "type.googleapis.com/bucketeer.event.client.GetEvaluationSizeMetricsEvent"
+        |    "@type": "type.googleapis.com/bucketeer.event.client.SizeMetricsEvent"
         |  },
         |  "sdkVersion": "2.0.1",
         |  "metadata": {
@@ -84,7 +86,8 @@ class MetricsEventAdapterFactoryTest {
       event = EventData.MetricsEvent(
         timestamp = 1660210923777,
         type = MetricsEventType.RESPONSE_SIZE,
-        event = MetricsEventData.GetEvaluationSizeMetricsEvent(
+        event = MetricsEventData.SizeMetricsEvent(
+          ApiID.GET_EVALUATIONS,
           labels = mapOf(
             "key1" to "value1",
             "key2" to "value2",
@@ -99,13 +102,17 @@ class MetricsEventAdapterFactoryTest {
         ),
       ),
     ),
-    TimeoutErrorCount(
+    TimeoutErrorMetric(
       json = """
         |{
         |  "timestamp": 1660210923777,
         |  "type": 3,
         |  "event": {
-        |    "tag": "tag_value"
+        |    "apiID": 2,
+        |    "labels": {
+        |      "tag": "tag_value"
+        |    },
+        |    "@type": "type.googleapis.com/bucketeer.event.client.TimeoutErrorMetricsEvent"
         |  },
         |  "sdkVersion": "2.0.1",
         |  "metadata": {
@@ -119,8 +126,11 @@ class MetricsEventAdapterFactoryTest {
       event = EventData.MetricsEvent(
         timestamp = 1660210923777,
         type = MetricsEventType.TIMEOUT_ERROR,
-        event = MetricsEventData.TimeoutErrorCountMetricsEvent(
-          tag = "tag_value",
+        event = MetricsEventData.TimeoutErrorMetricsEvent(
+          ApiID.GET_EVALUATIONS,
+          labels = mapOf(
+            "tag" to "tag_value",
+          ),
         ),
         sdkVersion = "2.0.1",
         metadata = mapOf(
@@ -134,9 +144,13 @@ class MetricsEventAdapterFactoryTest {
       json = """
         |{
         |  "timestamp": 1660210923777,
-        |  "type": 4,
+        |  "type": 5,
         |  "event": {
-        |    "tag": "tag_value"
+        |    "apiID": 2,
+        |    "labels": {
+        |      "tag": "tag_value"
+        |    },
+        |    "@type": "type.googleapis.com/bucketeer.event.client.InternalSdkErrorMetricsEvent"
         |  },
         |  "sdkVersion": "2.0.1",
         |  "metadata": {
@@ -150,8 +164,11 @@ class MetricsEventAdapterFactoryTest {
       event = EventData.MetricsEvent(
         timestamp = 1660210923777,
         type = MetricsEventType.INTERNAL_ERROR,
-        event = MetricsEventData.InternalErrorCountMetricsEvent(
-          tag = "tag_value",
+        event = MetricsEventData.InternalSdkErrorMetricsEvent(
+          ApiID.GET_EVALUATIONS,
+          labels = mapOf(
+            "tag" to "tag_value",
+          ),
         ),
         sdkVersion = "2.0.1",
         metadata = mapOf(

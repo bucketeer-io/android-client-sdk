@@ -97,9 +97,8 @@ internal class EventInteractor(
   private fun trackMetricsEventWhenRequestAPIFailure(
     featureTag: String?,
     error: BKTException,
-    apiID: ApiID
+    apiID: ApiID,
   ) {
-
     val metricEventType = when (error) {
       is BKTException.BadRequestException -> MetricsEventType.BAD_REQUEST_ERROR
       is BKTException.ClientClosedRequestException -> MetricsEventType.CLIENT_CLOSED_REQUEST_ERROR
@@ -129,7 +128,6 @@ internal class EventInteractor(
 
     updateEventsAndNotify()
   }
-
 
   fun sendEvents(force: Boolean = false): SendEventsResult {
     val current = eventDao.getEvents()
