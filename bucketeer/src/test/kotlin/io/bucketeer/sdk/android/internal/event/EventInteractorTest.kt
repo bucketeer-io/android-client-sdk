@@ -319,7 +319,6 @@ class EventInteractorTest {
 
   @Test
   fun `trackFetchEvaluationsFailure - other error`() {
-
     val listener = FakeEventUpdateListener()
 
     interactor.setEventUpdateListener(listener)
