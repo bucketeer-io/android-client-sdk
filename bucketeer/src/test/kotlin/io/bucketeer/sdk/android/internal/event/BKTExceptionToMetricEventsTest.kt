@@ -20,7 +20,7 @@ class BKTExceptionToMetricEventsTest {
     UNAUTHORIZED(BKTException.UnauthorizedException(message = ""), MetricsEventType.UNAUTHORIZED_ERROR),
     FORBIDDEN(BKTException.ForbiddenException(message = ""), MetricsEventType.FORBIDDEN_ERROR),
     NOT_FOUND(BKTException.FeatureNotFoundException(message = ""), MetricsEventType.NOT_FOUND_ERROR),
-    METHOD_NOT_ALLOWED(BKTException.InvalidHttpMethodException(message = ""), MetricsEventType.INTERNAL_ERROR),
+    METHOD_NOT_ALLOWED(BKTException.InvalidHttpMethodException(message = ""), MetricsEventType.INTERNAL_SDK_ERROR),
     CLIENT_CLOSED_REQUEST(BKTException.ClientClosedRequestException(message = ""), MetricsEventType.CLIENT_CLOSED_REQUEST_ERROR),
     INTERNAL_SERVER_ERROR(BKTException.InternalServerErrorException(message = ""), MetricsEventType.INTERNAL_SERVER_ERROR),
     SERVICE_UNAVAILABLE(BKTException.ServiceUnavailableException(message = ""), MetricsEventType.SERVICE_UNAVAILABLE_ERROR),

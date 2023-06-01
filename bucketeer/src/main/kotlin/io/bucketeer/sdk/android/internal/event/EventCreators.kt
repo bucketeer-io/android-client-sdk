@@ -180,7 +180,7 @@ internal fun newMetricsEventData(
       labels = labels,
     )
 
-    MetricsEventType.INTERNAL_ERROR -> MetricsEventData.InternalSdkErrorMetricsEvent(
+    MetricsEventType.INTERNAL_SDK_ERROR -> MetricsEventData.InternalSdkErrorMetricsEvent(
       apiID = apiID,
       labels = labels,
     )

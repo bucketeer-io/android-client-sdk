@@ -71,7 +71,7 @@ class MetricsEventAdapterFactory : JsonAdapter.Factory {
           MetricsEventType.RESPONSE_LATENCY -> latencyMetricsEventAdapter
           MetricsEventType.RESPONSE_SIZE -> sizeMetricsEventJsonAdapter
           MetricsEventType.TIMEOUT_ERROR -> timeoutErrorAdapter
-          MetricsEventType.INTERNAL_ERROR -> internalSDKErrorAdapter
+          MetricsEventType.INTERNAL_SDK_ERROR -> internalSDKErrorAdapter
           MetricsEventType.UNKNOWN -> unknownErrorAdapter
           MetricsEventType.NETWORK_ERROR -> networkErrorAdapter
           MetricsEventType.BAD_REQUEST_ERROR -> badRequestErrorEventAdapter
@@ -128,7 +128,7 @@ class MetricsEventAdapterFactory : JsonAdapter.Factory {
               value.event as MetricsEventData.TimeoutErrorMetricsEvent,
             )
           }
-          MetricsEventType.INTERNAL_ERROR -> {
+          MetricsEventType.INTERNAL_SDK_ERROR -> {
             internalSDKErrorAdapter.toJson(
               writer,
               value.event as MetricsEventData.InternalSdkErrorMetricsEvent,

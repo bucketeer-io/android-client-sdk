@@ -428,7 +428,7 @@ class MetricsEventAdapterFactoryTest {
       """.trimMargin(),
       event = EventData.MetricsEvent(
         timestamp = 1660210923777,
-        type = MetricsEventType.INTERNAL_ERROR,
+        type = MetricsEventType.INTERNAL_SDK_ERROR,
         event = MetricsEventData.InternalSdkErrorMetricsEvent(
           ApiID.GET_EVALUATIONS,
           labels = mapOf(
