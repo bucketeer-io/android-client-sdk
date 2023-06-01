@@ -15,7 +15,6 @@ import org.junit.runner.RunWith
 
 @RunWith(TestParameterInjector::class)
 class MetricsEventAdapterFactoryTest {
-
   @Suppress("unused")
   enum class TestCase(val json: String, val event: EventData.MetricsEvent) {
     LatencyMetric(
@@ -140,7 +139,273 @@ class MetricsEventAdapterFactoryTest {
         ),
       ),
     ),
-    InternalErrorCount(
+    NetworkErrorMetricsEvent(
+      json = """
+        |{
+        |  "timestamp": 1660210923777,
+        |  "type": 4,
+        |  "event": {
+        |    "apiID": 2,
+        |    "labels": {
+        |      "tag": "tag_value"
+        |    },
+        |    "@type": "type.googleapis.com/bucketeer.event.client.NetworkErrorMetricsEvent"
+        |  },
+        |  "sdkVersion": "2.0.1",
+        |  "metadata": {
+        |    "app_version": "1.2.3",
+        |    "os_version": "os_version_value",
+        |    "device_model": "device_model_value"
+        |  },
+        |  "@type": "type.googleapis.com/bucketeer.event.client.MetricsEvent"
+        |}
+      """.trimMargin(),
+      event = EventData.MetricsEvent(
+        timestamp = 1660210923777,
+        type = MetricsEventType.NETWORK_ERROR,
+        event = MetricsEventData.NetworkErrorMetricsEvent(
+          ApiID.GET_EVALUATIONS,
+          labels = mapOf(
+            "tag" to "tag_value",
+          ),
+        ),
+        sdkVersion = "2.0.1",
+        metadata = mapOf(
+          "app_version" to "1.2.3",
+          "os_version" to "os_version_value",
+          "device_model" to "device_model_value",
+        ),
+      ),
+    ),
+    BadRequestErrorMetricsEvent(
+      json = """
+        |{
+        |  "timestamp": 1660210923777,
+        |  "type": 6,
+        |  "event": {
+        |    "apiID": 2,
+        |    "labels": {
+        |      "tag": "tag_value"
+        |    },
+        |    "@type": "type.googleapis.com/bucketeer.event.client.BadRequestErrorMetricsEvent"
+        |  },
+        |  "sdkVersion": "2.0.1",
+        |  "metadata": {
+        |    "app_version": "1.2.3",
+        |    "os_version": "os_version_value",
+        |    "device_model": "device_model_value"
+        |  },
+        |  "@type": "type.googleapis.com/bucketeer.event.client.MetricsEvent"
+        |}
+      """.trimMargin(),
+      event = EventData.MetricsEvent(
+        timestamp = 1660210923777,
+        type = MetricsEventType.BAD_REQUEST_ERROR,
+        event = MetricsEventData.BadRequestErrorMetricsEvent(
+          ApiID.GET_EVALUATIONS,
+          labels = mapOf(
+            "tag" to "tag_value",
+          ),
+        ),
+        sdkVersion = "2.0.1",
+        metadata = mapOf(
+          "app_version" to "1.2.3",
+          "os_version" to "os_version_value",
+          "device_model" to "device_model_value",
+        ),
+      ),
+    ),
+    UnauthorizedErrorMetricsEvent(
+      json = """
+        |{
+        |  "timestamp": 1660210923777,
+        |  "type": 7,
+        |  "event": {
+        |    "apiID": 2,
+        |    "labels": {
+        |      "tag": "tag_value"
+        |    },
+        |    "@type": "type.googleapis.com/bucketeer.event.client.UnauthorizedErrorMetricsEvent"
+        |  },
+        |  "sdkVersion": "2.0.1",
+        |  "metadata": {
+        |    "app_version": "1.2.3",
+        |    "os_version": "os_version_value",
+        |    "device_model": "device_model_value"
+        |  },
+        |  "@type": "type.googleapis.com/bucketeer.event.client.MetricsEvent"
+        |}
+      """.trimMargin(),
+      event = EventData.MetricsEvent(
+        timestamp = 1660210923777,
+        type = MetricsEventType.UNAUTHORIZED_ERROR,
+        event = MetricsEventData.UnauthorizedErrorMetricsEvent(
+          ApiID.GET_EVALUATIONS,
+          labels = mapOf(
+            "tag" to "tag_value",
+          ),
+        ),
+        sdkVersion = "2.0.1",
+        metadata = mapOf(
+          "app_version" to "1.2.3",
+          "os_version" to "os_version_value",
+          "device_model" to "device_model_value",
+        ),
+      ),
+    ),
+    ForbiddenErrorMetricsEvent(
+      json = """
+        |{
+        |  "timestamp": 1660210923777,
+        |  "type": 8,
+        |  "event": {
+        |    "apiID": 2,
+        |    "labels": {
+        |      "tag": "tag_value"
+        |    },
+        |    "@type": "type.googleapis.com/bucketeer.event.client.ForbiddenErrorMetricsEvent"
+        |  },
+        |  "sdkVersion": "2.0.1",
+        |  "metadata": {
+        |    "app_version": "1.2.3",
+        |    "os_version": "os_version_value",
+        |    "device_model": "device_model_value"
+        |  },
+        |  "@type": "type.googleapis.com/bucketeer.event.client.MetricsEvent"
+        |}
+      """.trimMargin(),
+      event = EventData.MetricsEvent(
+        timestamp = 1660210923777,
+        type = MetricsEventType.FORBIDDEN_ERROR,
+        event = MetricsEventData.ForbiddenErrorMetricsEvent(
+          ApiID.GET_EVALUATIONS,
+          labels = mapOf(
+            "tag" to "tag_value",
+          ),
+        ),
+        sdkVersion = "2.0.1",
+        metadata = mapOf(
+          "app_version" to "1.2.3",
+          "os_version" to "os_version_value",
+          "device_model" to "device_model_value",
+        ),
+      ),
+    ),
+    NotFoundErrorMetricsEvent(
+      json = """
+        |{
+        |  "timestamp": 1660210923777,
+        |  "type": 9,
+        |  "event": {
+        |    "apiID": 2,
+        |    "labels": {
+        |      "tag": "tag_value"
+        |    },
+        |    "@type": "type.googleapis.com/bucketeer.event.client.NotFoundErrorMetricsEvent"
+        |  },
+        |  "sdkVersion": "2.0.1",
+        |  "metadata": {
+        |    "app_version": "1.2.3",
+        |    "os_version": "os_version_value",
+        |    "device_model": "device_model_value"
+        |  },
+        |  "@type": "type.googleapis.com/bucketeer.event.client.MetricsEvent"
+        |}
+      """.trimMargin(),
+      event = EventData.MetricsEvent(
+        timestamp = 1660210923777,
+        type = MetricsEventType.NOT_FOUND_ERROR,
+        event = MetricsEventData.NotFoundErrorMetricsEvent(
+          ApiID.GET_EVALUATIONS,
+          labels = mapOf(
+            "tag" to "tag_value",
+          ),
+        ),
+        sdkVersion = "2.0.1",
+        metadata = mapOf(
+          "app_version" to "1.2.3",
+          "os_version" to "os_version_value",
+          "device_model" to "device_model_value",
+        ),
+      ),
+    ),
+    ClientClosedRequestErrorMetricsEvent(
+      json = """
+        |{
+        |  "timestamp": 1660210923777,
+        |  "type": 10,
+        |  "event": {
+        |    "apiID": 2,
+        |    "labels": {
+        |      "tag": "tag_value"
+        |    },
+        |    "@type": "type.googleapis.com/bucketeer.event.client.ClientClosedRequestErrorMetricsEvent"
+        |  },
+        |  "sdkVersion": "2.0.1",
+        |  "metadata": {
+        |    "app_version": "1.2.3",
+        |    "os_version": "os_version_value",
+        |    "device_model": "device_model_value"
+        |  },
+        |  "@type": "type.googleapis.com/bucketeer.event.client.MetricsEvent"
+        |}
+      """.trimMargin(),
+      event = EventData.MetricsEvent(
+        timestamp = 1660210923777,
+        type = MetricsEventType.CLIENT_CLOSED_REQUEST_ERROR,
+        event = MetricsEventData.ClientClosedRequestErrorMetricsEvent(
+          ApiID.GET_EVALUATIONS,
+          labels = mapOf(
+            "tag" to "tag_value",
+          ),
+        ),
+        sdkVersion = "2.0.1",
+        metadata = mapOf(
+          "app_version" to "1.2.3",
+          "os_version" to "os_version_value",
+          "device_model" to "device_model_value",
+        ),
+      ),
+    ),
+    ServiceUnavailableErrorMetricsEvent(
+      json = """
+        |{
+        |  "timestamp": 1660210923777,
+        |  "type": 11,
+        |  "event": {
+        |    "apiID": 2,
+        |    "labels": {
+        |      "tag": "tag_value"
+        |    },
+        |    "@type": "type.googleapis.com/bucketeer.event.client.ServiceUnavailableErrorMetricsEvent"
+        |  },
+        |  "sdkVersion": "2.0.1",
+        |  "metadata": {
+        |    "app_version": "1.2.3",
+        |    "os_version": "os_version_value",
+        |    "device_model": "device_model_value"
+        |  },
+        |  "@type": "type.googleapis.com/bucketeer.event.client.MetricsEvent"
+        |}
+      """.trimMargin(),
+      event = EventData.MetricsEvent(
+        timestamp = 1660210923777,
+        type = MetricsEventType.SERVICE_UNAVAILABLE_ERROR,
+        event = MetricsEventData.ServiceUnavailableErrorMetricsEvent(
+          ApiID.GET_EVALUATIONS,
+          labels = mapOf(
+            "tag" to "tag_value",
+          ),
+        ),
+        sdkVersion = "2.0.1",
+        metadata = mapOf(
+          "app_version" to "1.2.3",
+          "os_version" to "os_version_value",
+          "device_model" to "device_model_value",
+        ),
+      ),
+    ),
+    InternalSdkErrorMetric(
       json = """
         |{
         |  "timestamp": 1660210923777,
@@ -165,6 +430,82 @@ class MetricsEventAdapterFactoryTest {
         timestamp = 1660210923777,
         type = MetricsEventType.INTERNAL_ERROR,
         event = MetricsEventData.InternalSdkErrorMetricsEvent(
+          ApiID.GET_EVALUATIONS,
+          labels = mapOf(
+            "tag" to "tag_value",
+          ),
+        ),
+        sdkVersion = "2.0.1",
+        metadata = mapOf(
+          "app_version" to "1.2.3",
+          "os_version" to "os_version_value",
+          "device_model" to "device_model_value",
+        ),
+      ),
+    ),
+    InternalServerErrorMetricsEvent(
+      json = """
+        |{
+        |  "timestamp": 1660210923777,
+        |  "type": 12,
+        |  "event": {
+        |    "apiID": 2,
+        |    "labels": {
+        |      "tag": "tag_value"
+        |    },
+        |    "@type": "type.googleapis.com/bucketeer.event.client.InternalServerErrorMetricsEvent"
+        |  },
+        |  "sdkVersion": "2.0.1",
+        |  "metadata": {
+        |    "app_version": "1.2.3",
+        |    "os_version": "os_version_value",
+        |    "device_model": "device_model_value"
+        |  },
+        |  "@type": "type.googleapis.com/bucketeer.event.client.MetricsEvent"
+        |}
+      """.trimMargin(),
+      event = EventData.MetricsEvent(
+        timestamp = 1660210923777,
+        type = MetricsEventType.INTERNAL_SERVER_ERROR,
+        event = MetricsEventData.InternalServerErrorMetricsEvent(
+          ApiID.GET_EVALUATIONS,
+          labels = mapOf(
+            "tag" to "tag_value",
+          ),
+        ),
+        sdkVersion = "2.0.1",
+        metadata = mapOf(
+          "app_version" to "1.2.3",
+          "os_version" to "os_version_value",
+          "device_model" to "device_model_value",
+        ),
+      ),
+    ),
+    UnknownErrorMetricsEvent(
+      json = """
+        |{
+        |  "timestamp": 1660210923777,
+        |  "type": 0,
+        |  "event": {
+        |    "apiID": 2,
+        |    "labels": {
+        |      "tag": "tag_value"
+        |    },
+        |    "@type": "type.googleapis.com/bucketeer.event.client.UnknownErrorMetricsEvent"
+        |  },
+        |  "sdkVersion": "2.0.1",
+        |  "metadata": {
+        |    "app_version": "1.2.3",
+        |    "os_version": "os_version_value",
+        |    "device_model": "device_model_value"
+        |  },
+        |  "@type": "type.googleapis.com/bucketeer.event.client.MetricsEvent"
+        |}
+      """.trimMargin(),
+      event = EventData.MetricsEvent(
+        timestamp = 1660210923777,
+        type = MetricsEventType.UNKNOWN,
+        event = MetricsEventData.UnknownErrorMetricsEvent(
           ApiID.GET_EVALUATIONS,
           labels = mapOf(
             "tag" to "tag_value",
