@@ -319,6 +319,7 @@ class EventInteractorTest {
 
   @Test
   fun `trackFetchEvaluationsFailure - other error`() {
+
     val listener = FakeEventUpdateListener()
 
     interactor.setEventUpdateListener(listener)
@@ -491,9 +492,11 @@ class EventInteractorTest {
     assertThat(result.error).isInstanceOf(BKTException.BadRequestException::class.java)
 
     val events = component.dataModule.eventDao.getEvents()
-    // Note: because `register_event` fail ,
-    // So there will be one more auto tracked event
-    // For MetricsEventData.BadRequestErrorMetricsEvent
+    // Note: because `register_event` fail
+    // https://github.com/bucketeer-io/android-client-sdk/issues/56
+    // So there will be one more auto tracked error metric event
+    // The Metric event will depend on the error (more details See [BKTExceptionToMetricEventsTest.kt])
+    // In this case is MetricsEventData.BadRequestErrorMetricsEvent
     assertThat(component.dataModule.eventDao.getEvents()).hasSize(4)
 
     val expectedEvents = listOf(
