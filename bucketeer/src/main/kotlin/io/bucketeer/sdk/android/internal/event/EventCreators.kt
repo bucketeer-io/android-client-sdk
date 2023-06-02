@@ -108,13 +108,13 @@ internal fun newGoalEvent(
 internal fun newSuccessMetricsEvents(
   clock: Clock,
   idGenerator: IdGenerator,
-  featureTag: String?,
+  featureTag: String,
   appVersion: String,
   apiId: ApiId,
   latencySecond: Long,
   sizeByte: Int,
 ): List<Event> {
-  val labels = if (featureTag != null) mapOf("tag" to featureTag) else mapOf()
+  val labels = mapOf("tag" to featureTag)
   return listOf(
     Event(
       id = idGenerator.newId(),
@@ -171,11 +171,11 @@ internal fun newErrorMetricsEvent(
   )
 }
 internal fun newErrorMetricsEventData(
-  featureTag: String?,
+  featureTag: String,
   apiId: ApiId,
   type: MetricsEventType,
 ): MetricsEventData {
-  val labels = if (featureTag != null) mapOf("tag" to featureTag) else mapOf()
+  val labels = mapOf("tag" to featureTag)
 
   return when (type) {
     MetricsEventType.TIMEOUT_ERROR -> MetricsEventData.TimeoutErrorMetricsEvent(
