@@ -12,6 +12,7 @@ import io.bucketeer.sdk.android.internal.remote.ApiClient
 
 internal class InteractorModule(
   val mainHandler: Handler,
+  val featureTag: String,
 ) {
   fun evaluationInteractor(
     apiClient: ApiClient,
@@ -43,6 +44,7 @@ internal class InteractorModule(
       clock = clock,
       idGenerator = idGenerator,
       appVersion = appVersion,
+      featureTag = featureTag,
     )
   }
 }

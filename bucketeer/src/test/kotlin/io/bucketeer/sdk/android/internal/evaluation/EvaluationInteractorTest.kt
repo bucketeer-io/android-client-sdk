@@ -42,20 +42,23 @@ class EvaluationInteractorTest {
   fun setup() {
     server = MockWebServer()
 
+    val config = BKTConfig.builder()
+      .apiEndpoint(server.url("").toString())
+      .apiKey("api_key_value")
+      .featureTag("feature_tag_value")
+      .appVersion("1.2.3")
+      .build()
+
     component = ComponentImpl(
       dataModule = DataModule(
         application = ApplicationProvider.getApplicationContext(),
         user = user1,
-        config = BKTConfig.builder()
-          .apiEndpoint(server.url("").toString())
-          .apiKey("api_key_value")
-          .featureTag("feature_tag_value")
-          .appVersion("1.2.3")
-          .build(),
+        config = config,
         inMemoryDB = true,
       ),
       interactorModule = InteractorModule(
         mainHandler = Handler(Looper.getMainLooper()),
+        featureTag = config.featureTag,
       ),
     )
 

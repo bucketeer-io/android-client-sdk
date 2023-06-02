@@ -19,6 +19,7 @@ internal class EventInteractor(
   private val clock: Clock,
   private val idGenerator: IdGenerator,
   private val appVersion: String,
+  private val featureTag: String,
 ) {
 
   private var eventUpdateListener: EventUpdateListener? = null
@@ -83,7 +84,7 @@ internal class EventInteractor(
   )
 
   private fun trackMetricsEventWhenRequestAPIFailure(
-    featureTag: String?,
+    featureTag: String,
     error: BKTException,
     apiId: ApiId,
   ) {
@@ -148,7 +149,8 @@ internal class EventInteractor(
   private fun trackSendEventsFailure(
     error: BKTException,
   ) = trackMetricsEventWhenRequestAPIFailure(
-    featureTag = null,
+    // discussed: here https://github.com/bucketeer-io/android-client-sdk/pull/64/files#r1214187627
+    featureTag = featureTag,
     error,
     ApiId.REGISTER_EVENTS,
   )

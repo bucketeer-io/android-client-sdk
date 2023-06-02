@@ -58,20 +58,23 @@ class EventInteractorTest {
   fun setup() {
     server = MockWebServer()
 
+    val config = BKTConfig.builder()
+      .apiEndpoint(server.url("").toString())
+      .apiKey("api_key_value")
+      .featureTag("feature_tag_value")
+      .eventsMaxQueueSize(3)
+      .appVersion("1.2.3")
+      .build()
+
     component = ComponentImpl(
       dataModule = TestDataModule(
         application = ApplicationProvider.getApplicationContext(),
-        config = BKTConfig.builder()
-          .apiEndpoint(server.url("").toString())
-          .apiKey("api_key_value")
-          .featureTag("feature_tag_value")
-          .eventsMaxQueueSize(3)
-          .appVersion("1.2.3")
-          .build(),
+        config = config,
         defaultRequestTimeoutMillis = TimeUnit.SECONDS.toMillis(1),
       ),
       interactorModule = InteractorModule(
         mainHandler = Handler(Looper.getMainLooper()),
+        featureTag = config.featureTag,
       ),
     )
 
@@ -567,6 +570,9 @@ class EventInteractorTest {
           type = MetricsEventType.BAD_REQUEST_ERROR,
           event = MetricsEventData.BadRequestErrorMetricsEvent(
             ApiId.REGISTER_EVENTS,
+            labels = mapOf(
+              "tag" to "feature_tag_value",
+            ),
           ),
           sdkVersion = BuildConfig.SDK_VERSION,
           metadata = mapOf(

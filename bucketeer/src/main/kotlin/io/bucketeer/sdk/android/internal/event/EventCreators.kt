@@ -155,7 +155,7 @@ internal fun newSuccessMetricsEvents(
 internal fun newErrorMetricsEvent(
   clock: Clock,
   idGenerator: IdGenerator,
-  featureTag: String?,
+  featureTag: String,
   appVersion: String,
   error: BKTException,
   apiId: ApiId,
