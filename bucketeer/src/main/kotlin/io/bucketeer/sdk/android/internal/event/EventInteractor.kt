@@ -8,7 +8,6 @@ import io.bucketeer.sdk.android.internal.logd
 import io.bucketeer.sdk.android.internal.model.ApiID
 import io.bucketeer.sdk.android.internal.model.Evaluation
 import io.bucketeer.sdk.android.internal.model.Event
-import io.bucketeer.sdk.android.internal.model.MetricsEventType
 import io.bucketeer.sdk.android.internal.model.User
 import io.bucketeer.sdk.android.internal.remote.ApiClient
 import io.bucketeer.sdk.android.internal.remote.RegisterEventsResult
@@ -60,25 +59,14 @@ internal class EventInteractor(
     // For get_evaluations, we will report all metrics events, Including the latency and size metrics events.
     // https://github.com/bucketeer-io/android-client-sdk/issues/56
     eventDao.addEvents(
-      listOf(
-        newMetricsEvent(
-          clock = clock,
-          idGenerator = idGenerator,
-          featureTag = featureTag,
-          appVersion = appVersion,
-          metricsEventType = MetricsEventType.RESPONSE_LATENCY,
-          apiID = ApiID.GET_EVALUATIONS,
-          latencySecond = seconds,
-        ),
-        newMetricsEvent(
-          clock = clock,
-          idGenerator = idGenerator,
-          featureTag = featureTag,
-          appVersion = appVersion,
-          metricsEventType = MetricsEventType.RESPONSE_SIZE,
-          apiID = ApiID.GET_EVALUATIONS,
-          sizeByte = sizeByte,
-        ),
+      newSuccessMetricsEvents(
+        clock = clock,
+        idGenerator = idGenerator,
+        featureTag = featureTag,
+        appVersion = appVersion,
+        apiID = ApiID.GET_EVALUATIONS,
+        latencySecond = seconds,
+        sizeByte = sizeByte,
       ),
     )
 
@@ -99,13 +87,13 @@ internal class EventInteractor(
     error: BKTException,
     apiID: ApiID,
   ) {
-    val metricEventType = error.toMetricEventType()
-    val event = newMetricsEvent(
+
+    val event = newErrorMetricsEvent(
       clock = clock,
       idGenerator = idGenerator,
       featureTag = featureTag,
       appVersion = appVersion,
-      metricsEventType = metricEventType,
+      error = error,
       apiID = apiID,
     )
     eventDao.addEvent(event)
