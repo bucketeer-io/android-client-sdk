@@ -111,12 +111,9 @@ internal fun newSuccessMetricsEvents(
   featureTag: String?,
   appVersion: String,
   apiId: ApiId,
-  // note: only available on success request
   latencySecond: Long,
-  // note: only available on success request
   sizeByte: Int,
 ): List<Event> {
-  // note: featureTag only available from `GET_EVALUATIONS`
   val labels = if (featureTag != null) mapOf("tag" to featureTag) else mapOf()
   return listOf(
     Event(
@@ -178,7 +175,6 @@ internal fun newErrorMetricsEventData(
   apiId: ApiId,
   type: MetricsEventType,
 ): MetricsEventData {
-  // note: featureTag only available from `GET_EVALUATIONS`
   val labels = if (featureTag != null) mapOf("tag" to featureTag) else mapOf()
 
   return when (type) {
