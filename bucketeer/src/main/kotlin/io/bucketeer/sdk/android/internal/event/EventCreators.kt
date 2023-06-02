@@ -1,6 +1,7 @@
 package io.bucketeer.sdk.android.internal.event
 
 import android.os.Build
+import io.bucketeer.sdk.android.BKTException
 import io.bucketeer.sdk.android.BuildConfig
 import io.bucketeer.sdk.android.internal.Clock
 import io.bucketeer.sdk.android.internal.IdGenerator
@@ -104,72 +105,84 @@ internal fun newGoalEvent(
   )
 }
 
-internal fun newMetricsEvent(
+internal fun newSuccessMetricsEvents(
   clock: Clock,
   idGenerator: IdGenerator,
   featureTag: String?,
   appVersion: String,
-  metricsEventType: MetricsEventType,
   apiID: ApiID,
   // note: only available on success request
-  latencySecond: Long? = null,
+  latencySecond: Long,
   // note: only available on success request
-  sizeByte: Int? = null,
+  sizeByte: Int,
+): List<Event> {
+  // note: featureTag only available from `GET_EVALUATIONS`
+  val labels = if (featureTag != null) mapOf("tag" to featureTag) else mapOf()
+  return listOf(
+    Event(
+      id = idGenerator.newId(),
+      type = EventType.METRICS,
+      event = EventData.MetricsEvent(
+        timestamp = clock.currentTimeSeconds(),
+        type = MetricsEventType.RESPONSE_LATENCY,
+        event = MetricsEventData.LatencyMetricsEvent(
+          apiID = apiID,
+          labels = labels,
+          latencySecond = latencySecond.toDouble(),
+        ),
+        sdkVersion = BuildConfig.SDK_VERSION,
+        metadata = newMetadata(appVersion),
+      ),
+    ),
+    Event(
+      id = idGenerator.newId(),
+      type = EventType.METRICS,
+      event = EventData.MetricsEvent(
+        timestamp = clock.currentTimeSeconds(),
+        type = MetricsEventType.RESPONSE_SIZE,
+        event = MetricsEventData.SizeMetricsEvent(
+          apiID = apiID,
+          labels = labels,
+          sizeByte = sizeByte,
+        ),
+        sdkVersion = BuildConfig.SDK_VERSION,
+        metadata = newMetadata(appVersion),
+      ),
+    )
+  )
+}
+
+
+internal fun newErrorMetricsEvent(
+  clock: Clock,
+  idGenerator: IdGenerator,
+  featureTag: String?,
+  appVersion: String,
+  error: BKTException,
+  apiID: ApiID,
 ): Event {
+  val metricEventType = error.toMetricEventType()
   return Event(
     id = idGenerator.newId(),
     type = EventType.METRICS,
     event = EventData.MetricsEvent(
       timestamp = clock.currentTimeSeconds(),
-      type = metricsEventType,
-      event = newMetricsEventData(featureTag, apiID, metricsEventType, latencySecond, sizeByte),
+      type = metricEventType,
+      event = newErrorMetricsEventData(featureTag, apiID, metricEventType),
       sdkVersion = BuildConfig.SDK_VERSION,
       metadata = newMetadata(appVersion),
     ),
   )
 }
-internal fun newMetricsEventData(
+internal fun newErrorMetricsEventData(
   featureTag: String?,
   apiID: ApiID,
-  type: MetricsEventType,
-  // note: only available on success request
-  latencySecond: Long? = null,
-  // note: only available on success request
-  sizeByte: Int? = null,
+  type: MetricsEventType
 ): MetricsEventData {
   // note: featureTag only available from `GET_EVALUATIONS`
   val labels = if (featureTag != null) mapOf("tag" to featureTag) else mapOf()
 
   return when (type) {
-    MetricsEventType.UNKNOWN -> MetricsEventData.UnknownErrorMetricsEvent(
-      apiID = apiID,
-      labels = labels,
-    )
-
-    MetricsEventType.RESPONSE_LATENCY -> {
-      if (latencySecond == null) {
-        // note: this exception for SDK developer only, must not throw to the user of the SDK.
-        throw Exception("Create LatencyMetricsEvent fail because missing `latency`")
-      }
-      MetricsEventData.LatencyMetricsEvent(
-        apiID = apiID,
-        labels = labels,
-        latencySecond = latencySecond.toDouble(),
-      )
-    }
-
-    MetricsEventType.RESPONSE_SIZE -> {
-      if (sizeByte == null) {
-        // note: this exception for SDK developer only, must not throw to the user of the SDK.
-        throw Exception("Create SizeMetricsEvent fail because missing `sizeByte`")
-      }
-      MetricsEventData.SizeMetricsEvent(
-        apiID = apiID,
-        labels = labels,
-        sizeByte = sizeByte,
-      )
-    }
-
     MetricsEventType.TIMEOUT_ERROR -> MetricsEventData.TimeoutErrorMetricsEvent(
       apiID = apiID,
       labels = labels,
@@ -216,6 +229,11 @@ internal fun newMetricsEventData(
     )
 
     MetricsEventType.INTERNAL_SERVER_ERROR -> MetricsEventData.InternalServerErrorMetricsEvent(
+      apiID = apiID,
+      labels = labels,
+    )
+
+    else -> MetricsEventData.UnknownErrorMetricsEvent(
       apiID = apiID,
       labels = labels,
     )
