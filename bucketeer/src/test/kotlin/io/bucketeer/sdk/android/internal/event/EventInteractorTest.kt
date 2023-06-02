@@ -43,7 +43,6 @@ import org.robolectric.RobolectricTestRunner
 import java.net.SocketTimeoutException
 import java.util.concurrent.TimeUnit
 
-// TODO : Kenji : need thinking and add more test to this test file
 @RunWith(RobolectricTestRunner::class)
 class EventInteractorTest {
   private lateinit var server: MockWebServer
@@ -720,8 +719,7 @@ class EventInteractorTest {
         .setBody(
           moshi.adapter(RegisterEventsResponse::class.java).toJson(
             RegisterEventsResponse(
-              errors = mapOf(
-                // TODO: Kenji check RegisterEventsErrorResponse on iOS ref
+              errors = mapOf( 
                 idGenerator.calls[0] to RegisterEventsErrorResponse(retriable = true, "error"),
                 idGenerator.calls[1] to RegisterEventsErrorResponse(retriable = false, "error"),
               ),
