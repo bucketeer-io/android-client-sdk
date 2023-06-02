@@ -16,7 +16,7 @@ import io.bucketeer.sdk.android.internal.IdGeneratorImpl
 import io.bucketeer.sdk.android.internal.di.ComponentImpl
 import io.bucketeer.sdk.android.internal.di.DataModule
 import io.bucketeer.sdk.android.internal.di.InteractorModule
-import io.bucketeer.sdk.android.internal.model.ApiID
+import io.bucketeer.sdk.android.internal.model.ApiId
 import io.bucketeer.sdk.android.internal.model.Event
 import io.bucketeer.sdk.android.internal.model.EventData
 import io.bucketeer.sdk.android.internal.model.EventType
@@ -230,7 +230,7 @@ class EventInteractorTest {
           timestamp = clock.currentTimeSecondsCalls[0],
           type = MetricsEventType.RESPONSE_LATENCY,
           event = MetricsEventData.LatencyMetricsEvent(
-            ApiID.GET_EVALUATIONS,
+            ApiId.GET_EVALUATIONS,
             labels = mapOf(
               "tag" to "feature_tag_value",
             ),
@@ -256,7 +256,7 @@ class EventInteractorTest {
           timestamp = clock.currentTimeSecondsCalls[1],
           type = MetricsEventType.RESPONSE_SIZE,
           event = MetricsEventData.SizeMetricsEvent(
-            ApiID.GET_EVALUATIONS,
+            ApiId.GET_EVALUATIONS,
             labels = mapOf(
               "tag" to "feature_tag_value",
             ),
@@ -300,7 +300,7 @@ class EventInteractorTest {
           timestamp = clock.currentTimeSecondsCalls[0],
           type = MetricsEventType.TIMEOUT_ERROR,
           event = MetricsEventData.TimeoutErrorMetricsEvent(
-            ApiID.GET_EVALUATIONS,
+            ApiId.GET_EVALUATIONS,
             mapOf(
               "tag" to "feature_tag_value",
             ),
@@ -343,7 +343,7 @@ class EventInteractorTest {
           timestamp = clock.currentTimeSecondsCalls[0],
           type = MetricsEventType.BAD_REQUEST_ERROR,
           event = MetricsEventData.BadRequestErrorMetricsEvent(
-            ApiID.GET_EVALUATIONS,
+            ApiId.GET_EVALUATIONS,
             mapOf(
               "tag" to "feature_tag_value",
             ),
@@ -396,7 +396,7 @@ class EventInteractorTest {
               timestamp = clock.currentTimeSecondsCalls[0],
               type = MetricsEventType.RESPONSE_LATENCY,
               event = MetricsEventData.LatencyMetricsEvent(
-                ApiID.GET_EVALUATIONS,
+                ApiId.GET_EVALUATIONS,
                 labels = mapOf(
                   "tag" to "feature_tag_value",
                 ),
@@ -417,7 +417,7 @@ class EventInteractorTest {
               timestamp = clock.currentTimeSecondsCalls[1],
               type = MetricsEventType.RESPONSE_SIZE,
               event = MetricsEventData.SizeMetricsEvent(
-                ApiID.GET_EVALUATIONS,
+                ApiId.GET_EVALUATIONS,
                 labels = mapOf(
                   "tag" to "feature_tag_value",
                 ),
@@ -505,7 +505,7 @@ class EventInteractorTest {
           timestamp = clock.currentTimeSecondsCalls[0],
           type = MetricsEventType.RESPONSE_LATENCY,
           event = MetricsEventData.LatencyMetricsEvent(
-            ApiID.GET_EVALUATIONS,
+            ApiId.GET_EVALUATIONS,
             labels = mapOf(
               "tag" to "feature_tag_value",
             ),
@@ -526,7 +526,7 @@ class EventInteractorTest {
           timestamp = clock.currentTimeSecondsCalls[1],
           type = MetricsEventType.RESPONSE_SIZE,
           event = MetricsEventData.SizeMetricsEvent(
-            ApiID.GET_EVALUATIONS,
+            ApiId.GET_EVALUATIONS,
             labels = mapOf(
               "tag" to "feature_tag_value",
             ),
@@ -566,7 +566,7 @@ class EventInteractorTest {
           timestamp = clock.currentTimeSecondsCalls[3],
           type = MetricsEventType.BAD_REQUEST_ERROR,
           event = MetricsEventData.BadRequestErrorMetricsEvent(
-            ApiID.REGISTER_EVENTS,
+            ApiId.REGISTER_EVENTS,
           ),
           sdkVersion = BuildConfig.SDK_VERSION,
           metadata = mapOf(
@@ -665,7 +665,7 @@ class EventInteractorTest {
               timestamp = clock.currentTimeSecondsCalls[0],
               type = MetricsEventType.RESPONSE_LATENCY,
               event = MetricsEventData.LatencyMetricsEvent(
-                ApiID.GET_EVALUATIONS,
+                ApiId.GET_EVALUATIONS,
                 labels = mapOf(
                   "tag" to "feature_tag_value",
                 ),
@@ -686,7 +686,7 @@ class EventInteractorTest {
               timestamp = clock.currentTimeSecondsCalls[1],
               type = MetricsEventType.RESPONSE_SIZE,
               event = MetricsEventData.SizeMetricsEvent(
-                ApiID.GET_EVALUATIONS,
+                ApiId.GET_EVALUATIONS,
                 labels = mapOf(
                   "tag" to "feature_tag_value",
                 ),
@@ -749,7 +749,7 @@ class EventInteractorTest {
               timestamp = clock.currentTimeSecondsCalls[0],
               type = MetricsEventType.RESPONSE_LATENCY,
               event = MetricsEventData.LatencyMetricsEvent(
-                ApiID.GET_EVALUATIONS,
+                ApiId.GET_EVALUATIONS,
                 labels = mapOf(
                   "tag" to "feature_tag_value",
                 ),
@@ -770,7 +770,7 @@ class EventInteractorTest {
               timestamp = clock.currentTimeSecondsCalls[1],
               type = MetricsEventType.RESPONSE_SIZE,
               event = MetricsEventData.SizeMetricsEvent(
-                ApiID.GET_EVALUATIONS,
+                ApiId.GET_EVALUATIONS,
                 labels = mapOf(
                   "tag" to "feature_tag_value",
                 ),
@@ -820,7 +820,7 @@ class EventInteractorTest {
             timestamp = clock.currentTimeSecondsCalls[0],
             type = MetricsEventType.RESPONSE_LATENCY,
             event = MetricsEventData.LatencyMetricsEvent(
-              ApiID.GET_EVALUATIONS,
+              ApiId.GET_EVALUATIONS,
               labels = mapOf(
                 "tag" to "feature_tag_value",
               ),

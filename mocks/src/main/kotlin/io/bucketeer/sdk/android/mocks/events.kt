@@ -2,7 +2,7 @@
 
 package io.bucketeer.sdk.android.mocks
 
-import io.bucketeer.sdk.android.internal.model.ApiID
+import io.bucketeer.sdk.android.internal.model.ApiId
 import io.bucketeer.sdk.android.internal.model.Event
 import io.bucketeer.sdk.android.internal.model.EventData
 import io.bucketeer.sdk.android.internal.model.EventType
@@ -114,7 +114,7 @@ val metricsEvent1: Event by lazy {
 }
 
 val getEvaluationLatencyMetricsEvent1 = MetricsEventData.LatencyMetricsEvent(
-  ApiID.GET_EVALUATIONS,
+  ApiId.GET_EVALUATIONS,
   labels = mapOf("tag" to "android", "state" to "FULL"),
   latencySecond = 2000.0,
 )

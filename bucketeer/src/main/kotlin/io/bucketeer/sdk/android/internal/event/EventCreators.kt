@@ -5,7 +5,7 @@ import io.bucketeer.sdk.android.BKTException
 import io.bucketeer.sdk.android.BuildConfig
 import io.bucketeer.sdk.android.internal.Clock
 import io.bucketeer.sdk.android.internal.IdGenerator
-import io.bucketeer.sdk.android.internal.model.ApiID
+import io.bucketeer.sdk.android.internal.model.ApiId
 import io.bucketeer.sdk.android.internal.model.Evaluation
 import io.bucketeer.sdk.android.internal.model.Event
 import io.bucketeer.sdk.android.internal.model.EventData
@@ -110,7 +110,7 @@ internal fun newSuccessMetricsEvents(
   idGenerator: IdGenerator,
   featureTag: String?,
   appVersion: String,
-  apiID: ApiID,
+  apiId: ApiId,
   // note: only available on success request
   latencySecond: Long,
   // note: only available on success request
@@ -126,7 +126,7 @@ internal fun newSuccessMetricsEvents(
         timestamp = clock.currentTimeSeconds(),
         type = MetricsEventType.RESPONSE_LATENCY,
         event = MetricsEventData.LatencyMetricsEvent(
-          apiID = apiID,
+          apiId = apiId,
           labels = labels,
           latencySecond = latencySecond.toDouble(),
         ),
@@ -141,7 +141,7 @@ internal fun newSuccessMetricsEvents(
         timestamp = clock.currentTimeSeconds(),
         type = MetricsEventType.RESPONSE_SIZE,
         event = MetricsEventData.SizeMetricsEvent(
-          apiID = apiID,
+          apiId = apiId,
           labels = labels,
           sizeByte = sizeByte,
         ),
@@ -159,7 +159,7 @@ internal fun newErrorMetricsEvent(
   featureTag: String?,
   appVersion: String,
   error: BKTException,
-  apiID: ApiID,
+  apiId: ApiId,
 ): Event {
   val metricEventType = error.toMetricEventType()
   return Event(
@@ -168,7 +168,7 @@ internal fun newErrorMetricsEvent(
     event = EventData.MetricsEvent(
       timestamp = clock.currentTimeSeconds(),
       type = metricEventType,
-      event = newErrorMetricsEventData(featureTag, apiID, metricEventType),
+      event = newErrorMetricsEventData(featureTag, apiId, metricEventType),
       sdkVersion = BuildConfig.SDK_VERSION,
       metadata = newMetadata(appVersion),
     ),
@@ -176,7 +176,7 @@ internal fun newErrorMetricsEvent(
 }
 internal fun newErrorMetricsEventData(
   featureTag: String?,
-  apiID: ApiID,
+  apiId: ApiId,
   type: MetricsEventType
 ): MetricsEventData {
   // note: featureTag only available from `GET_EVALUATIONS`
@@ -184,57 +184,57 @@ internal fun newErrorMetricsEventData(
 
   return when (type) {
     MetricsEventType.TIMEOUT_ERROR -> MetricsEventData.TimeoutErrorMetricsEvent(
-      apiID = apiID,
+      apiId = apiId,
       labels = labels,
     )
 
     MetricsEventType.NETWORK_ERROR -> MetricsEventData.NetworkErrorMetricsEvent(
-      apiID = apiID,
+      apiId = apiId,
       labels = labels,
     )
 
     MetricsEventType.INTERNAL_SDK_ERROR -> MetricsEventData.InternalSdkErrorMetricsEvent(
-      apiID = apiID,
+      apiId = apiId,
       labels = labels,
     )
 
     MetricsEventType.BAD_REQUEST_ERROR -> MetricsEventData.BadRequestErrorMetricsEvent(
-      apiID = apiID,
+      apiId = apiId,
       labels = labels,
     )
 
     MetricsEventType.UNAUTHORIZED_ERROR -> MetricsEventData.UnauthorizedErrorMetricsEvent(
-      apiID = apiID,
+      apiId = apiId,
       labels = labels,
     )
 
     MetricsEventType.FORBIDDEN_ERROR -> MetricsEventData.ForbiddenErrorMetricsEvent(
-      apiID = apiID,
+      apiId = apiId,
       labels = labels,
     )
 
     MetricsEventType.NOT_FOUND_ERROR -> MetricsEventData.NotFoundErrorMetricsEvent(
-      apiID = apiID,
+      apiId = apiId,
       labels = labels,
     )
 
     MetricsEventType.CLIENT_CLOSED_REQUEST_ERROR -> MetricsEventData.ClientClosedRequestErrorMetricsEvent(
-      apiID = apiID,
+      apiId = apiId,
       labels = labels,
     )
 
     MetricsEventType.SERVICE_UNAVAILABLE_ERROR -> MetricsEventData.ServiceUnavailableErrorMetricsEvent(
-      apiID = apiID,
+      apiId = apiId,
       labels = labels,
     )
 
     MetricsEventType.INTERNAL_SERVER_ERROR -> MetricsEventData.InternalServerErrorMetricsEvent(
-      apiID = apiID,
+      apiId = apiId,
       labels = labels,
     )
 
     else -> MetricsEventData.UnknownErrorMetricsEvent(
-      apiID = apiID,
+      apiId = apiId,
       labels = labels,
     )
   }

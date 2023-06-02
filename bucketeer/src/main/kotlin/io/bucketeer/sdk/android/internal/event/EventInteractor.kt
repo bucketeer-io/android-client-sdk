@@ -5,7 +5,7 @@ import io.bucketeer.sdk.android.internal.Clock
 import io.bucketeer.sdk.android.internal.IdGenerator
 import io.bucketeer.sdk.android.internal.event.db.EventDao
 import io.bucketeer.sdk.android.internal.logd
-import io.bucketeer.sdk.android.internal.model.ApiID
+import io.bucketeer.sdk.android.internal.model.ApiId
 import io.bucketeer.sdk.android.internal.model.Evaluation
 import io.bucketeer.sdk.android.internal.model.Event
 import io.bucketeer.sdk.android.internal.model.User
@@ -64,7 +64,7 @@ internal class EventInteractor(
         idGenerator = idGenerator,
         featureTag = featureTag,
         appVersion = appVersion,
-        apiID = ApiID.GET_EVALUATIONS,
+        apiId = ApiId.GET_EVALUATIONS,
         latencySecond = seconds,
         sizeByte = sizeByte,
       ),
@@ -79,13 +79,13 @@ internal class EventInteractor(
   ) = trackMetricsEventWhenRequestAPIFailure(
     featureTag,
     error,
-    ApiID.GET_EVALUATIONS,
+    ApiId.GET_EVALUATIONS,
   )
 
   private fun trackMetricsEventWhenRequestAPIFailure(
     featureTag: String?,
     error: BKTException,
-    apiID: ApiID,
+    apiId: ApiId,
   ) {
 
     val event = newErrorMetricsEvent(
@@ -94,7 +94,7 @@ internal class EventInteractor(
       featureTag = featureTag,
       appVersion = appVersion,
       error = error,
-      apiID = apiID,
+      apiId = apiId,
     )
     eventDao.addEvent(event)
     updateEventsAndNotify()
@@ -151,7 +151,7 @@ internal class EventInteractor(
   ) = trackMetricsEventWhenRequestAPIFailure(
     featureTag = null,
     error,
-    ApiID.REGISTER_EVENTS,
+    ApiId.REGISTER_EVENTS,
   )
 
   private fun updateEventsAndNotify() {

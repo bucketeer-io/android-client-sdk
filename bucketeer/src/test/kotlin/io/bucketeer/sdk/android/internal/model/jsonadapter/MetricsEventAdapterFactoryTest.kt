@@ -5,7 +5,7 @@ import com.google.testing.junit.testparameterinjector.TestParameter
 import com.google.testing.junit.testparameterinjector.TestParameterInjector
 import com.squareup.moshi.JsonAdapter
 import io.bucketeer.sdk.android.internal.di.DataModule
-import io.bucketeer.sdk.android.internal.model.ApiID
+import io.bucketeer.sdk.android.internal.model.ApiId
 import io.bucketeer.sdk.android.internal.model.EventData
 import io.bucketeer.sdk.android.internal.model.MetricsEventData
 import io.bucketeer.sdk.android.internal.model.MetricsEventType
@@ -23,7 +23,7 @@ class MetricsEventAdapterFactoryTest {
         |  "timestamp": 1660210923777,
         |  "type": 1,
         |  "event": {
-        |    "apiID": 2,
+        |    "apiId": 2,
         |    "labels": {
         |      "key1": "value1",
         |      "key2": "value2"
@@ -44,7 +44,7 @@ class MetricsEventAdapterFactoryTest {
         timestamp = 1660210923777,
         type = MetricsEventType.RESPONSE_LATENCY,
         event = MetricsEventData.LatencyMetricsEvent(
-          ApiID.GET_EVALUATIONS,
+          ApiId.GET_EVALUATIONS,
           labels = mapOf(
             "key1" to "value1",
             "key2" to "value2",
@@ -65,7 +65,7 @@ class MetricsEventAdapterFactoryTest {
         |  "timestamp": 1660210923777,
         |  "type": 2,
         |  "event": {
-        |    "apiID": 2,
+        |    "apiId": 2,
         |    "labels": {
         |      "key1": "value1",
         |      "key2": "value2"
@@ -86,7 +86,7 @@ class MetricsEventAdapterFactoryTest {
         timestamp = 1660210923777,
         type = MetricsEventType.RESPONSE_SIZE,
         event = MetricsEventData.SizeMetricsEvent(
-          ApiID.GET_EVALUATIONS,
+          ApiId.GET_EVALUATIONS,
           labels = mapOf(
             "key1" to "value1",
             "key2" to "value2",
@@ -107,7 +107,7 @@ class MetricsEventAdapterFactoryTest {
         |  "timestamp": 1660210923777,
         |  "type": 3,
         |  "event": {
-        |    "apiID": 2,
+        |    "apiId": 2,
         |    "labels": {
         |      "tag": "tag_value"
         |    },
@@ -126,7 +126,7 @@ class MetricsEventAdapterFactoryTest {
         timestamp = 1660210923777,
         type = MetricsEventType.TIMEOUT_ERROR,
         event = MetricsEventData.TimeoutErrorMetricsEvent(
-          ApiID.GET_EVALUATIONS,
+          ApiId.GET_EVALUATIONS,
           labels = mapOf(
             "tag" to "tag_value",
           ),
@@ -145,7 +145,7 @@ class MetricsEventAdapterFactoryTest {
         |  "timestamp": 1660210923777,
         |  "type": 4,
         |  "event": {
-        |    "apiID": 2,
+        |    "apiId": 2,
         |    "labels": {
         |      "tag": "tag_value"
         |    },
@@ -164,7 +164,7 @@ class MetricsEventAdapterFactoryTest {
         timestamp = 1660210923777,
         type = MetricsEventType.NETWORK_ERROR,
         event = MetricsEventData.NetworkErrorMetricsEvent(
-          ApiID.GET_EVALUATIONS,
+          ApiId.GET_EVALUATIONS,
           labels = mapOf(
             "tag" to "tag_value",
           ),
@@ -183,7 +183,7 @@ class MetricsEventAdapterFactoryTest {
         |  "timestamp": 1660210923777,
         |  "type": 6,
         |  "event": {
-        |    "apiID": 2,
+        |    "apiId": 2,
         |    "labels": {
         |      "tag": "tag_value"
         |    },
@@ -202,7 +202,7 @@ class MetricsEventAdapterFactoryTest {
         timestamp = 1660210923777,
         type = MetricsEventType.BAD_REQUEST_ERROR,
         event = MetricsEventData.BadRequestErrorMetricsEvent(
-          ApiID.GET_EVALUATIONS,
+          ApiId.GET_EVALUATIONS,
           labels = mapOf(
             "tag" to "tag_value",
           ),
@@ -221,7 +221,7 @@ class MetricsEventAdapterFactoryTest {
         |  "timestamp": 1660210923777,
         |  "type": 7,
         |  "event": {
-        |    "apiID": 2,
+        |    "apiId": 2,
         |    "labels": {
         |      "tag": "tag_value"
         |    },
@@ -240,7 +240,7 @@ class MetricsEventAdapterFactoryTest {
         timestamp = 1660210923777,
         type = MetricsEventType.UNAUTHORIZED_ERROR,
         event = MetricsEventData.UnauthorizedErrorMetricsEvent(
-          ApiID.GET_EVALUATIONS,
+          ApiId.GET_EVALUATIONS,
           labels = mapOf(
             "tag" to "tag_value",
           ),
@@ -259,7 +259,7 @@ class MetricsEventAdapterFactoryTest {
         |  "timestamp": 1660210923777,
         |  "type": 8,
         |  "event": {
-        |    "apiID": 2,
+        |    "apiId": 2,
         |    "labels": {
         |      "tag": "tag_value"
         |    },
@@ -278,7 +278,7 @@ class MetricsEventAdapterFactoryTest {
         timestamp = 1660210923777,
         type = MetricsEventType.FORBIDDEN_ERROR,
         event = MetricsEventData.ForbiddenErrorMetricsEvent(
-          ApiID.GET_EVALUATIONS,
+          ApiId.GET_EVALUATIONS,
           labels = mapOf(
             "tag" to "tag_value",
           ),
@@ -297,7 +297,7 @@ class MetricsEventAdapterFactoryTest {
         |  "timestamp": 1660210923777,
         |  "type": 9,
         |  "event": {
-        |    "apiID": 2,
+        |    "apiId": 2,
         |    "labels": {
         |      "tag": "tag_value"
         |    },
@@ -316,7 +316,7 @@ class MetricsEventAdapterFactoryTest {
         timestamp = 1660210923777,
         type = MetricsEventType.NOT_FOUND_ERROR,
         event = MetricsEventData.NotFoundErrorMetricsEvent(
-          ApiID.GET_EVALUATIONS,
+          ApiId.GET_EVALUATIONS,
           labels = mapOf(
             "tag" to "tag_value",
           ),
@@ -335,7 +335,7 @@ class MetricsEventAdapterFactoryTest {
         |  "timestamp": 1660210923777,
         |  "type": 10,
         |  "event": {
-        |    "apiID": 2,
+        |    "apiId": 2,
         |    "labels": {
         |      "tag": "tag_value"
         |    },
@@ -354,7 +354,7 @@ class MetricsEventAdapterFactoryTest {
         timestamp = 1660210923777,
         type = MetricsEventType.CLIENT_CLOSED_REQUEST_ERROR,
         event = MetricsEventData.ClientClosedRequestErrorMetricsEvent(
-          ApiID.GET_EVALUATIONS,
+          ApiId.GET_EVALUATIONS,
           labels = mapOf(
             "tag" to "tag_value",
           ),
@@ -373,7 +373,7 @@ class MetricsEventAdapterFactoryTest {
         |  "timestamp": 1660210923777,
         |  "type": 11,
         |  "event": {
-        |    "apiID": 2,
+        |    "apiId": 2,
         |    "labels": {
         |      "tag": "tag_value"
         |    },
@@ -392,7 +392,7 @@ class MetricsEventAdapterFactoryTest {
         timestamp = 1660210923777,
         type = MetricsEventType.SERVICE_UNAVAILABLE_ERROR,
         event = MetricsEventData.ServiceUnavailableErrorMetricsEvent(
-          ApiID.GET_EVALUATIONS,
+          ApiId.GET_EVALUATIONS,
           labels = mapOf(
             "tag" to "tag_value",
           ),
@@ -411,7 +411,7 @@ class MetricsEventAdapterFactoryTest {
         |  "timestamp": 1660210923777,
         |  "type": 5,
         |  "event": {
-        |    "apiID": 2,
+        |    "apiId": 2,
         |    "labels": {
         |      "tag": "tag_value"
         |    },
@@ -430,7 +430,7 @@ class MetricsEventAdapterFactoryTest {
         timestamp = 1660210923777,
         type = MetricsEventType.INTERNAL_SDK_ERROR,
         event = MetricsEventData.InternalSdkErrorMetricsEvent(
-          ApiID.GET_EVALUATIONS,
+          ApiId.GET_EVALUATIONS,
           labels = mapOf(
             "tag" to "tag_value",
           ),
@@ -449,7 +449,7 @@ class MetricsEventAdapterFactoryTest {
         |  "timestamp": 1660210923777,
         |  "type": 12,
         |  "event": {
-        |    "apiID": 2,
+        |    "apiId": 2,
         |    "labels": {
         |      "tag": "tag_value"
         |    },
@@ -468,7 +468,7 @@ class MetricsEventAdapterFactoryTest {
         timestamp = 1660210923777,
         type = MetricsEventType.INTERNAL_SERVER_ERROR,
         event = MetricsEventData.InternalServerErrorMetricsEvent(
-          ApiID.GET_EVALUATIONS,
+          ApiId.GET_EVALUATIONS,
           labels = mapOf(
             "tag" to "tag_value",
           ),
@@ -487,7 +487,7 @@ class MetricsEventAdapterFactoryTest {
         |  "timestamp": 1660210923777,
         |  "type": 0,
         |  "event": {
-        |    "apiID": 2,
+        |    "apiId": 2,
         |    "labels": {
         |      "tag": "tag_value"
         |    },
@@ -506,7 +506,7 @@ class MetricsEventAdapterFactoryTest {
         timestamp = 1660210923777,
         type = MetricsEventType.UNKNOWN,
         event = MetricsEventData.UnknownErrorMetricsEvent(
-          ApiID.GET_EVALUATIONS,
+          ApiId.GET_EVALUATIONS,
           labels = mapOf(
             "tag" to "tag_value",
           ),

@@ -21,7 +21,7 @@ import io.bucketeer.sdk.android.internal.event.db.EventDao
 import io.bucketeer.sdk.android.internal.event.db.EventDaoImpl
 import io.bucketeer.sdk.android.internal.model.ReasonType
 import io.bucketeer.sdk.android.internal.model.User
-import io.bucketeer.sdk.android.internal.model.jsonadapter.ApiIDAdapter
+import io.bucketeer.sdk.android.internal.model.jsonadapter.ApiIdAdapter
 import io.bucketeer.sdk.android.internal.model.jsonadapter.EventAdapterFactory
 import io.bucketeer.sdk.android.internal.model.jsonadapter.EventTypeAdapter
 import io.bucketeer.sdk.android.internal.model.jsonadapter.MetricsEventAdapterFactory
@@ -89,7 +89,7 @@ internal open class DataModule(
             ReasonType.DEFAULT,
           ),
         )
-        .add(ApiIDAdapter())
+        .add(ApiIdAdapter())
         .build()
     }
   }

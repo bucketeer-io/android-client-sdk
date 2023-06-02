@@ -5,7 +5,7 @@ import com.google.common.truth.Truth.assertThat
 import com.squareup.moshi.Moshi
 import io.bucketeer.sdk.android.internal.di.ComponentImpl
 import io.bucketeer.sdk.android.internal.di.DataModule
-import io.bucketeer.sdk.android.internal.model.ApiID
+import io.bucketeer.sdk.android.internal.model.ApiId
 import io.bucketeer.sdk.android.internal.model.Evaluation
 import io.bucketeer.sdk.android.internal.model.Event
 import io.bucketeer.sdk.android.internal.model.EventData
@@ -106,11 +106,11 @@ class BKTClientImplTest {
 
     val dbEvents = client.componentImpl.dataModule.eventDao.getEvents()
     assertThat(dbEvents).hasSize(2)
-    assertLatencyMetricsEvent(dbEvents[0], mapOf("tag" to config.featureTag), ApiID.GET_EVALUATIONS)
+    assertLatencyMetricsEvent(dbEvents[0], mapOf("tag" to config.featureTag), ApiId.GET_EVALUATIONS)
     val lastEvent = dbEvents[1]
     assertSizeMetricsEvent(
       lastEvent,
-      MetricsEventData.SizeMetricsEvent(ApiID.GET_EVALUATIONS, mapOf("tag" to config.featureTag), 727),
+      MetricsEventData.SizeMetricsEvent(ApiId.GET_EVALUATIONS, mapOf("tag" to config.featureTag), 727),
     )
   }
 
@@ -158,7 +158,7 @@ class BKTClientImplTest {
     assertThat(dbEvents).hasSize(1)
     assertTimeoutErrorMetricsEvent(
       dbEvents[0],
-      MetricsEventData.TimeoutErrorMetricsEvent(ApiID.GET_EVALUATIONS, mapOf("tag" to config.featureTag)),
+      MetricsEventData.TimeoutErrorMetricsEvent(ApiId.GET_EVALUATIONS, mapOf("tag" to config.featureTag)),
     )
   }
 
@@ -624,7 +624,7 @@ private val BKTClient.componentImpl: ComponentImpl
   get() = (this as BKTClientImpl).component as ComponentImpl
 
 // these assertion methods do not check full-equality, but that should be covered in other tests
-fun assertLatencyMetricsEvent(actual: Event, expectedLabels: Map<String, String>, apiID: ApiID) {
+fun assertLatencyMetricsEvent(actual: Event, expectedLabels: Map<String, String>, apiId: ApiId) {
   assertThat(actual.id).isNotEmpty() // id is not assertable here
   assertThat(actual.type).isEqualTo(EventType.METRICS)
   assertThat(actual.event).isInstanceOf(EventData.MetricsEvent::class.java)
@@ -639,7 +639,7 @@ fun assertLatencyMetricsEvent(actual: Event, expectedLabels: Map<String, String>
 
   val actualLatencyEvent =
     actualMetricsEvent.event as MetricsEventData.LatencyMetricsEvent
-  assertThat(actualLatencyEvent.apiID).isEqualTo(apiID)
+  assertThat(actualLatencyEvent.apiId).isEqualTo(apiId)
   assertThat(actualLatencyEvent.labels).isEqualTo(expectedLabels)
   // actualLatencyEvent.duration is not assertable
 }
