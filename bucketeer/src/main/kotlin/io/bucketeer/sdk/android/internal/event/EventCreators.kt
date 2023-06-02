@@ -148,10 +148,9 @@ internal fun newSuccessMetricsEvents(
         sdkVersion = BuildConfig.SDK_VERSION,
         metadata = newMetadata(appVersion),
       ),
-    )
+    ),
   )
 }
-
 
 internal fun newErrorMetricsEvent(
   clock: Clock,
@@ -177,7 +176,7 @@ internal fun newErrorMetricsEvent(
 internal fun newErrorMetricsEventData(
   featureTag: String?,
   apiId: ApiId,
-  type: MetricsEventType
+  type: MetricsEventType,
 ): MetricsEventData {
   // note: featureTag only available from `GET_EVALUATIONS`
   val labels = if (featureTag != null) mapOf("tag" to featureTag) else mapOf()

@@ -87,7 +87,6 @@ internal class EventInteractor(
     error: BKTException,
     apiId: ApiId,
   ) {
-
     val event = newErrorMetricsEvent(
       clock = clock,
       idGenerator = idGenerator,
