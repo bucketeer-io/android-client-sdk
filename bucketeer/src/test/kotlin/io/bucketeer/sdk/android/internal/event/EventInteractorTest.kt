@@ -492,7 +492,7 @@ class EventInteractorTest {
     assertThat(result.error).isInstanceOf(BKTException.BadRequestException::class.java)
 
     val events = component.dataModule.eventDao.getEvents()
-    // Note: because `register_event` fail
+    // Note: because `register_events` fail
     // https://github.com/bucketeer-io/android-client-sdk/issues/56
     // So there will be one more auto tracked error metric event
     // The Metric event will depend on the error (more details See [BKTExceptionToMetricEventsTest.kt])
