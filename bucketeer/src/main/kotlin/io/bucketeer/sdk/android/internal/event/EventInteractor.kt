@@ -83,7 +83,7 @@ internal class EventInteractor(
     ApiId.GET_EVALUATIONS,
   )
 
-  private fun trackMetricsEventWhenRequestAPIFailure(
+  private fun trackApiFailureMetricsEvent(
     featureTag: String,
     error: BKTException,
     apiId: ApiId,
