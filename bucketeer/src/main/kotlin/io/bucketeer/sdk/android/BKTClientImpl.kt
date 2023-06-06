@@ -36,7 +36,6 @@ internal class BKTClientImpl(
     ),
     interactorModule = InteractorModule(
       mainHandler = Handler(Looper.getMainLooper()),
-      featureTag = config.featureTag,
     ),
   ),
 ) : BKTClient {

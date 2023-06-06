@@ -54,7 +54,6 @@ class EvaluationForegroundTaskTest {
       ),
       interactorModule = InteractorModule(
         mainHandler = Handler(Looper.getMainLooper()),
-        featureTag = config.featureTag,
       ),
     )
 
