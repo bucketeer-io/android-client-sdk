@@ -77,7 +77,7 @@ internal class EventInteractor(
   fun trackFetchEvaluationsFailure(
     featureTag: String,
     error: BKTException,
-  ) = trackMetricsEventWhenRequestAPIFailure(
+  ) = trackApiFailureMetricsEvent(
     featureTag,
     error,
     ApiId.GET_EVALUATIONS,
@@ -148,7 +148,7 @@ internal class EventInteractor(
 
   private fun trackSendEventsFailure(
     error: BKTException,
-  ) = trackMetricsEventWhenRequestAPIFailure(
+  ) = trackApiFailureMetricsEvent(
     // discussed: here https://github.com/bucketeer-io/android-client-sdk/pull/64/files#r1214187627
     featureTag = featureTag,
     error,
