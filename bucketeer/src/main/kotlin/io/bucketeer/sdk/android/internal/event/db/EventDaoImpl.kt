@@ -37,10 +37,10 @@ internal class EventDaoImpl(
       it.event.hashCode()
     }
     sqLiteOpenHelper.writableDatabase.transaction {
-      events.forEach { event ->
+      events.forEach { item ->
         // 2. Push to the database when the event data do not exist in the database
-        if (!storedEventHashList.contains(event.event.hashCode())) {
-          addEventInternal(this, event)
+        if (!storedEventHashList.contains(item.event.hashCode())) {
+          addEventInternal(this, item)
         }
       }
     }
