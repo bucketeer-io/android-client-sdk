@@ -528,7 +528,7 @@ class BKTClientImplTest {
 
     var actual = client.componentImpl.dataModule.eventDao.getEvents()
     // 2 `latency metric` are duplicate because we fetch evaluation too fast and latency is 0, same clock-time
-    // 1 event from init the BKTClient internal init()
+    // 1 event from the BKTClient internal init()
     // 1 event from the test code behind
     // So 1 event is dismissed to prevent duplicate
     // Finally we will have 3 items

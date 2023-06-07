@@ -12,7 +12,6 @@ import io.bucketeer.sdk.android.internal.database.transaction
 import io.bucketeer.sdk.android.internal.event.EventEntity.Companion.COLUMN_EVENT
 import io.bucketeer.sdk.android.internal.event.EventEntity.Companion.COLUMN_ID
 import io.bucketeer.sdk.android.internal.event.EventEntity.Companion.TABLE_NAME
-import io.bucketeer.sdk.android.internal.logd
 import io.bucketeer.sdk.android.internal.model.Event
 
 internal class EventDaoImpl(
@@ -42,8 +41,6 @@ internal class EventDaoImpl(
         // 2. Push to the database when the event data do not exist in the database
         if (!storedEventHashList.contains(item.event.hashCode())) {
           addEventInternal(this, item)
-        } else {
-          logd { "Duplicate" }
         }
       }
     }
