@@ -2,6 +2,7 @@ package io.bucketeer.sdk.android.internal.event.db
 
 import android.content.ContentValues
 import android.database.sqlite.SQLiteDatabase
+import android.util.Log
 import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.sqlite.db.SupportSQLiteOpenHelper
 import com.squareup.moshi.Moshi
@@ -26,9 +27,23 @@ internal class EventDaoImpl(
   }
 
   override fun addEvents(events: List<Event>) {
+    // This approach below is reference from iOS SDK.
+    // It may not better but it will create a minimum impact,
+    // And because number of pending event in database is small
+    // So I think we are safe to do this without changing too much
+    // 1. Get all current events and collect hash
+    val storedEvents = getEvents()
+    val storedEventHashList = storedEvents.map {
+      it.event.hashCode()
+    }
     sqLiteOpenHelper.writableDatabase.transaction {
       events.forEach { event ->
-        addEventInternal(this, event)
+        // 2. Push to database, Only when the event data is not exist in the database
+        if (!storedEventHashList.contains(event.event.hashCode())) {
+          addEventInternal(this, event)
+        } else {
+          Log.i("DAO", "duplicate")
+        }
       }
     }
   }

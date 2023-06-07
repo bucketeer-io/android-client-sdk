@@ -9,6 +9,7 @@ import io.bucketeer.sdk.android.internal.di.DataModule
 import io.bucketeer.sdk.android.mocks.evaluationEvent1
 import io.bucketeer.sdk.android.mocks.evaluationEvent2
 import io.bucketeer.sdk.android.mocks.goalEvent1
+import io.bucketeer.sdk.android.mocks.goalEvent2
 import io.bucketeer.sdk.android.mocks.metricsEvent1
 import org.junit.After
 import org.junit.Before
@@ -69,7 +70,7 @@ class EventDaoImplTest {
   fun addEvents() {
     dao.addEvents(listOf(evaluationEvent1, goalEvent1, metricsEvent1, evaluationEvent2))
 
-    val actual = dao.getEvents()
+    var actual = dao.getEvents()
 
     assertThat(actual).hasSize(4)
     assertThat(actual).containsExactly(
@@ -77,6 +78,31 @@ class EventDaoImplTest {
       goalEvent1,
       metricsEvent1,
       evaluationEvent2,
+    )
+
+    // Try adding duplicate events
+    dao.addEvents(listOf(evaluationEvent1, goalEvent1, metricsEvent1, evaluationEvent2))
+    actual = dao.getEvents()
+    // Check if we have duplicate
+    assertThat(actual).hasSize(4)
+    assertThat(actual).containsExactly(
+      evaluationEvent1,
+      goalEvent1,
+      metricsEvent1,
+      evaluationEvent2,
+    )
+
+    // Add new event
+    dao.addEvents(listOf(evaluationEvent2, goalEvent2))
+    actual = dao.getEvents()
+    // Check if we have one more new event
+    assertThat(actual).hasSize(5)
+    assertThat(actual).containsExactly(
+      evaluationEvent1,
+      goalEvent1,
+      metricsEvent1,
+      evaluationEvent2,
+      goalEvent2,
     )
   }
 
@@ -103,11 +129,17 @@ class EventDaoImplTest {
 
     dao.delete(ids)
 
-    val actual = dao.getEvents()
+    var actual = dao.getEvents()
 
     assertThat(actual).hasSize(2)
 
     assertThat(actual[0]).isEqualTo(goalEvent1)
     assertThat(actual[1]).isEqualTo(evaluationEvent2)
+
+    // After events are synced and deleted, we should able to add it again,
+    // It will not count as duplicate because there will be an interval between event logging times.
+    dao.addEvents(target)
+    actual = dao.getEvents()
+    assertThat(actual).hasSize(4)
   }
 }
