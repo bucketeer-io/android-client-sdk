@@ -95,7 +95,6 @@ val duplicateGoalEvent1: Event by lazy {
   )
 }
 
-
 val goalEvent2: Event by lazy {
   Event(
     id = "5ea231b4-c3c7-4b9f-97a2-ee50337f51f0",
@@ -142,7 +141,7 @@ val getEvaluationLatencyMetricsEvent1 = MetricsEventData.LatencyMetricsEvent(
   latencySecond = 2000.0,
 )
 
-//Will duplicate with `metricsEvent1`
+// Will duplicate with `metricsEvent1`
 val duplicateMetricsEvent1: Event by lazy {
   Event(
     id = "bbc03cae-367d-4be4-a613-759441a378aa",

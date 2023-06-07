@@ -101,8 +101,8 @@ class EventDaoImplTest {
       duplicateGoalEvent1,
     )
 
-    //Simulator `register_event` success and synced event will be delete from database
-    dao.delete(listOf(evaluationEvent1, goalEvent1, metricsEvent1, evaluationEvent2,).map { it.id })
+    // Simulator `register_event` success and synced event will be delete from database
+    dao.delete(listOf(evaluationEvent1, goalEvent1, metricsEvent1, evaluationEvent2).map { it.id })
 
     // Add new event
     dao.addEvents(listOf(evaluationEvent2, goalEvent2, duplicateMetricsEvent1))
