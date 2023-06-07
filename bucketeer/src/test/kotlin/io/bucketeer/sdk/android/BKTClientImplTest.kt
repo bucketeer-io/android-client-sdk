@@ -22,6 +22,7 @@ import io.bucketeer.sdk.android.internal.user.toBKTUser
 import io.bucketeer.sdk.android.mocks.evaluation1
 import io.bucketeer.sdk.android.mocks.user1
 import io.bucketeer.sdk.android.mocks.user1Evaluations
+import io.bucketeer.sdk.android.mocks.user2Evaluations
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
@@ -525,7 +526,35 @@ class BKTClientImplTest {
     assertThat(client.componentImpl.dataModule.evaluationDao.get(user1.id))
       .isEqualTo(listOf(updatedEvaluation1))
 
-    assertThat(client.componentImpl.dataModule.eventDao.getEvents()).hasSize(4)
+    var actual = client.componentImpl.dataModule.eventDao.getEvents()
+    // 2 `latency metric` are duplicate because we fetch evaluation too fast and latency is 0, same clock-time
+    // 1 event from init the BKTClient internal init()
+    // 1 event from the test code behind
+    // So 1 event is dismissed to prevent duplicate
+    // Finally we will have 3 items
+    assertThat(actual).hasSize(3)
+
+    // We will trying to fetch evaluation with delay to see if still has duplicate here ?
+    server.enqueue(
+      MockResponse()
+        .setResponseCode(200).setBodyDelay(1, TimeUnit.SECONDS)
+        .setBody(
+          moshi.adapter(GetEvaluationsResponse::class.java)
+            .toJson(
+              GetEvaluationsResponse(
+                evaluations = user2Evaluations,
+                userEvaluationsId = "user_evaluations_id_value_updated_one_more_time",
+              ),
+            ),
+        ),
+    )
+
+    client.fetchEvaluations().get()
+    Thread.sleep(100)
+
+    actual = client.componentImpl.dataModule.eventDao.getEvents()
+    // No more duplicate so it should be 5 items
+    assertThat(actual).hasSize(5)
   }
 
   @Test
