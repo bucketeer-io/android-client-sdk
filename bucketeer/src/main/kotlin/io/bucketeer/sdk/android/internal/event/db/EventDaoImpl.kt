@@ -13,6 +13,7 @@ import io.bucketeer.sdk.android.internal.event.EventEntity.Companion.COLUMN_EVEN
 import io.bucketeer.sdk.android.internal.event.EventEntity.Companion.COLUMN_ID
 import io.bucketeer.sdk.android.internal.event.EventEntity.Companion.TABLE_NAME
 import io.bucketeer.sdk.android.internal.model.Event
+import io.bucketeer.sdk.android.internal.model.EventType
 
 internal class EventDaoImpl(
   private val sqLiteOpenHelper: SupportSQLiteOpenHelper,
@@ -22,7 +23,7 @@ internal class EventDaoImpl(
   private val eventAdapter = moshi.adapter(Event::class.java)
 
   override fun addEvent(event: Event) {
-    addEventInternal(sqLiteOpenHelper.writableDatabase, event)
+    addEvents(listOf(event))
   }
 
   override fun addEvents(events: List<Event>) {
@@ -33,7 +34,12 @@ internal class EventDaoImpl(
     // 1. Get all current events and collect hash
     // https://kotlinlang.org/docs/data-classes.html
     val storedEvents = getEvents()
-    val storedEventHashList = storedEvents.map {
+    val storedEventHashList = storedEvents.filter {
+      // We Only prevent duplicate with metrics event
+      // Because event is saved as raw JSON on SQL database,
+      // Make its too complex to make a direct query to database, so we will filter on the list
+      it.type == EventType.METRICS
+    }.map {
       it.event.hashCode()
     }
     sqLiteOpenHelper.writableDatabase.transaction {

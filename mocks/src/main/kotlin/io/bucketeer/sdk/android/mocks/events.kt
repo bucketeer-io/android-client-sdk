@@ -73,6 +73,29 @@ val goalEvent1: Event by lazy {
   )
 }
 
+val duplicateGoalEvent1: Event by lazy {
+  Event(
+    id = "408741bd-ae4c-45e9-888d-a85e88817fdd",
+    type = EventType.GOAL,
+    event = EventData.GoalEvent(
+      timestamp = 1661780821,
+      goalId = "goal1",
+      userId = user1.id,
+      user = user1,
+      value = 0.0,
+      tag = "",
+      sourceId = SourceID.ANDROID,
+      sdkVersion = io.bucketeer.sdk.android.BuildConfig.SDK_VERSION,
+      metadata = mapOf(
+        "app_version" to "1.2.3",
+        "os_version" to "os_version_value",
+        "device_model" to "device_model_value",
+      ),
+    ),
+  )
+}
+
+
 val goalEvent2: Event by lazy {
   Event(
     id = "5ea231b4-c3c7-4b9f-97a2-ee50337f51f0",
@@ -117,4 +140,46 @@ val getEvaluationLatencyMetricsEvent1 = MetricsEventData.LatencyMetricsEvent(
   ApiId.GET_EVALUATIONS,
   labels = mapOf("tag" to "android", "state" to "FULL"),
   latencySecond = 2000.0,
+)
+
+//Will duplicate with `metricsEvent1`
+val duplicateMetricsEvent1: Event by lazy {
+  Event(
+    id = "bbc03cae-367d-4be4-a613-759441a378aa",
+    type = EventType.METRICS,
+    event = EventData.MetricsEvent(
+      timestamp = 1661823274, // 2022-08-30 01:34:34
+      event = getEvaluationLatencyMetricsEvent1,
+      type = MetricsEventType.GET_EVALUATION_LATENCY,
+      sdkVersion = io.bucketeer.sdk.android.BuildConfig.SDK_VERSION,
+      metadata = mapOf(
+        "app_version" to "1.2.3",
+        "os_version" to "os_version_value",
+        "device_model" to "device_model_value",
+      ),
+    ),
+  )
+}
+
+val sizeMetricsEvent1: Event by lazy {
+  Event(
+    id = "aac03cae-367d-4be4-a613-759441a37820",
+    type = EventType.METRICS,
+    event = EventData.MetricsEvent(
+      timestamp = 1661823275,
+      event = getEvaluationSizeMetricsEvent1,
+      type = MetricsEventType.GET_EVALUATION_SIZE,
+      sdkVersion = io.bucketeer.sdk.android.BuildConfig.SDK_VERSION,
+      metadata = mapOf(
+        "app_version" to "1.2.3",
+        "os_version" to "os_version_value",
+        "device_model" to "device_model_value",
+      ),
+    ),
+  )
+}
+
+val getEvaluationSizeMetricsEvent1 = MetricsEventData.GetEvaluationSizeMetricsEvent(
+  labels = mapOf("tag" to "android", "state" to "FULL"),
+  sizeByte = 400,
 )
