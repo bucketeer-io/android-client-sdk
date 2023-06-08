@@ -4,8 +4,6 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 sealed class MetricsEventData {
-  abstract val protobufType: String?
-  abstract val apiId: ApiId
   @JsonClass(generateAdapter = true)
   data class LatencyMetricsEvent(
     override val apiId: ApiId,
@@ -112,4 +110,7 @@ sealed class MetricsEventData {
     @Json(name = "@type")
     override val protobufType: String? = "type.googleapis.com/bucketeer.event.client.UnknownErrorMetricsEvent",
   ) : MetricsEventData()
+
+  abstract val protobufType: String?
+  abstract val apiId: ApiId
 }

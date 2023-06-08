@@ -184,7 +184,6 @@ val getEvaluationSizeMetricsEvent1 = MetricsEventData.SizeMetricsEvent(
   sizeByte = 400,
 )
 
-
 val internalErrorMetricsEvent1: Event by lazy {
   Event(
     id = "aac03cae-367d-4be4-a613-759441a37820",

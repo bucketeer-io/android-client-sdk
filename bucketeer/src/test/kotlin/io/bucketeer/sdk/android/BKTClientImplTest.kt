@@ -22,7 +22,6 @@ import io.bucketeer.sdk.android.internal.user.toBKTUser
 import io.bucketeer.sdk.android.mocks.evaluation1
 import io.bucketeer.sdk.android.mocks.user1
 import io.bucketeer.sdk.android.mocks.user1Evaluations
-import io.bucketeer.sdk.android.mocks.user2Evaluations
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After

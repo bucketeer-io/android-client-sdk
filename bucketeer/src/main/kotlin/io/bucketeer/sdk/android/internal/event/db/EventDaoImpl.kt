@@ -2,11 +2,9 @@ package io.bucketeer.sdk.android.internal.event.db
 
 import android.content.ContentValues
 import android.database.sqlite.SQLiteDatabase
-import androidx.annotation.VisibleForTesting
 import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.sqlite.db.SupportSQLiteOpenHelper
 import com.squareup.moshi.Moshi
-import io.bucketeer.sdk.android.BKTException
 import io.bucketeer.sdk.android.internal.database.asSequence
 import io.bucketeer.sdk.android.internal.database.getString
 import io.bucketeer.sdk.android.internal.database.select
@@ -16,8 +14,6 @@ import io.bucketeer.sdk.android.internal.event.EventEntity.Companion.COLUMN_ID
 import io.bucketeer.sdk.android.internal.event.EventEntity.Companion.TABLE_NAME
 import io.bucketeer.sdk.android.internal.model.Event
 import io.bucketeer.sdk.android.internal.model.EventData
-import io.bucketeer.sdk.android.internal.model.EventType
-import io.bucketeer.sdk.android.internal.model.metricsEventUniqueKey
 
 internal class EventDaoImpl(
   private val sqLiteOpenHelper: SupportSQLiteOpenHelper,
@@ -38,20 +34,19 @@ internal class EventDaoImpl(
     // 1. Get all current events and collect hash
     // https://kotlinlang.org/docs/data-classes.html
     val storedEvents = getEvents()
-    val storedEventHashList : List<String> = storedEvents.filter {
-      // We Only prevent duplicate with metrics event
-      // Because event is saved as raw JSON on SQL database,
-      // Make its too complex to make a direct query to database, so we will filter on the list
-      it.type == EventType.METRICS
+    val storedEventHashList: List<String> = storedEvents.filter {
+      it.event is EventData.MetricsEvent
     }.map {
-      return@map it.metricsEventUniqueKey()
+      val metricEvent = it.event as EventData.MetricsEvent
+      return@map metricEvent.uniqueKey()
     }
+
     sqLiteOpenHelper.writableDatabase.transaction {
       events.forEach { item ->
-        when (item.type) {
-          EventType.METRICS -> {
+        when (item.event) {
+          is EventData.MetricsEvent -> {
             // 2. Push to the database when the event data do not exist in the database
-            if (!storedEventHashList.contains(item.metricsEventUniqueKey())) {
+            if (!storedEventHashList.contains(item.event.uniqueKey())) {
               addEventInternal(this, item)
             }
           }
