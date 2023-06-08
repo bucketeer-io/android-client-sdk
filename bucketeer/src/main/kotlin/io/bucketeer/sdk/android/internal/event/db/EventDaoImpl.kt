@@ -35,8 +35,8 @@ internal class EventDaoImpl(
     val metricsEventUniqueKeys: List<String> = storedEvents.filter {
       it.event is EventData.MetricsEvent
     }.map {
-      val metricEvent = it.event as EventData.MetricsEvent
-      return@map metricEvent.uniqueKey()
+      val metricsEvent = it.event as EventData.MetricsEvent
+      return@map metricsEvent.uniqueKey()
     }
 
     sqLiteOpenHelper.writableDatabase.transaction {
