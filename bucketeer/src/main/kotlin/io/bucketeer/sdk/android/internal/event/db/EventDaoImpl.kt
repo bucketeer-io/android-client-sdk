@@ -32,7 +32,7 @@ internal class EventDaoImpl(
     // And because the number of pending events in the database is small
     // So I think we are safe to do this without changing too much
     val storedEvents = getEvents()
-    val storedEventHashList: List<String> = storedEvents.filter {
+    val metricsEventUniqueKeys: List<String> = storedEvents.filter {
       it.event is EventData.MetricsEvent
     }.map {
       val metricEvent = it.event as EventData.MetricsEvent
@@ -44,7 +44,7 @@ internal class EventDaoImpl(
         when (item.event) {
           is EventData.MetricsEvent -> {
             // 2. Push to the database when the event data do not exist in the database
-            if (!storedEventHashList.contains(item.event.uniqueKey())) {
+            if (!metricsEventUniqueKeys.contains(item.event.uniqueKey())) {
               addEventInternal(this, item)
             }
           }
