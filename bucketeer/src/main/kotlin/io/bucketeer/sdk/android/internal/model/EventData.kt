@@ -6,7 +6,7 @@ import com.squareup.moshi.JsonClass
 // we can't use codegen here
 // see EventAdapterFactory
 sealed class EventData {
-
+  open val protobufType: String? = null
   @JsonClass(generateAdapter = true)
   data class GoalEvent(
     val timestamp: Long,
@@ -19,7 +19,7 @@ sealed class EventData {
     val sdkVersion: String? = null,
     val metadata: Map<String, String>? = null,
     @Json(name = "@type")
-    val protobufType: String? = "type.googleapis.com/bucketeer.event.client.GoalEvent",
+    override val protobufType: String? = "type.googleapis.com/bucketeer.event.client.GoalEvent",
   ) : EventData()
 
   @JsonClass(generateAdapter = true)
@@ -36,7 +36,7 @@ sealed class EventData {
     val sdkVersion: String? = null,
     val metadata: Map<String, String>? = null,
     @Json(name = "@type")
-    val protobufType: String? = "type.googleapis.com/bucketeer.event.client.EvaluationEvent",
+    override val protobufType: String? = "type.googleapis.com/bucketeer.event.client.EvaluationEvent",
   ) : EventData()
 
   // we can't use codegen here
@@ -48,6 +48,6 @@ sealed class EventData {
     val sdkVersion: String? = null,
     val metadata: Map<String, String>? = null,
     @Json(name = "@type")
-    val protobufType: String? = "type.googleapis.com/bucketeer.event.client.MetricsEvent",
+    override val protobufType: String? = "type.googleapis.com/bucketeer.event.client.MetricsEvent",
   ) : EventData()
 }

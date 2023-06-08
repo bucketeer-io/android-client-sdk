@@ -34,18 +34,18 @@ internal class EventDaoImpl(
     // 1. Get all current events and collect hash
     // https://kotlinlang.org/docs/data-classes.html
     val storedEvents = getEvents()
-    val storedEventHashList = storedEvents.filter {
+    val storedEventHashList : List<Int> = storedEvents.filter {
       // We Only prevent duplicate with metrics event
       // Because event is saved as raw JSON on SQL database,
       // Make its too complex to make a direct query to database, so we will filter on the list
       it.type == EventType.METRICS
     }.map {
-      it.event.hashCode()
+      return@map it.eventUniqueKey()
     }
     sqLiteOpenHelper.writableDatabase.transaction {
       events.forEach { item ->
         // 2. Push to the database when the event data do not exist in the database
-        if (!storedEventHashList.contains(item.event.hashCode())) {
+        if (!storedEventHashList.contains(item.eventUniqueKey())) {
           addEventInternal(this, item)
         }
       }
@@ -88,4 +88,10 @@ internal class EventDaoImpl(
       contentValues,
     )
   }
+}
+
+private fun Event.eventUniqueKey() : Int {
+  val type = this.type
+  val protobufType = this.event.protobufType
+  return "$type::${protobufType}".hashCode()
 }
