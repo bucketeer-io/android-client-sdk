@@ -1,12 +1,13 @@
 package io.bucketeer.sdk.android.internal.model
 
+import androidx.annotation.VisibleForTesting
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import io.bucketeer.sdk.android.BKTException
 
 // we can't use codegen here
 // see EventAdapterFactory
 sealed class EventData {
-  open val protobufType: String? = null
   @JsonClass(generateAdapter = true)
   data class GoalEvent(
     val timestamp: Long,
@@ -19,7 +20,7 @@ sealed class EventData {
     val sdkVersion: String? = null,
     val metadata: Map<String, String>? = null,
     @Json(name = "@type")
-    override val protobufType: String? = "type.googleapis.com/bucketeer.event.client.GoalEvent",
+    val protobufType: String? = "type.googleapis.com/bucketeer.event.client.GoalEvent",
   ) : EventData()
 
   @JsonClass(generateAdapter = true)
@@ -36,7 +37,7 @@ sealed class EventData {
     val sdkVersion: String? = null,
     val metadata: Map<String, String>? = null,
     @Json(name = "@type")
-    override val protobufType: String? = "type.googleapis.com/bucketeer.event.client.EvaluationEvent",
+    val protobufType: String? = "type.googleapis.com/bucketeer.event.client.EvaluationEvent",
   ) : EventData()
 
   // we can't use codegen here
@@ -48,6 +49,20 @@ sealed class EventData {
     val sdkVersion: String? = null,
     val metadata: Map<String, String>? = null,
     @Json(name = "@type")
-    override val protobufType: String? = "type.googleapis.com/bucketeer.event.client.MetricsEvent",
-  ) : EventData()
+    val protobufType: String? = "type.googleapis.com/bucketeer.event.client.MetricsEvent",
+  ) : EventData() {
+    // https://github.com/bucketeer-io/android-client-sdk/pull/68#discussion_r1222401661
+    fun uniqueKey() : String {
+      return "${event.apiId}::${event.protobufType}"
+    }
+  }
+}
+
+
+@VisibleForTesting
+internal fun Event.metricsEventUniqueKey() : String {
+  if (type == EventType.METRICS && event is EventData.MetricsEvent) {
+    return event.uniqueKey()
+  }
+  throw BKTException.IllegalStateException("expected `MetricsEvent` but the input is not")
 }

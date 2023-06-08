@@ -4,111 +4,112 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 sealed class MetricsEventData {
-
+  abstract val protobufType: String?
+  abstract val apiId: ApiId
   @JsonClass(generateAdapter = true)
   data class LatencyMetricsEvent(
-    val apiId: ApiId,
+    override val apiId: ApiId,
     val labels: Map<String, String> = emptyMap(),
     // in seconds
     val latencySecond: Double,
     @Json(name = "@type")
-    val protobufType: String? = "type.googleapis.com/bucketeer.event.client.LatencyMetricsEvent",
+    override val protobufType: String? = "type.googleapis.com/bucketeer.event.client.LatencyMetricsEvent",
   ) : MetricsEventData()
 
   @JsonClass(generateAdapter = true)
   data class SizeMetricsEvent(
-    val apiId: ApiId,
+    override val apiId: ApiId,
     val labels: Map<String, String> = emptyMap(),
     val sizeByte: Int,
     @Json(name = "@type")
-    val protobufType: String? = "type.googleapis.com/bucketeer.event.client.SizeMetricsEvent",
+    override val protobufType: String? = "type.googleapis.com/bucketeer.event.client.SizeMetricsEvent",
   ) : MetricsEventData()
 
   @JsonClass(generateAdapter = true)
   data class TimeoutErrorMetricsEvent(
-    val apiId: ApiId,
+    override val apiId: ApiId,
     val labels: Map<String, String> = emptyMap(),
     @Json(name = "@type")
-    val protobufType: String? = "type.googleapis.com/bucketeer.event.client.TimeoutErrorMetricsEvent",
+    override val protobufType: String? = "type.googleapis.com/bucketeer.event.client.TimeoutErrorMetricsEvent",
   ) : MetricsEventData()
 
   @JsonClass(generateAdapter = true)
   data class NetworkErrorMetricsEvent(
-    val apiId: ApiId,
+    override val apiId: ApiId,
     val labels: Map<String, String> = emptyMap(),
     @Json(name = "@type")
-    val protobufType: String? = "type.googleapis.com/bucketeer.event.client.NetworkErrorMetricsEvent",
+    override val protobufType: String? = "type.googleapis.com/bucketeer.event.client.NetworkErrorMetricsEvent",
   ) : MetricsEventData()
 
   @JsonClass(generateAdapter = true)
   data class BadRequestErrorMetricsEvent(
-    val apiId: ApiId,
+    override val apiId: ApiId,
     val labels: Map<String, String> = emptyMap(),
     @Json(name = "@type")
-    val protobufType: String? = "type.googleapis.com/bucketeer.event.client.BadRequestErrorMetricsEvent",
+    override val protobufType: String? = "type.googleapis.com/bucketeer.event.client.BadRequestErrorMetricsEvent",
   ) : MetricsEventData()
 
   @JsonClass(generateAdapter = true)
   data class UnauthorizedErrorMetricsEvent(
-    val apiId: ApiId,
+    override val apiId: ApiId,
     val labels: Map<String, String> = emptyMap(),
     @Json(name = "@type")
-    val protobufType: String? = "type.googleapis.com/bucketeer.event.client.UnauthorizedErrorMetricsEvent",
+    override val protobufType: String? = "type.googleapis.com/bucketeer.event.client.UnauthorizedErrorMetricsEvent",
   ) : MetricsEventData()
 
   @JsonClass(generateAdapter = true)
   data class ForbiddenErrorMetricsEvent(
-    val apiId: ApiId,
+    override val apiId: ApiId,
     val labels: Map<String, String> = emptyMap(),
     @Json(name = "@type")
-    val protobufType: String? = "type.googleapis.com/bucketeer.event.client.ForbiddenErrorMetricsEvent",
+    override val protobufType: String? = "type.googleapis.com/bucketeer.event.client.ForbiddenErrorMetricsEvent",
   ) : MetricsEventData()
 
   @JsonClass(generateAdapter = true)
   data class NotFoundErrorMetricsEvent(
-    val apiId: ApiId,
+    override val apiId: ApiId,
     val labels: Map<String, String> = emptyMap(),
     @Json(name = "@type")
-    val protobufType: String? = "type.googleapis.com/bucketeer.event.client.NotFoundErrorMetricsEvent",
+    override val protobufType: String? = "type.googleapis.com/bucketeer.event.client.NotFoundErrorMetricsEvent",
   ) : MetricsEventData()
 
   @JsonClass(generateAdapter = true)
   data class ClientClosedRequestErrorMetricsEvent(
-    val apiId: ApiId,
+    override val apiId: ApiId,
     val labels: Map<String, String> = emptyMap(),
     @Json(name = "@type")
-    val protobufType: String? = "type.googleapis.com/bucketeer.event.client.ClientClosedRequestErrorMetricsEvent",
+    override val protobufType: String? = "type.googleapis.com/bucketeer.event.client.ClientClosedRequestErrorMetricsEvent",
   ) : MetricsEventData()
 
   @JsonClass(generateAdapter = true)
   data class ServiceUnavailableErrorMetricsEvent(
-    val apiId: ApiId,
+    override val apiId: ApiId,
     val labels: Map<String, String> = emptyMap(),
     @Json(name = "@type")
-    val protobufType: String? = "type.googleapis.com/bucketeer.event.client.ServiceUnavailableErrorMetricsEvent",
+    override val protobufType: String? = "type.googleapis.com/bucketeer.event.client.ServiceUnavailableErrorMetricsEvent",
   ) : MetricsEventData()
 
   @JsonClass(generateAdapter = true)
   data class InternalSdkErrorMetricsEvent(
-    val apiId: ApiId,
+    override val apiId: ApiId,
     val labels: Map<String, String> = emptyMap(),
     @Json(name = "@type")
-    val protobufType: String? = "type.googleapis.com/bucketeer.event.client.InternalSdkErrorMetricsEvent",
+    override val protobufType: String? = "type.googleapis.com/bucketeer.event.client.InternalSdkErrorMetricsEvent",
   ) : MetricsEventData()
 
   @JsonClass(generateAdapter = true)
   data class InternalServerErrorMetricsEvent(
-    val apiId: ApiId,
+    override val apiId: ApiId,
     val labels: Map<String, String> = emptyMap(),
     @Json(name = "@type")
-    val protobufType: String? = "type.googleapis.com/bucketeer.event.client.InternalServerErrorMetricsEvent",
+    override val protobufType: String? = "type.googleapis.com/bucketeer.event.client.InternalServerErrorMetricsEvent",
   ) : MetricsEventData()
 
   @JsonClass(generateAdapter = true)
   data class UnknownErrorMetricsEvent(
-    val apiId: ApiId,
+    override val apiId: ApiId,
     val labels: Map<String, String> = emptyMap(),
     @Json(name = "@type")
-    val protobufType: String? = "type.googleapis.com/bucketeer.event.client.UnknownErrorMetricsEvent",
+    override val protobufType: String? = "type.googleapis.com/bucketeer.event.client.UnknownErrorMetricsEvent",
   ) : MetricsEventData()
 }

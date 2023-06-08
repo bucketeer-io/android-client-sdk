@@ -527,34 +527,11 @@ class BKTClientImplTest {
       .isEqualTo(listOf(updatedEvaluation1))
 
     var actual = client.componentImpl.dataModule.eventDao.getEvents()
-    // 2 `latency metric` are duplicate because we fetch evaluation too fast and latency is 0, same clock-time
-    // 1 event from the BKTClient internal init()
-    // 1 event from the test code behind
-    // So 1 event is dismissed to prevent duplicate
-    // Finally we will have 3 items
-    assertThat(actual).hasSize(3)
-
-    // We will trying to fetch evaluation with delay to see if still has duplicate here ?
-    server.enqueue(
-      MockResponse()
-        .setResponseCode(200).setBodyDelay(1, TimeUnit.SECONDS)
-        .setBody(
-          moshi.adapter(GetEvaluationsResponse::class.java)
-            .toJson(
-              GetEvaluationsResponse(
-                evaluations = user2Evaluations,
-                userEvaluationsId = "user_evaluations_id_value_updated_one_more_time",
-              ),
-            ),
-        ),
-    )
-
-    client.fetchEvaluations().get()
-    Thread.sleep(100)
-
-    actual = client.componentImpl.dataModule.eventDao.getEvents()
-    // No more duplicate so it should be 5 items
-    assertThat(actual).hasSize(5)
+    // 2 metrics events (latency , size) from the BKTClient internal init()
+    // 2 metrics events (latency , size) from the test code above
+    // Because we filter duplicate
+    // Finally we will have only 2 items
+    assertThat(actual).hasSize(2)
   }
 
   @Test

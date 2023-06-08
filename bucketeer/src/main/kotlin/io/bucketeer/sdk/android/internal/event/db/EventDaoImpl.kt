@@ -2,9 +2,11 @@ package io.bucketeer.sdk.android.internal.event.db
 
 import android.content.ContentValues
 import android.database.sqlite.SQLiteDatabase
+import androidx.annotation.VisibleForTesting
 import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.sqlite.db.SupportSQLiteOpenHelper
 import com.squareup.moshi.Moshi
+import io.bucketeer.sdk.android.BKTException
 import io.bucketeer.sdk.android.internal.database.asSequence
 import io.bucketeer.sdk.android.internal.database.getString
 import io.bucketeer.sdk.android.internal.database.select
@@ -13,7 +15,9 @@ import io.bucketeer.sdk.android.internal.event.EventEntity.Companion.COLUMN_EVEN
 import io.bucketeer.sdk.android.internal.event.EventEntity.Companion.COLUMN_ID
 import io.bucketeer.sdk.android.internal.event.EventEntity.Companion.TABLE_NAME
 import io.bucketeer.sdk.android.internal.model.Event
+import io.bucketeer.sdk.android.internal.model.EventData
 import io.bucketeer.sdk.android.internal.model.EventType
+import io.bucketeer.sdk.android.internal.model.metricsEventUniqueKey
 
 internal class EventDaoImpl(
   private val sqLiteOpenHelper: SupportSQLiteOpenHelper,
@@ -34,19 +38,24 @@ internal class EventDaoImpl(
     // 1. Get all current events and collect hash
     // https://kotlinlang.org/docs/data-classes.html
     val storedEvents = getEvents()
-    val storedEventHashList : List<Int> = storedEvents.filter {
+    val storedEventHashList : List<String> = storedEvents.filter {
       // We Only prevent duplicate with metrics event
       // Because event is saved as raw JSON on SQL database,
       // Make its too complex to make a direct query to database, so we will filter on the list
       it.type == EventType.METRICS
     }.map {
-      return@map it.eventUniqueKey()
+      return@map it.metricsEventUniqueKey()
     }
     sqLiteOpenHelper.writableDatabase.transaction {
       events.forEach { item ->
-        // 2. Push to the database when the event data do not exist in the database
-        if (!storedEventHashList.contains(item.eventUniqueKey())) {
-          addEventInternal(this, item)
+        when (item.type) {
+          EventType.METRICS -> {
+            // 2. Push to the database when the event data do not exist in the database
+            if (!storedEventHashList.contains(item.metricsEventUniqueKey())) {
+              addEventInternal(this, item)
+            }
+          }
+          else -> addEventInternal(this, item)
         }
       }
     }
@@ -88,10 +97,4 @@ internal class EventDaoImpl(
       contentValues,
     )
   }
-}
-
-private fun Event.eventUniqueKey() : Int {
-  val type = this.type
-  val protobufType = this.event.protobufType
-  return "$type::${protobufType}".hashCode()
 }

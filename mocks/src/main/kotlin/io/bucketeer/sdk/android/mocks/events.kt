@@ -149,7 +149,7 @@ val duplicateMetricsEvent1: Event by lazy {
     event = EventData.MetricsEvent(
       timestamp = 1661823274, // 2022-08-30 01:34:34
       event = getEvaluationLatencyMetricsEvent1,
-      type = MetricsEventType.GET_EVALUATION_LATENCY,
+      type = MetricsEventType.RESPONSE_LATENCY,
       sdkVersion = io.bucketeer.sdk.android.BuildConfig.SDK_VERSION,
       metadata = mapOf(
         "app_version" to "1.2.3",
@@ -167,7 +167,7 @@ val sizeMetricsEvent1: Event by lazy {
     event = EventData.MetricsEvent(
       timestamp = 1661823275,
       event = getEvaluationSizeMetricsEvent1,
-      type = MetricsEventType.GET_EVALUATION_SIZE,
+      type = MetricsEventType.RESPONSE_SIZE,
       sdkVersion = io.bucketeer.sdk.android.BuildConfig.SDK_VERSION,
       metadata = mapOf(
         "app_version" to "1.2.3",
@@ -178,7 +178,30 @@ val sizeMetricsEvent1: Event by lazy {
   )
 }
 
-val getEvaluationSizeMetricsEvent1 = MetricsEventData.GetEvaluationSizeMetricsEvent(
+val getEvaluationSizeMetricsEvent1 = MetricsEventData.SizeMetricsEvent(
+  ApiId.GET_EVALUATIONS,
   labels = mapOf("tag" to "android", "state" to "FULL"),
   sizeByte = 400,
 )
+
+
+val internalErrorMetricsEvent1: Event by lazy {
+  Event(
+    id = "aac03cae-367d-4be4-a613-759441a37820",
+    type = EventType.METRICS,
+    event = EventData.MetricsEvent(
+      timestamp = 1661823275,
+      event = MetricsEventData.InternalServerErrorMetricsEvent(
+        ApiId.GET_EVALUATIONS,
+        labels = mapOf("tag" to "android", "state" to "FULL"),
+      ),
+      type = MetricsEventType.INTERNAL_SERVER_ERROR,
+      sdkVersion = io.bucketeer.sdk.android.BuildConfig.SDK_VERSION,
+      metadata = mapOf(
+        "app_version" to "1.2.3",
+        "os_version" to "os_version_value",
+        "device_model" to "device_model_value",
+      ),
+    ),
+  )
+}
