@@ -31,8 +31,6 @@ internal class EventDaoImpl(
     // It could be better but This approach will create a minimum impact,
     // And because the number of pending events in the database is small
     // So I think we are safe to do this without changing too much
-    // 1. Get all current events and collect hash
-    // https://kotlinlang.org/docs/data-classes.html
     val storedEvents = getEvents()
     val storedEventHashList: List<String> = storedEvents.filter {
       it.event is EventData.MetricsEvent
