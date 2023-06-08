@@ -37,17 +37,18 @@ class EvaluationForegroundTaskTest {
   @Before
   fun setup() {
     server = MockWebServer()
+    val config = createTestBKTConfig(
+      apiKey = "api_key_value",
+      apiEndpoint = server.url("").toString(),
+      featureTag = "feature_tag_value",
+      eventsMaxBatchQueueCount = 3,
+      pollingInterval = 1000,
+      appVersion = "1.2.3",
+    )
     component = ComponentImpl(
       dataModule = DataModule(
         application = ApplicationProvider.getApplicationContext(),
-        config = createTestBKTConfig(
-          apiKey = "api_key_value",
-          apiEndpoint = server.url("").toString(),
-          featureTag = "feature_tag_value",
-          eventsMaxBatchQueueCount = 3,
-          pollingInterval = 1000,
-          appVersion = "1.2.3",
-        ),
+        config = config,
         user = user1,
         inMemoryDB = true,
       ),

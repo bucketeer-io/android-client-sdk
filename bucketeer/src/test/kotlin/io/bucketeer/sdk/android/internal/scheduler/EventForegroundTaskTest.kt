@@ -39,17 +39,17 @@ class EventForegroundTaskTest {
   @Before
   fun setup() {
     server = MockWebServer()
-
+    val config = createTestBKTConfig(
+      apiKey = "api_key_value",
+      apiEndpoint = server.url("").toString(),
+      featureTag = "feature_tag_value",
+      eventsMaxBatchQueueCount = 3,
+      eventsFlushInterval = 1000,
+    )
     component = ComponentImpl(
       dataModule = DataModule(
         application = ApplicationProvider.getApplicationContext(),
-        config = createTestBKTConfig(
-          apiKey = "api_key_value",
-          apiEndpoint = server.url("").toString(),
-          featureTag = "feature_tag_value",
-          eventsMaxBatchQueueCount = 3,
-          eventsFlushInterval = 1000,
-        ),
+        config = config,
         user = user1,
         inMemoryDB = true,
       ),

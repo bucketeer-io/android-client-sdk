@@ -35,6 +35,7 @@ internal class InteractorModule(
     clock: Clock,
     idGenerator: IdGenerator,
     appVersion: String,
+    featureTag: String,
   ): EventInteractor {
     return EventInteractor(
       eventsMaxBatchQueueCount = eventsMaxBatchQueueCount,
@@ -43,6 +44,7 @@ internal class InteractorModule(
       clock = clock,
       idGenerator = idGenerator,
       appVersion = appVersion,
+      featureTag = featureTag,
     )
   }
 }

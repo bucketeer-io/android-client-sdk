@@ -1,9 +1,11 @@
 package io.bucketeer.sdk.android.internal.event
 
 import android.os.Build
+import io.bucketeer.sdk.android.BKTException
 import io.bucketeer.sdk.android.BuildConfig
 import io.bucketeer.sdk.android.internal.Clock
 import io.bucketeer.sdk.android.internal.IdGenerator
+import io.bucketeer.sdk.android.internal.model.ApiId
 import io.bucketeer.sdk.android.internal.model.Evaluation
 import io.bucketeer.sdk.android.internal.model.Event
 import io.bucketeer.sdk.android.internal.model.EventData
@@ -103,94 +105,132 @@ internal fun newGoalEvent(
   )
 }
 
-internal fun newGetEvaluationLatencyMetricsEvent(
+internal fun newSuccessMetricsEvents(
   clock: Clock,
   idGenerator: IdGenerator,
-  seconds: Long,
   featureTag: String,
   appVersion: String,
-): Event {
-  return Event(
-    id = idGenerator.newId(),
-    type = EventType.METRICS,
-    event = EventData.MetricsEvent(
-      timestamp = clock.currentTimeSeconds(),
-      type = MetricsEventType.GET_EVALUATION_LATENCY,
-      event = MetricsEventData.GetEvaluationLatencyMetricsEvent(
-        labels = mapOf(
-          "tag" to featureTag,
-        ),
-        duration = seconds,
-      ),
-      sdkVersion = BuildConfig.SDK_VERSION,
-      metadata = newMetadata(appVersion),
-    ),
-  )
-}
-
-internal fun newGetEvaluationSizeMetricsEvent(
-  clock: Clock,
-  idGenerator: IdGenerator,
+  apiId: ApiId,
+  latencySecond: Long,
   sizeByte: Int,
-  featureTag: String,
-  appVersion: String,
-): Event {
-  return Event(
-    id = idGenerator.newId(),
-    type = EventType.METRICS,
-    event = EventData.MetricsEvent(
-      timestamp = clock.currentTimeSeconds(),
-      type = MetricsEventType.GET_EVALUATION_SIZE,
-      event = MetricsEventData.GetEvaluationSizeMetricsEvent(
-        labels = mapOf(
-          "tag" to featureTag,
+): List<Event> {
+  val labels = mapOf("tag" to featureTag)
+  return listOf(
+    Event(
+      id = idGenerator.newId(),
+      type = EventType.METRICS,
+      event = EventData.MetricsEvent(
+        timestamp = clock.currentTimeSeconds(),
+        type = MetricsEventType.RESPONSE_LATENCY,
+        event = MetricsEventData.LatencyMetricsEvent(
+          apiId = apiId,
+          labels = labels,
+          latencySecond = latencySecond.toDouble(),
         ),
-        sizeByte = sizeByte,
+        sdkVersion = BuildConfig.SDK_VERSION,
+        metadata = newMetadata(appVersion),
       ),
-      sdkVersion = BuildConfig.SDK_VERSION,
-      metadata = newMetadata(appVersion),
+    ),
+    Event(
+      id = idGenerator.newId(),
+      type = EventType.METRICS,
+      event = EventData.MetricsEvent(
+        timestamp = clock.currentTimeSeconds(),
+        type = MetricsEventType.RESPONSE_SIZE,
+        event = MetricsEventData.SizeMetricsEvent(
+          apiId = apiId,
+          labels = labels,
+          sizeByte = sizeByte,
+        ),
+        sdkVersion = BuildConfig.SDK_VERSION,
+        metadata = newMetadata(appVersion),
+      ),
     ),
   )
 }
 
-internal fun newTimeoutErrorCountMetricsEvent(
+internal fun newErrorMetricsEvent(
   clock: Clock,
   idGenerator: IdGenerator,
   featureTag: String,
   appVersion: String,
+  error: BKTException,
+  apiId: ApiId,
 ): Event {
+  val metricEventType = error.toMetricEventType()
   return Event(
     id = idGenerator.newId(),
     type = EventType.METRICS,
     event = EventData.MetricsEvent(
       timestamp = clock.currentTimeSeconds(),
-      type = MetricsEventType.TIMEOUT_ERROR_COUNT,
-      event = MetricsEventData.TimeoutErrorCountMetricsEvent(
-        tag = featureTag,
-      ),
+      type = metricEventType,
+      event = newErrorMetricsEventData(featureTag, apiId, metricEventType),
       sdkVersion = BuildConfig.SDK_VERSION,
       metadata = newMetadata(appVersion),
     ),
   )
 }
-
-internal fun newInternalErrorCountMetricsEvent(
-  clock: Clock,
-  idGenerator: IdGenerator,
+internal fun newErrorMetricsEventData(
   featureTag: String,
-  appVersion: String,
-): Event {
-  return Event(
-    id = idGenerator.newId(),
-    type = EventType.METRICS,
-    event = EventData.MetricsEvent(
-      timestamp = clock.currentTimeSeconds(),
-      type = MetricsEventType.INTERNAL_ERROR_COUNT,
-      event = MetricsEventData.InternalErrorCountMetricsEvent(
-        tag = featureTag,
-      ),
-      sdkVersion = BuildConfig.SDK_VERSION,
-      metadata = newMetadata(appVersion),
-    ),
-  )
+  apiId: ApiId,
+  type: MetricsEventType,
+): MetricsEventData {
+  val labels = mapOf("tag" to featureTag)
+
+  return when (type) {
+    MetricsEventType.TIMEOUT_ERROR -> MetricsEventData.TimeoutErrorMetricsEvent(
+      apiId = apiId,
+      labels = labels,
+    )
+
+    MetricsEventType.NETWORK_ERROR -> MetricsEventData.NetworkErrorMetricsEvent(
+      apiId = apiId,
+      labels = labels,
+    )
+
+    MetricsEventType.INTERNAL_SDK_ERROR -> MetricsEventData.InternalSdkErrorMetricsEvent(
+      apiId = apiId,
+      labels = labels,
+    )
+
+    MetricsEventType.BAD_REQUEST_ERROR -> MetricsEventData.BadRequestErrorMetricsEvent(
+      apiId = apiId,
+      labels = labels,
+    )
+
+    MetricsEventType.UNAUTHORIZED_ERROR -> MetricsEventData.UnauthorizedErrorMetricsEvent(
+      apiId = apiId,
+      labels = labels,
+    )
+
+    MetricsEventType.FORBIDDEN_ERROR -> MetricsEventData.ForbiddenErrorMetricsEvent(
+      apiId = apiId,
+      labels = labels,
+    )
+
+    MetricsEventType.NOT_FOUND_ERROR -> MetricsEventData.NotFoundErrorMetricsEvent(
+      apiId = apiId,
+      labels = labels,
+    )
+
+    MetricsEventType.CLIENT_CLOSED_REQUEST_ERROR -> MetricsEventData.ClientClosedRequestErrorMetricsEvent(
+      apiId = apiId,
+      labels = labels,
+    )
+
+    MetricsEventType.SERVICE_UNAVAILABLE_ERROR -> MetricsEventData.ServiceUnavailableErrorMetricsEvent(
+      apiId = apiId,
+      labels = labels,
+    )
+
+    MetricsEventType.INTERNAL_SERVER_ERROR -> MetricsEventData.InternalServerErrorMetricsEvent(
+      apiId = apiId,
+      labels = labels,
+    )
+
+    else -> MetricsEventData.UnknownErrorMetricsEvent(
+      apiId = apiId,
+      labels = labels,
+    )
+  }
 }

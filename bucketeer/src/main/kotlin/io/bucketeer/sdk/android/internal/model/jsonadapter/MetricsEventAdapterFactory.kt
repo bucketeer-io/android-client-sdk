@@ -23,14 +23,33 @@ class MetricsEventAdapterFactory : JsonAdapter.Factory {
 
     return object : JsonAdapter<EventData.MetricsEvent>() {
       private val metricsEventTypeAdapter = moshi.adapter(MetricsEventType::class.java)
-      private val getEvaluationLatencyAdapter =
-        moshi.adapter(MetricsEventData.GetEvaluationLatencyMetricsEvent::class.java)
-      private val getEvaluationSizeAdapter =
-        moshi.adapter(MetricsEventData.GetEvaluationSizeMetricsEvent::class.java)
-      private val timeoutErrorCountAdapter =
-        moshi.adapter(MetricsEventData.TimeoutErrorCountMetricsEvent::class.java)
-      private val internalErrorCountAdapter =
-        moshi.adapter(MetricsEventData.InternalErrorCountMetricsEvent::class.java)
+      private val latencyMetricsEventAdapter =
+        moshi.adapter(MetricsEventData.LatencyMetricsEvent::class.java)
+      private val sizeMetricsEventJsonAdapter =
+        moshi.adapter(MetricsEventData.SizeMetricsEvent::class.java)
+      private val timeoutErrorAdapter =
+        moshi.adapter(MetricsEventData.TimeoutErrorMetricsEvent::class.java)
+      private val internalSDKErrorAdapter =
+        moshi.adapter(MetricsEventData.InternalSdkErrorMetricsEvent::class.java)
+      private val internalServerErrorAdapter =
+        moshi.adapter(MetricsEventData.InternalServerErrorMetricsEvent::class.java)
+      private val unknownErrorAdapter =
+        moshi.adapter(MetricsEventData.UnknownErrorMetricsEvent::class.java)
+      private val networkErrorAdapter =
+        moshi.adapter(MetricsEventData.NetworkErrorMetricsEvent::class.java)
+      private val badRequestErrorEventAdapter =
+        moshi.adapter(MetricsEventData.BadRequestErrorMetricsEvent::class.java)
+      private val unauthorizedErrorAdapter =
+        moshi.adapter(MetricsEventData.UnauthorizedErrorMetricsEvent::class.java)
+      private val forbiddenErrorAdapter =
+        moshi.adapter(MetricsEventData.ForbiddenErrorMetricsEvent::class.java)
+      private val notFoundErrorAdapter =
+        moshi.adapter(MetricsEventData.NotFoundErrorMetricsEvent::class.java)
+      private val clientClosedRequestErrorAdapter =
+        moshi.adapter(MetricsEventData.ClientClosedRequestErrorMetricsEvent::class.java)
+      private val serviceUnavailableErrorAdapter =
+        moshi.adapter(MetricsEventData.ServiceUnavailableErrorMetricsEvent::class.java)
+
       private val metadataAdapter: JsonAdapter<Map<String, String>?> =
         moshi.adapter(
           Types.newParameterizedType(
@@ -49,10 +68,19 @@ class MetricsEventAdapterFactory : JsonAdapter.Factory {
         val eventType = metricsEventTypeAdapter.fromJsonValue(jsonObj["type"])
 
         val adapter = when (eventType) {
-          MetricsEventType.GET_EVALUATION_LATENCY -> getEvaluationLatencyAdapter
-          MetricsEventType.GET_EVALUATION_SIZE -> getEvaluationSizeAdapter
-          MetricsEventType.TIMEOUT_ERROR_COUNT -> timeoutErrorCountAdapter
-          MetricsEventType.INTERNAL_ERROR_COUNT -> internalErrorCountAdapter
+          MetricsEventType.RESPONSE_LATENCY -> latencyMetricsEventAdapter
+          MetricsEventType.RESPONSE_SIZE -> sizeMetricsEventJsonAdapter
+          MetricsEventType.TIMEOUT_ERROR -> timeoutErrorAdapter
+          MetricsEventType.INTERNAL_SDK_ERROR -> internalSDKErrorAdapter
+          MetricsEventType.UNKNOWN -> unknownErrorAdapter
+          MetricsEventType.NETWORK_ERROR -> networkErrorAdapter
+          MetricsEventType.BAD_REQUEST_ERROR -> badRequestErrorEventAdapter
+          MetricsEventType.UNAUTHORIZED_ERROR -> unauthorizedErrorAdapter
+          MetricsEventType.FORBIDDEN_ERROR -> forbiddenErrorAdapter
+          MetricsEventType.NOT_FOUND_ERROR -> notFoundErrorAdapter
+          MetricsEventType.CLIENT_CLOSED_REQUEST_ERROR -> clientClosedRequestErrorAdapter
+          MetricsEventType.SERVICE_UNAVAILABLE_ERROR -> serviceUnavailableErrorAdapter
+          MetricsEventType.INTERNAL_SERVER_ERROR -> internalServerErrorAdapter
           null -> throw BKTException.IllegalStateException("unexpected type: $type")
         }
 
@@ -82,28 +110,83 @@ class MetricsEventAdapterFactory : JsonAdapter.Factory {
         writer.name("event")
 
         when (value.type) {
-          MetricsEventType.GET_EVALUATION_LATENCY -> {
-            getEvaluationLatencyAdapter.toJson(
+          MetricsEventType.RESPONSE_LATENCY -> {
+            latencyMetricsEventAdapter.toJson(
               writer,
-              value.event as MetricsEventData.GetEvaluationLatencyMetricsEvent,
+              value.event as MetricsEventData.LatencyMetricsEvent,
             )
           }
-          MetricsEventType.GET_EVALUATION_SIZE -> {
-            getEvaluationSizeAdapter.toJson(
+          MetricsEventType.RESPONSE_SIZE -> {
+            sizeMetricsEventJsonAdapter.toJson(
               writer,
-              value.event as MetricsEventData.GetEvaluationSizeMetricsEvent,
+              value.event as MetricsEventData.SizeMetricsEvent,
             )
           }
-          MetricsEventType.TIMEOUT_ERROR_COUNT -> {
-            timeoutErrorCountAdapter.toJson(
+          MetricsEventType.TIMEOUT_ERROR -> {
+            timeoutErrorAdapter.toJson(
               writer,
-              value.event as MetricsEventData.TimeoutErrorCountMetricsEvent,
+              value.event as MetricsEventData.TimeoutErrorMetricsEvent,
             )
           }
-          MetricsEventType.INTERNAL_ERROR_COUNT -> {
-            internalErrorCountAdapter.toJson(
+          MetricsEventType.INTERNAL_SDK_ERROR -> {
+            internalSDKErrorAdapter.toJson(
               writer,
-              value.event as MetricsEventData.InternalErrorCountMetricsEvent,
+              value.event as MetricsEventData.InternalSdkErrorMetricsEvent,
+            )
+          }
+
+          MetricsEventType.UNKNOWN -> {
+            unknownErrorAdapter.toJson(
+              writer,
+              value.event as MetricsEventData.UnknownErrorMetricsEvent,
+            )
+          }
+          MetricsEventType.NETWORK_ERROR -> {
+            networkErrorAdapter.toJson(
+              writer,
+              value.event as MetricsEventData.NetworkErrorMetricsEvent,
+            )
+          }
+          MetricsEventType.BAD_REQUEST_ERROR -> {
+            badRequestErrorEventAdapter.toJson(
+              writer,
+              value.event as MetricsEventData.BadRequestErrorMetricsEvent,
+            )
+          }
+          MetricsEventType.UNAUTHORIZED_ERROR -> {
+            unauthorizedErrorAdapter.toJson(
+              writer,
+              value.event as MetricsEventData.UnauthorizedErrorMetricsEvent,
+            )
+          }
+          MetricsEventType.FORBIDDEN_ERROR -> {
+            forbiddenErrorAdapter.toJson(
+              writer,
+              value.event as MetricsEventData.ForbiddenErrorMetricsEvent,
+            )
+          }
+          MetricsEventType.NOT_FOUND_ERROR -> {
+            notFoundErrorAdapter.toJson(
+              writer,
+              value.event as MetricsEventData.NotFoundErrorMetricsEvent,
+            )
+          }
+          MetricsEventType.CLIENT_CLOSED_REQUEST_ERROR -> {
+            clientClosedRequestErrorAdapter.toJson(
+              writer,
+              value.event as MetricsEventData.ClientClosedRequestErrorMetricsEvent,
+            )
+          }
+          MetricsEventType.SERVICE_UNAVAILABLE_ERROR -> {
+            serviceUnavailableErrorAdapter.toJson(
+              writer,
+              value.event as MetricsEventData.ServiceUnavailableErrorMetricsEvent,
+            )
+          }
+          MetricsEventType.INTERNAL_SERVER_ERROR -> {
+            internalServerErrorAdapter.toJson(
+              writer,
+              value.event as MetricsEventData.InternalServerErrorMetricsEvent,
             )
           }
         }

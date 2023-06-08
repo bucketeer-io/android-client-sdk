@@ -5,6 +5,7 @@ import io.bucketeer.sdk.android.internal.Clock
 import io.bucketeer.sdk.android.internal.IdGenerator
 import io.bucketeer.sdk.android.internal.event.db.EventDao
 import io.bucketeer.sdk.android.internal.logd
+import io.bucketeer.sdk.android.internal.model.ApiId
 import io.bucketeer.sdk.android.internal.model.Evaluation
 import io.bucketeer.sdk.android.internal.model.Event
 import io.bucketeer.sdk.android.internal.model.User
@@ -18,6 +19,7 @@ internal class EventInteractor(
   private val clock: Clock,
   private val idGenerator: IdGenerator,
   private val appVersion: String,
+  private val featureTag: String,
 ) {
 
   private var eventUpdateListener: EventUpdateListener? = null
@@ -55,10 +57,17 @@ internal class EventInteractor(
     seconds: Long,
     sizeByte: Int,
   ) {
+    // For get_evaluations, we will report all metrics events, Including the latency and size metrics events.
+    // https://github.com/bucketeer-io/android-client-sdk/issues/56
     eventDao.addEvents(
-      listOf(
-        newGetEvaluationLatencyMetricsEvent(clock, idGenerator, seconds, featureTag, appVersion),
-        newGetEvaluationSizeMetricsEvent(clock, idGenerator, sizeByte, featureTag, appVersion),
+      newSuccessMetricsEvents(
+        clock = clock,
+        idGenerator = idGenerator,
+        featureTag = featureTag,
+        appVersion = appVersion,
+        apiId = ApiId.GET_EVALUATIONS,
+        latencySecond = seconds,
+        sizeByte = sizeByte,
       ),
     )
 
@@ -68,21 +77,26 @@ internal class EventInteractor(
   fun trackFetchEvaluationsFailure(
     featureTag: String,
     error: BKTException,
+  ) = trackApiFailureMetricsEvent(
+    featureTag,
+    error,
+    ApiId.GET_EVALUATIONS,
+  )
+
+  private fun trackApiFailureMetricsEvent(
+    featureTag: String,
+    error: BKTException,
+    apiId: ApiId,
   ) {
-    val event = when (error) {
-      is BKTException.NetworkException,
-      is BKTException.TimeoutException,
-      -> newTimeoutErrorCountMetricsEvent(
-        clock,
-        idGenerator,
-        featureTag,
-        appVersion,
-      )
-      else -> newInternalErrorCountMetricsEvent(clock, idGenerator, featureTag, appVersion)
-    }
-
+    val event = newErrorMetricsEvent(
+      clock = clock,
+      idGenerator = idGenerator,
+      featureTag = featureTag,
+      appVersion = appVersion,
+      error = error,
+      apiId = apiId,
+    )
     eventDao.addEvent(event)
-
     updateEventsAndNotify()
   }
 
@@ -121,11 +135,25 @@ internal class EventInteractor(
         SendEventsResult.Success(sent = true)
       }
       is RegisterEventsResult.Failure -> {
-        logd(throwable = result.error) { "Failed to register events" }
-        SendEventsResult.Failure(result.error)
+        val error = result.error
+        logd(throwable = error) { "Failed to register events" }
+        // For register_events, we will only report error metrics, such as timeout, network, server errors, etc.
+        // https://github.com/bucketeer-io/android-client-sdk/issues/56
+        trackSendEventsFailure(error)
+
+        SendEventsResult.Failure(error)
       }
     }
   }
+
+  private fun trackSendEventsFailure(
+    error: BKTException,
+  ) = trackApiFailureMetricsEvent(
+    // discussed: here https://github.com/bucketeer-io/android-client-sdk/pull/64/files#r1214187627
+    featureTag = featureTag,
+    error,
+    ApiId.REGISTER_EVENTS,
+  )
 
   private fun updateEventsAndNotify() {
     eventUpdateListener?.onUpdate(eventDao.getEvents())

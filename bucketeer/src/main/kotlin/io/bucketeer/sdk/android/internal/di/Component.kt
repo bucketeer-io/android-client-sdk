@@ -45,6 +45,7 @@ internal class ComponentImpl(
       clock = dataModule.clock,
       idGenerator = dataModule.idGenerator,
       appVersion = dataModule.config.appVersion,
+      featureTag = dataModule.config.featureTag,
     )
   }
 }

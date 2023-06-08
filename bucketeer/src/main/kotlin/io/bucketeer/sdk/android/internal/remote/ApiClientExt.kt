@@ -40,6 +40,12 @@ fun Response.toBKTException(adapter: JsonAdapter<ErrorResponse>): BKTException {
         message = errorBody?.error?.message ?: "Unauthorized error",
       )
     }
+    403 -> {
+      // Forbidden
+      BKTException.ForbiddenException(
+        message = errorBody?.error?.message ?: "Forbidden error",
+      )
+    }
     404 -> {
       // NotFound
       // - feature not found
@@ -54,10 +60,23 @@ fun Response.toBKTException(adapter: JsonAdapter<ErrorResponse>): BKTException {
         message = errorBody?.error?.message ?: "MethodNotAllowed error",
       )
     }
+    499 -> {
+      // ClientClosedRequest
+      BKTException.ClientClosedRequestException(
+        message = errorBody?.error?.message ?: "ClientClosedRequest error",
+      )
+    }
     500 -> {
       // InternalServerError
       // - gateway: internal
-      BKTException.ApiServerException(
+      BKTException.InternalServerErrorException(
+        message = errorBody?.error?.message ?: "InternalServer error",
+      )
+    }
+    502, 503, 504 -> {
+      // ServiceUnavailable
+      // - gateway: internal
+      BKTException.ServiceUnavailableException(
         message = errorBody?.error?.message ?: "InternalServer error",
       )
     }
