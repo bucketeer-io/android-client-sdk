@@ -100,8 +100,8 @@ internal class EventInteractor(
 
   /*
    * Method addMetricEvents()
-   * Will filter duplicate metric event by finding existed metrics event on the cache database
-   * Remove all existed metrics event, only add new metrics event
+   * Will filter duplicate metric events by finding existing metrics events on the cache database fist
+   * Remove all new duplicate metrics events, only add new metrics event
    * @params events: should be a list of `EventData.MetricsEvent`
    */
   @VisibleForTesting
