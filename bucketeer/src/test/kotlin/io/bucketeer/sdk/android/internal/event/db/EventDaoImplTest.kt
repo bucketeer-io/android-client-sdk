@@ -6,13 +6,10 @@ import com.google.common.truth.Truth.assertThat
 import com.squareup.moshi.Moshi
 import io.bucketeer.sdk.android.internal.database.createDatabase
 import io.bucketeer.sdk.android.internal.di.DataModule
-import io.bucketeer.sdk.android.mocks.duplicateGoalEvent1
-import io.bucketeer.sdk.android.mocks.duplicateMetricsEvent1
 import io.bucketeer.sdk.android.mocks.evaluationEvent1
 import io.bucketeer.sdk.android.mocks.evaluationEvent2
 import io.bucketeer.sdk.android.mocks.goalEvent1
-import io.bucketeer.sdk.android.mocks.goalEvent2
-import io.bucketeer.sdk.android.mocks.metricsEvent1
+import io.bucketeer.sdk.android.mocks.latencyMetricsEvent1
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -60,67 +57,32 @@ class EventDaoImplTest {
 
   @Test
   fun `addEvent - metrics`() {
-    dao.addEvent(metricsEvent1)
+    dao.addEvent(latencyMetricsEvent1)
 
     val actual = dao.getEvents()
 
     assertThat(actual).hasSize(1)
-    assertThat(actual[0]).isEqualTo(metricsEvent1)
+    assertThat(actual[0]).isEqualTo(latencyMetricsEvent1)
   }
 
   @Test
   fun addEvents() {
-    dao.addEvents(listOf(evaluationEvent1, goalEvent1, metricsEvent1, evaluationEvent2))
+    dao.addEvents(listOf(evaluationEvent1, goalEvent1, latencyMetricsEvent1, evaluationEvent2))
 
-    var actual = dao.getEvents()
+    val actual = dao.getEvents()
 
     assertThat(actual).hasSize(4)
     assertThat(actual).containsExactly(
       evaluationEvent1,
       goalEvent1,
-      metricsEvent1,
+      latencyMetricsEvent1,
       evaluationEvent2,
-    )
-
-    // Try adding duplicate events
-    dao.addEvents(listOf(evaluationEvent1, duplicateGoalEvent1, metricsEvent1, duplicateMetricsEvent1))
-    actual = dao.getEvents()
-    // Check if we do not have duplicate metric event,
-    // But we may have duplicate `goal` or `evaluation` events ,
-    // Because we didn't filter duplicate on that type
-    assertThat(actual).hasSize(5)
-    assertThat(actual).containsExactly(
-      // `evaluationEvent1` will not duplicate because it is override by same `id`
-      evaluationEvent1,
-      goalEvent1,
-      metricsEvent1,
-      evaluationEvent2,
-      // `goalEvent1` is duplicate with `duplicateGoalEvent1` (difference `id` but the same `event_data`)
-      // its okay, we allowed that.
-      // https://github.com/bucketeer-io/android-client-sdk/pull/68#discussion_r1221267779
-      duplicateGoalEvent1,
-    )
-
-    // Simulator `register_event` success and synced event will be delete from database
-    dao.delete(listOf(evaluationEvent1, goalEvent1, metricsEvent1, evaluationEvent2).map { it.id })
-
-    // Add new event
-    dao.addEvents(listOf(evaluationEvent2, goalEvent2, duplicateMetricsEvent1))
-    actual = dao.getEvents()
-    // Check if we have few new events
-    assertThat(actual).hasSize(4)
-    assertThat(actual).containsExactly(
-      duplicateGoalEvent1,
-      evaluationEvent2,
-      goalEvent2,
-      // `MetricsEvent1` is removed , so `duplicateMetricsEvent1` will saved to database
-      duplicateMetricsEvent1,
     )
   }
 
   @Test
   fun `delete - all`() {
-    val target = listOf(evaluationEvent1, goalEvent1, metricsEvent1, evaluationEvent2)
+    val target = listOf(evaluationEvent1, goalEvent1, latencyMetricsEvent1, evaluationEvent2)
     dao.addEvents(target)
 
     val ids = target.map { it.id }
@@ -134,24 +96,18 @@ class EventDaoImplTest {
 
   @Test
   fun `delete - some items`() {
-    val target = listOf(evaluationEvent1, goalEvent1, metricsEvent1, evaluationEvent2)
+    val target = listOf(evaluationEvent1, goalEvent1, latencyMetricsEvent1, evaluationEvent2)
     dao.addEvents(target)
 
-    val ids = listOf(evaluationEvent1.id, metricsEvent1.id)
+    val ids = listOf(evaluationEvent1.id, latencyMetricsEvent1.id)
 
     dao.delete(ids)
 
-    var actual = dao.getEvents()
+    val actual = dao.getEvents()
 
     assertThat(actual).hasSize(2)
 
     assertThat(actual[0]).isEqualTo(goalEvent1)
     assertThat(actual[1]).isEqualTo(evaluationEvent2)
-
-    // After events are synced and deleted, we should able to add it again,
-    // It will not count as duplicate because there will be an interval between event logging times.
-    dao.addEvents(target)
-    actual = dao.getEvents()
-    assertThat(actual).hasSize(4)
   }
 }

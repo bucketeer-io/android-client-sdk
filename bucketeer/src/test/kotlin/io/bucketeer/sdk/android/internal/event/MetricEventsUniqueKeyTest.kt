@@ -5,7 +5,7 @@ import com.google.testing.junit.testparameterinjector.TestParameter
 import com.google.testing.junit.testparameterinjector.TestParameterInjector
 import io.bucketeer.sdk.android.internal.model.EventData
 import io.bucketeer.sdk.android.mocks.internalErrorMetricsEvent1
-import io.bucketeer.sdk.android.mocks.metricsEvent1
+import io.bucketeer.sdk.android.mocks.latencyMetricsEvent1
 import io.bucketeer.sdk.android.mocks.sizeMetricsEvent1
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -19,7 +19,7 @@ class MetricEventsUniqueKeyTest {
     val expected: String,
   ) {
     ResponseLatency(
-      metricsEvent1.event as EventData.MetricsEvent,
+      latencyMetricsEvent1.event as EventData.MetricsEvent,
       "GET_EVALUATIONS::type.googleapis.com/bucketeer.event.client.LatencyMetricsEvent",
     ),
     ResponseSize(

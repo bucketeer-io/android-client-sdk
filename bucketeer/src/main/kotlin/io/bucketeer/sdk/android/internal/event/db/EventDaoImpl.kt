@@ -13,7 +13,6 @@ import io.bucketeer.sdk.android.internal.event.EventEntity.Companion.COLUMN_EVEN
 import io.bucketeer.sdk.android.internal.event.EventEntity.Companion.COLUMN_ID
 import io.bucketeer.sdk.android.internal.event.EventEntity.Companion.TABLE_NAME
 import io.bucketeer.sdk.android.internal.model.Event
-import io.bucketeer.sdk.android.internal.model.EventData
 
 internal class EventDaoImpl(
   private val sqLiteOpenHelper: SupportSQLiteOpenHelper,
@@ -27,29 +26,9 @@ internal class EventDaoImpl(
   }
 
   override fun addEvents(events: List<Event>) {
-    // This approach below is a reference from iOS SDK.
-    // It could be better but This approach will create a minimum impact,
-    // And because the number of pending events in the database is small
-    // So I think we are safe to do this without changing too much
-    val storedEvents = getEvents()
-    val metricsEventUniqueKeys: List<String> = storedEvents.filter {
-      it.event is EventData.MetricsEvent
-    }.map {
-      val metricsEvent = it.event as EventData.MetricsEvent
-      return@map metricsEvent.uniqueKey()
-    }
-
     sqLiteOpenHelper.writableDatabase.transaction {
-      events.forEach { item ->
-        when (item.event) {
-          is EventData.MetricsEvent -> {
-            // 2. Push to the database when the event data do not exist in the database
-            if (!metricsEventUniqueKeys.contains(item.event.uniqueKey())) {
-              addEventInternal(this, item)
-            }
-          }
-          else -> addEventInternal(this, item)
-        }
+      events.forEach { event ->
+        addEventInternal(this, event)
       }
     }
   }
