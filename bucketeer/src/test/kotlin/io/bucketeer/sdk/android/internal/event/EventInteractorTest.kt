@@ -32,6 +32,7 @@ import io.bucketeer.sdk.android.internal.model.response.RegisterEventsResponse
 import io.bucketeer.sdk.android.internal.remote.ApiClient
 import io.bucketeer.sdk.android.internal.remote.ApiClientImpl
 import io.bucketeer.sdk.android.mocks.evaluation1
+import io.bucketeer.sdk.android.mocks.goalEvent1
 import io.bucketeer.sdk.android.mocks.internalErrorMetricsEvent1
 import io.bucketeer.sdk.android.mocks.latencyMetricsEvent1
 import io.bucketeer.sdk.android.mocks.sizeMetricsEvent1
@@ -901,6 +902,14 @@ class EventInteractorTest {
     interactor.addMetricEvents(listOf(latencyMetricsEvent1, sizeMetricsEvent1))
     // Simulate tracking error metrics
     interactor.addMetricEvents(listOf(internalErrorMetricsEvent1))
+
+    // `addMetricEvents` will only handle only `MetricEvents`
+    // calling it with invalid event_type , it will does nothing
+    // as it is internal method
+    // and only get call from 2 methods `trackFetchEvaluationsSuccess` && `trackApiFailureMetricsEvent`
+    // this case for make sure we didn't make any bug affecting other event type
+    interactor.addMetricEvents(listOf(goalEvent1))
+
     storedEvents = component.dataModule.eventDao.getEvents()
     assertThat(storedEvents).hasSize(3)
     assertThat(storedEvents).containsExactlyElementsIn(expectedStoredEvents)
