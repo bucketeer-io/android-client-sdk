@@ -13,6 +13,7 @@ if (Files.exists(Paths.get("$rootProject.rootDir/local.properties"))) {
 }
 
 android {
+  namespace = "io.bucketeer.sdk.android.sample"
   compileSdkVersion project.findProperty("android.compileSdkVersion") as int
 
   defaultConfig {
@@ -42,6 +43,17 @@ android {
       proguardFiles getDefaultProguardFile('proguard-android.txt')
       signingConfig signingConfigs.release
     }
+  }
+  buildFeatures {
+    buildConfig true
+  }
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_17
+    targetCompatibility JavaVersion.VERSION_17
+  }
+
+  kotlinOptions {
+    jvmTarget = "17"
   }
 }
 
