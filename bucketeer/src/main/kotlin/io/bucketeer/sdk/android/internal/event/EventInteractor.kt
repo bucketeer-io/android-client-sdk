@@ -113,13 +113,9 @@ internal class EventInteractor(
     // 3 Filter the list
     // 4 If list is not empty -> add to database
     val storedEvents = eventDao.getEvents()
-    val metricsEventUniqueKeys: List<String> = storedEvents.filter {
-      it.event is EventData.MetricsEvent
-    }.map {
-      val metricsEvent = it.event as EventData.MetricsEvent
-      return@map metricsEvent.uniqueKey()
-    }
-
+    val metricsEventUniqueKeys: List<String> = storedEvents
+      .filter { it.event is EventData.MetricsEvent }
+      .map { (it.event as EventData.MetricsEvent).uniqueKey() }
     // For get_evaluations, we will report all metrics events, Including the latency and size metrics events.
     // https://github.com/bucketeer-io/android-client-sdk/issues/56
     val newEvents = events.filter {
