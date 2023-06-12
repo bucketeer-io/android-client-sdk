@@ -1,5 +1,5 @@
 [versions]
-agp = "8.0.0"
+agp = "8.0.2"
 grpc = "1.47.0"
 kotlin = "1.8.22"
 espresso = "3.4.0"
