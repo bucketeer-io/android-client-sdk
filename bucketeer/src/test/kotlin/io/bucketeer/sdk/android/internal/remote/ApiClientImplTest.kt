@@ -14,7 +14,7 @@ import io.bucketeer.sdk.android.internal.model.response.GetEvaluationsResponse
 import io.bucketeer.sdk.android.internal.model.response.RegisterEventsErrorResponse
 import io.bucketeer.sdk.android.internal.model.response.RegisterEventsResponse
 import io.bucketeer.sdk.android.mocks.evaluationEvent1
-import io.bucketeer.sdk.android.mocks.metricsEvent1
+import io.bucketeer.sdk.android.mocks.latencyMetricsEvent1
 import io.bucketeer.sdk.android.mocks.user1
 import io.bucketeer.sdk.android.mocks.user1Evaluations
 import okhttp3.mockwebserver.MockResponse
@@ -277,7 +277,7 @@ internal class ApiClientImplTest {
       moshi = moshi,
     )
 
-    val result = client.registerEvents(events = listOf(evaluationEvent1, metricsEvent1))
+    val result = client.registerEvents(events = listOf(evaluationEvent1, latencyMetricsEvent1))
 
     // assert request
     val request = server.takeRequest()
@@ -287,7 +287,7 @@ internal class ApiClientImplTest {
     assertThat(
       moshi.adapter(RegisterEventsRequest::class.java)
         .fromJson(request.body.readString(Charsets.UTF_8)),
-    ).isEqualTo(RegisterEventsRequest(events = listOf(evaluationEvent1, metricsEvent1)))
+    ).isEqualTo(RegisterEventsRequest(events = listOf(evaluationEvent1, latencyMetricsEvent1)))
 
     // assert response
     assertThat(result).isInstanceOf(RegisterEventsResult.Success::class.java)
@@ -315,7 +315,7 @@ internal class ApiClientImplTest {
     )
 
     val (millis, result) = measureTimeMillisWithResult {
-      client.registerEvents(events = listOf(evaluationEvent1, metricsEvent1))
+      client.registerEvents(events = listOf(evaluationEvent1, latencyMetricsEvent1))
     }
 
     assertThat(millis).isGreaterThan(1_000)
@@ -336,7 +336,7 @@ internal class ApiClientImplTest {
       moshi = moshi,
     )
 
-    val result = client.registerEvents(events = listOf(evaluationEvent1, metricsEvent1))
+    val result = client.registerEvents(events = listOf(evaluationEvent1, latencyMetricsEvent1))
 
     assertThat(result).isInstanceOf(RegisterEventsResult.Failure::class.java)
     val failure = result as RegisterEventsResult.Failure
@@ -368,7 +368,7 @@ internal class ApiClientImplTest {
       moshi = moshi,
     )
 
-    val result = client.registerEvents(events = listOf(evaluationEvent1, metricsEvent1))
+    val result = client.registerEvents(events = listOf(evaluationEvent1, latencyMetricsEvent1))
 
     assertThat(result).isInstanceOf(RegisterEventsResult.Failure::class.java)
     val failure = result as RegisterEventsResult.Failure
@@ -392,7 +392,7 @@ internal class ApiClientImplTest {
       moshi = moshi,
     )
 
-    val result = client.registerEvents(events = listOf(evaluationEvent1, metricsEvent1))
+    val result = client.registerEvents(events = listOf(evaluationEvent1, latencyMetricsEvent1))
 
     assertThat(result).isInstanceOf(RegisterEventsResult.Failure::class.java)
     val failure = result as RegisterEventsResult.Failure

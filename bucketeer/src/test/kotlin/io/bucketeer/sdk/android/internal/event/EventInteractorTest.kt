@@ -32,6 +32,10 @@ import io.bucketeer.sdk.android.internal.model.response.RegisterEventsResponse
 import io.bucketeer.sdk.android.internal.remote.ApiClient
 import io.bucketeer.sdk.android.internal.remote.ApiClientImpl
 import io.bucketeer.sdk.android.mocks.evaluation1
+import io.bucketeer.sdk.android.mocks.goalEvent1
+import io.bucketeer.sdk.android.mocks.internalErrorMetricsEvent1
+import io.bucketeer.sdk.android.mocks.latencyMetricsEvent1
+import io.bucketeer.sdk.android.mocks.sizeMetricsEvent1
 import io.bucketeer.sdk.android.mocks.user1
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -860,6 +864,55 @@ class EventInteractorTest {
         ),
       ),
     )
+  }
+
+  // https://github.com/bucketeer-io/android-client-sdk/pull/68#discussion_r1223850982
+  fun `trackMetricsEvents - prevent duplicate`() {
+    // Simulate tracking metrics events
+    interactor.addMetricEvents(listOf(latencyMetricsEvent1, sizeMetricsEvent1))
+    interactor.addMetricEvents(listOf(internalErrorMetricsEvent1))
+
+    var storedEvents = component.dataModule.eventDao.getEvents()
+    var expectedStoredEvents = listOf(latencyMetricsEvent1, sizeMetricsEvent1, internalErrorMetricsEvent1)
+
+    assertThat(storedEvents).hasSize(3)
+    assertThat(storedEvents).containsExactlyElementsIn(expectedStoredEvents)
+
+    // Simulate tracking duplicate events
+    // (difference `id` but the same `ApiID` and `protobufType`)
+    interactor.addMetricEvents(
+      listOf(
+        latencyMetricsEvent1.copy(id = "4be4-a613-759441a37802"),
+        sizeMetricsEvent1.copy(id = "367d-4be4-759441a3780"),
+      ),
+    )
+    interactor.addMetricEvents(listOf(internalErrorMetricsEvent1.copy(id = "4be4-a613-759441a37802-a613")))
+
+    storedEvents = component.dataModule.eventDao.getEvents()
+    // Check if we haven't any duplicate events
+    assertThat(storedEvents).hasSize(3)
+    assertThat(storedEvents).containsExactlyElementsIn(expectedStoredEvents)
+
+    // Simulate send event success by removing all data from the cache database
+    component.dataModule.eventDao.delete(expectedStoredEvents.map { it.id })
+    storedEvents = component.dataModule.eventDao.getEvents()
+    assertThat(storedEvents).hasSize(0)
+
+    // Simulate tracking metrics events again to see we could add duplicate events from now
+    interactor.addMetricEvents(listOf(latencyMetricsEvent1, sizeMetricsEvent1))
+    // Simulate tracking error metrics
+    interactor.addMetricEvents(listOf(internalErrorMetricsEvent1))
+
+    // `addMetricEvents` will only handle only `MetricEvents`
+    // calling it with invalid event_type , it will does nothing
+    // as it is internal method
+    // and only get call from 2 methods `trackFetchEvaluationsSuccess` && `trackApiFailureMetricsEvent`
+    // this case for make sure we didn't make any bug affecting other event type
+    interactor.addMetricEvents(listOf(goalEvent1))
+
+    storedEvents = component.dataModule.eventDao.getEvents()
+    assertThat(storedEvents).hasSize(3)
+    assertThat(storedEvents).containsExactlyElementsIn(expectedStoredEvents)
   }
 }
 

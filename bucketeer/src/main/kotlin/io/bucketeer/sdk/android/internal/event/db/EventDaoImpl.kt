@@ -22,7 +22,7 @@ internal class EventDaoImpl(
   private val eventAdapter = moshi.adapter(Event::class.java)
 
   override fun addEvent(event: Event) {
-    addEventInternal(sqLiteOpenHelper.writableDatabase, event)
+    addEvents(listOf(event))
   }
 
   override fun addEvents(events: List<Event>) {

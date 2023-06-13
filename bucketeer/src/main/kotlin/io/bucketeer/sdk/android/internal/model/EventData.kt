@@ -6,7 +6,6 @@ import com.squareup.moshi.JsonClass
 // we can't use codegen here
 // see EventAdapterFactory
 sealed class EventData {
-
   @JsonClass(generateAdapter = true)
   data class GoalEvent(
     val timestamp: Long,
@@ -49,5 +48,10 @@ sealed class EventData {
     val metadata: Map<String, String>? = null,
     @Json(name = "@type")
     val protobufType: String? = "type.googleapis.com/bucketeer.event.client.MetricsEvent",
-  ) : EventData()
+  ) : EventData() {
+    // https://github.com/bucketeer-io/android-client-sdk/pull/68#discussion_r1222401661
+    fun uniqueKey(): String {
+      return "${event.apiId}::${event.protobufType}"
+    }
+  }
 }

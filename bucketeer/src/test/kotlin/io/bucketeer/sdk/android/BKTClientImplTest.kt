@@ -525,7 +525,11 @@ class BKTClientImplTest {
     assertThat(client.componentImpl.dataModule.evaluationDao.get(user1.id))
       .isEqualTo(listOf(updatedEvaluation1))
 
-    assertThat(client.componentImpl.dataModule.eventDao.getEvents()).hasSize(4)
+    // 2 metrics events (latency , size) from the BKTClient internal init()
+    // 2 metrics events (latency , size) from the test code above
+    // Because we filter duplicate
+    // Finally we will have only 2 items
+    assertThat(client.componentImpl.dataModule.eventDao.getEvents()).hasSize(2)
   }
 
   @Test

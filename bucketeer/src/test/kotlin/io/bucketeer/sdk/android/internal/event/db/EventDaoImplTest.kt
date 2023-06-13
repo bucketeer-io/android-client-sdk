@@ -9,7 +9,7 @@ import io.bucketeer.sdk.android.internal.di.DataModule
 import io.bucketeer.sdk.android.mocks.evaluationEvent1
 import io.bucketeer.sdk.android.mocks.evaluationEvent2
 import io.bucketeer.sdk.android.mocks.goalEvent1
-import io.bucketeer.sdk.android.mocks.metricsEvent1
+import io.bucketeer.sdk.android.mocks.latencyMetricsEvent1
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -57,17 +57,17 @@ class EventDaoImplTest {
 
   @Test
   fun `addEvent - metrics`() {
-    dao.addEvent(metricsEvent1)
+    dao.addEvent(latencyMetricsEvent1)
 
     val actual = dao.getEvents()
 
     assertThat(actual).hasSize(1)
-    assertThat(actual[0]).isEqualTo(metricsEvent1)
+    assertThat(actual[0]).isEqualTo(latencyMetricsEvent1)
   }
 
   @Test
   fun addEvents() {
-    dao.addEvents(listOf(evaluationEvent1, goalEvent1, metricsEvent1, evaluationEvent2))
+    dao.addEvents(listOf(evaluationEvent1, goalEvent1, latencyMetricsEvent1, evaluationEvent2))
 
     val actual = dao.getEvents()
 
@@ -75,14 +75,14 @@ class EventDaoImplTest {
     assertThat(actual).containsExactly(
       evaluationEvent1,
       goalEvent1,
-      metricsEvent1,
+      latencyMetricsEvent1,
       evaluationEvent2,
     )
   }
 
   @Test
   fun `delete - all`() {
-    val target = listOf(evaluationEvent1, goalEvent1, metricsEvent1, evaluationEvent2)
+    val target = listOf(evaluationEvent1, goalEvent1, latencyMetricsEvent1, evaluationEvent2)
     dao.addEvents(target)
 
     val ids = target.map { it.id }
@@ -96,10 +96,10 @@ class EventDaoImplTest {
 
   @Test
   fun `delete - some items`() {
-    val target = listOf(evaluationEvent1, goalEvent1, metricsEvent1, evaluationEvent2)
+    val target = listOf(evaluationEvent1, goalEvent1, latencyMetricsEvent1, evaluationEvent2)
     dao.addEvents(target)
 
-    val ids = listOf(evaluationEvent1.id, metricsEvent1.id)
+    val ids = listOf(evaluationEvent1.id, latencyMetricsEvent1.id)
 
     dao.delete(ids)
 

@@ -1,5 +1,6 @@
 package io.bucketeer.sdk.android.internal.event
 
+import androidx.annotation.VisibleForTesting
 import io.bucketeer.sdk.android.BKTException
 import io.bucketeer.sdk.android.internal.Clock
 import io.bucketeer.sdk.android.internal.IdGenerator
@@ -8,6 +9,7 @@ import io.bucketeer.sdk.android.internal.logd
 import io.bucketeer.sdk.android.internal.model.ApiId
 import io.bucketeer.sdk.android.internal.model.Evaluation
 import io.bucketeer.sdk.android.internal.model.Event
+import io.bucketeer.sdk.android.internal.model.EventData
 import io.bucketeer.sdk.android.internal.model.User
 import io.bucketeer.sdk.android.internal.remote.ApiClient
 import io.bucketeer.sdk.android.internal.remote.RegisterEventsResult
@@ -59,19 +61,16 @@ internal class EventInteractor(
   ) {
     // For get_evaluations, we will report all metrics events, Including the latency and size metrics events.
     // https://github.com/bucketeer-io/android-client-sdk/issues/56
-    eventDao.addEvents(
-      newSuccessMetricsEvents(
-        clock = clock,
-        idGenerator = idGenerator,
-        featureTag = featureTag,
-        appVersion = appVersion,
-        apiId = ApiId.GET_EVALUATIONS,
-        latencySecond = seconds,
-        sizeByte = sizeByte,
-      ),
+    val events = newSuccessMetricsEvents(
+      clock = clock,
+      idGenerator = idGenerator,
+      featureTag = featureTag,
+      appVersion = appVersion,
+      apiId = ApiId.GET_EVALUATIONS,
+      latencySecond = seconds,
+      sizeByte = sizeByte,
     )
-
-    updateEventsAndNotify()
+    addMetricEvents(events)
   }
 
   fun trackFetchEvaluationsFailure(
@@ -96,8 +95,36 @@ internal class EventInteractor(
       error = error,
       apiId = apiId,
     )
-    eventDao.addEvent(event)
-    updateEventsAndNotify()
+    addMetricEvents(listOf(event))
+  }
+
+  /*
+   * Method addMetricEvents()
+   * Will filter duplicate metric events by finding existing metrics events on the cache database fist
+   * Remove all new duplicate metrics events, only add new metrics event
+   * @params events: should be a list of `EventData.MetricsEvent`
+   */
+  @VisibleForTesting
+  internal fun addMetricEvents(
+    events: List<Event>,
+  ) {
+    // 1 Get all event
+    // 2 Get metrics data unique key
+    // 3 Filter the list
+    // 4 If list is not empty -> add to database
+    val storedEvents = eventDao.getEvents()
+    val metricsEventUniqueKeys: List<String> = storedEvents
+      .filter { it.event is EventData.MetricsEvent }
+      .map { (it.event as EventData.MetricsEvent).uniqueKey() }
+    // For get_evaluations, we will report all metrics events, Including the latency and size metrics events.
+    // https://github.com/bucketeer-io/android-client-sdk/issues/56
+    val newEvents = events.filter {
+      it.event is EventData.MetricsEvent && !metricsEventUniqueKeys.contains(it.event.uniqueKey())
+    }
+    if (newEvents.isNotEmpty()) {
+      eventDao.addEvents(newEvents)
+      updateEventsAndNotify()
+    }
   }
 
   fun sendEvents(force: Boolean = false): SendEventsResult {
