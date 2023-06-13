@@ -9,6 +9,7 @@ import android.view.View
 import androidx.appcompat.app.AlertDialog
 import com.google.android.material.textfield.TextInputLayout
 import io.bucketeer.sdk.android.BKTClient
+import io.bucketeer.sdk.android.sample.R
 
 class MainActivity : Activity() {
 

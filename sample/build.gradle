@@ -13,6 +13,7 @@ if (Files.exists(Paths.get("$rootProject.rootDir/local.properties"))) {
 }
 
 android {
+  namespace = "io.bucketeer.sdk.android.sample"
   compileSdkVersion project.findProperty("android.compileSdkVersion") as int
 
   defaultConfig {
