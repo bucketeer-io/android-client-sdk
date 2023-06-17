@@ -49,6 +49,6 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 kotlin-dokka = { id = "org.jetbrains.dokka", version = "1.8.20" }
-publish = { id = "com.vanniktech.maven.publish", version = "0.24.0" }
+publish = { id = "com.vanniktech.maven.publish", version = "0.25.2" }
 ksp = { id = "com.google.devtools.ksp", version = "1.8.22-1.0.11" }
 kotlinter = { id = "org.jmailen.kotlinter", version = "3.13.0" }
