@@ -110,7 +110,7 @@ class BKTClientImplTest {
     val lastEvent = dbEvents[1]
     assertSizeMetricsEvent(
       lastEvent,
-      MetricsEventData.SizeMetricsEvent(ApiId.GET_EVALUATIONS, mapOf("tag" to config.featureTag), 727),
+      MetricsEventData.SizeMetricsEvent(ApiId.GET_EVALUATIONS, mapOf("tag" to config.featureTag), 645),
     )
   }
 
@@ -429,6 +429,7 @@ class BKTClientImplTest {
         featureVersion = evaluation1.featureVersion,
         userId = evaluation1.userId,
         variationId = evaluation1.variationId,
+        variationName = evaluation1.variationName,
         variationValue = evaluation1.variationValue,
         reason = BKTEvaluation.Reason.DEFAULT,
       ),
@@ -484,9 +485,6 @@ class BKTClientImplTest {
     )
     val updatedEvaluation1 = evaluation1.copy(
       variationValue = "test variation value1 updated",
-      variation = evaluation1.variation.copy(
-        value = "test variation value1 updated",
-      ),
     )
     server.enqueue(
       MockResponse()

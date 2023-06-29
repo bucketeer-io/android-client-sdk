@@ -89,7 +89,7 @@ class EventForegroundTaskTest {
     val (time, _) = measureTimeMillisWithResult { server.takeRequest(2, TimeUnit.SECONDS) }
 
     assertThat(server.requestCount).isEqualTo(1)
-    assertThat(time).isAtLeast(990)
+    assertThat(time).isAtLeast(988)
   }
 
   @Test

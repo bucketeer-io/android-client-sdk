@@ -6,7 +6,6 @@ import io.bucketeer.sdk.android.internal.model.Evaluation
 import io.bucketeer.sdk.android.internal.model.Reason
 import io.bucketeer.sdk.android.internal.model.ReasonType
 import io.bucketeer.sdk.android.internal.model.UserEvaluations
-import io.bucketeer.sdk.android.internal.model.Variation
 
 val user1Evaluations: UserEvaluations by lazy {
   UserEvaluations(
@@ -32,11 +31,8 @@ val evaluation1: Evaluation by lazy {
     featureVersion = 9,
     userId = "user id 1",
     variationId = "test-feature-1-variation-A",
+    variationName = "test variation name1",
     variationValue = "test variation value1",
-    variation = Variation(
-      id = "test-feature-1-variation-A",
-      value = "test variation value1",
-    ),
     reason = Reason(
       type = ReasonType.DEFAULT,
     ),
@@ -50,11 +46,8 @@ val evaluation2: Evaluation by lazy {
     featureVersion = 9,
     userId = "user id 1",
     variationId = "test-feature-2-variation-A",
+    variationName = "test variation name2",
     variationValue = "test variation value2",
-    variation = Variation(
-      id = "test-feature-2-variation-A",
-      value = "test variation value2",
-    ),
     reason = Reason(
       type = ReasonType.DEFAULT,
     ),
@@ -68,11 +61,8 @@ val evaluation3: Evaluation by lazy {
     featureVersion = 9,
     userId = "user id 2",
     variationId = "test-feature-1-variation-A",
+    variationName = "test variation name2",
     variationValue = "test variation value2",
-    variation = Variation(
-      id = "test-feature-1-variation-A",
-      value = "test variation value2",
-    ),
     reason = Reason(
       type = ReasonType.DEFAULT,
     ),
