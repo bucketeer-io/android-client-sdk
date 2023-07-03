@@ -74,11 +74,12 @@ class BKTClientTest {
     assertEvaluation(
       detail,
       BKTEvaluation(
-        id = "feature-android-e2e-string:3:bucketeer-android-user-id-1",
+        id = "feature-android-e2e-string:4:bucketeer-android-user-id-1",
         featureId = FEATURE_ID_STRING,
-        featureVersion = 3,
+        featureVersion = 4,
         userId = USER_ID,
         variationId = "b59a19d5-f4b1-47f8-a46e-6d9ca14740c1",
+        variationName = "variation 2",
         variationValue = "value-2",
         reason = BKTEvaluation.Reason.RULE,
       ),

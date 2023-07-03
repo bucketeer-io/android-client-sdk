@@ -107,6 +107,7 @@ internal class BKTClientImpl(
       featureVersion = raw.featureVersion,
       userId = raw.userId,
       variationId = raw.variationId,
+      variationName = raw.variationName,
       variationValue = raw.variationValue,
       reason = BKTEvaluation.Reason.from(raw.reason.type.name),
     )

@@ -6,6 +6,7 @@ data class BKTEvaluation(
   val featureVersion: Int,
   val userId: String,
   val variationId: String,
+  val variationName: String,
   val variationValue: String,
   val reason: Reason,
 ) {

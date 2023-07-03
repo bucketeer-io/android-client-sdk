@@ -9,7 +9,7 @@ data class Evaluation(
   val featureVersion: Int,
   val userId: String,
   val variationId: String,
-  val variation: Variation,
-  val reason: Reason,
+  val variationName: String,
   val variationValue: String,
+  val reason: Reason,
 )

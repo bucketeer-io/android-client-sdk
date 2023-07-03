@@ -6,7 +6,6 @@ import com.google.common.truth.Truth.assertThat
 import io.bucketeer.sdk.android.internal.model.Evaluation
 import io.bucketeer.sdk.android.internal.model.Reason
 import io.bucketeer.sdk.android.internal.model.ReasonType
-import io.bucketeer.sdk.android.internal.model.Variation
 import org.json.JSONObject
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -187,11 +186,8 @@ private fun buildEvaluation(value: String): Evaluation {
     featureVersion = 1,
     userId = "user_id_value",
     variationId = "variation_id",
+    variationName = "variation name",
     variationValue = value,
-    variation = Variation(
-      id = "variation_id_value",
-      value = "value",
-    ),
     reason = Reason(ReasonType.DEFAULT),
   )
 }

@@ -67,7 +67,6 @@ class EvaluationDaoImplTest {
     val updatedValue = "updated value"
     val updatedEvaluation = sourceEvaluation.copy(
       variationValue = updatedValue,
-      variation = sourceEvaluation.variation.copy(value = updatedValue),
     )
 
     dao.put(user1.id, listOf(sourceEvaluation))
