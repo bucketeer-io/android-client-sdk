@@ -1,5 +1,20 @@
 # Changelog
 
+## [2.1.1](https://github.com/bucketeer-io/android-client-sdk/compare/v2.1.0...v2.1.1) (2023-07-03)
+
+
+### Miscellaneous
+
+* add variation name property to BKTEvaluation ([#73](https://github.com/bucketeer-io/android-client-sdk/issues/73)) ([87f7e07](https://github.com/bucketeer-io/android-client-sdk/commit/87f7e07e14a13dd40ac5d8fe9a39685912a8eedb))
+
+
+### Build System
+
+* **deps:** update androidxlifecycle to v2.6.1 ([#78](https://github.com/bucketeer-io/android-client-sdk/issues/78)) ([d1fc03a](https://github.com/bucketeer-io/android-client-sdk/commit/d1fc03adf09ad482ff07ecf9ef1e662e48fcb479))
+* **deps:** update dependency gradle to v7.6.2 ([#75](https://github.com/bucketeer-io/android-client-sdk/issues/75)) ([1d3d6a9](https://github.com/bucketeer-io/android-client-sdk/commit/1d3d6a97f58eef5157e8c1c2b118deed4b6f756a))
+* **deps:** update plugin kotlinter to v3.15.0 ([#77](https://github.com/bucketeer-io/android-client-sdk/issues/77)) ([60ef581](https://github.com/bucketeer-io/android-client-sdk/commit/60ef581f85c664cea660b7deb2619f1816558b47))
+* **deps:** update plugin publish to v0.25.2 ([#72](https://github.com/bucketeer-io/android-client-sdk/issues/72)) ([58e33cb](https://github.com/bucketeer-io/android-client-sdk/commit/58e33cb6bc8b94b30bec91c7bb8a61023a9bee8e))
+
 ## [2.1.0](https://github.com/bucketeer-io/android-client-sdk/compare/v2.0.0...v2.1.0) (2023-06-13)
 
 
