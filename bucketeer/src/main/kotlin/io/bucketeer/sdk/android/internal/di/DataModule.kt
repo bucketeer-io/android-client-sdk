@@ -57,6 +57,7 @@ internal open class DataModule(
     createDatabase(
       context = application,
       fileName = if (inMemoryDB) null else OpenHelperCallback.FILE_NAME,
+      sharedPreferences,
     )
   }
 

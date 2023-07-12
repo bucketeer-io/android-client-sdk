@@ -1,10 +1,11 @@
 package io.bucketeer.sdk.android.internal.database.migration
 
+import android.content.SharedPreferences
 import androidx.sqlite.db.SupportSQLiteDatabase
 
 class Migration1to2 : Migration {
 
-  override fun migrate(db: SupportSQLiteDatabase) {
+  override fun migrate(db: SupportSQLiteDatabase, sharedPreferences: SharedPreferences) {
     db.execSQL("DROP TABLE current_evaluation")
     db.execSQL("DROP TABLE latest_evaluation")
     db.execSQL("DROP TABLE event")
