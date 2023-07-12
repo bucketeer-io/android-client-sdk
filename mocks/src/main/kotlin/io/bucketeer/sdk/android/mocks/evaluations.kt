@@ -88,8 +88,8 @@ val evaluationEvent: Event by lazy {
       tag = "android",
       timestamp = 10,
       sourceId = SourceID.ANDROID,
-      user = User("user-id")
+      user = User("user-id"),
     ),
-    EventType.EVALUATION
+    EventType.EVALUATION,
   )
 }

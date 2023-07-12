@@ -12,7 +12,7 @@ import io.bucketeer.sdk.android.internal.evaluation.db.EvaluationEntity
 import io.bucketeer.sdk.android.internal.event.EventEntity
 
 class OpenHelperCallback(
-  private val sharedPreferences: SharedPreferences
+  private val sharedPreferences: SharedPreferences,
 ) : SupportSQLiteOpenHelper.Callback(VERSION) {
 
   companion object {

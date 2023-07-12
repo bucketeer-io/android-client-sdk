@@ -32,7 +32,8 @@ class EventDaoImplTest {
     moshi = DataModule.createMoshi()
     val context: Context = ApplicationProvider.getApplicationContext()
     sharedPreferences = context.getSharedPreferences(
-      Constants.PREFERENCES_NAME, Context.MODE_PRIVATE
+      Constants.PREFERENCES_NAME,
+      Context.MODE_PRIVATE,
     )
     openHelper = createDatabase(context, OpenHelperCallback.FILE_NAME, sharedPreferences)
 

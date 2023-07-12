@@ -35,7 +35,8 @@ class MigrationTest {
     moshi = DataModule.createMoshi()
     val context: Context = ApplicationProvider.getApplicationContext()
     sharedPreferences = context.getSharedPreferences(
-      Constants.PREFERENCES_NAME, Context.MODE_PRIVATE
+      Constants.PREFERENCES_NAME,
+      Context.MODE_PRIVATE,
     )
   }
 
@@ -106,8 +107,8 @@ class MigrationTest {
     assertThat(evaluationDao.get(user1.id)).isNotEmpty()
     assertThat(eventDao.getEvents()).isNotEmpty()
     assertThat(
-      sharedPreferences.getString(Constants.PREFERENCE_KEY_USER_EVALUATION_ID, ""))
-      .isEqualTo("user-evaluation-id")
+      sharedPreferences.getString(Constants.PREFERENCE_KEY_USER_EVALUATION_ID, ""),
+    ).isEqualTo("user-evaluation-id")
 
     // Migrate
     openHelper.writableDatabase.transaction {
