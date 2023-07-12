@@ -1,10 +1,14 @@
 package io.bucketeer.sdk.android.internal.evaluation.db
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.database.Cursor
 import androidx.sqlite.db.SupportSQLiteOpenHelper
 import androidx.test.core.app.ApplicationProvider
 import com.google.common.truth.Truth.assertThat
 import com.squareup.moshi.Moshi
+import io.bucketeer.sdk.android.internal.Constants
+import io.bucketeer.sdk.android.internal.database.OpenHelperCallback
 import io.bucketeer.sdk.android.internal.database.createDatabase
 import io.bucketeer.sdk.android.internal.database.getString
 import io.bucketeer.sdk.android.internal.database.select
@@ -27,11 +31,16 @@ class EvaluationDaoImplTest {
   private lateinit var dao: EvaluationDaoImpl
   private lateinit var openHelper: SupportSQLiteOpenHelper
   private lateinit var moshi: Moshi
+  private lateinit var sharedPreferences: SharedPreferences
 
   @Before
   fun setup() {
     moshi = DataModule.createMoshi()
-    openHelper = createDatabase(ApplicationProvider.getApplicationContext())
+    val context: Context = ApplicationProvider.getApplicationContext()
+    sharedPreferences = context.getSharedPreferences(
+      Constants.PREFERENCES_NAME, Context.MODE_PRIVATE
+    )
+    openHelper = createDatabase(context, OpenHelperCallback.FILE_NAME, sharedPreferences)
 
     dao = EvaluationDaoImpl(openHelper, moshi)
   }

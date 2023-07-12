@@ -1,12 +1,23 @@
 package io.bucketeer.sdk.android.internal.database.migration
 
+import android.content.Context
+import android.content.SharedPreferences
 import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.sqlite.db.SupportSQLiteOpenHelper
 import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
 import androidx.test.core.app.ApplicationProvider
 import com.google.common.truth.Truth.assertThat
+import com.squareup.moshi.Moshi
+import io.bucketeer.sdk.android.internal.Constants
+import io.bucketeer.sdk.android.internal.database.OpenHelperCallback
 import io.bucketeer.sdk.android.internal.database.getString
 import io.bucketeer.sdk.android.internal.database.transaction
+import io.bucketeer.sdk.android.internal.di.DataModule
+import io.bucketeer.sdk.android.internal.evaluation.db.EvaluationDaoImpl
+import io.bucketeer.sdk.android.internal.event.db.EventDaoImpl
+import io.bucketeer.sdk.android.mocks.evaluation1
+import io.bucketeer.sdk.android.mocks.evaluationEvent
+import io.bucketeer.sdk.android.mocks.user1
 import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
@@ -15,26 +26,25 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 class MigrationTest {
-  private lateinit var openHelper: SupportSQLiteOpenHelper
+
+  private lateinit var moshi: Moshi
+  private lateinit var sharedPreferences: SharedPreferences
 
   @Before
   fun setup() {
-    val config =
-      SupportSQLiteOpenHelper.Configuration.builder(ApplicationProvider.getApplicationContext())
-        .callback(MigrationTestSQLiteOpenHelperCallback())
-        .name(null)
-        .build()
-
-    openHelper = FrameworkSQLiteOpenHelperFactory().create(config)
+    moshi = DataModule.createMoshi()
+    val context: Context = ApplicationProvider.getApplicationContext()
+    sharedPreferences = context.getSharedPreferences(
+      Constants.PREFERENCES_NAME, Context.MODE_PRIVATE
+    )
   }
 
   @Test
-  fun test() {
+  fun testMigration1to2() {
+    var openHelper = createOpenHelper(1)
     openHelper.writableDatabase.transaction {
       // add new migration class here
-      listOf(Migration1to2()).forEach { migration ->
-        migration.migrate(this)
-      }
+      Migration1to2().migrate(this, sharedPreferences)
     }
 
     val db = openHelper.writableDatabase
@@ -78,16 +88,62 @@ class MigrationTest {
     // make sure every table exists
     assertThat(tables).isEmpty()
   }
+
+  @Test
+  fun testMigration2to3() {
+    val openHelper = createOpenHelper(2)
+    val evaluationDao = EvaluationDaoImpl(openHelper, moshi)
+    val eventDao = EventDaoImpl(openHelper, moshi)
+
+    // Put some data before migrating
+    eventDao.addEvent(evaluationEvent)
+    evaluationDao.put(user1.id, listOf(evaluation1))
+    sharedPreferences.edit()
+      .putString(Constants.PREFERENCE_KEY_USER_EVALUATION_ID, "user-evaluation-id")
+      .commit()
+
+    // Check the data
+    assertThat(evaluationDao.get(user1.id)).isNotEmpty()
+    assertThat(eventDao.getEvents()).isNotEmpty()
+    assertThat(
+      sharedPreferences.getString(Constants.PREFERENCE_KEY_USER_EVALUATION_ID, ""))
+      .isEqualTo("user-evaluation-id")
+
+    // Migrate
+    openHelper.writableDatabase.transaction {
+      Migration2to3().migrate(this, sharedPreferences)
+    }
+
+    // Check the data again if is cleared
+    assertThat(evaluationDao.get(user1.id)).isEmpty()
+    assertThat(eventDao.getEvents()).isEmpty()
+    assertThat(sharedPreferences.getString(Constants.PREFERENCE_KEY_USER_EVALUATION_ID, ""))
+      .isEqualTo("")
+  }
 }
 
-private class MigrationTestSQLiteOpenHelperCallback : SupportSQLiteOpenHelper.Callback(1) {
-  override fun onCreate(db: SupportSQLiteDatabase) {
-    v1Schema(db)
-  }
+private fun createOpenHelper(version: Int): SupportSQLiteOpenHelper {
+  val callback = object : SupportSQLiteOpenHelper.Callback(version) {
+    override fun onCreate(db: SupportSQLiteDatabase) {
+      if (version == 1) {
+        v1Schema(db)
+      }
+      if (version == 2) {
+        OpenHelperCallback.v2Schema(db)
+      }
+    }
 
-  override fun onUpgrade(db: SupportSQLiteDatabase, oldVersion: Int, newVersion: Int) {
-    // no-op
+    override fun onUpgrade(db: SupportSQLiteDatabase, oldVersion: Int, newVersion: Int) {
+      // no-op
+    }
   }
+  val config =
+    SupportSQLiteOpenHelper.Configuration.builder(ApplicationProvider.getApplicationContext())
+      .callback(callback)
+      .name(null)
+      .build()
+
+  return FrameworkSQLiteOpenHelperFactory().create(config)
 }
 
 private fun v1Schema(db: SupportSQLiteDatabase) {
