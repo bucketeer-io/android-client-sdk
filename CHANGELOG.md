@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.2](https://github.com/bucketeer-io/android-client-sdk/compare/v2.1.1...v2.1.2) (2023-07-12)
+
+
+### Bug Fixes
+
+* json data expection while converting reason type ([#79](https://github.com/bucketeer-io/android-client-sdk/issues/79)) ([dc4aba9](https://github.com/bucketeer-io/android-client-sdk/commit/dc4aba9a4c0671bc990f211f5bdbb1a209c118d6))
+
 ## [2.1.1](https://github.com/bucketeer-io/android-client-sdk/compare/v2.1.0...v2.1.1) (2023-07-03)
 
 
