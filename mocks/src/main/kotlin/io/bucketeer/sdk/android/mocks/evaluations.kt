@@ -3,8 +3,13 @@
 package io.bucketeer.sdk.android.mocks
 
 import io.bucketeer.sdk.android.internal.model.Evaluation
+import io.bucketeer.sdk.android.internal.model.Event
+import io.bucketeer.sdk.android.internal.model.EventData
+import io.bucketeer.sdk.android.internal.model.EventType
 import io.bucketeer.sdk.android.internal.model.Reason
 import io.bucketeer.sdk.android.internal.model.ReasonType
+import io.bucketeer.sdk.android.internal.model.SourceID
+import io.bucketeer.sdk.android.internal.model.User
 import io.bucketeer.sdk.android.internal.model.UserEvaluations
 
 val user1Evaluations: UserEvaluations by lazy {
@@ -66,5 +71,25 @@ val evaluation3: Evaluation by lazy {
     reason = Reason(
       type = ReasonType.DEFAULT,
     ),
+  )
+}
+
+val evaluationEvent: Event by lazy {
+  Event(
+    "event-id",
+    EventData.EvaluationEvent(
+      featureId = "test-feature-3",
+      featureVersion = 9,
+      userId = "user-id",
+      variationId = "test-feature-1-variation-A",
+      reason = Reason(
+        type = ReasonType.DEFAULT,
+      ),
+      tag = "android",
+      timestamp = 10,
+      sourceId = SourceID.ANDROID,
+      user = User("user-id"),
+    ),
+    EventType.EVALUATION,
   )
 }
