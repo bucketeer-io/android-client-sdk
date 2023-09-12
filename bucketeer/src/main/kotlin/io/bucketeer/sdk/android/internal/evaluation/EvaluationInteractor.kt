@@ -14,6 +14,7 @@ import io.bucketeer.sdk.android.internal.model.Evaluation
 import io.bucketeer.sdk.android.internal.model.User
 import io.bucketeer.sdk.android.internal.remote.ApiClient
 import io.bucketeer.sdk.android.internal.remote.GetEvaluationsResult
+import io.bucketeer.sdk.android.internal.remote.UserEvaluationCondition
 
 /**
  * Evaluation business logics.
@@ -38,7 +39,6 @@ internal class EvaluationInteractor(
   @VisibleForTesting
   internal var currentEvaluationsId: String
     get() = sharedPrefs.getString(Constants.PREFERENCE_KEY_USER_EVALUATION_ID, "") ?: ""
-
     @SuppressLint("ApplySharedPref")
     set(value) {
       sharedPrefs.edit()
@@ -46,14 +46,34 @@ internal class EvaluationInteractor(
         .commit()
     }
 
-  @VisibleForTesting
-  internal var featureTag: String
-    get() = sharedPrefs.getString(Constants.PREFERENCE_KEY_USER_EVALUATION_ID, "") ?: ""
-
+  private var featureTag: String
+    get() = sharedPrefs.getString(PREFERENCE_KEY_FEATURE_TAG, "") ?: ""
     @SuppressLint("ApplySharedPref")
     private set(value) {
       sharedPrefs.edit()
-        .putString(Constants.PREFERENCE_KEY_USER_EVALUATION_ID, value)
+        .putString(PREFERENCE_KEY_FEATURE_TAG, value)
+        .commit()
+    }
+
+  // https://github.com/bucketeer-io/android-client-sdk/issues/69
+  // evaluatedAt: the last time the user was evaluated.
+  // The server will return in the get_evaluations response (UserEvaluations.CreatedAt),
+  // and it must be saved in the client
+  private var evaluatedAt: String
+    get() = sharedPrefs.getString(PREFERENCE_KEY_EVALUATED_AT, "") ?: ""
+    @SuppressLint("ApplySharedPref")
+    private set(value) {
+      sharedPrefs.edit()
+        .putString(PREFERENCE_KEY_EVALUATED_AT, value)
+        .commit()
+    }
+
+  private var userAttributesUpdated: Boolean
+    get() = sharedPrefs.getBoolean(PREFERENCE_KEY_USER_ATTRIBUTES_UPDATED, false)
+    @SuppressLint("ApplySharedPref")
+    private set(value) {
+      sharedPrefs.edit()
+        .putBoolean(PREFERENCE_KEY_USER_ATTRIBUTES_UPDATED, value)
         .commit()
     }
 
@@ -72,39 +92,70 @@ internal class EvaluationInteractor(
     }
   }
 
+  // https://github.com/bucketeer-io/android-client-sdk/issues/69
+  // userAttributesUpdated: when the user attributes change via the customAttributes interface,
+  // the userAttributesUpdated field must be set to true in the next request.
+  fun setUserAttributesUpdated() {
+    userAttributesUpdated = true
+  }
+
   @Suppress("MoveVariableDeclarationIntoWhen")
   fun fetch(user: User, timeoutMillis: Long?): GetEvaluationsResult {
     val currentEvaluationsId = this.currentEvaluationsId
-
-    val result = apiClient.getEvaluations(user, currentEvaluationsId, timeoutMillis)
+    val condition = UserEvaluationCondition(
+      evaluatedAt = evaluatedAt,
+      userAttributesUpdated = userAttributesUpdated.toString(),
+    )
+    val result = apiClient.getEvaluations(user, currentEvaluationsId, timeoutMillis, condition)
 
     when (result) {
       is GetEvaluationsResult.Success -> {
         val response = result.value
         val newEvaluationsId = response.userEvaluationsId
+
         if (currentEvaluationsId == newEvaluationsId) {
           logd { "Nothing to sync" }
+          // make sure we set `userAttributesUpdated` back to `false` even in case nothing to sync
+          userAttributesUpdated = false
           return result
         }
 
         val newEvaluations = response.evaluations.evaluations
-
-        val success = evaluationDao.deleteAllAndInsert(user.id, newEvaluations)
-        if (!success) {
-          loge { "Failed to update latest evaluations" }
-          return result
+        val shouldNotifyListener = true
+        // https://github.com/bucketeer-io/android-client-sdk/issues/69
+        // forceUpdate: a boolean that tells the SDK to delete all the current data
+        // and save the latest evaluations from the response
+        val forceUpdate = response.evaluations.forceUpdate
+        if (forceUpdate) {
+          // Delete all the evaluations from DB, and save the latest evaluations from the response into the DB
+          val success = evaluationDao.deleteAllAndInsert(user.id, newEvaluations)
+          if (!success) {
+            loge { "Failed to update latest evaluations" }
+            return result
+          }
+        } else {
+          // 1- Check the evaluation list in the response and upsert them in the DB if the list is not empty
+          // 2- Check the list of the feature flags that were archived on the console and delete them from the DB
+          // 3- Save the UserEvaluations.CreatedAt in the response as evaluatedAt in the SharedPreferences
         }
 
         this.currentEvaluationsId = newEvaluationsId
+        // reset `userAttributesUpdated`
+        userAttributesUpdated = false
+        // save new `evaluatedAt`
+        evaluatedAt = response.evaluations.createdAt
 
         evaluations[user.id] = newEvaluations
 
         // Update listeners should be called on the main thread
         // to avoid unintentional lock on Interactor's execution thread.
-        mainHandler.post {
-          updateListeners.forEach { it.value.onUpdate() }
+        if (shouldNotifyListener) {
+          mainHandler.post {
+            updateListeners.forEach { it.value.onUpdate() }
+          }
         }
       }
+
       is GetEvaluationsResult.Failure -> {
         logd(result.error) { "ApiError: ${result.error.message}" }
       }
@@ -137,5 +188,11 @@ internal class EvaluationInteractor(
   fun getLatest(userId: String, featureId: String): Evaluation? {
     val evaluations = evaluations[userId] ?: return null
     return evaluations.firstOrNull { it.featureId == featureId }
+  }
+
+  companion object {
+    private const val PREFERENCE_KEY_FEATURE_TAG = "bucketeer_feature_tag"
+    private const val PREFERENCE_KEY_EVALUATED_AT = "bucketeer_evaluated_at"
+    private const val PREFERENCE_KEY_USER_ATTRIBUTES_UPDATED = "bucketeer_user_attributes_updated"
   }
 }

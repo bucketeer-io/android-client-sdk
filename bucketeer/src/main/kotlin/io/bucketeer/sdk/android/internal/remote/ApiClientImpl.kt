@@ -46,11 +46,13 @@ internal class ApiClientImpl(
     user: User,
     userEvaluationsId: String,
     timeoutMillis: Long?,
+    condition: UserEvaluationCondition,
   ): GetEvaluationsResult {
     val body = GetEvaluationsRequest(
       tag = featureTag,
       user = user,
       userEvaluationsId = userEvaluationsId,
+      userEvaluationCondition = condition,
     )
 
     val request = Request.Builder()
