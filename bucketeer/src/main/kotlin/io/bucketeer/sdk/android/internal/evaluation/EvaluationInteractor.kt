@@ -25,6 +25,7 @@ internal class EvaluationInteractor(
   private val evaluationDao: EvaluationDao,
   private val sharedPrefs: SharedPreferences,
   private val idGenerator: IdGenerator,
+  featureTag: String,
   private val mainHandler: Handler,
 ) {
   // key: userId
@@ -44,6 +45,32 @@ internal class EvaluationInteractor(
         .putString(Constants.PREFERENCE_KEY_USER_EVALUATION_ID, value)
         .commit()
     }
+
+  @VisibleForTesting
+  internal var featureTag: String
+    get() = sharedPrefs.getString(Constants.PREFERENCE_KEY_USER_EVALUATION_ID, "") ?: ""
+
+    @SuppressLint("ApplySharedPref")
+    private set(value) {
+      sharedPrefs.edit()
+        .putString(Constants.PREFERENCE_KEY_USER_EVALUATION_ID, value)
+        .commit()
+    }
+
+  init {
+    updateFeatureTag(featureTag)
+  }
+
+  private fun updateFeatureTag(value: String) {
+    // using `this.featureTag` to make it doesn't confuse with the constructor params `featureTag`
+    // https://github.com/bucketeer-io/android-client-sdk/issues/69
+    // 1- Save the featureTag in the UserDefault configured in the BKTConfig
+    // 2- Clear the userEvaluationsID in the UserDefault if the featureTag changes
+    if (this.featureTag != value) {
+      currentEvaluationsId = ""
+      this.featureTag = value
+    }
+  }
 
   @Suppress("MoveVariableDeclarationIntoWhen")
   fun fetch(user: User, timeoutMillis: Long?): GetEvaluationsResult {
