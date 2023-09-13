@@ -110,7 +110,7 @@ class BKTClientImplTest {
     val lastEvent = dbEvents[1]
     assertSizeMetricsEvent(
       lastEvent,
-      MetricsEventData.SizeMetricsEvent(ApiId.GET_EVALUATIONS, mapOf("tag" to config.featureTag), 645),
+      MetricsEventData.SizeMetricsEvent(ApiId.GET_EVALUATIONS, mapOf("tag" to config.featureTag), 713),
     )
   }
 
