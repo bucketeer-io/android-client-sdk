@@ -121,31 +121,44 @@ internal class EvaluationInteractor(
         }
 
         val newEvaluations = response.evaluations.evaluations
-        val shouldNotifyListener = true
+        val activeEvaluations: List<Evaluation>
+        var shouldNotifyListener = true
+
         // https://github.com/bucketeer-io/android-client-sdk/issues/69
         // forceUpdate: a boolean that tells the SDK to delete all the current data
         // and save the latest evaluations from the response
         val forceUpdate = response.evaluations.forceUpdate
         if (forceUpdate) {
-          // Delete all the evaluations from DB, and save the latest evaluations from the response into the DB
-          val success = evaluationDao.deleteAllAndInsert(user.id, newEvaluations)
-          if (!success) {
-            loge { "Failed to update latest evaluations" }
-            return result
-          }
+          // 1- Delete all the evaluations from DB, and save the latest evaluations from the response into the DB
+          activeEvaluations = newEvaluations
         } else {
+          val archivedFeatureIds = response.evaluations.archivedFeatureIds
+          val updatedEvaluations = response.evaluations.evaluations
+          val currentEvaluationsMap = evaluationDao.get(user.id).associateBy { it.id }.toMutableMap()
           // 1- Check the evaluation list in the response and upsert them in the DB if the list is not empty
-          // 2- Check the list of the feature flags that were archived on the console and delete them from the DB
-          // 3- Save the UserEvaluations.CreatedAt in the response as evaluatedAt in the SharedPreferences
+          updatedEvaluations.forEach { evaluation ->
+            currentEvaluationsMap[evaluation.id] = evaluation
+          }
+          activeEvaluations = currentEvaluationsMap.values.filterNot {
+            // 2- Check the list of the feature flags that were archived on the console and delete them from the DB
+            archivedFeatureIds.contains(it.featureId)
+          }
+          shouldNotifyListener = updatedEvaluations.isNotEmpty() || archivedFeatureIds.isNotEmpty()
         }
 
-        this.currentEvaluationsId = newEvaluationsId
-        // reset `userAttributesUpdated`
-        userAttributesUpdated = false
-        // save new `evaluatedAt`
-        evaluatedAt = response.evaluations.createdAt
+        val success = evaluationDao.deleteAllAndInsert(user.id, newEvaluations)
+        if (!success) {
+          loge { "Failed to update latest evaluations" }
+          return result
+        }
+        // update in-memory cache
+        evaluations[user.id] = activeEvaluations
 
-        evaluations[user.id] = newEvaluations
+        this.currentEvaluationsId = newEvaluationsId
+        userAttributesUpdated = false
+
+        // 3- Save the UserEvaluations.CreatedAt in the response as evaluatedAt in the SharedPreferences
+        evaluatedAt = response.evaluations.createdAt
 
         // Update listeners should be called on the main thread
         // to avoid unintentional lock on Interactor's execution thread.
