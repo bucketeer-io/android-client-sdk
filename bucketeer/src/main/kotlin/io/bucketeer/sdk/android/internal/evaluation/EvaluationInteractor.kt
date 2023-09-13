@@ -39,6 +39,7 @@ internal class EvaluationInteractor(
   @VisibleForTesting
   internal var currentEvaluationsId: String
     get() = sharedPrefs.getString(Constants.PREFERENCE_KEY_USER_EVALUATION_ID, "") ?: ""
+
     @SuppressLint("ApplySharedPref")
     set(value) {
       sharedPrefs.edit()
@@ -48,6 +49,7 @@ internal class EvaluationInteractor(
 
   private var featureTag: String
     get() = sharedPrefs.getString(PREFERENCE_KEY_FEATURE_TAG, "") ?: ""
+
     @SuppressLint("ApplySharedPref")
     private set(value) {
       sharedPrefs.edit()
@@ -60,7 +62,8 @@ internal class EvaluationInteractor(
   // The server will return in the get_evaluations response (UserEvaluations.CreatedAt),
   // and it must be saved in the client
   private var evaluatedAt: String
-    get() = sharedPrefs.getString(PREFERENCE_KEY_EVALUATED_AT, "") ?: ""
+    get() = sharedPrefs.getString(PREFERENCE_KEY_EVALUATED_AT, "0") ?: "0"
+
     @SuppressLint("ApplySharedPref")
     private set(value) {
       sharedPrefs.edit()
@@ -70,6 +73,7 @@ internal class EvaluationInteractor(
 
   private var userAttributesUpdated: Boolean
     get() = sharedPrefs.getBoolean(PREFERENCE_KEY_USER_ATTRIBUTES_UPDATED, false)
+
     @SuppressLint("ApplySharedPref")
     private set(value) {
       sharedPrefs.edit()
