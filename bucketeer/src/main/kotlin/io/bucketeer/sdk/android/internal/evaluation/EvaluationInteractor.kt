@@ -67,7 +67,7 @@ internal class EvaluationInteractor(
     get() = sharedPrefs.getString(PREFERENCE_KEY_EVALUATED_AT, "0") ?: "0"
 
     @SuppressLint("ApplySharedPref")
-    private set(value) {
+    set(value) {
       sharedPrefs.edit()
         .putString(PREFERENCE_KEY_EVALUATED_AT, value)
         .commit()

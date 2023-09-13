@@ -24,6 +24,29 @@ val user1Evaluations: UserEvaluations by lazy {
   )
 }
 
+val user1EvaluationsForeUpdate: UserEvaluations by lazy {
+  UserEvaluations(
+    id = "17388826713971171773",
+    evaluations = listOf(
+      evaluation1,
+    ),
+    createdAt = "1690798025",
+    forceUpdate = true,
+  )
+}
+
+val user1EvaluationsUpsert: UserEvaluations by lazy {
+  UserEvaluations(
+    id = "17388826713971171773",
+    evaluations = listOf(
+      evaluation1,
+      evaluation2,
+    ),
+    createdAt = "1690798025",
+    forceUpdate = true,
+  )
+}
+
 val user2Evaluations: UserEvaluations by lazy {
   UserEvaluations(
     id = "17388826713971171774",
@@ -57,6 +80,21 @@ val evaluation2: Evaluation by lazy {
     variationId = "test-feature-2-variation-A",
     variationName = "test variation name2",
     variationValue = "test variation value2",
+    reason = Reason(
+      type = ReasonType.DEFAULT,
+    ),
+  )
+}
+
+val evaluation2ForUpdate: Evaluation by lazy {
+  Evaluation(
+    id = "test-feature-2:9:user id 1",
+    featureId = "test-feature-2",
+    featureVersion = 10,
+    userId = "user id 1",
+    variationId = "test-feature-2-variation-A",
+    variationName = "test variation name2 update",
+    variationValue = "test variation value2 update",
     reason = Reason(
       type = ReasonType.DEFAULT,
     ),
