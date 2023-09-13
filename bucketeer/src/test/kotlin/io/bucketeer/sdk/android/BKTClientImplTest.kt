@@ -477,6 +477,8 @@ class BKTClientImplTest {
                 evaluations = UserEvaluations(
                   id = "id_value",
                   evaluations = listOf(evaluation1),
+                  createdAt = "1690798021",
+                  forceUpdate = true,
                 ),
                 userEvaluationsId = "user_evaluations_id_value",
               ),

@@ -19,6 +19,8 @@ val user1Evaluations: UserEvaluations by lazy {
       evaluation1,
       evaluation2,
     ),
+    createdAt = "1690798021",
+    forceUpdate = true,
   )
 }
 
@@ -26,6 +28,8 @@ val user2Evaluations: UserEvaluations by lazy {
   UserEvaluations(
     id = "17388826713971171774",
     evaluations = listOf(evaluation3),
+    createdAt = "1690799033",
+    forceUpdate = true,
   )
 }
 
