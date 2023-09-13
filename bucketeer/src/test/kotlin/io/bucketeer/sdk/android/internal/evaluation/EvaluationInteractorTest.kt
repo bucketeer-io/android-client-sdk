@@ -12,6 +12,7 @@ import io.bucketeer.sdk.android.internal.di.InteractorModule
 import io.bucketeer.sdk.android.internal.model.request.GetEvaluationsRequest
 import io.bucketeer.sdk.android.internal.model.response.GetEvaluationsResponse
 import io.bucketeer.sdk.android.internal.remote.GetEvaluationsResult
+import io.bucketeer.sdk.android.internal.remote.UserEvaluationCondition
 import io.bucketeer.sdk.android.mocks.evaluation1
 import io.bucketeer.sdk.android.mocks.evaluation2
 import io.bucketeer.sdk.android.mocks.evaluation3
@@ -62,7 +63,6 @@ class EvaluationInteractorTest {
     )
 
     interactor = component.evaluationInteractor
-
     moshi = component.dataModule.moshi
   }
 
@@ -72,6 +72,26 @@ class EvaluationInteractorTest {
     component.dataModule.sharedPreferences.edit()
       .clear()
       .commit()
+  }
+
+  @Test
+  fun `checking evaluation status after init`() {
+    // the featureTag should be `api_key_value`
+    assertThat(interactor.featureTag).isEqualTo("feature_tag_value")
+    // the evaluatedAt should be 0
+    assertThat(interactor.evaluatedAt).isEqualTo("0")
+    // the userAttributesUpdated should be 0
+    assertThat(interactor.userAttributesUpdated).isEqualTo(false)
+  }
+
+  @Test
+  fun `update userAttributesUpdated`() {
+    // the featureTag should be `api_key_value`
+    assertThat(interactor.featureTag).isEqualTo("feature_tag_value")
+    // the evaluatedAt should be 0
+    assertThat(interactor.evaluatedAt).isEqualTo("0")
+    // the userAttributesUpdated should be 0
+    assertThat(interactor.userAttributesUpdated).isEqualTo(false)
   }
 
   @Test
@@ -98,6 +118,8 @@ class EvaluationInteractorTest {
     }
 
     assertThat(interactor.currentEvaluationsId).isEmpty()
+    // the userAttributesUpdated must be set to true in the next request
+    interactor.setUserAttributesUpdated()
 
     val result = interactor.fetch(user1, null)
 
@@ -109,10 +131,21 @@ class EvaluationInteractorTest {
 
     assertThat(requestBody!!.userEvaluationsId).isEmpty()
     assertThat(requestBody.tag).isEqualTo(component.dataModule.config.featureTag)
-    assertThat(requestBody.user).isEqualTo(user1)
+    assertThat(requestBody.userEvaluationCondition).isEqualTo(
+      UserEvaluationCondition(
+        evaluatedAt = "0",
+        userAttributesUpdated = "true",
+      ),
+    )
 
     // assert response
     assertThat(result).isInstanceOf(GetEvaluationsResult.Success::class.java)
+    val success = result as GetEvaluationsResult.Success
+    assertThat(success.featureTag).isEqualTo("feature_tag_value")
+    assertThat(success.value.userEvaluationsId).isEqualTo("user_evaluations_id_value")
+    assertThat(success.value.evaluations.evaluations).isEqualTo(listOf(evaluation1, evaluation2))
+    assert(success.value.evaluations.forceUpdate)
+    assertThat(success.value.evaluations.createdAt).isEqualTo("1690798021")
 
     assertThat(interactor.currentEvaluationsId).isEqualTo("user_evaluations_id_value")
 
@@ -120,10 +153,44 @@ class EvaluationInteractorTest {
     val latestEvaluations = component.dataModule.evaluationDao.get(user1.id)
     assertThat(latestEvaluations).isEqualTo(listOf(evaluation1, evaluation2))
 
+    // the featureTag should be `api_key_value`
+    assertThat(interactor.featureTag).isEqualTo("feature_tag_value")
+    // the evaluatedAt should be updated
+    assertThat(interactor.evaluatedAt).isEqualTo("1690798021")
+    // the userAttributesUpdated should be false after success request
+    assertThat(interactor.userAttributesUpdated).isEqualTo(false)
+
     shadowOf(Looper.getMainLooper()).idle()
 
     assertThat(listenerCalled).isTrue()
   }
+
+  @Test
+  fun `clear the userEvaluationsID in the SharedPreferences if the featureTag changes`() {
+    interactor.currentEvaluationsId = "should_be_clear"
+    assertThat(interactor.currentEvaluationsId).isEqualTo("should_be_clear")
+    val config = BKTConfig.builder()
+      .apiEndpoint(server.url("").toString())
+      .apiKey("api_key_value")
+      .appVersion("1.2.3")
+      .build()
+
+    var component = ComponentImpl(
+      dataModule = DataModule(
+        application = ApplicationProvider.getApplicationContext(),
+        user = user1,
+        config = config,
+        inMemoryDB = true,
+      ),
+      interactorModule = InteractorModule(
+        mainHandler = Handler(Looper.getMainLooper()),
+      ),
+    )
+
+    var interactor = component.evaluationInteractor
+    assertThat(interactor.currentEvaluationsId).isEqualTo("")
+  }
+
 
   @Test
   @LooperMode(Mode.PAUSED)
@@ -174,8 +241,22 @@ class EvaluationInteractorTest {
 
     val result = interactor.fetch(user1, null)
 
+    // assert request
     assertThat(server.requestCount).isEqualTo(2)
+    val request = server.takeRequest()
+    val requestBody = moshi.adapter(GetEvaluationsRequest::class.java)
+      .fromJson(request.body.readString(Charsets.UTF_8))
 
+    assertThat(requestBody!!.userEvaluationsId).isEmpty()
+    assertThat(requestBody.tag).isEqualTo(component.dataModule.config.featureTag)
+    assertThat(requestBody.userEvaluationCondition).isEqualTo(
+      UserEvaluationCondition(
+        evaluatedAt = "0",
+        userAttributesUpdated = "false",
+      ),
+    )
+
+    // assert response
     assertThat(result).isInstanceOf(GetEvaluationsResult.Success::class.java)
 
     assertThat(interactor.currentEvaluationsId).isEqualTo("user_evaluations_id_value_updated")

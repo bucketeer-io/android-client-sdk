@@ -47,7 +47,8 @@ internal class EvaluationInteractor(
         .commit()
     }
 
-  private var featureTag: String
+  @VisibleForTesting
+  internal var featureTag: String
     get() = sharedPrefs.getString(PREFERENCE_KEY_FEATURE_TAG, "") ?: ""
 
     @SuppressLint("ApplySharedPref")
@@ -61,7 +62,8 @@ internal class EvaluationInteractor(
   // evaluatedAt: the last time the user was evaluated.
   // The server will return in the get_evaluations response (UserEvaluations.CreatedAt),
   // and it must be saved in the client
-  private var evaluatedAt: String
+  @VisibleForTesting
+  internal var evaluatedAt: String
     get() = sharedPrefs.getString(PREFERENCE_KEY_EVALUATED_AT, "0") ?: "0"
 
     @SuppressLint("ApplySharedPref")
@@ -71,7 +73,8 @@ internal class EvaluationInteractor(
         .commit()
     }
 
-  private var userAttributesUpdated: Boolean
+  @VisibleForTesting
+  internal var userAttributesUpdated: Boolean
     get() = sharedPrefs.getBoolean(PREFERENCE_KEY_USER_ATTRIBUTES_UPDATED, false)
 
     @SuppressLint("ApplySharedPref")
