@@ -507,7 +507,7 @@ class EvaluationInteractorTest {
   }
 
   @Test
-  fun forceUpdate() {
+  fun forceUpdateEvaluation() {
     //https://github.com/bucketeer-io/android-client-sdk/issues/69
     // initial response(for preparation)
     server.enqueue(
@@ -524,8 +524,13 @@ class EvaluationInteractorTest {
         ),
     )
     val firstResult = interactor.fetch(user1, null)
+    server.takeRequest()
+    assertThat(server.requestCount).isEqualTo(1)
+
+    assertThat(interactor.currentEvaluationsId).isEqualTo("user_evaluations_id_value")
     assertThat(firstResult).isInstanceOf(GetEvaluationsResult.Success::class.java)
-    assertThat((firstResult as GetEvaluationsResult.Success).value.evaluations).isEqualTo(
+    val initialEvaluations = (firstResult as GetEvaluationsResult.Success).value.evaluations.evaluations
+    assertThat(initialEvaluations).isEqualTo(
       listOf(
         evaluation1,
         evaluation2,
@@ -566,23 +571,19 @@ class EvaluationInteractorTest {
 
     // assert request
     assertThat(server.requestCount).isEqualTo(2)
-    val request = server.takeRequest()
-    val requestBody = moshi.adapter(GetEvaluationsRequest::class.java)
-      .fromJson(request.body.readString(Charsets.UTF_8))
-
-    assertThat(requestBody!!.userEvaluationsId).isEmpty()
-    assertThat(requestBody.tag).isEqualTo(component.dataModule.config.featureTag)
-    assertThat(requestBody.userEvaluationCondition).isEqualTo(
-      UserEvaluationCondition(
-        evaluatedAt = "0",
-        userAttributesUpdated = "false",
-      ),
-    )
 
     // assert response
     assertThat(forceUpdatedResult).isInstanceOf(GetEvaluationsResult.Success::class.java)
-    assertThat(interactor.currentEvaluationsId).isEqualTo("user_evaluations_id_value_updated")
+    val expectedEvaluations = (forceUpdatedResult as GetEvaluationsResult.Success).value.evaluations.evaluations
+    // should not contain `evaluation1`
+    assertThat(expectedEvaluations).isEqualTo(
+      listOf(
+        evaluation2,
+      ),
+    )
+    // check cache
     assertThat(interactor.evaluations[user1.id]).isEqualTo(listOf(evaluation2))
+    assertThat(interactor.currentEvaluationsId).isEqualTo("user_evaluations_id_value_updated")
     val latestEvaluations = component.dataModule.evaluationDao.get(user1.id)
     assertThat(latestEvaluations).isEqualTo(listOf(evaluation2))
 

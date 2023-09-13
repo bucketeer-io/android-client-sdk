@@ -28,7 +28,7 @@ val user1EvaluationsForeUpdate: UserEvaluations by lazy {
   UserEvaluations(
     id = "17388826713971171773",
     evaluations = listOf(
-      evaluation1,
+      evaluation2,
     ),
     createdAt = "1690798025",
     forceUpdate = true,
