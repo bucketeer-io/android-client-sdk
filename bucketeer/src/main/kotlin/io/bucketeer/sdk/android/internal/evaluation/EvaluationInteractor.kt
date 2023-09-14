@@ -127,7 +127,6 @@ internal class EvaluationInteractor(
           return result
         }
 
-        val newEvaluations = response.evaluations.evaluations
         val activeEvaluations: List<Evaluation>
         var shouldNotifyListener = true
 
@@ -137,7 +136,7 @@ internal class EvaluationInteractor(
         val forceUpdate = response.evaluations.forceUpdate
         if (forceUpdate) {
           // 1- Delete all the evaluations from DB, and save the latest evaluations from the response into the DB
-          activeEvaluations = newEvaluations
+          activeEvaluations = response.evaluations.evaluations
         } else {
           val archivedFeatureIds = response.evaluations.archivedFeatureIds
           val updatedEvaluations = response.evaluations.evaluations
@@ -146,8 +145,8 @@ internal class EvaluationInteractor(
           updatedEvaluations.forEach { evaluation ->
             currentEvaluationsMap[evaluation.id] = evaluation
           }
+          // 2- Check the list of the feature flags that were archived on the console and delete them from the DB
           activeEvaluations = currentEvaluationsMap.values.filterNot {
-            // 2- Check the list of the feature flags that were archived on the console and delete them from the DB
             archivedFeatureIds.contains(it.featureId)
           }
           shouldNotifyListener = updatedEvaluations.isNotEmpty() || archivedFeatureIds.isNotEmpty()
