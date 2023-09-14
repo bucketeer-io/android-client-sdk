@@ -281,7 +281,7 @@ class EvaluationInteractorTest {
     val latestEvaluations = component.dataModule.evaluationDao.get(user1.id)
     assertThat(latestEvaluations).isEqualTo(listOf(evaluation1, evaluation2))
 
-    // the featureTag should be `api_key_value`
+    // the featureTag should be `feature_tag_value`
     assertThat(interactor.featureTag).isEqualTo("feature_tag_value")
     // the evaluatedAt should be updated
     assertThat(interactor.evaluatedAt).isEqualTo("1690798021")
@@ -337,7 +337,7 @@ class EvaluationInteractorTest {
     val latestEvaluations = component.dataModule.evaluationDao.get(user1.id)
     assertThat(latestEvaluations).isEqualTo(listOf(evaluation2))
 
-    // the featureTag should be `api_key_value`
+    // the featureTag should be `feature_tag_value`
     assertThat(interactor.featureTag).isEqualTo("feature_tag_value")
     // the evaluatedAt should be updated
     assertThat(interactor.evaluatedAt).isEqualTo("1690798025")
@@ -404,7 +404,7 @@ class EvaluationInteractorTest {
       ),
     )
 
-    // the featureTag should be `api_key_value`
+    // the featureTag should be `feature_tag_value`
     assertThat(interactor.featureTag).isEqualTo("feature_tag_value")
     // the evaluatedAt should be updated
     assertThat(interactor.evaluatedAt).isEqualTo("16907999999")
