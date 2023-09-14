@@ -222,7 +222,6 @@ class EvaluationInteractorTest {
     shadowOf(Looper.getMainLooper()).idle()
   }
 
-
   @Test
   @LooperMode(Mode.PAUSED)
   fun `fetch - initial load`() {
@@ -294,7 +293,7 @@ class EvaluationInteractorTest {
     assertThat(listenerCalled).isTrue()
   }
 
-  //https://github.com/bucketeer-io/android-client-sdk/issues/69
+  // https://github.com/bucketeer-io/android-client-sdk/issues/69
   @Test
   @LooperMode(Mode.PAUSED)
   fun `fetch - force update`() {
@@ -350,7 +349,7 @@ class EvaluationInteractorTest {
     assertThat(listenerCalled).isTrue()
   }
 
-  //https://github.com/bucketeer-io/android-client-sdk/issues/69
+  // https://github.com/bucketeer-io/android-client-sdk/issues/69
   @Test
   @LooperMode(Mode.PAUSED)
   fun `fetch - upsert`() {
@@ -555,7 +554,7 @@ class EvaluationInteractorTest {
   }
 
   fun initialDataBeforeTestingConditionUpdate() {
-    //https://github.com/bucketeer-io/android-client-sdk/issues/69
+    // https://github.com/bucketeer-io/android-client-sdk/issues/69
     // initial response(for preparation)
     server.enqueue(
       MockResponse()

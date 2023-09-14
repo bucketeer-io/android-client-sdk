@@ -45,7 +45,7 @@ val user1EvaluationsUpsert: UserEvaluations by lazy {
     ),
     createdAt = "16907999999",
     forceUpdate = false,
-    archivedFeatureIds = listOf("test-feature-1")
+    archivedFeatureIds = listOf("test-feature-1"),
   )
 }
 
