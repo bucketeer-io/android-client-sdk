@@ -552,45 +552,4 @@ class EvaluationInteractorTest {
 
     assertThat(interactor.updateListeners).isEmpty()
   }
-
-  fun initialDataBeforeTestingConditionUpdate() {
-    // https://github.com/bucketeer-io/android-client-sdk/issues/69
-    // initial response(for preparation)
-    server.enqueue(
-      MockResponse()
-        .setResponseCode(200)
-        .setBody(
-          moshi.adapter(GetEvaluationsResponse::class.java)
-            .toJson(
-              GetEvaluationsResponse(
-                evaluations = user1Evaluations,
-                userEvaluationsId = "user_evaluations_id_value",
-              ),
-            ),
-        ),
-    )
-    val firstResult = interactor.fetch(user1, null)
-    server.takeRequest()
-    assertThat(server.requestCount).isEqualTo(1)
-
-    assertThat(interactor.currentEvaluationsId).isEqualTo("user_evaluations_id_value")
-    assertThat(firstResult).isInstanceOf(GetEvaluationsResult.Success::class.java)
-    val initialEvaluations =
-      (firstResult as GetEvaluationsResult.Success).value.evaluations.evaluations
-    assertThat(initialEvaluations).isEqualTo(
-      listOf(
-        evaluation1,
-        evaluation2,
-      ),
-    )
-    // Check cache
-    assertThat(interactor.evaluations[user1.id]).isEqualTo(
-      listOf(
-        evaluation1,
-        evaluation2,
-      ),
-    )
-
-    shadowOf(Looper.getMainLooper()).idle()
-  }
 }
