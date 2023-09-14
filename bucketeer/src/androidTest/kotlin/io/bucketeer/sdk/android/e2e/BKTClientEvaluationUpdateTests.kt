@@ -44,11 +44,10 @@ class BKTClientEvaluationUpdateTests {
       .commit()
   }
 
-
   @Test
   @UiThreadTest
-  // "userEvaluationsId is different and evaluatedAt is too old"
   fun testUserEvaluationsIdMismatchAndEvaluatedAtTooOld() {
+    // "userEvaluationsId is different and evaluatedAt is too old"
     config = BKTConfig.builder()
       .apiKey(BuildConfig.API_KEY)
       .apiEndpoint(BuildConfig.API_ENDPOINT)
@@ -110,8 +109,8 @@ class BKTClientEvaluationUpdateTests {
 
   @Test
   @UiThreadTest
-  // userEvaluationId is empty after feature_tag changed
   fun testInitializeWithNewFeatureTag() {
+    // userEvaluationId is empty after feature_tag changed
     config = BKTConfig.builder()
       .apiKey(BuildConfig.API_KEY)
       .apiEndpoint(BuildConfig.API_ENDPOINT)
