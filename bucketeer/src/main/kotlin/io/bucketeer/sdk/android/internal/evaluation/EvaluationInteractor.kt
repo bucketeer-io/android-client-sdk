@@ -153,7 +153,7 @@ internal class EvaluationInteractor(
           shouldNotifyListener = updatedEvaluations.isNotEmpty() || archivedFeatureIds.isNotEmpty()
         }
 
-        val success = evaluationDao.deleteAllAndInsert(user.id, newEvaluations)
+        val success = evaluationDao.deleteAllAndInsert(user.id, activeEvaluations)
         if (!success) {
           loge { "Failed to update latest evaluations" }
           return result

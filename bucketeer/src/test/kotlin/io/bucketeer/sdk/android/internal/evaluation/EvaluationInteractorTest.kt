@@ -300,16 +300,17 @@ class EvaluationInteractorTest {
   fun `fetch - force update`() {
     `fetch - initial load`()
     // second response
+    val expectResponse = GetEvaluationsResponse(
+      evaluations = user1EvaluationsForceUpdate,
+      userEvaluationsId = "user_evaluations_id_value_updated",
+    )
     server.enqueue(
       MockResponse()
         .setResponseCode(200)
         .setBody(
           moshi.adapter(GetEvaluationsResponse::class.java)
             .toJson(
-              GetEvaluationsResponse(
-                evaluations = user1EvaluationsForceUpdate,
-                userEvaluationsId = "user_evaluations_id_value_updated",
-              ),
+              expectResponse,
             ),
         ),
     )
@@ -327,17 +328,13 @@ class EvaluationInteractorTest {
 
     // assert response
     assertThat(result).isInstanceOf(GetEvaluationsResult.Success::class.java)
-    val expectedEvaluations = (result as GetEvaluationsResult.Success).value.evaluations.evaluations
-    // should not contain `evaluation1`
-    assertThat(expectedEvaluations).isEqualTo(
-      listOf(
-        evaluation2,
-      ),
-    )
-    // check cache
+    val response = (result as GetEvaluationsResult.Success).value
+    assertThat(response).isEqualTo(expectResponse)
+
+    // check cache should not contain `evaluation1`
     assertThat(interactor.evaluations[user1.id]).isEqualTo(listOf(evaluation2))
     assertThat(interactor.currentEvaluationsId).isEqualTo("user_evaluations_id_value_updated")
-    // check database
+    // check database should not contain `evaluation1`
     val latestEvaluations = component.dataModule.evaluationDao.get(user1.id)
     assertThat(latestEvaluations).isEqualTo(listOf(evaluation2))
 
@@ -360,16 +357,17 @@ class EvaluationInteractorTest {
     `fetch - initial load`()
 
     // second response(test target)
+    val expectResponse = GetEvaluationsResponse(
+      evaluations = user1EvaluationsUpsert,
+      userEvaluationsId = "user_evaluations_id_value_updated",
+    )
     server.enqueue(
       MockResponse()
         .setResponseCode(200)
         .setBody(
           moshi.adapter(GetEvaluationsResponse::class.java)
             .toJson(
-              GetEvaluationsResponse(
-                evaluations = user1EvaluationsUpsert,
-                userEvaluationsId = "user_evaluations_id_value_updated",
-              ),
+              expectResponse,
             ),
         ),
     )
@@ -387,25 +385,25 @@ class EvaluationInteractorTest {
 
     // assert response
     assertThat(result).isInstanceOf(GetEvaluationsResult.Success::class.java)
-    val expectedEvaluations = (result as GetEvaluationsResult.Success).value.evaluations.evaluations
-    // should not contain `evaluation1`
-    assertThat(expectedEvaluations).isEqualTo(
-      listOf(
-        evaluation2ForUpdate,
-        evaluation3,
-      ),
-    )
-    // check cache
+    assertThat(result).isInstanceOf(GetEvaluationsResult.Success::class.java)
+    val response = (result as GetEvaluationsResult.Success).value
+    assertThat(response).isEqualTo(expectResponse)
+    // check cache should not contain `evaluation1`
     assertThat(interactor.evaluations[user1.id]).isEqualTo(
       listOf(
         evaluation2ForUpdate,
-        evaluation3,
+        evaluation3, // its a new evaluation
       ),
     )
     assertThat(interactor.currentEvaluationsId).isEqualTo("user_evaluations_id_value_updated")
-    // check database
+    // check database should not contain `evaluation1`
     val latestEvaluations = component.dataModule.evaluationDao.get(user1.id)
-    assertThat(latestEvaluations).isEqualTo(listOf(evaluation2))
+    assertThat(latestEvaluations).isEqualTo(
+      listOf(
+        evaluation2ForUpdate,
+        evaluation3, // its a new evaluation
+      ),
+    )
 
     // the featureTag should be `api_key_value`
     assertThat(interactor.featureTag).isEqualTo("feature_tag_value")
@@ -417,7 +415,6 @@ class EvaluationInteractorTest {
     shadowOf(Looper.getMainLooper()).idle()
 
     assertThat(listenerCalled).isTrue()
-
   }
 
   @Test
