@@ -49,12 +49,12 @@ internal class EvaluationInteractor(
 
   @VisibleForTesting
   internal var featureTag: String
-    get() = sharedPrefs.getString(PREFERENCE_KEY_FEATURE_TAG, "") ?: ""
+    get() = sharedPrefs.getString(Constants.PREFERENCE_KEY_FEATURE_TAG, "") ?: ""
 
     @SuppressLint("ApplySharedPref")
     private set(value) {
       sharedPrefs.edit()
-        .putString(PREFERENCE_KEY_FEATURE_TAG, value)
+        .putString(Constants.PREFERENCE_KEY_FEATURE_TAG, value)
         .commit()
     }
 
@@ -64,23 +64,23 @@ internal class EvaluationInteractor(
   // and it must be saved in the client
   @VisibleForTesting
   internal var evaluatedAt: String
-    get() = sharedPrefs.getString(PREFERENCE_KEY_EVALUATED_AT, "0") ?: "0"
+    get() = sharedPrefs.getString(Constants.PREFERENCE_KEY_EVALUATED_AT, "0") ?: "0"
 
     @SuppressLint("ApplySharedPref")
     set(value) {
       sharedPrefs.edit()
-        .putString(PREFERENCE_KEY_EVALUATED_AT, value)
+        .putString(Constants.PREFERENCE_KEY_EVALUATED_AT, value)
         .commit()
     }
 
   @VisibleForTesting
   internal var userAttributesUpdated: Boolean
-    get() = sharedPrefs.getBoolean(PREFERENCE_KEY_USER_ATTRIBUTES_UPDATED, false)
+    get() = sharedPrefs.getBoolean(Constants.PREFERENCE_KEY_USER_ATTRIBUTES_UPDATED, false)
 
     @SuppressLint("ApplySharedPref")
     private set(value) {
       sharedPrefs.edit()
-        .putBoolean(PREFERENCE_KEY_USER_ATTRIBUTES_UPDATED, value)
+        .putBoolean(Constants.PREFERENCE_KEY_USER_ATTRIBUTES_UPDATED, value)
         .commit()
     }
 
@@ -208,11 +208,5 @@ internal class EvaluationInteractor(
   fun getLatest(userId: String, featureId: String): Evaluation? {
     val evaluations = evaluations[userId] ?: return null
     return evaluations.firstOrNull { it.featureId == featureId }
-  }
-
-  companion object {
-    private const val PREFERENCE_KEY_FEATURE_TAG = "bucketeer_feature_tag"
-    private const val PREFERENCE_KEY_EVALUATED_AT = "bucketeer_evaluated_at"
-    private const val PREFERENCE_KEY_USER_ATTRIBUTES_UPDATED = "bucketeer_user_attributes_updated"
   }
 }
