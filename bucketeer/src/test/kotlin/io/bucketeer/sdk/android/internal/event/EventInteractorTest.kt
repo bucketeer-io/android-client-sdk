@@ -218,7 +218,7 @@ class EventInteractorTest {
 
     interactor.setEventUpdateListener(listener)
 
-    interactor.trackFetchEvaluationsSuccess("feature_tag_value", 1, 723)
+    interactor.trackFetchEvaluationsSuccess("feature_tag_value", 1.1, 723)
 
     assertThat(listener.calls).hasSize(1)
     assertThat(listener.calls[0]).hasSize(2)
@@ -240,7 +240,7 @@ class EventInteractorTest {
             labels = mapOf(
               "tag" to "feature_tag_value",
             ),
-            latencySecond = 1.0,
+            latencySecond = 1.1,
           ),
           sdkVersion = BuildConfig.SDK_VERSION,
           metadata = mapOf(
@@ -377,7 +377,7 @@ class EventInteractorTest {
         ),
     )
 
-    interactor.trackFetchEvaluationsSuccess("feature_tag_value", 1, 723)
+    interactor.trackFetchEvaluationsSuccess("feature_tag_value", 0.1, 723)
     interactor.trackGoalEvent("feature_tag_value", user1, "goal_id_value", 0.5)
     interactor.trackGoalEvent("feature_tag_value", user1, "goal_id_value2", 0.4)
 
@@ -406,7 +406,7 @@ class EventInteractorTest {
                 labels = mapOf(
                   "tag" to "feature_tag_value",
                 ),
-                latencySecond = 1.0,
+                latencySecond = 0.1,
               ),
               sdkVersion = BuildConfig.SDK_VERSION,
               metadata = mapOf(
@@ -483,7 +483,7 @@ class EventInteractorTest {
         ),
     )
 
-    interactor.trackFetchEvaluationsSuccess("feature_tag_value", 1, 723)
+    interactor.trackFetchEvaluationsSuccess("feature_tag_value", 0.1, 723)
     interactor.trackGoalEvent("feature_tag_value", user1, "goal_id_value", 0.5)
 
     assertThat(component.dataModule.eventDao.getEvents()).hasSize(3)
@@ -515,7 +515,7 @@ class EventInteractorTest {
             labels = mapOf(
               "tag" to "feature_tag_value",
             ),
-            latencySecond = 1.0,
+            latencySecond = 0.1,
           ),
           sdkVersion = BuildConfig.SDK_VERSION,
           metadata = mapOf(
@@ -625,7 +625,7 @@ class EventInteractorTest {
         ),
     )
 
-    interactor.trackFetchEvaluationsSuccess("feature_tag_value", 1, 723)
+    interactor.trackFetchEvaluationsSuccess("feature_tag_value", 0.1, 723)
 
     assertThat(component.dataModule.eventDao.getEvents()).hasSize(2)
 
@@ -651,7 +651,7 @@ class EventInteractorTest {
         ),
     )
 
-    interactor.trackFetchEvaluationsSuccess("feature_tag_value", 1, 723)
+    interactor.trackFetchEvaluationsSuccess("feature_tag_value", 0.1, 723)
 
     val result = interactor.sendEvents(force = true)
 
@@ -678,7 +678,7 @@ class EventInteractorTest {
                 labels = mapOf(
                   "tag" to "feature_tag_value",
                 ),
-                latencySecond = 1.0,
+                latencySecond = 0.1,
               ),
               sdkVersion = BuildConfig.SDK_VERSION,
               metadata = mapOf(
@@ -718,7 +718,7 @@ class EventInteractorTest {
 
   @Test
   fun `sendEvents - retriable error`() {
-    interactor.trackFetchEvaluationsSuccess("feature_tag_value", 1, 723)
+    interactor.trackFetchEvaluationsSuccess("feature_tag_value", 0.1, 723)
     interactor.trackGoalEvent("feature_tag_value", user1, "goal_id_value", 0.5)
     interactor.trackGoalEvent("feature_tag_value", user1, "goal_id_value2", 0.4)
 
@@ -762,7 +762,7 @@ class EventInteractorTest {
                 labels = mapOf(
                   "tag" to "feature_tag_value",
                 ),
-                latencySecond = 1.0,
+                latencySecond = 0.1,
               ),
               sdkVersion = BuildConfig.SDK_VERSION,
               metadata = mapOf(
@@ -833,7 +833,7 @@ class EventInteractorTest {
               labels = mapOf(
                 "tag" to "feature_tag_value",
               ),
-              latencySecond = 1.0,
+              latencySecond = 0.1,
             ),
             sdkVersion = BuildConfig.SDK_VERSION,
             metadata = mapOf(
