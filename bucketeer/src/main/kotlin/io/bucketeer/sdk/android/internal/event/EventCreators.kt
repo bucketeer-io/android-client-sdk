@@ -111,7 +111,7 @@ internal fun newSuccessMetricsEvents(
   featureTag: String,
   appVersion: String,
   apiId: ApiId,
-  latencySecond: Long,
+  latencySecond: Double,
   sizeByte: Int,
 ): List<Event> {
   val labels = mapOf("tag" to featureTag)
@@ -125,7 +125,7 @@ internal fun newSuccessMetricsEvents(
         event = MetricsEventData.LatencyMetricsEvent(
           apiId = apiId,
           labels = labels,
-          latencySecond = latencySecond.toDouble(),
+          latencySecond = latencySecond,
         ),
         sdkVersion = BuildConfig.SDK_VERSION,
         metadata = newMetadata(appVersion),

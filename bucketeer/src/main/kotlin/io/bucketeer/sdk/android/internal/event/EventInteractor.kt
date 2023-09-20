@@ -56,7 +56,7 @@ internal class EventInteractor(
 
   fun trackFetchEvaluationsSuccess(
     featureTag: String,
-    seconds: Long,
+    seconds: Double,
     sizeByte: Int,
   ) {
     // For get_evaluations, we will report all metrics events, Including the latency and size metrics events.
