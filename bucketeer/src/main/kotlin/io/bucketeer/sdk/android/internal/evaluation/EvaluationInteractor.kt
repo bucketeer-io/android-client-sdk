@@ -91,8 +91,8 @@ internal class EvaluationInteractor(
   private fun updateFeatureTag(value: String) {
     // using `this.featureTag` to make it doesn't confuse with the constructor params `featureTag`
     // https://github.com/bucketeer-io/android-client-sdk/issues/69
-    // 1- Save the featureTag in the UserDefault configured in the BKTConfig
-    // 2- Clear the userEvaluationsID in the UserDefault if the featureTag changes
+    // 1- Save the featureTag in the SharedPreferences configured in the BKTConfig
+    // 2- Clear the userEvaluationsID in the SharedPreferences if the featureTag changes
     if (this.featureTag != value) {
       currentEvaluationsId = ""
       this.featureTag = value
