@@ -94,7 +94,7 @@ internal class ApiClientImpl(
 
       GetEvaluationsResult.Success(
         value = response,
-        seconds = millis.toDouble() / 1000,
+        seconds = millis / 1000.0,
         sizeByte = contentLength,
         featureTag = featureTag,
       )
