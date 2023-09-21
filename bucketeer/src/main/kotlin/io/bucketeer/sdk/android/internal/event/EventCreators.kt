@@ -160,7 +160,13 @@ internal fun newErrorMetricsEvent(
   return Event(
     id = idGenerator.newId(),
     type = EventType.METRICS,
-    event = newEventDataMetricEvent(error, clock.currentTimeSeconds(), featureTag, appVersion, apiId),
+    event = newEventDataMetricEvent(
+      error,
+      clock.currentTimeSeconds(),
+      featureTag,
+      appVersion,
+      apiId,
+    ),
   )
 }
 
@@ -241,18 +247,16 @@ internal fun newEventDataMetricEvent(
         ),
       )
 
-      is BKTException.TimeoutException -> {
-        Pair(
-          MetricsEventType.TIMEOUT_ERROR,
-          MetricsEventData.TimeoutErrorMetricsEvent(
-            apiId = apiId,
-            labels = labels.apply {
-              // https://github.com/bucketeer-io/android-client-sdk/issues/81
-              set("timeout", (error.timeoutMillis / 1000f).toString())
-            },
-          ),
-        )
-      }
+      is BKTException.TimeoutException -> Pair(
+        MetricsEventType.TIMEOUT_ERROR,
+        MetricsEventData.TimeoutErrorMetricsEvent(
+          apiId = apiId,
+          labels = labels.apply {
+            // https://github.com/bucketeer-io/android-client-sdk/issues/81
+            set("timeout", (error.timeoutMillis / 1000f).toString())
+          },
+        ),
+      )
 
       is BKTException.UnauthorizedException -> Pair(
         MetricsEventType.UNAUTHORIZED_ERROR,
