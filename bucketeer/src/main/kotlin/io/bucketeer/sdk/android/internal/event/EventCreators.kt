@@ -247,6 +247,7 @@ internal fun BKTException.toEventDataMetricEvent(
             MetricsEventData.TimeoutErrorMetricsEvent(
               apiId = apiId,
               labels = labels.toMutableMap().apply {
+                // https://github.com/bucketeer-io/android-client-sdk/issues/81
                 set("timeout", (it.timeoutMillis / 1000f).toString())
               },
             ),

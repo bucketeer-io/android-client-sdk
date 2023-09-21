@@ -309,7 +309,7 @@ class EventInteractorTest {
             ApiId.GET_EVALUATIONS,
             mapOf(
               "tag" to "feature_tag_value",
-              "timeout" to "5.0"
+              "timeout" to "5.0",
             ),
           ),
           sdkVersion = BuildConfig.SDK_VERSION,

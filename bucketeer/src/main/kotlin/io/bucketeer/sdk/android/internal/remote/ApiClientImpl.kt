@@ -105,7 +105,7 @@ internal class ApiClientImpl(
       onFailure = { e ->
         GetEvaluationsResult.Failure(
           e.toBKTException(
-            client.callTimeoutMillis.toLong()
+            requestTimeoutMillis = client.callTimeoutMillis.toLong(),
           ),
           featureTag,
         )
