@@ -287,7 +287,7 @@ class EventInteractorTest {
 
     interactor.trackFetchEvaluationsFailure(
       "feature_tag_value",
-      BKTException.TimeoutException("timeout", SocketTimeoutException()),
+      BKTException.TimeoutException("timeout", SocketTimeoutException(), 5000),
     )
 
     assertThat(listener.calls).hasSize(1)
@@ -309,6 +309,7 @@ class EventInteractorTest {
             ApiId.GET_EVALUATIONS,
             mapOf(
               "tag" to "feature_tag_value",
+              "timeout" to "5.0"
             ),
           ),
           sdkVersion = BuildConfig.SDK_VERSION,

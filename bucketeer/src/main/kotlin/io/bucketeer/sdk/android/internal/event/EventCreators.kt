@@ -157,80 +157,124 @@ internal fun newErrorMetricsEvent(
   error: BKTException,
   apiId: ApiId,
 ): Event {
-  val metricEventType = error.toMetricEventType()
   return Event(
     id = idGenerator.newId(),
     type = EventType.METRICS,
-    event = EventData.MetricsEvent(
-      timestamp = clock.currentTimeSeconds(),
-      type = metricEventType,
-      event = newErrorMetricsEventData(featureTag, apiId, metricEventType),
-      sdkVersion = BuildConfig.SDK_VERSION,
-      metadata = newMetadata(appVersion),
-    ),
+    event = error.toEventDataMetricEvent(clock.currentTimeSeconds(), featureTag, appVersion, apiId),
   )
 }
-internal fun newErrorMetricsEventData(
+
+internal fun BKTException.toEventDataMetricEvent(
+  timestamp: Long,
   featureTag: String,
+  appVersion: String,
   apiId: ApiId,
-  type: MetricsEventType,
-): MetricsEventData {
+): EventData.MetricsEvent {
   val labels = mapOf("tag" to featureTag)
+  val typeAndEvent: Pair<MetricsEventType, MetricsEventData> =
+    when (this) {
+      is BKTException.BadRequestException -> Pair(
+        MetricsEventType.BAD_REQUEST_ERROR,
+        MetricsEventData.BadRequestErrorMetricsEvent(
+          apiId = apiId,
+          labels = labels,
+        ),
+      )
 
-  return when (type) {
-    MetricsEventType.TIMEOUT_ERROR -> MetricsEventData.TimeoutErrorMetricsEvent(
-      apiId = apiId,
-      labels = labels,
-    )
+      is BKTException.ClientClosedRequestException -> Pair(
+        MetricsEventType.CLIENT_CLOSED_REQUEST_ERROR,
+        MetricsEventData.ClientClosedRequestErrorMetricsEvent(
+          apiId = apiId,
+          labels = labels,
+        ),
+      )
 
-    MetricsEventType.NETWORK_ERROR -> MetricsEventData.NetworkErrorMetricsEvent(
-      apiId = apiId,
-      labels = labels,
-    )
+      is BKTException.FeatureNotFoundException -> Pair(
+        MetricsEventType.NOT_FOUND_ERROR,
+        MetricsEventData.NotFoundErrorMetricsEvent(
+          apiId = apiId,
+          labels = labels,
+        ),
+      )
 
-    MetricsEventType.INTERNAL_SDK_ERROR -> MetricsEventData.InternalSdkErrorMetricsEvent(
-      apiId = apiId,
-      labels = labels,
-    )
+      is BKTException.ForbiddenException -> Pair(
+        MetricsEventType.FORBIDDEN_ERROR,
+        MetricsEventData.ForbiddenErrorMetricsEvent(
+          apiId = apiId,
+          labels = labels,
+        ),
+      )
 
-    MetricsEventType.BAD_REQUEST_ERROR -> MetricsEventData.BadRequestErrorMetricsEvent(
-      apiId = apiId,
-      labels = labels,
-    )
+      is BKTException.IllegalArgumentException,
+      is BKTException.IllegalStateException,
+      is BKTException.InvalidHttpMethodException,
+      -> Pair(
+        MetricsEventType.INTERNAL_SDK_ERROR,
+        MetricsEventData.InternalSdkErrorMetricsEvent(
+          apiId = apiId,
+          labels = labels,
+        ),
+      )
 
-    MetricsEventType.UNAUTHORIZED_ERROR -> MetricsEventData.UnauthorizedErrorMetricsEvent(
-      apiId = apiId,
-      labels = labels,
-    )
+      is BKTException.InternalServerErrorException -> Pair(
+        MetricsEventType.INTERNAL_SERVER_ERROR,
+        MetricsEventData.InternalServerErrorMetricsEvent(
+          apiId = apiId,
+          labels = labels,
+        ),
+      )
 
-    MetricsEventType.FORBIDDEN_ERROR -> MetricsEventData.ForbiddenErrorMetricsEvent(
-      apiId = apiId,
-      labels = labels,
-    )
+      is BKTException.NetworkException -> Pair(
+        MetricsEventType.NETWORK_ERROR,
+        MetricsEventData.NetworkErrorMetricsEvent(
+          apiId = apiId,
+          labels = labels,
+        ),
+      )
 
-    MetricsEventType.NOT_FOUND_ERROR -> MetricsEventData.NotFoundErrorMetricsEvent(
-      apiId = apiId,
-      labels = labels,
-    )
+      is BKTException.ServiceUnavailableException -> Pair(
+        MetricsEventType.SERVICE_UNAVAILABLE_ERROR,
+        MetricsEventData.ServiceUnavailableErrorMetricsEvent(
+          apiId = apiId,
+          labels = labels,
+        ),
+      )
 
-    MetricsEventType.CLIENT_CLOSED_REQUEST_ERROR -> MetricsEventData.ClientClosedRequestErrorMetricsEvent(
-      apiId = apiId,
-      labels = labels,
-    )
+      is BKTException.TimeoutException -> {
+        this.let {
+          Pair(
+            MetricsEventType.TIMEOUT_ERROR,
+            MetricsEventData.TimeoutErrorMetricsEvent(
+              apiId = apiId,
+              labels = labels.toMutableMap().apply {
+                set("timeout", (it.timeoutMillis / 1000f).toString())
+              },
+            ),
+          )
+        }
+      }
 
-    MetricsEventType.SERVICE_UNAVAILABLE_ERROR -> MetricsEventData.ServiceUnavailableErrorMetricsEvent(
-      apiId = apiId,
-      labels = labels,
-    )
+      is BKTException.UnauthorizedException -> Pair(
+        MetricsEventType.UNAUTHORIZED_ERROR,
+        MetricsEventData.UnauthorizedErrorMetricsEvent(
+          apiId = apiId,
+          labels = labels,
+        ),
+      )
 
-    MetricsEventType.INTERNAL_SERVER_ERROR -> MetricsEventData.InternalServerErrorMetricsEvent(
-      apiId = apiId,
-      labels = labels,
-    )
-
-    else -> MetricsEventData.UnknownErrorMetricsEvent(
-      apiId = apiId,
-      labels = labels,
-    )
-  }
+      is BKTException.UnknownException -> Pair(
+        MetricsEventType.UNKNOWN,
+        MetricsEventData.UnknownErrorMetricsEvent(
+          apiId = apiId,
+          labels = labels,
+        ),
+      )
+    }
+  return EventData.MetricsEvent(
+    timestamp = timestamp,
+    type = typeAndEvent.first,
+    event = typeAndEvent.second,
+    sdkVersion = BuildConfig.SDK_VERSION,
+    metadata = newMetadata(appVersion),
+  )
 }
