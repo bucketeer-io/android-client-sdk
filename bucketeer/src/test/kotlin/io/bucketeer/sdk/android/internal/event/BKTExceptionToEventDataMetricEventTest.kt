@@ -16,7 +16,8 @@ import org.junit.runner.RunWith
 class BKTExceptionToEventDataMetricEventTest {
   companion object {
     const val expectedTimestamp = 19998L
-    val expectedLabels = mapOf("tag" to "android")
+    val expectedLabelsForOtherCases = mapOf("tag" to "android")
+    val expectedLabelsForTimeoutCase = mapOf("tag" to "android", "timeout" to "5.1")
     val expectedApiId = ApiId.GET_EVALUATIONS
     val expectedMetadata = newMetadata("1.0.0")
   }
@@ -33,7 +34,7 @@ class BKTExceptionToEventDataMetricEventTest {
         type = MetricsEventType.BAD_REQUEST_ERROR,
         event = MetricsEventData.BadRequestErrorMetricsEvent(
           apiId = expectedApiId,
-          labels = expectedLabels,
+          labels = expectedLabelsForOtherCases,
         ),
         sdkVersion = BuildConfig.SDK_VERSION,
         metadata = expectedMetadata,
@@ -46,7 +47,7 @@ class BKTExceptionToEventDataMetricEventTest {
         type = MetricsEventType.UNAUTHORIZED_ERROR,
         event = MetricsEventData.UnauthorizedErrorMetricsEvent(
           apiId = expectedApiId,
-          labels = expectedLabels,
+          labels = expectedLabelsForOtherCases,
         ),
         sdkVersion = BuildConfig.SDK_VERSION,
         metadata = expectedMetadata,
@@ -59,7 +60,7 @@ class BKTExceptionToEventDataMetricEventTest {
         type = MetricsEventType.FORBIDDEN_ERROR,
         event = MetricsEventData.ForbiddenErrorMetricsEvent(
           apiId = expectedApiId,
-          labels = expectedLabels,
+          labels = expectedLabelsForOtherCases,
         ),
         sdkVersion = BuildConfig.SDK_VERSION,
         metadata = expectedMetadata,
@@ -72,7 +73,7 @@ class BKTExceptionToEventDataMetricEventTest {
         type = MetricsEventType.NOT_FOUND_ERROR,
         event = MetricsEventData.NotFoundErrorMetricsEvent(
           apiId = expectedApiId,
-          labels = expectedLabels,
+          labels = expectedLabelsForOtherCases,
         ),
         sdkVersion = BuildConfig.SDK_VERSION,
         metadata = expectedMetadata,
@@ -85,33 +86,33 @@ class BKTExceptionToEventDataMetricEventTest {
         type = MetricsEventType.INTERNAL_SDK_ERROR,
         event = MetricsEventData.InternalSdkErrorMetricsEvent(
           apiId = expectedApiId,
-          labels = expectedLabels,
+          labels = expectedLabelsForOtherCases,
         ),
         sdkVersion = BuildConfig.SDK_VERSION,
         metadata = expectedMetadata,
       ),
     ),
     ILLEGAL_ARGUMENT(
-      BKTException.InvalidHttpMethodException(message = ""),
+      BKTException.IllegalArgumentException(message = ""),
       EventData.MetricsEvent(
         timestamp = expectedTimestamp,
         type = MetricsEventType.INTERNAL_SDK_ERROR,
         event = MetricsEventData.InternalSdkErrorMetricsEvent(
           apiId = expectedApiId,
-          labels = expectedLabels,
+          labels = expectedLabelsForOtherCases,
         ),
         sdkVersion = BuildConfig.SDK_VERSION,
         metadata = expectedMetadata,
       ),
     ),
     ILLEGAL_STATE(
-      BKTException.InvalidHttpMethodException(message = ""),
+      BKTException.IllegalStateException(message = ""),
       EventData.MetricsEvent(
         timestamp = expectedTimestamp,
         type = MetricsEventType.INTERNAL_SDK_ERROR,
         event = MetricsEventData.InternalSdkErrorMetricsEvent(
           apiId = expectedApiId,
-          labels = expectedLabels,
+          labels = expectedLabelsForOtherCases,
         ),
         sdkVersion = BuildConfig.SDK_VERSION,
         metadata = expectedMetadata,
@@ -124,7 +125,7 @@ class BKTExceptionToEventDataMetricEventTest {
         type = MetricsEventType.CLIENT_CLOSED_REQUEST_ERROR,
         event = MetricsEventData.ClientClosedRequestErrorMetricsEvent(
           apiId = expectedApiId,
-          labels = expectedLabels,
+          labels = expectedLabelsForOtherCases,
         ),
         sdkVersion = BuildConfig.SDK_VERSION,
         metadata = expectedMetadata,
@@ -137,7 +138,7 @@ class BKTExceptionToEventDataMetricEventTest {
         type = MetricsEventType.INTERNAL_SERVER_ERROR,
         event = MetricsEventData.InternalServerErrorMetricsEvent(
           apiId = expectedApiId,
-          labels = expectedLabels,
+          labels = expectedLabelsForOtherCases,
         ),
         sdkVersion = BuildConfig.SDK_VERSION,
         metadata = expectedMetadata,
@@ -150,7 +151,7 @@ class BKTExceptionToEventDataMetricEventTest {
         type = MetricsEventType.SERVICE_UNAVAILABLE_ERROR,
         event = MetricsEventData.ServiceUnavailableErrorMetricsEvent(
           apiId = expectedApiId,
-          labels = expectedLabels,
+          labels = expectedLabelsForOtherCases,
         ),
         sdkVersion = BuildConfig.SDK_VERSION,
         metadata = expectedMetadata,
@@ -163,9 +164,7 @@ class BKTExceptionToEventDataMetricEventTest {
         type = MetricsEventType.TIMEOUT_ERROR,
         event = MetricsEventData.TimeoutErrorMetricsEvent(
           apiId = expectedApiId,
-          labels = expectedLabels.toMutableMap().apply {
-            set("timeout", "5.1")
-          },
+          labels = expectedLabelsForTimeoutCase
         ),
         sdkVersion = BuildConfig.SDK_VERSION,
         metadata = expectedMetadata,
