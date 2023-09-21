@@ -5,6 +5,7 @@ import com.google.testing.junit.testparameterinjector.TestParameter
 import com.google.testing.junit.testparameterinjector.TestParameterInjector
 import com.squareup.moshi.Moshi
 import io.bucketeer.sdk.android.BKTException
+import io.bucketeer.sdk.android.BuildConfig
 import io.bucketeer.sdk.android.internal.di.DataModule
 import io.bucketeer.sdk.android.internal.model.SourceID
 import io.bucketeer.sdk.android.internal.model.request.GetEvaluationsRequest
@@ -100,6 +101,7 @@ internal class ApiClientImplTest {
         user = user1,
         userEvaluationsId = "user_evaluation_id",
         sourceId = SourceID.ANDROID,
+        sdkVersion = BuildConfig.SDK_VERSION,
       ),
     )
 
@@ -287,7 +289,12 @@ internal class ApiClientImplTest {
     assertThat(
       moshi.adapter(RegisterEventsRequest::class.java)
         .fromJson(request.body.readString(Charsets.UTF_8)),
-    ).isEqualTo(RegisterEventsRequest(events = listOf(evaluationEvent1, latencyMetricsEvent1)))
+    ).isEqualTo(
+      RegisterEventsRequest(
+        events = listOf(evaluationEvent1, latencyMetricsEvent1),
+        sdkVersion = BuildConfig.SDK_VERSION,
+      ),
+    )
 
     // assert response
     assertThat(result).isInstanceOf(RegisterEventsResult.Success::class.java)
