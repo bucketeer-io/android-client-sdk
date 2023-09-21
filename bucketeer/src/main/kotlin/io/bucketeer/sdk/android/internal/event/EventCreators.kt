@@ -160,19 +160,20 @@ internal fun newErrorMetricsEvent(
   return Event(
     id = idGenerator.newId(),
     type = EventType.METRICS,
-    event = error.toEventDataMetricEvent(clock.currentTimeSeconds(), featureTag, appVersion, apiId),
+    event = newEventDataMetricEvent(error, clock.currentTimeSeconds(), featureTag, appVersion, apiId),
   )
 }
 
-internal fun BKTException.toEventDataMetricEvent(
+internal fun newEventDataMetricEvent(
+  error: BKTException,
   timestamp: Long,
   featureTag: String,
   appVersion: String,
   apiId: ApiId,
 ): EventData.MetricsEvent {
-  val labels = mapOf("tag" to featureTag)
-  val typeAndEvent: Pair<MetricsEventType, MetricsEventData> =
-    when (this) {
+  val labels = mutableMapOf("tag" to featureTag)
+  val (type, event) =
+    when (error) {
       is BKTException.BadRequestException -> Pair(
         MetricsEventType.BAD_REQUEST_ERROR,
         MetricsEventData.BadRequestErrorMetricsEvent(
@@ -241,18 +242,16 @@ internal fun BKTException.toEventDataMetricEvent(
       )
 
       is BKTException.TimeoutException -> {
-        this.let {
-          Pair(
-            MetricsEventType.TIMEOUT_ERROR,
-            MetricsEventData.TimeoutErrorMetricsEvent(
-              apiId = apiId,
-              labels = labels.toMutableMap().apply {
-                // https://github.com/bucketeer-io/android-client-sdk/issues/81
-                set("timeout", (it.timeoutMillis / 1000f).toString())
-              },
-            ),
-          )
-        }
+        Pair(
+          MetricsEventType.TIMEOUT_ERROR,
+          MetricsEventData.TimeoutErrorMetricsEvent(
+            apiId = apiId,
+            labels = labels.apply {
+              // https://github.com/bucketeer-io/android-client-sdk/issues/81
+              set("timeout", (error.timeoutMillis / 1000f).toString())
+            },
+          ),
+        )
       }
 
       is BKTException.UnauthorizedException -> Pair(
@@ -273,8 +272,8 @@ internal fun BKTException.toEventDataMetricEvent(
     }
   return EventData.MetricsEvent(
     timestamp = timestamp,
-    type = typeAndEvent.first,
-    event = typeAndEvent.second,
+    type = type,
+    event = event,
     sdkVersion = BuildConfig.SDK_VERSION,
     metadata = newMetadata(appVersion),
   )

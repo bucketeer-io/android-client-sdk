@@ -200,7 +200,8 @@ class BKTExceptionToEventDataMetricEventTest {
 
   @Test
   fun toMetricEventType(@TestParameter case: ErrorTestCase) {
-    val result = case.code.toEventDataMetricEvent(
+    val result = newEventDataMetricEvent(
+      case.code,
       timestamp = 19998L,
       featureTag = "android",
       appVersion = "1.0.0",
