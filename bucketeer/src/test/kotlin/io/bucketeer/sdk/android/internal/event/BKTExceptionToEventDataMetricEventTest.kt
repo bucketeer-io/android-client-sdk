@@ -164,7 +164,7 @@ class BKTExceptionToEventDataMetricEventTest {
         type = MetricsEventType.TIMEOUT_ERROR,
         event = MetricsEventData.TimeoutErrorMetricsEvent(
           apiId = expectedApiId,
-          labels = expectedLabelsForTimeoutCase
+          labels = expectedLabelsForTimeoutCase,
         ),
         sdkVersion = BuildConfig.SDK_VERSION,
         metadata = expectedMetadata,
@@ -177,7 +177,7 @@ class BKTExceptionToEventDataMetricEventTest {
         type = MetricsEventType.NETWORK_ERROR,
         event = MetricsEventData.NetworkErrorMetricsEvent(
           apiId = expectedApiId,
-          labels = expectedLabels,
+          labels = expectedLabelsForOtherCases,
         ),
         sdkVersion = BuildConfig.SDK_VERSION,
         metadata = expectedMetadata,
@@ -190,7 +190,7 @@ class BKTExceptionToEventDataMetricEventTest {
         type = MetricsEventType.UNKNOWN,
         event = MetricsEventData.UnknownErrorMetricsEvent(
           apiId = expectedApiId,
-          labels = expectedLabels,
+          labels = expectedLabelsForOtherCases,
         ),
         sdkVersion = BuildConfig.SDK_VERSION,
         metadata = expectedMetadata,
