@@ -102,7 +102,14 @@ internal class ApiClientImpl(
 
     return result.fold(
       onSuccess = { res -> res },
-      onFailure = { e -> GetEvaluationsResult.Failure(e.toBKTException(), featureTag) },
+      onFailure = { e ->
+        GetEvaluationsResult.Failure(
+          e.toBKTException(
+            requestTimeoutMillis = client.callTimeoutMillis.toLong(),
+          ),
+          featureTag,
+        )
+      },
     )
   }
 
@@ -140,7 +147,13 @@ internal class ApiClientImpl(
 
     return result.fold(
       onSuccess = { res -> res },
-      onFailure = { e -> RegisterEventsResult.Failure(e.toBKTException()) },
+      onFailure = { e ->
+        RegisterEventsResult.Failure(
+          e.toBKTException(
+            requestTimeoutMillis = client.callTimeoutMillis.toLong(),
+          ),
+        )
+      },
     )
   }
 
