@@ -90,6 +90,10 @@ val evaluation2: Evaluation by lazy {
 
 val evaluation2ForUpdate: Evaluation by lazy {
   evaluation2.copy(
+    // the mock data to cover the bug in the link below
+    // https://github.com/bucketeer-io/android-client-sdk/pull/88/files#r1333847962
+    id = "test-feature-2:10:user id 1",
+    featureVersion = 10,
     variationId = "test-feature-2-variation-A-updated",
     variationName = "test variation name2 updated",
     variationValue = "test variation value2 updated",

@@ -140,10 +140,12 @@ internal class EvaluationInteractor(
         } else {
           val archivedFeatureIds = response.evaluations.archivedFeatureIds
           val updatedEvaluations = response.evaluations.evaluations
-          val currentEvaluationsMap = evaluationDao.get(user.id).associateBy { it.id }.toMutableMap()
+          // We will use `featureId` to filter the data
+          // Details -> https://github.com/bucketeer-io/android-client-sdk/pull/88/files#r1333847962
+          val currentEvaluationsMap = evaluationDao.get(user.id).associateBy { it.featureId }.toMutableMap()
           // 1- Check the evaluation list in the response and upsert them in the DB if the list is not empty
           updatedEvaluations.forEach { evaluation ->
-            currentEvaluationsMap[evaluation.id] = evaluation
+            currentEvaluationsMap[evaluation.featureId] = evaluation
           }
           // 2- Check the list of the feature flags that were archived on the console and delete them from the DB
           activeEvaluations = currentEvaluationsMap.values.filterNot {

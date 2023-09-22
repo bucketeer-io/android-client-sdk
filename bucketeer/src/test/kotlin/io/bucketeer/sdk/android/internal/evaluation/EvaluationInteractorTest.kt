@@ -395,7 +395,8 @@ class EvaluationInteractorTest {
       ),
     )
     assertThat(interactor.currentEvaluationsId).isEqualTo("user_evaluations_id_value_updated")
-    // check database should not contain `evaluation1`
+    // check database should not contain `evaluation1` & `evaluation2`
+    // https://github.com/bucketeer-io/android-client-sdk/pull/88/files#r1333847962
     val latestEvaluations = component.dataModule.evaluationDao.get(user1.id)
     assertThat(latestEvaluations).isEqualTo(
       listOf(
