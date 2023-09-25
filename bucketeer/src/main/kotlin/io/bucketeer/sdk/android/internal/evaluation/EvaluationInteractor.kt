@@ -127,7 +127,7 @@ internal class EvaluationInteractor(
           return result
         }
 
-        val activeEvaluations: List<Evaluation>
+        val currentEvaluations: List<Evaluation>
         var shouldNotifyListener = true
 
         // https://github.com/bucketeer-io/android-client-sdk/issues/69
@@ -136,32 +136,32 @@ internal class EvaluationInteractor(
         val forceUpdate = response.evaluations.forceUpdate
         if (forceUpdate) {
           // 1- Delete all the evaluations from DB, and save the latest evaluations from the response into the DB
-          activeEvaluations = response.evaluations.evaluations
+          currentEvaluations = response.evaluations.evaluations
         } else {
           val archivedFeatureIds = response.evaluations.archivedFeatureIds
           val updatedEvaluations = response.evaluations.evaluations
           // We will use `featureId` to filter the data
           // Details -> https://github.com/bucketeer-io/android-client-sdk/pull/88/files#r1333847962
-          val currentEvaluationsMap = evaluationDao.get(user.id).associateBy { it.featureId }.toMutableMap()
+          val currentEvaluationsByFeaturedId = evaluationDao.get(user.id).associateBy { it.featureId }.toMutableMap()
           // 1- Check the evaluation list in the response and upsert them in the DB if the list is not empty
           updatedEvaluations.forEach { evaluation ->
-            currentEvaluationsMap[evaluation.featureId] = evaluation
+            currentEvaluationsByFeaturedId[evaluation.featureId] = evaluation
           }
           // 2- Check the list of the feature flags that were archived on the console and delete them from the DB
-          activeEvaluations = currentEvaluationsMap.values.filterNot {
+          currentEvaluations = currentEvaluationsByFeaturedId.values.filterNot {
             archivedFeatureIds.contains(it.featureId)
           }
           shouldNotifyListener = updatedEvaluations.isNotEmpty() || archivedFeatureIds.isNotEmpty()
         }
 
         // keep only `activeEvaluations` on the database
-        val success = evaluationDao.deleteAllAndInsert(user.id, activeEvaluations)
+        val success = evaluationDao.deleteAllAndInsert(user.id, currentEvaluations)
         if (!success) {
           loge { "Failed to update latest evaluations" }
           return result
         }
         // put `activeEvaluations` to the in-memory cache
-        evaluations[user.id] = activeEvaluations
+        evaluations[user.id] = currentEvaluations
 
         this.currentEvaluationsId = newEvaluationsId
         userAttributesUpdated = false
