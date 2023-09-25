@@ -154,7 +154,7 @@ internal class EvaluationInteractor(
           shouldNotifyListener = updatedEvaluations.isNotEmpty() || archivedFeatureIds.isNotEmpty()
         }
 
-        // keep only `activeEvaluations` on the database
+        // save `currentEvaluations` to the database
         val success = evaluationDao.deleteAllAndInsert(user.id, currentEvaluations)
         if (!success) {
           loge { "Failed to update latest evaluations" }
