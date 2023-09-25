@@ -160,7 +160,7 @@ internal class EvaluationInteractor(
           loge { "Failed to update latest evaluations" }
           return result
         }
-        // put `activeEvaluations` to the in-memory cache
+        // directly update the in-memory cache
         evaluations[user.id] = currentEvaluations
 
         this.currentEvaluationsId = newEvaluationsId
