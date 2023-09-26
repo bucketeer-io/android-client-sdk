@@ -87,7 +87,6 @@ data class BKTConfig internal constructor(
     fun build(): BKTConfig {
       require(!this.apiKey.isNullOrEmpty()) { "apiKey is required" }
       require(this.apiEndpoint?.toHttpUrlOrNull() != null) { "apiEndpoint is invalid" }
-      require(!this.featureTag.isNullOrEmpty()) { "featureTag is required" }
       require(!this.appVersion.isNullOrEmpty()) { "appVersion is required" }
 
       if (this.pollingInterval < MINIMUM_POLLING_INTERVAL_MILLIS) {
@@ -108,7 +107,7 @@ data class BKTConfig internal constructor(
       return BKTConfig(
         apiKey = this.apiKey!!,
         apiEndpoint = this.apiEndpoint!!,
-        featureTag = this.featureTag!!,
+        featureTag = this.featureTag ?: "",
         eventsFlushInterval = this.eventsFlushInterval,
         eventsMaxBatchQueueCount = this.eventsMaxQueueSize,
         pollingInterval = this.pollingInterval,

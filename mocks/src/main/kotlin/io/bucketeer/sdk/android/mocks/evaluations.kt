@@ -19,13 +19,42 @@ val user1Evaluations: UserEvaluations by lazy {
       evaluation1,
       evaluation2,
     ),
+    createdAt = "1690798021",
+    forceUpdate = true,
+  )
+}
+
+val user1EvaluationsForceUpdate: UserEvaluations by lazy {
+  UserEvaluations(
+    id = "17388826713971171773",
+    evaluations = listOf(
+      evaluation2,
+    ),
+    createdAt = "1690798025",
+    forceUpdate = true,
+  )
+}
+
+val user1EvaluationsUpsert: UserEvaluations by lazy {
+  UserEvaluations(
+    id = "17388826713971171773",
+    evaluations = listOf(
+      evaluation1,
+      evaluation2ForUpdate,
+      evaluation3,
+    ),
+    createdAt = "16907999999",
+    forceUpdate = false,
+    archivedFeatureIds = listOf("test-feature-1"),
   )
 }
 
 val user2Evaluations: UserEvaluations by lazy {
   UserEvaluations(
     id = "17388826713971171774",
-    evaluations = listOf(evaluation3),
+    evaluations = listOf(evaluation4),
+    createdAt = "1690799033",
+    forceUpdate = true,
   )
 }
 
@@ -59,7 +88,34 @@ val evaluation2: Evaluation by lazy {
   )
 }
 
+val evaluation2ForUpdate: Evaluation by lazy {
+  evaluation2.copy(
+    // the mock data to cover the bug in the link below
+    // https://github.com/bucketeer-io/android-client-sdk/pull/88/files#r1333847962
+    id = "test-feature-2:10:user id 1",
+    featureVersion = 10,
+    variationId = "test-feature-2-variation-A-updated",
+    variationName = "test variation name2 updated",
+    variationValue = "test variation value2 updated",
+  )
+}
+
 val evaluation3: Evaluation by lazy {
+  Evaluation(
+    id = "test-feature-1:9:user id 3",
+    featureId = "test-feature-3",
+    featureVersion = 9,
+    userId = "user id 2",
+    variationId = "test-feature-1-variation-A",
+    variationName = "test variation name2",
+    variationValue = "test variation value2",
+    reason = Reason(
+      type = ReasonType.DEFAULT,
+    ),
+  )
+}
+
+val evaluation4: Evaluation by lazy {
   Evaluation(
     id = "test-feature-1:9:user id 2",
     featureId = "test-feature-3",

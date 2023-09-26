@@ -84,30 +84,27 @@ class BKTConfigTest {
   }
 
   @Test
-  fun `featureTag - unset`() {
-    val error = assertThrows(BKTException.IllegalArgumentException::class.java) {
-      BKTConfig.builder()
-        .apiKey("api-key")
-        .apiEndpoint("https://example.com")
-        .appVersion("1.2.3")
-        .build()
-    }
+  fun `featureTag - optional`() {
+    assertThat(
+      runCatching {
+        BKTConfig.builder()
+          .apiKey("api-key")
+          .apiEndpoint("https://example.com")
+          .appVersion("1.2.3")
+          .build()
+      }.isSuccess,
+    ).isEqualTo(true)
 
-    assertThat(error).hasMessageThat().isEqualTo("featureTag is required")
-  }
-
-  @Test
-  fun `featureTag - empty`() {
-    val error = assertThrows(BKTException.IllegalArgumentException::class.java) {
-      BKTConfig.builder()
-        .apiKey("api-key")
-        .apiEndpoint("https://example.com")
-        .featureTag("")
-        .appVersion("1.2.3")
-        .build()
-    }
-
-    assertThat(error).hasMessageThat().isEqualTo("featureTag is required")
+    assertThat(
+      runCatching {
+        BKTConfig.builder()
+          .apiKey("api-key")
+          .apiEndpoint("https://example.com")
+          .featureTag("")
+          .appVersion("1.2.3")
+          .build()
+      }.isSuccess,
+    ).isEqualTo(true)
   }
 
   @Test

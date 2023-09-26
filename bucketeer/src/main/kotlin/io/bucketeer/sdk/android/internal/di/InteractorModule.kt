@@ -18,6 +18,7 @@ internal class InteractorModule(
     evaluationDao: EvaluationDao,
     sharedPreferences: SharedPreferences,
     idGenerator: IdGenerator,
+    featureTag: String,
   ): EvaluationInteractor {
     return EvaluationInteractor(
       apiClient = apiClient,
@@ -25,6 +26,7 @@ internal class InteractorModule(
       sharedPrefs = sharedPreferences,
       idGenerator = idGenerator,
       mainHandler = mainHandler,
+      featureTag = featureTag,
     )
   }
 

@@ -84,6 +84,10 @@ internal class ApiClientImplTest {
     val result = client.getEvaluations(
       user = user1,
       userEvaluationsId = "user_evaluation_id",
+      condition = UserEvaluationCondition(
+        evaluatedAt = "1690798100",
+        userAttributesUpdated = "true",
+      ),
     )
 
     // assert request
@@ -100,6 +104,10 @@ internal class ApiClientImplTest {
         user = user1,
         userEvaluationsId = "user_evaluation_id",
         sourceId = SourceID.ANDROID,
+        userEvaluationCondition = UserEvaluationCondition(
+          evaluatedAt = "1690798100",
+          userAttributesUpdated = "true",
+        ),
       ),
     )
 
@@ -108,7 +116,7 @@ internal class ApiClientImplTest {
     val success = result as GetEvaluationsResult.Success
     assertThat(success.value).isEqualTo(expected)
     assertThat(success.seconds).isAtLeast(1)
-    assertThat(success.sizeByte).isEqualTo(638)
+    assertThat(success.sizeByte).isEqualTo(706)
     assertThat(success.featureTag).isEqualTo("feature_tag_value")
   }
 
@@ -126,6 +134,10 @@ internal class ApiClientImplTest {
       client.getEvaluations(
         user = user1,
         userEvaluationsId = "user_evaluation_id",
+        condition = UserEvaluationCondition(
+          evaluatedAt = "1690798200",
+          userAttributesUpdated = "false",
+        ),
       )
     }
 
@@ -153,6 +165,10 @@ internal class ApiClientImplTest {
         user = user1,
         userEvaluationsId = "user_evaluation_id",
         timeoutMillis = TimeUnit.SECONDS.toMillis(1),
+        condition = UserEvaluationCondition(
+          evaluatedAt = "1690798200",
+          userAttributesUpdated = "false",
+        ),
       )
     }
 
@@ -178,6 +194,10 @@ internal class ApiClientImplTest {
     val result = client.getEvaluations(
       user = user1,
       userEvaluationsId = "user_evaluation_id",
+      condition = UserEvaluationCondition(
+        evaluatedAt = "1690798200",
+        userAttributesUpdated = "false",
+      ),
     )
 
     assertThat(result).isInstanceOf(GetEvaluationsResult.Failure::class.java)
@@ -214,6 +234,10 @@ internal class ApiClientImplTest {
     val result = client.getEvaluations(
       user = user1,
       userEvaluationsId = "user_evaluation_id",
+      condition = UserEvaluationCondition(
+        evaluatedAt = "1690799200",
+        userAttributesUpdated = "true",
+      ),
     )
 
     assertThat(result).isInstanceOf(GetEvaluationsResult.Failure::class.java)
@@ -241,6 +265,10 @@ internal class ApiClientImplTest {
     val result = client.getEvaluations(
       user = user1,
       userEvaluationsId = "user_evaluation_id",
+      condition = UserEvaluationCondition(
+        evaluatedAt = "1690799200",
+        userAttributesUpdated = "true",
+      ),
     )
 
     assertThat(result).isInstanceOf(GetEvaluationsResult.Failure::class.java)

@@ -34,6 +34,7 @@ internal class ComponentImpl(
       evaluationDao = dataModule.evaluationDao,
       sharedPreferences = dataModule.sharedPreferences,
       idGenerator = dataModule.idGenerator,
+      featureTag = dataModule.config.featureTag,
     )
   }
 
