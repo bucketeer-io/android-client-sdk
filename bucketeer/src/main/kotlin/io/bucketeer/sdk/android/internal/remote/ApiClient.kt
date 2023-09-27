@@ -8,6 +8,7 @@ interface ApiClient {
     user: User,
     userEvaluationsId: String,
     timeoutMillis: Long? = null,
+    condition: UserEvaluationCondition,
   ): GetEvaluationsResult
 
   fun registerEvents(events: List<Event>): RegisterEventsResult

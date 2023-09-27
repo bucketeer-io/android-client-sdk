@@ -46,11 +46,13 @@ internal class ApiClientImpl(
     user: User,
     userEvaluationsId: String,
     timeoutMillis: Long?,
+    condition: UserEvaluationCondition,
   ): GetEvaluationsResult {
     val body = GetEvaluationsRequest(
       tag = featureTag,
       user = user,
       userEvaluationsId = userEvaluationsId,
+      userEvaluationCondition = condition,
     )
 
     val request = Request.Builder()
@@ -94,7 +96,7 @@ internal class ApiClientImpl(
 
       GetEvaluationsResult.Success(
         value = response,
-        seconds = TimeUnit.MILLISECONDS.toSeconds(millis),
+        seconds = millis / 1000.0,
         sizeByte = contentLength,
         featureTag = featureTag,
       )
@@ -102,7 +104,14 @@ internal class ApiClientImpl(
 
     return result.fold(
       onSuccess = { res -> res },
-      onFailure = { e -> GetEvaluationsResult.Failure(e.toBKTException(), featureTag) },
+      onFailure = { e ->
+        GetEvaluationsResult.Failure(
+          e.toBKTException(
+            requestTimeoutMillis = client.callTimeoutMillis.toLong(),
+          ),
+          featureTag,
+        )
+      },
     )
   }
 
@@ -140,7 +149,13 @@ internal class ApiClientImpl(
 
     return result.fold(
       onSuccess = { res -> res },
-      onFailure = { e -> RegisterEventsResult.Failure(e.toBKTException()) },
+      onFailure = { e ->
+        RegisterEventsResult.Failure(
+          e.toBKTException(
+            requestTimeoutMillis = client.callTimeoutMillis.toLong(),
+          ),
+        )
+      },
     )
   }
 

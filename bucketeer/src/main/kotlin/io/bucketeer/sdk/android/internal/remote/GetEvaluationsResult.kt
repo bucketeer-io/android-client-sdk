@@ -6,7 +6,7 @@ import io.bucketeer.sdk.android.internal.model.response.GetEvaluationsResponse
 sealed class GetEvaluationsResult {
   data class Success(
     val value: GetEvaluationsResponse,
-    val seconds: Long,
+    val seconds: Double,
     val sizeByte: Int,
     val featureTag: String,
   ) : GetEvaluationsResult()

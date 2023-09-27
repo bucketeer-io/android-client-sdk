@@ -84,13 +84,13 @@ fun Response.toBKTException(adapter: JsonAdapter<ErrorResponse>): BKTException {
   }
 }
 
-internal fun Throwable.toBKTException(): BKTException {
+internal fun Throwable.toBKTException(requestTimeoutMillis: Long): BKTException {
   return when (this) {
     is BKTException -> this
     is SocketTimeoutException,
     is InterruptedIOException,
     ->
-      BKTException.TimeoutException("Request timeout error: ${this.message}", this)
+      BKTException.TimeoutException("Request timeout error: ${this.message}", this, timeoutMillis = requestTimeoutMillis)
     is UnknownHostException ->
       BKTException.NetworkException("Network connection error: ${this.message}", this)
     else -> BKTException.UnknownException("Unknown error: ${this.message}", this)

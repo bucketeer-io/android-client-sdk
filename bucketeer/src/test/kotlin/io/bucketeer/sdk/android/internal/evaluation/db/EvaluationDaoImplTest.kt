@@ -16,7 +16,7 @@ import io.bucketeer.sdk.android.internal.di.DataModule
 import io.bucketeer.sdk.android.internal.model.Evaluation
 import io.bucketeer.sdk.android.mocks.evaluation1
 import io.bucketeer.sdk.android.mocks.evaluation2
-import io.bucketeer.sdk.android.mocks.evaluation3
+import io.bucketeer.sdk.android.mocks.evaluation4
 import io.bucketeer.sdk.android.mocks.user1
 import io.bucketeer.sdk.android.mocks.user2
 import org.junit.After
@@ -164,7 +164,7 @@ class EvaluationDaoImplTest {
   @Test
   fun `deleteAll - should not update other user's item`() {
     dao.deleteAllAndInsert(user1.id, listOf(evaluation1))
-    dao.deleteAllAndInsert(user2.id, listOf(evaluation3))
+    dao.deleteAllAndInsert(user2.id, listOf(evaluation4))
 
     val actual1 = dao.get(user1.id)
     val actual2 = dao.get(user2.id)
@@ -173,7 +173,7 @@ class EvaluationDaoImplTest {
     assertThat(actual1[0]).isEqualTo(evaluation1)
 
     assertThat(actual2).hasSize(1)
-    assertThat(actual2[0]).isEqualTo(evaluation3)
+    assertThat(actual2[0]).isEqualTo(evaluation4)
   }
 
   private fun getEvaluations(): Cursor {

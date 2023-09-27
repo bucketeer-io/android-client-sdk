@@ -110,7 +110,7 @@ class BKTClientImplTest {
     val lastEvent = dbEvents[1]
     assertSizeMetricsEvent(
       lastEvent,
-      MetricsEventData.SizeMetricsEvent(ApiId.GET_EVALUATIONS, mapOf("tag" to config.featureTag), 645),
+      MetricsEventData.SizeMetricsEvent(ApiId.GET_EVALUATIONS, mapOf("tag" to config.featureTag), 713),
     )
   }
 
@@ -158,7 +158,7 @@ class BKTClientImplTest {
     assertThat(dbEvents).hasSize(1)
     assertTimeoutErrorMetricsEvent(
       dbEvents[0],
-      MetricsEventData.TimeoutErrorMetricsEvent(ApiId.GET_EVALUATIONS, mapOf("tag" to config.featureTag)),
+      MetricsEventData.TimeoutErrorMetricsEvent(ApiId.GET_EVALUATIONS, mapOf("tag" to config.featureTag, "timeout" to "30.0")),
     )
   }
 
@@ -477,6 +477,8 @@ class BKTClientImplTest {
                 evaluations = UserEvaluations(
                   id = "id_value",
                   evaluations = listOf(evaluation1),
+                  createdAt = "1690798021",
+                  forceUpdate = true,
                 ),
                 userEvaluationsId = "user_evaluations_id_value",
               ),
