@@ -12,11 +12,6 @@ internal interface EvaluationStorage {
 
   fun getBy(userId: String, featureId: String): Evaluation?
   fun get(userId: String): List<Evaluation>
-
-  // force update
   fun deleteAllAndInsert(userId: String, evaluations: List<Evaluation>, evaluatedAt: String)
-
-  // upsert
-  fun update(evaluations: List<Evaluation>, archivedFeatureIds: List<String>, evaluatedAt: String): Boolean
   fun refreshCache()
 }

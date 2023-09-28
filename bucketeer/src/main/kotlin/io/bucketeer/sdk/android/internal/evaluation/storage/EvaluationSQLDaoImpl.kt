@@ -79,25 +79,6 @@ internal class EvaluationSQLDaoImpl(
     }
   }
 
-  private fun deleteAll(
-    database: SupportSQLiteDatabase,
-    userId: String,
-  ) {
-    database.delete(
-      TABLE_NAME,
-      "$COLUMN_USER_ID=? AND $COLUMN_FEATURE_ID=?",
-      arrayOf(userId),
-    )
-  }
-
-  override fun deleteBy(userId: String, featureIds: List<String>) {
-    sqLiteOpenHelper.writableDatabase.delete(
-      TABLE_NAME,
-      "$COLUMN_USER_ID=? AND $COLUMN_FEATURE_ID IN ?",
-      arrayOf(userId, featureIds),
-    )
-  }
-
   override fun deleteAll(userId: String) {
     sqLiteOpenHelper.writableDatabase.delete(
       TABLE_NAME,

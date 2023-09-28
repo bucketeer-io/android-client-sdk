@@ -36,6 +36,10 @@ internal class EvaluationStorageImpl(
       evaluationSharedPrefs.evaluatedAt = value
     }
 
+  init {
+      refreshCache()
+  }
+
   override fun getBy(userId: String, featureId: String): Evaluation? {
     return get(userId).firstOrNull {
       it.featureId == featureId
@@ -57,14 +61,6 @@ internal class EvaluationStorageImpl(
     }
     evaluationSharedPrefs.evaluatedAt = evaluatedAt
     memCache.set(userId, evaluations)
-  }
-
-  override fun update(
-    evaluations: List<Evaluation>,
-    archivedFeatureIds: List<String>,
-    evaluatedAt: String,
-  ): Boolean {
-    TODO("Not yet implemented")
   }
 
   override fun refreshCache() {
