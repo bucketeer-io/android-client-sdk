@@ -1,4 +1,4 @@
-package io.bucketeer.sdk.android.internal.evaluation.storage
+package io.bucketeer.sdk.android.internal.evaluation.cache
 
 internal interface EvaluationSharedPrefs {
   var currentEvaluationsId: String

@@ -16,9 +16,9 @@ Abstract evaluatation data access
 
 Evaluatation data access Implemation
 ----------------
-* SQL data access
-* In-Memory cache
-* Shareprefence data access
+* [x] SQL data access
+* [x] In-Memory cache
+* [x] Shareprefence data access
 
 
 Unit test & intergration test

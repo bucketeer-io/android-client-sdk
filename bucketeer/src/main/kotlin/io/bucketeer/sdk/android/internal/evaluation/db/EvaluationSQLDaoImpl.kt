@@ -1,4 +1,4 @@
-package io.bucketeer.sdk.android.internal.evaluation.storage
+package io.bucketeer.sdk.android.internal.evaluation.db
 
 import android.content.ContentValues
 import android.database.sqlite.SQLiteDatabase

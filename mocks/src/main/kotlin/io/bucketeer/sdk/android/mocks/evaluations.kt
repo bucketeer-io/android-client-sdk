@@ -102,7 +102,7 @@ val evaluation2ForUpdate: Evaluation by lazy {
 
 val evaluation3: Evaluation by lazy {
   Evaluation(
-    id = "test-feature-1:9:user id 3",
+    id = "test-feature-3:9:user id 2",
     featureId = "test-feature-3",
     featureVersion = 9,
     userId = "user id 2",
@@ -117,8 +117,8 @@ val evaluation3: Evaluation by lazy {
 
 val evaluation4: Evaluation by lazy {
   Evaluation(
-    id = "test-feature-1:9:user id 2",
-    featureId = "test-feature-3",
+    id = "test-feature-4:9:user id 2",
+    featureId = "test-feature-4",
     featureVersion = 9,
     userId = "user id 2",
     variationId = "test-feature-1-variation-A",

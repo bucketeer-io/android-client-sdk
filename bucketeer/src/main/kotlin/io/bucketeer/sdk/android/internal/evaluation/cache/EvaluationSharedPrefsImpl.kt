@@ -1,10 +1,11 @@
-package io.bucketeer.sdk.android.internal.evaluation.storage
+package io.bucketeer.sdk.android.internal.evaluation.cache
 
 import android.annotation.SuppressLint
 import android.content.SharedPreferences
 import io.bucketeer.sdk.android.internal.Constants
 
-internal class EvaluationSharedPrefsImpl(private val sharedPrefs: SharedPreferences) : EvaluationSharedPrefs {
+internal class EvaluationSharedPrefsImpl(private val sharedPrefs: SharedPreferences) :
+  EvaluationSharedPrefs {
   override var currentEvaluationsId: String
     get() = sharedPrefs.getString(Constants.PREFERENCE_KEY_USER_EVALUATION_ID, "") ?: ""
 
