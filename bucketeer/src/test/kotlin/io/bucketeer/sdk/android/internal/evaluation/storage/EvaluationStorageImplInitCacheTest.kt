@@ -29,6 +29,7 @@ class EvaluationStorageImplInitCacheTest {
   private lateinit var evaluationSQLDao: EvaluationSQLDao
   private lateinit var evaluationSharedPrefs: EvaluationSharedPrefs
   private lateinit var memCache: MemCache<String, List<Evaluation>>
+
   @Before
   fun setUp() {
     userId = user1.id
@@ -61,4 +62,3 @@ class EvaluationStorageImplInitCacheTest {
     assert(evaluationStorage.get() == listOf(evaluation1, evaluation2))
   }
 }
-

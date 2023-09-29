@@ -53,7 +53,6 @@ class EvaluationStorageImplTest {
       evaluationSharedPrefs,
       memCache,
     )
-
   }
 
   @After
@@ -138,13 +137,10 @@ class EvaluationStorageImplTest {
 
     // check underlying storage
     assert(evaluationSharedPrefs.featureTag == "tag1")
-    assert(evaluationSharedPrefs.currentEvaluationsId  == "id_001")
+    assert(evaluationSharedPrefs.currentEvaluationsId == "id_001")
     assert(evaluationSharedPrefs.userAttributesUpdated)
     assert(evaluationSharedPrefs.evaluatedAt == "10001")
-
     evaluationStorage.userAttributesUpdated = false
     assert(!evaluationStorage.userAttributesUpdated)
   }
-
 }
-

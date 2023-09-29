@@ -39,7 +39,7 @@ internal class EvaluationStorageImpl(
     }
 
   init {
-      refreshCache()
+    refreshCache()
   }
 
   override fun getBy(featureId: String): Evaluation? {
