@@ -1,6 +1,7 @@
 package io.bucketeer.sdk.android.internal.model.request
 
 import com.squareup.moshi.JsonClass
+import io.bucketeer.sdk.android.BuildConfig
 import io.bucketeer.sdk.android.internal.model.SourceID
 import io.bucketeer.sdk.android.internal.model.User
 import io.bucketeer.sdk.android.internal.remote.UserEvaluationCondition
@@ -12,4 +13,5 @@ data class GetEvaluationsRequest(
   val userEvaluationsId: String,
   val sourceId: SourceID = SourceID.ANDROID,
   val userEvaluationCondition: UserEvaluationCondition,
+  val sdkVersion: String = BuildConfig.SDK_VERSION,
 )
