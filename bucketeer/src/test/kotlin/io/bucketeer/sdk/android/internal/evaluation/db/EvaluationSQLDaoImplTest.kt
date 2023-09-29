@@ -99,8 +99,10 @@ class EvaluationSQLDaoImplTest {
       sqlDao.startTransaction {
         putDataForUser1()
         sqlDao.put(user2.id, listOf(evaluation3, evaluation4))
+        // should have data
         assert(sqlDao.get(user1.id) == listOf(evaluation1, evaluation2))
         assert(sqlDao.get(user2.id) == listOf(evaluation3, evaluation4))
+        // simulate the error when applying transaction
         throw Exception("unknown")
       }
     } catch (ex: Exception) {

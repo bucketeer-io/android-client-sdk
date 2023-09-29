@@ -6,7 +6,7 @@ import io.bucketeer.sdk.android.internal.evaluation.db.EvaluationSQLDao
 import io.bucketeer.sdk.android.internal.model.Evaluation
 
 internal class EvaluationStorageImpl(
-  private val userId: String,
+  override val userId: String,
   private val evaluationSQLDao: EvaluationSQLDao,
   private val evaluationSharedPrefs: EvaluationSharedPrefs,
   private val memCache: MemCache<String, List<Evaluation>>,
@@ -42,18 +42,17 @@ internal class EvaluationStorageImpl(
       refreshCache()
   }
 
-  override fun getBy(userId: String, featureId: String): Evaluation? {
-    return get(userId).firstOrNull {
+  override fun getBy(featureId: String): Evaluation? {
+    return get().firstOrNull {
       it.featureId == featureId
     }
   }
 
-  override fun get(userId: String): List<Evaluation> {
+  override fun get(): List<Evaluation> {
     return memCache.get(userId) ?: emptyList()
   }
 
   override fun deleteAllAndInsert(
-    userId: String,
     evaluations: List<Evaluation>,
     evaluatedAt: String,
   ) {
@@ -65,7 +64,7 @@ internal class EvaluationStorageImpl(
     memCache.set(userId, evaluations)
   }
 
-  override fun refreshCache() {
+  private fun refreshCache() {
     evaluationSQLDao.get(userId).apply {
       memCache.set(userId, this)
     }
