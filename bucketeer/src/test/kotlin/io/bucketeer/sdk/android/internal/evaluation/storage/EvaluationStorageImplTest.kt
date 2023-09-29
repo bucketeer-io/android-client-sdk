@@ -86,6 +86,10 @@ class EvaluationStorageImplTest {
     evaluationStorage.deleteAllAndInsert(listOf(evaluation1, evaluation2), "13347")
     assert(evaluationStorage.get() == listOf(evaluation1, evaluation2))
     assert(evaluationStorage.evaluatedAt == "13347")
+
+    // check underlying storage
+    assert(evaluationSQLDao.get(userId) == listOf(evaluation1, evaluation2))
+    assert(memCache.get(userId) == listOf(evaluation1, evaluation2))
   }
 
   @Test
@@ -97,6 +101,10 @@ class EvaluationStorageImplTest {
     evaluationStorage.deleteAllAndInsert(listOf(evaluation2), "13347")
     assert(evaluationStorage.get() == listOf(evaluation2))
     assert(evaluationStorage.evaluatedAt == "13347")
+
+    // check underlying storage
+    assert(evaluationSQLDao.get(userId) == listOf(evaluation2))
+    assert(memCache.get(userId) == listOf(evaluation2))
   }
 
   @Test
@@ -106,21 +114,33 @@ class EvaluationStorageImplTest {
     assert(evaluationStorage.get() == listOf(evaluation1, evaluation2))
     assert(evaluationStorage.evaluatedAt == "13347")
 
+    // check underlying storage
     assert(evaluationSQLDao.get(user2.id) == listOf(evaluation3, evaluation4))
   }
 
   @Test
   fun testStorageValues() {
     assert(evaluationStorage.userId == userId)
+    assert(evaluationStorage.currentEvaluationsId == "")
     assert(evaluationStorage.evaluatedAt == "0")
     assert(evaluationStorage.featureTag == "")
     assert(!evaluationStorage.userAttributesUpdated)
 
     evaluationStorage.featureTag = "tag1"
+    evaluationStorage.currentEvaluationsId = "id_001"
     evaluationStorage.userAttributesUpdated = true
+    evaluationStorage.deleteAllAndInsert(listOf(), evaluatedAt = "10001")
 
     assert(evaluationStorage.featureTag == "tag1")
+    assert(evaluationStorage.currentEvaluationsId == "id_001")
     assert(evaluationStorage.userAttributesUpdated)
+    assert(evaluationStorage.evaluatedAt == "10001")
+
+    // check underlying storage
+    assert(evaluationSharedPrefs.featureTag == "tag1")
+    assert(evaluationSharedPrefs.currentEvaluationsId  == "id_001")
+    assert(evaluationSharedPrefs.userAttributesUpdated)
+    assert(evaluationSharedPrefs.evaluatedAt == "10001")
 
     evaluationStorage.userAttributesUpdated = false
     assert(!evaluationStorage.userAttributesUpdated)
