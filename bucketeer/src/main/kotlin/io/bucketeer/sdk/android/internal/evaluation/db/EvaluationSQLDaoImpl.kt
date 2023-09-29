@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.sqlite.db.SupportSQLiteOpenHelper
 import com.squareup.moshi.Moshi
+import io.bucketeer.sdk.android.BKTException
 import io.bucketeer.sdk.android.internal.database.asSequence
 import io.bucketeer.sdk.android.internal.database.getString
 import io.bucketeer.sdk.android.internal.database.select
@@ -27,7 +28,9 @@ internal class EvaluationSQLDaoImpl(
       list.forEach { evaluation ->
         val affectedRow = update(this, userId, evaluation)
         if (affectedRow == 0) {
-          insert(this, userId, evaluation)
+          if (insert(this, userId, evaluation) == -1L) {
+            throw BKTException.IllegalStateException("Could not insert data")
+          }
         }
       }
     }

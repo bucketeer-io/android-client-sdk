@@ -14,5 +14,6 @@ internal interface EvaluationStorage {
   fun getBy(featureId: String): Evaluation?
   fun get(): List<Evaluation>
   fun deleteAllAndInsert(evaluations: List<Evaluation>, evaluatedAt: String)
+  fun update(evaluations: List<Evaluation>, archivedFeatureIds: List<String>, evaluatedAt: String): Boolean
   fun refreshCache()
 }

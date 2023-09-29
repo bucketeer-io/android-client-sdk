@@ -60,6 +60,14 @@ internal class EvaluationStorageImpl(
     memCache.set(userId, evaluations)
   }
 
+  override fun update(
+    evaluations: List<Evaluation>,
+    archivedFeatureIds: List<String>,
+    evaluatedAt: String,
+  ): Boolean {
+    TODO("Not yet implemented")
+  }
+
   override fun refreshCache() {
     evaluationSQLDao.get(userId).apply {
       memCache.set(userId, this)
