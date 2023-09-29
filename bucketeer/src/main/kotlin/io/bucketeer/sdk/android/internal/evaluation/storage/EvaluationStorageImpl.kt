@@ -38,10 +38,6 @@ internal class EvaluationStorageImpl(
       evaluationSharedPrefs.evaluatedAt = value
     }
 
-  init {
-    refreshCache()
-  }
-
   override fun getBy(featureId: String): Evaluation? {
     return get().firstOrNull {
       it.featureId == featureId
@@ -64,7 +60,7 @@ internal class EvaluationStorageImpl(
     memCache.set(userId, evaluations)
   }
 
-  private fun refreshCache() {
+  override fun refreshCache() {
     evaluationSQLDao.get(userId).apply {
       memCache.set(userId, this)
     }

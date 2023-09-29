@@ -15,10 +15,16 @@ import io.bucketeer.sdk.android.internal.IdGenerator
 import io.bucketeer.sdk.android.internal.IdGeneratorImpl
 import io.bucketeer.sdk.android.internal.database.OpenHelperCallback
 import io.bucketeer.sdk.android.internal.database.createDatabase
+import io.bucketeer.sdk.android.internal.evaluation.cache.EvaluationSharedPrefsImpl
+import io.bucketeer.sdk.android.internal.evaluation.cache.MemCache
 import io.bucketeer.sdk.android.internal.evaluation.db.EvaluationDao
 import io.bucketeer.sdk.android.internal.evaluation.db.EvaluationDaoImpl
+import io.bucketeer.sdk.android.internal.evaluation.db.EvaluationSQLDaoImpl
+import io.bucketeer.sdk.android.internal.evaluation.storage.EvaluationStorage
+import io.bucketeer.sdk.android.internal.evaluation.storage.EvaluationStorageImpl
 import io.bucketeer.sdk.android.internal.event.db.EventDao
 import io.bucketeer.sdk.android.internal.event.db.EventDaoImpl
+import io.bucketeer.sdk.android.internal.model.Evaluation
 import io.bucketeer.sdk.android.internal.model.ReasonType
 import io.bucketeer.sdk.android.internal.model.User
 import io.bucketeer.sdk.android.internal.model.jsonadapter.ApiIdAdapter
@@ -58,6 +64,15 @@ internal open class DataModule(
       context = application,
       fileName = if (inMemoryDB) null else OpenHelperCallback.FILE_NAME,
       sharedPreferences,
+    )
+  }
+
+  internal val evaluationStorage: EvaluationStorage by lazy {
+    EvaluationStorageImpl(
+      userId = user.id,
+      EvaluationSQLDaoImpl(sqliteOpenHelper, moshi),
+      EvaluationSharedPrefsImpl(sharedPreferences),
+      MemCache.Builder<String, List<Evaluation>>().build(),
     )
   }
 

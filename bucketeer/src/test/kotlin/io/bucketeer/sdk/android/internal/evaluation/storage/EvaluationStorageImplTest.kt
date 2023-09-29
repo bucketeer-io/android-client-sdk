@@ -143,4 +143,17 @@ class EvaluationStorageImplTest {
     evaluationStorage.userAttributesUpdated = false
     assert(!evaluationStorage.userAttributesUpdated)
   }
+
+  @Test
+  fun verifyCacheAfterInit() {
+    evaluationSQLDao.put(userId, listOf(evaluation1, evaluation2))
+    val evaluationStorage = EvaluationStorageImpl(
+      userId,
+      evaluationSQLDao,
+      evaluationSharedPrefs,
+      memCache,
+    )
+    evaluationStorage.refreshCache()
+    assert(evaluationStorage.get() == listOf(evaluation1, evaluation2))
+  }
 }
