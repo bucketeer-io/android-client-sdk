@@ -15,10 +15,10 @@ import io.bucketeer.sdk.android.internal.IdGenerator
 import io.bucketeer.sdk.android.internal.IdGeneratorImpl
 import io.bucketeer.sdk.android.internal.database.OpenHelperCallback
 import io.bucketeer.sdk.android.internal.database.createDatabase
+import io.bucketeer.sdk.android.internal.evaluation.cache.EvaluationSharedPrefs
 import io.bucketeer.sdk.android.internal.evaluation.cache.EvaluationSharedPrefsImpl
 import io.bucketeer.sdk.android.internal.evaluation.cache.MemCache
-import io.bucketeer.sdk.android.internal.evaluation.db.EvaluationDao
-import io.bucketeer.sdk.android.internal.evaluation.db.EvaluationDaoImpl
+import io.bucketeer.sdk.android.internal.evaluation.db.EvaluationSQLDao
 import io.bucketeer.sdk.android.internal.evaluation.db.EvaluationSQLDaoImpl
 import io.bucketeer.sdk.android.internal.evaluation.storage.EvaluationStorage
 import io.bucketeer.sdk.android.internal.evaluation.storage.EvaluationStorageImpl
@@ -70,15 +70,23 @@ internal open class DataModule(
   internal val evaluationStorage: EvaluationStorage by lazy {
     EvaluationStorageImpl(
       userId = user.id,
-      EvaluationSQLDaoImpl(sqliteOpenHelper, moshi),
-      EvaluationSharedPrefsImpl(sharedPreferences),
+      evaluationSQLDao,
+      evaluationSharedPrefs,
       MemCache.Builder<String, List<Evaluation>>().build(),
     )
   }
 
-  internal val evaluationDao: EvaluationDao by lazy {
-    EvaluationDaoImpl(sqliteOpenHelper, moshi)
+  internal val evaluationSQLDao: EvaluationSQLDao by lazy {
+    EvaluationSQLDaoImpl(sqliteOpenHelper, moshi)
   }
+
+  internal val evaluationSharedPrefs: EvaluationSharedPrefs by lazy {
+    EvaluationSharedPrefsImpl(sharedPreferences)
+  }
+
+//  internal val evaluationDao: EvaluationDao by lazy {
+//    EvaluationDaoImpl(sqliteOpenHelper, moshi)
+//  }
 
   internal val eventDao: EventDao by lazy {
     EventDaoImpl(sqliteOpenHelper, moshi)

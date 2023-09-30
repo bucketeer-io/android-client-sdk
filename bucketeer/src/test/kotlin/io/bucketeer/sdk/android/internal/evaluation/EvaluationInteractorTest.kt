@@ -190,7 +190,7 @@ class EvaluationInteractorTest {
             ),
         ),
     )
-    interactor.evaluatedAt = "10000"
+    component.dataModule.evaluationSharedPrefs.evaluatedAt = "10000"
     interactor.fetch(user1, null)
 
     // assert request
@@ -278,7 +278,7 @@ class EvaluationInteractorTest {
     assertThat(interactor.currentEvaluationsId).isEqualTo("user_evaluations_id_value")
 
     assertThat(interactor.evaluations[user1.id]).isEqualTo(listOf(evaluation1, evaluation2))
-    val latestEvaluations = component.dataModule.evaluationDao.get(user1.id)
+    val latestEvaluations = component.dataModule.evaluationSQLDao.get(user1.id)
     assertThat(latestEvaluations).isEqualTo(listOf(evaluation1, evaluation2))
 
     // the featureTag should be `feature_tag_value`
@@ -334,7 +334,7 @@ class EvaluationInteractorTest {
     assertThat(interactor.evaluations[user1.id]).isEqualTo(listOf(evaluation2))
     assertThat(interactor.currentEvaluationsId).isEqualTo("user_evaluations_id_value_updated")
     // check database should not contain `evaluation1`
-    val latestEvaluations = component.dataModule.evaluationDao.get(user1.id)
+    val latestEvaluations = component.dataModule.evaluationSQLDao.get(user1.id)
     assertThat(latestEvaluations).isEqualTo(listOf(evaluation2))
 
     // the featureTag should be `feature_tag_value`
@@ -397,7 +397,7 @@ class EvaluationInteractorTest {
     assertThat(interactor.currentEvaluationsId).isEqualTo("user_evaluations_id_value_updated")
     // check database should not contain `evaluation1` & `evaluation2`
     // https://github.com/bucketeer-io/android-client-sdk/pull/88/files#r1333847962
-    val latestEvaluations = component.dataModule.evaluationDao.get(user1.id)
+    val latestEvaluations = component.dataModule.evaluationSQLDao.get(user1.id)
     assertThat(latestEvaluations).isEqualTo(
       listOf(
         evaluation2ForUpdate,
@@ -468,7 +468,7 @@ class EvaluationInteractorTest {
     assertThat(interactor.currentEvaluationsId).isEqualTo("user_evaluations_id_value")
 
     assertThat(interactor.evaluations[user1.id]).isEqualTo(listOf(evaluation1, evaluation2))
-    val latestEvaluations = component.dataModule.evaluationDao.get(user1.id)
+    val latestEvaluations = component.dataModule.evaluationSQLDao.get(user1.id)
     assertThat(latestEvaluations).isEqualTo(listOf(evaluation1, evaluation2))
 
     shadowOf(Looper.getMainLooper()).idle()
@@ -478,8 +478,8 @@ class EvaluationInteractorTest {
 
   @Test
   fun refreshCache() {
-    component.dataModule.evaluationDao.put(user1.id, listOf(evaluation1, evaluation2))
-    component.dataModule.evaluationDao.put(user2.id, listOf(evaluation4))
+    component.dataModule.evaluationSQLDao.put(user1.id, listOf(evaluation1, evaluation2))
+    component.dataModule.evaluationSQLDao.put(user2.id, listOf(evaluation4))
 
     assertThat(interactor.evaluations).isEmpty()
 
@@ -492,8 +492,8 @@ class EvaluationInteractorTest {
 
   @Test
   fun `getLatest - has cache`() {
-    component.dataModule.evaluationDao.put(user1.id, listOf(evaluation1, evaluation2))
-    component.dataModule.evaluationDao.put(user2.id, listOf(evaluation4))
+    component.dataModule.evaluationSQLDao.put(user1.id, listOf(evaluation1, evaluation2))
+    component.dataModule.evaluationSQLDao.put(user2.id, listOf(evaluation4))
 
     interactor.refreshCache(user1.id)
 
@@ -511,7 +511,7 @@ class EvaluationInteractorTest {
 
   @Test
   fun `getLatest - no corresponding evaluation`() {
-    component.dataModule.evaluationDao.put(user1.id, listOf(evaluation1))
+    component.dataModule.evaluationSQLDao.put(user1.id, listOf(evaluation1))
 
     interactor.refreshCache(user1.id)
 

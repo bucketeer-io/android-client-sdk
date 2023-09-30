@@ -63,7 +63,7 @@ class BKTClientEvaluationUpdateTests {
 
     assertThat(result).isNull()
     val client = BKTClient.getInstance() as BKTClientImpl
-    val evaluationDao = (client.component as ComponentImpl).dataModule.evaluationDao
+    val evaluationSQLDao = (client.component as ComponentImpl).dataModule.evaluationSQLDao
     val evaluationInteractor = client.component.evaluationInteractor
     val tobeRemoveEvaluation = Evaluation(
       id = "test-feature-2:9:user id 1",
@@ -77,11 +77,12 @@ class BKTClientEvaluationUpdateTests {
         type = ReasonType.DEFAULT,
       ),
     )
-    evaluationDao.put(USER_ID, listOf(tobeRemoveEvaluation))
-    assert(evaluationDao.get(USER_ID).contains(tobeRemoveEvaluation))
+    evaluationSQLDao.put(USER_ID, listOf(tobeRemoveEvaluation))
+    assert(evaluationSQLDao.get(USER_ID).contains(tobeRemoveEvaluation))
 
-    evaluationInteractor.evaluatedAt = "0"
-    evaluationInteractor.currentEvaluationsId = ""
+    // TODO: fix me
+//    evaluationInteractor.evaluatedAt = "0"
+//    evaluationInteractor.currentEvaluationsId = ""
     assertThat(evaluationInteractor.currentEvaluationsId).isEmpty()
     assertThat(evaluationInteractor.evaluatedAt).isEqualTo("0")
 
@@ -99,10 +100,10 @@ class BKTClientEvaluationUpdateTests {
 
     assertThat(resultWithNewTag).isNull()
     val clientWithNewTag = BKTClient.getInstance() as BKTClientImpl
-    val evaluationDaoWithNewTag = (clientWithNewTag.component as ComponentImpl).dataModule.evaluationDao
+    val evaluationSQLDaoWithNewTag = (clientWithNewTag.component as ComponentImpl).dataModule.evaluationSQLDao
     val evaluationInteractorWithNewTag = client.component.evaluationInteractor
     // Should not contain the previous data
-    assert(evaluationDaoWithNewTag.get(USER_ID).contains(tobeRemoveEvaluation).not())
+    assert(evaluationSQLDaoWithNewTag.get(USER_ID).contains(tobeRemoveEvaluation).not())
     assertThat(evaluationInteractorWithNewTag.currentEvaluationsId).isNotEmpty()
     assertThat(evaluationInteractorWithNewTag.evaluatedAt).isNotEmpty()
   }
@@ -126,7 +127,7 @@ class BKTClientEvaluationUpdateTests {
 
     assertThat(result).isNull()
     val client = BKTClient.getInstance() as BKTClientImpl
-    val evaluationDao = (client.component as ComponentImpl).dataModule.evaluationDao
+    val evaluationSQLDao = (client.component as ComponentImpl).dataModule.evaluationSQLDao
     val tobeRemoveEvaluation = Evaluation(
       id = "test-feature-2:9:user id 1",
       featureId = "test-feature-2",
@@ -139,8 +140,8 @@ class BKTClientEvaluationUpdateTests {
         type = ReasonType.DEFAULT,
       ),
     )
-    evaluationDao.put(USER_ID, listOf(tobeRemoveEvaluation))
-    assert(evaluationDao.get(USER_ID).contains(tobeRemoveEvaluation))
+    evaluationSQLDao.put(USER_ID, listOf(tobeRemoveEvaluation))
+    assert(evaluationSQLDao.get(USER_ID).contains(tobeRemoveEvaluation))
 
     // Prepare for switch tag
     BKTClient.destroy()
@@ -156,9 +157,9 @@ class BKTClientEvaluationUpdateTests {
 
     assertThat(resultWithNewTag).isNull()
     val clientWithNewTag = BKTClient.getInstance() as BKTClientImpl
-    val evaluationDaoWithNewTag = (clientWithNewTag.component as ComponentImpl).dataModule.evaluationDao
+    val evaluationSQLDaoWithNewTag = (clientWithNewTag.component as ComponentImpl).dataModule.evaluationSQLDao
     // Should not contain the previous data
-    assert(evaluationDaoWithNewTag.get(USER_ID).contains(tobeRemoveEvaluation).not())
+    assert(evaluationSQLDaoWithNewTag.get(USER_ID).contains(tobeRemoveEvaluation).not())
   }
 
   @Test

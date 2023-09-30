@@ -31,8 +31,7 @@ internal class ComponentImpl(
   override val evaluationInteractor: EvaluationInteractor by lazy {
     interactorModule.evaluationInteractor(
       apiClient = dataModule.apiClient,
-      evaluationDao = dataModule.evaluationDao,
-      sharedPreferences = dataModule.sharedPreferences,
+      evaluationStorage = dataModule.evaluationStorage,
       idGenerator = dataModule.idGenerator,
       featureTag = dataModule.config.featureTag,
     )
