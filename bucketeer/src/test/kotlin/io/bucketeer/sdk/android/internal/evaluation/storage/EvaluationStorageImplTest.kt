@@ -145,7 +145,7 @@ class EvaluationStorageImplTest {
   }
 
   @Test
-  fun verifyCacheAfterInit() {
+  fun refreshCache() {
     evaluationSQLDao.put(userId, listOf(evaluation1, evaluation2))
     val evaluationStorage = EvaluationStorageImpl(
       userId,
@@ -155,5 +155,10 @@ class EvaluationStorageImplTest {
     )
     evaluationStorage.refreshCache()
     assert(evaluationStorage.get() == listOf(evaluation1, evaluation2))
+  }
+
+  @Test
+  fun upsert() {
+
   }
 }
