@@ -159,6 +159,6 @@ class EvaluationStorageImplTest {
 
   @Test
   fun upsert() {
-
+    evaluationStorage.refreshCache()
   }
 }
