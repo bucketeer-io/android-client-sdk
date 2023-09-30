@@ -26,40 +26,9 @@ internal class EvaluationInteractor(
   featureTag: String,
   private val mainHandler: Handler,
 ) {
-  // key: userId
-//  @VisibleForTesting
-//  internal val evaluations = mutableMapOf<String, List<Evaluation>>()
 
   @VisibleForTesting
   internal val updateListeners = mutableMapOf<String, BKTClient.EvaluationUpdateListener>()
-
-  internal var currentEvaluationsId: String
-    get() = evaluationStorage.currentEvaluationsId
-    set(value) {
-      evaluationStorage.currentEvaluationsId = value
-    }
-
-  @VisibleForTesting
-  internal var featureTag: String
-    get() = evaluationStorage.featureTag
-    set(value) {
-      evaluationStorage.featureTag = value
-    }
-
-  // https://github.com/bucketeer-io/android-client-sdk/issues/69
-  // evaluatedAt: the last time the user was evaluated.
-  // The server will return in the get_evaluations response (UserEvaluations.CreatedAt),
-  // and it must be saved in the client
-  @VisibleForTesting
-  internal val evaluatedAt: String
-    get() = evaluationStorage.evaluatedAt
-
-  @VisibleForTesting
-  internal var userAttributesUpdated: Boolean
-    get() = evaluationStorage.userAttributesUpdated
-    set(value) {
-      evaluationStorage.userAttributesUpdated = value
-    }
 
   init {
     updateFeatureTag(featureTag)
@@ -70,9 +39,9 @@ internal class EvaluationInteractor(
     // https://github.com/bucketeer-io/android-client-sdk/issues/69
     // 1- Save the featureTag in the SharedPreferences configured in the BKTConfig
     // 2- Clear the userEvaluationsID in the SharedPreferences if the featureTag changes
-    if (this.featureTag != value) {
-      currentEvaluationsId = ""
-      this.featureTag = value
+    if (evaluationStorage.featureTag != value) {
+      evaluationStorage.currentEvaluationsId = ""
+      evaluationStorage.featureTag = value
     }
   }
 
@@ -80,15 +49,18 @@ internal class EvaluationInteractor(
   // userAttributesUpdated: when the user attributes change via the customAttributes interface,
   // the userAttributesUpdated field must be set to true in the next request.
   fun setUserAttributesUpdated() {
-    userAttributesUpdated = true
+    evaluationStorage.userAttributesUpdated = true
   }
 
   @Suppress("MoveVariableDeclarationIntoWhen")
   fun fetch(user: User, timeoutMillis: Long?): GetEvaluationsResult {
-    val currentEvaluationsId = this.currentEvaluationsId
+    val currentEvaluationsId = evaluationStorage.currentEvaluationsId
+    val evaluatedAt = evaluationStorage.evaluatedAt
+    val userAttributesUpdated = evaluationStorage.userAttributesUpdated.toString()
+    val featureTag = evaluationStorage.featureTag
     val condition = UserEvaluationCondition(
       evaluatedAt = evaluatedAt,
-      userAttributesUpdated = userAttributesUpdated.toString(),
+      userAttributesUpdated = userAttributesUpdated,
     )
     val result = apiClient.getEvaluations(user, currentEvaluationsId, timeoutMillis, condition)
 
@@ -100,7 +72,7 @@ internal class EvaluationInteractor(
         if (currentEvaluationsId == newEvaluationsId) {
           logd { "Nothing to sync" }
           // make sure we set `userAttributesUpdated` back to `false` even in case nothing to sync
-          userAttributesUpdated = false
+          evaluationStorage.userAttributesUpdated = false
           return result
         }
 
@@ -110,17 +82,17 @@ internal class EvaluationInteractor(
           // forceUpdate: a boolean that tells the SDK to delete all the current data
           // and save the latest evaluations from the response
           val forceUpdate = response.evaluations.forceUpdate
-          val evaluatedAt = response.evaluations.createdAt
+          val newEvaluatedAt = response.evaluations.createdAt
           if (forceUpdate) {
             val currentEvaluations: List<Evaluation> = response.evaluations.evaluations
             // 1- Delete all the evaluations from DB, and save the latest evaluations from the response into the DB
             // 2- Save the UserEvaluations.CreatedAt in the response as evaluatedAt in the SharedPreferences
-            evaluationStorage.deleteAllAndInsert(currentEvaluations, evaluatedAt)
+            evaluationStorage.deleteAllAndInsert(currentEvaluations, newEvaluatedAt)
           } else {
             val archivedFeatureIds = response.evaluations.archivedFeatureIds
             val updatedEvaluations = response.evaluations.evaluations
             shouldNotifyListener =
-              evaluationStorage.update(updatedEvaluations, archivedFeatureIds, evaluatedAt)
+              evaluationStorage.update(updatedEvaluations, archivedFeatureIds, newEvaluatedAt)
           }
         } catch (ex: Exception) {
           loge { "Failed to update latest evaluations" }
@@ -131,8 +103,8 @@ internal class EvaluationInteractor(
           return result
         }
 
-        this.currentEvaluationsId = newEvaluationsId
-        userAttributesUpdated = false
+        evaluationStorage.currentEvaluationsId = newEvaluationsId
+        evaluationStorage.userAttributesUpdated = false
 
         // Update listeners should be called on the main thread
         // to avoid unintentional lock on Interactor's execution thread.

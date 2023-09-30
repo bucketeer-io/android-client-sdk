@@ -64,6 +64,8 @@ class BKTClientEvaluationUpdateTests {
     assertThat(result).isNull()
     val client = BKTClient.getInstance() as BKTClientImpl
     val evaluationSQLDao = (client.component as ComponentImpl).dataModule.evaluationSQLDao
+    val evaluationStorage = (client.component as ComponentImpl).dataModule.evaluationStorage
+    val evaluationSharedPrefs = (client.component as ComponentImpl).dataModule.evaluationSharedPrefs
     val evaluationInteractor = client.component.evaluationInteractor
     val tobeRemoveEvaluation = Evaluation(
       id = "test-feature-2:9:user id 1",
@@ -80,11 +82,10 @@ class BKTClientEvaluationUpdateTests {
     evaluationSQLDao.put(USER_ID, listOf(tobeRemoveEvaluation))
     assert(evaluationSQLDao.get(USER_ID).contains(tobeRemoveEvaluation))
 
-    // TODO: fix me
-//    evaluationInteractor.evaluatedAt = "0"
-//    evaluationInteractor.currentEvaluationsId = ""
-    assertThat(evaluationInteractor.currentEvaluationsId).isEmpty()
-    assertThat(evaluationInteractor.evaluatedAt).isEqualTo("0")
+    evaluationSharedPrefs.evaluatedAt = "0"
+    evaluationStorage.currentEvaluationsId = ""
+    assertThat(evaluationStorage.currentEvaluationsId).isEmpty()
+    assertThat(evaluationStorage.evaluatedAt).isEqualTo("0")
 
     // Prepare for switch tag
     BKTClient.destroy()
@@ -100,12 +101,11 @@ class BKTClientEvaluationUpdateTests {
 
     assertThat(resultWithNewTag).isNull()
     val clientWithNewTag = BKTClient.getInstance() as BKTClientImpl
-    val evaluationSQLDaoWithNewTag = (clientWithNewTag.component as ComponentImpl).dataModule.evaluationSQLDao
-    val evaluationInteractorWithNewTag = client.component.evaluationInteractor
+    val evaluationStorageWithNewTag = (clientWithNewTag.component as ComponentImpl).dataModule.evaluationStorage
     // Should not contain the previous data
-    assert(evaluationSQLDaoWithNewTag.get(USER_ID).contains(tobeRemoveEvaluation).not())
-    assertThat(evaluationInteractorWithNewTag.currentEvaluationsId).isNotEmpty()
-    assertThat(evaluationInteractorWithNewTag.evaluatedAt).isNotEmpty()
+    assert(evaluationStorageWithNewTag.get().contains(tobeRemoveEvaluation).not())
+    assertThat(evaluationStorageWithNewTag.currentEvaluationsId).isNotEmpty()
+    assertThat(evaluationStorageWithNewTag.evaluatedAt).isNotEmpty()
   }
 
   @Test
