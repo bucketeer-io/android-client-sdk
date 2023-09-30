@@ -128,7 +128,7 @@ internal class BKTClientImpl(
   }
 
   private fun refreshCache() {
-    component.evaluationInteractor.refreshCache(component.userHolder.userId)
+    component.evaluationInteractor.refreshCache()
   }
 
   @MainThread

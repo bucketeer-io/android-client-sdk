@@ -277,7 +277,7 @@ class EvaluationInteractorTest {
 
     assertThat(interactor.currentEvaluationsId).isEqualTo("user_evaluations_id_value")
 
-    assertThat(interactor.evaluations[user1.id]).isEqualTo(listOf(evaluation1, evaluation2))
+    assertThat(component.dataModule.evaluationStorage.get()).isEqualTo(listOf(evaluation1, evaluation2))
     val latestEvaluations = component.dataModule.evaluationSQLDao.get(user1.id)
     assertThat(latestEvaluations).isEqualTo(listOf(evaluation1, evaluation2))
 
@@ -331,7 +331,7 @@ class EvaluationInteractorTest {
     assertThat(response).isEqualTo(expectResponse)
 
     // check cache should not contain `evaluation1`
-    assertThat(interactor.evaluations[user1.id]).isEqualTo(listOf(evaluation2))
+    assertThat(component.dataModule.evaluationStorage.get()).isEqualTo(listOf(evaluation2))
     assertThat(interactor.currentEvaluationsId).isEqualTo("user_evaluations_id_value_updated")
     // check database should not contain `evaluation1`
     val latestEvaluations = component.dataModule.evaluationSQLDao.get(user1.id)
@@ -388,7 +388,7 @@ class EvaluationInteractorTest {
     val response = (result as GetEvaluationsResult.Success).value
     assertThat(response).isEqualTo(expectResponse)
     // check cache should not contain `evaluation1`
-    assertThat(interactor.evaluations[user1.id]).isEqualTo(
+    assertThat(component.dataModule.evaluationStorage.get()).isEqualTo(
       listOf(
         evaluation2ForUpdate,
         evaluation3, // its a new evaluation
@@ -467,7 +467,7 @@ class EvaluationInteractorTest {
 
     assertThat(interactor.currentEvaluationsId).isEqualTo("user_evaluations_id_value")
 
-    assertThat(interactor.evaluations[user1.id]).isEqualTo(listOf(evaluation1, evaluation2))
+    assertThat(component.dataModule.evaluationStorage.get()).isEqualTo(listOf(evaluation1, evaluation2))
     val latestEvaluations = component.dataModule.evaluationSQLDao.get(user1.id)
     assertThat(latestEvaluations).isEqualTo(listOf(evaluation1, evaluation2))
 
@@ -481,13 +481,11 @@ class EvaluationInteractorTest {
     component.dataModule.evaluationSQLDao.put(user1.id, listOf(evaluation1, evaluation2))
     component.dataModule.evaluationSQLDao.put(user2.id, listOf(evaluation4))
 
-    assertThat(interactor.evaluations).isEmpty()
+    assertThat(component.dataModule.evaluationStorage.get()).isEmpty()
 
-    interactor.refreshCache(user1.id)
+    interactor.refreshCache()
 
-    assertThat(interactor.evaluations).containsExactlyEntriesIn(
-      mapOf(user1.id to listOf(evaluation1, evaluation2)),
-    )
+    assert(component.dataModule.evaluationStorage.get() == listOf(evaluation1, evaluation2))
   }
 
   @Test
@@ -495,7 +493,7 @@ class EvaluationInteractorTest {
     component.dataModule.evaluationSQLDao.put(user1.id, listOf(evaluation1, evaluation2))
     component.dataModule.evaluationSQLDao.put(user2.id, listOf(evaluation4))
 
-    interactor.refreshCache(user1.id)
+    interactor.refreshCache()
 
     val actual = interactor.getLatest(user1.id, evaluation1.featureId)
 
@@ -513,7 +511,7 @@ class EvaluationInteractorTest {
   fun `getLatest - no corresponding evaluation`() {
     component.dataModule.evaluationSQLDao.put(user1.id, listOf(evaluation1))
 
-    interactor.refreshCache(user1.id)
+    interactor.refreshCache()
 
     val actual = interactor.getLatest(user1.id, "invalid_feature_id")
 

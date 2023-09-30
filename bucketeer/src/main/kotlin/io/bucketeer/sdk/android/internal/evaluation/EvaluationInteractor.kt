@@ -27,15 +27,14 @@ internal class EvaluationInteractor(
   private val mainHandler: Handler,
 ) {
   // key: userId
-  @VisibleForTesting
-  internal val evaluations = mutableMapOf<String, List<Evaluation>>()
+//  @VisibleForTesting
+//  internal val evaluations = mutableMapOf<String, List<Evaluation>>()
 
   @VisibleForTesting
   internal val updateListeners = mutableMapOf<String, BKTClient.EvaluationUpdateListener>()
 
   internal var currentEvaluationsId: String
     get() = evaluationStorage.currentEvaluationsId
-
     set(value) {
       evaluationStorage.currentEvaluationsId = value
     }
@@ -43,7 +42,6 @@ internal class EvaluationInteractor(
   @VisibleForTesting
   internal var featureTag: String
     get() = evaluationStorage.featureTag
-
     set(value) {
       evaluationStorage.featureTag = value
     }
@@ -59,7 +57,6 @@ internal class EvaluationInteractor(
   @VisibleForTesting
   internal var userAttributesUpdated: Boolean
     get() = evaluationStorage.userAttributesUpdated
-
     set(value) {
       evaluationStorage.userAttributesUpdated = value
     }
@@ -107,37 +104,26 @@ internal class EvaluationInteractor(
           return result
         }
 
-        val currentEvaluations: List<Evaluation>
+
         var shouldNotifyListener = true
 
-        // https://github.com/bucketeer-io/android-client-sdk/issues/69
-        // forceUpdate: a boolean that tells the SDK to delete all the current data
-        // and save the latest evaluations from the response
-        val forceUpdate = response.evaluations.forceUpdate
-        if (forceUpdate) {
-          // 1- Delete all the evaluations from DB, and save the latest evaluations from the response into the DB
-          currentEvaluations = response.evaluations.evaluations
-        } else {
-          val archivedFeatureIds = response.evaluations.archivedFeatureIds
-          val updatedEvaluations = response.evaluations.evaluations
-          // We will use `featureId` to filter the data
-          // Details -> https://github.com/bucketeer-io/android-client-sdk/pull/88/files#r1333847962
-          val currentEvaluationsByFeaturedId = evaluationStorage.get().associateBy { it.featureId }.toMutableMap()
-          // 1- Check the evaluation list in the response and upsert them in the DB if the list is not empty
-          updatedEvaluations.forEach { evaluation ->
-            currentEvaluationsByFeaturedId[evaluation.featureId] = evaluation
-          }
-          // 2- Check the list of the feature flags that were archived on the console and delete them from the DB
-          currentEvaluations = currentEvaluationsByFeaturedId.values.filterNot {
-            archivedFeatureIds.contains(it.featureId)
-          }
-          shouldNotifyListener = updatedEvaluations.isNotEmpty() || archivedFeatureIds.isNotEmpty()
-        }
-
-        // 3- Save `currentEvaluations` to the database &
-        // Save the UserEvaluations.CreatedAt in the response as evaluatedAt in the SharedPreferences
         try {
-          evaluationStorage.deleteAllAndInsert(currentEvaluations, evaluatedAt)
+          // https://github.com/bucketeer-io/android-client-sdk/issues/69
+          // forceUpdate: a boolean that tells the SDK to delete all the current data
+          // and save the latest evaluations from the response
+          val forceUpdate = response.evaluations.forceUpdate
+          val evaluatedAt = response.evaluations.createdAt
+          if (forceUpdate) {
+            val currentEvaluations: List<Evaluation> = response.evaluations.evaluations
+            // 1- Delete all the evaluations from DB, and save the latest evaluations from the response into the DB
+            // 2- Save the UserEvaluations.CreatedAt in the response as evaluatedAt in the SharedPreferences
+            evaluationStorage.deleteAllAndInsert(currentEvaluations, evaluatedAt)
+          } else {
+            val archivedFeatureIds = response.evaluations.archivedFeatureIds
+            val updatedEvaluations = response.evaluations.evaluations
+            shouldNotifyListener =
+              evaluationStorage.update(updatedEvaluations, archivedFeatureIds, evaluatedAt)
+          }
         } catch (ex: Exception) {
           loge { "Failed to update latest evaluations" }
           GetEvaluationsResult.Failure(
@@ -166,8 +152,8 @@ internal class EvaluationInteractor(
     return result
   }
 
-  fun refreshCache(userId: String) {
-
+  fun refreshCache() {
+    evaluationStorage.refreshCache()
   }
 
   fun addUpdateListener(listener: BKTClient.EvaluationUpdateListener): String {

@@ -65,7 +65,20 @@ internal class EvaluationStorageImpl(
     archivedFeatureIds: List<String>,
     evaluatedAt: String,
   ): Boolean {
-    TODO("Not yet implemented")
+    // We will use `featureId` to filter the data
+    // Details -> https://github.com/bucketeer-io/android-client-sdk/pull/88/files#r1333847962
+    val currentEvaluationsByFeaturedId =
+      evaluationSQLDao.get(userId).associateBy { it.featureId }.toMutableMap()
+    // 1- Check the evaluation list in the response and upsert them in the DB if the list is not empty
+    evaluations.forEach { evaluation ->
+      currentEvaluationsByFeaturedId[evaluation.featureId] = evaluation
+    }
+    // 2- Check the list of the feature flags that were archived on the console and delete them from the DB
+    val currentEvaluations = currentEvaluationsByFeaturedId.values.filterNot {
+      archivedFeatureIds.contains(it.featureId)
+    }
+    deleteAllAndInsert(currentEvaluations, evaluatedAt)
+    return evaluations.isNotEmpty() || archivedFeatureIds.isNotEmpty()
   }
 
   override fun refreshCache() {

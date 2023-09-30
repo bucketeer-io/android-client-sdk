@@ -6,7 +6,6 @@ import com.squareup.moshi.Moshi
 import io.bucketeer.sdk.android.internal.di.ComponentImpl
 import io.bucketeer.sdk.android.internal.di.DataModule
 import io.bucketeer.sdk.android.internal.model.ApiId
-import io.bucketeer.sdk.android.internal.model.Evaluation
 import io.bucketeer.sdk.android.internal.model.Event
 import io.bucketeer.sdk.android.internal.model.EventData
 import io.bucketeer.sdk.android.internal.model.EventType
@@ -96,8 +95,8 @@ class BKTClientImplTest {
 
     val client = BKTClient.getInstance() as BKTClientImpl
 
-    assertThat(client.componentImpl.evaluationInteractor.evaluations)
-      .isEqualTo(mapOf(user1.id to user1Evaluations.evaluations))
+    assertThat(client.componentImpl.dataModule.evaluationStorage.get())
+      .isEqualTo(user1Evaluations.evaluations)
 
     assertThat(client.componentImpl.dataModule.evaluationSQLDao.get(user1.id))
       .isEqualTo(user1Evaluations.evaluations)
@@ -147,8 +146,7 @@ class BKTClientImplTest {
 
     val client = BKTClient.getInstance() as BKTClientImpl
 
-    assertThat(client.componentImpl.evaluationInteractor.evaluations)
-      .isEqualTo(mapOf(user1.id to emptyList<Evaluation>()))
+    assertThat(client.componentImpl.dataModule.evaluationStorage.get()).isEmpty()
     assertThat(client.componentImpl.dataModule.evaluationSQLDao.get(user1.id)).isEmpty()
 
     Thread.sleep(100)
