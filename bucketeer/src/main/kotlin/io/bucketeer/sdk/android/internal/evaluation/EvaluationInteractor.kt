@@ -104,9 +104,7 @@ internal class EvaluationInteractor(
           return result
         }
 
-
         var shouldNotifyListener = true
-
         try {
           // https://github.com/bucketeer-io/android-client-sdk/issues/69
           // forceUpdate: a boolean that tells the SDK to delete all the current data
