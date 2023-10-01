@@ -84,10 +84,6 @@ internal open class DataModule(
     EvaluationSharedPrefsImpl(sharedPreferences)
   }
 
-//  internal val evaluationDao: EvaluationDao by lazy {
-//    EvaluationDaoImpl(sqliteOpenHelper, moshi)
-//  }
-
   internal val eventDao: EventDao by lazy {
     EventDaoImpl(sqliteOpenHelper, moshi)
   }
