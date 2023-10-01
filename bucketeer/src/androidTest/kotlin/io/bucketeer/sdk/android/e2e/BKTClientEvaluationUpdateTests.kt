@@ -79,10 +79,10 @@ class BKTClientEvaluationUpdateTests {
         type = ReasonType.DEFAULT,
       ),
     )
-    evaluationSQLDao.put(USER_ID, listOf(tobeRemoveEvaluation))
+    evaluationStorage.deleteAllAndInsert(listOf(tobeRemoveEvaluation), "0")
+    assert(evaluationStorage.get() == listOf(tobeRemoveEvaluation))
     assert(evaluationSQLDao.get(USER_ID).contains(tobeRemoveEvaluation))
 
-    evaluationSharedPrefs.evaluatedAt = "0"
     evaluationStorage.currentEvaluationsId = ""
     assertThat(evaluationStorage.currentEvaluationsId).isEmpty()
     assertThat(evaluationStorage.evaluatedAt).isEqualTo("0")
@@ -128,6 +128,7 @@ class BKTClientEvaluationUpdateTests {
     assertThat(result).isNull()
     val client = BKTClient.getInstance() as BKTClientImpl
     val evaluationSQLDao = (client.component as ComponentImpl).dataModule.evaluationSQLDao
+    val evaluationStorage = (client.component as ComponentImpl).dataModule.evaluationStorage
     val tobeRemoveEvaluation = Evaluation(
       id = "test-feature-2:9:user id 1",
       featureId = "test-feature-2",
@@ -140,8 +141,10 @@ class BKTClientEvaluationUpdateTests {
         type = ReasonType.DEFAULT,
       ),
     )
-    evaluationSQLDao.put(USER_ID, listOf(tobeRemoveEvaluation))
+    evaluationStorage.deleteAllAndInsert(listOf(tobeRemoveEvaluation), "0")
+    assert(evaluationStorage.get() == listOf(tobeRemoveEvaluation))
     assert(evaluationSQLDao.get(USER_ID).contains(tobeRemoveEvaluation))
+
 
     // Prepare for switch tag
     BKTClient.destroy()
@@ -158,8 +161,10 @@ class BKTClientEvaluationUpdateTests {
     assertThat(resultWithNewTag).isNull()
     val clientWithNewTag = BKTClient.getInstance() as BKTClientImpl
     val evaluationSQLDaoWithNewTag = (clientWithNewTag.component as ComponentImpl).dataModule.evaluationSQLDao
+    val evaluationStorageWithNewTag = (clientWithNewTag.component as ComponentImpl).dataModule.evaluationStorage
     // Should not contain the previous data
     assert(evaluationSQLDaoWithNewTag.get(USER_ID).contains(tobeRemoveEvaluation).not())
+    assert(evaluationStorageWithNewTag.get().contains(tobeRemoveEvaluation).not())
   }
 
   @Test
