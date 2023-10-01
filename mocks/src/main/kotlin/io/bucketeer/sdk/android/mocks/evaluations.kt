@@ -100,6 +100,21 @@ val evaluation2ForUpdate: Evaluation by lazy {
   )
 }
 
+val evaluationForTestInsert: Evaluation by lazy {
+  Evaluation(
+    id = "test-feature-3:9:user id 1",
+    featureId = "test-feature-3",
+    featureVersion = 9,
+    userId = "user id 1",
+    variationId = "test-feature-1-variation-A",
+    variationName = "test variation name2",
+    variationValue = "test variation value2",
+    reason = Reason(
+      type = ReasonType.DEFAULT,
+    ),
+  )
+}
+
 val evaluation3: Evaluation by lazy {
   Evaluation(
     id = "test-feature-3:9:user id 2",

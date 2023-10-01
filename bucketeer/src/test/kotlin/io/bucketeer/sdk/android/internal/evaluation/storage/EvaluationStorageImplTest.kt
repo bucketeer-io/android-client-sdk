@@ -15,8 +15,10 @@ import io.bucketeer.sdk.android.internal.evaluation.db.EvaluationSQLDaoImpl
 import io.bucketeer.sdk.android.internal.model.Evaluation
 import io.bucketeer.sdk.android.mocks.evaluation1
 import io.bucketeer.sdk.android.mocks.evaluation2
+import io.bucketeer.sdk.android.mocks.evaluation2ForUpdate
 import io.bucketeer.sdk.android.mocks.evaluation3
 import io.bucketeer.sdk.android.mocks.evaluation4
+import io.bucketeer.sdk.android.mocks.evaluationForTestInsert
 import io.bucketeer.sdk.android.mocks.user1
 import io.bucketeer.sdk.android.mocks.user2
 import org.junit.After
@@ -157,8 +159,74 @@ class EvaluationStorageImplTest {
     assert(evaluationStorage.get() == listOf(evaluation1, evaluation2))
   }
 
+
+  fun `upsert - insert new`() {
+    assert(
+      evaluationStorage.update(
+        listOf(evaluation1, evaluation2),
+        emptyList(),
+        "12340",
+      ),
+    )
+    assert(evaluationStorage.get() == listOf(evaluation1, evaluation2))
+
+    // check underlying storage
+    assert(evaluationSQLDao.get(userId) == listOf(evaluation1, evaluation2))
+    assert(memCache.get(userId) == listOf(evaluation1, evaluation2))
+    assert(evaluationSharedPrefs.evaluatedAt == "12340")
+  }
+
   @Test
-  fun upsert() {
-    evaluationStorage.refreshCache()
+  fun `upsert - update one and remove one`() {
+    evaluationSQLDao.put(userId, listOf(evaluation1, evaluation2))
+    assert(
+      evaluationStorage.update(
+        listOf(evaluation2ForUpdate),
+        listOf(evaluation1.featureId),
+        "12341",
+      ),
+    )
+    assert(evaluationStorage.get() == listOf(evaluation2ForUpdate))
+
+    // check underlying storage
+    assert(evaluationSQLDao.get(userId) == listOf(evaluation2ForUpdate))
+    assert(memCache.get(userId) == listOf(evaluation2ForUpdate))
+    assert(evaluationSharedPrefs.evaluatedAt == "12341")
+  }
+
+  @Test
+  fun `upsert - update one, remove one, insert new one`() {
+    evaluationSQLDao.put(userId, listOf(evaluation1, evaluation2))
+    assert(
+      evaluationStorage.update(
+        listOf(evaluation2ForUpdate, evaluationForTestInsert),
+        listOf(evaluation1.featureId),
+        "12342",
+      ),
+    )
+    assert(evaluationStorage.get() == listOf(evaluation2ForUpdate, evaluationForTestInsert))
+
+    // check underlying storage
+    assert(evaluationSQLDao.get(userId) == listOf(evaluation2ForUpdate, evaluationForTestInsert))
+    assert(memCache.get(userId) == listOf(evaluation2ForUpdate, evaluationForTestInsert))
+    assert(evaluationSharedPrefs.evaluatedAt == "12342")
+  }
+
+  @Test
+  fun `upsert - remove all, insert new one`() {
+    evaluationSQLDao.put(userId, listOf(evaluation1, evaluation2))
+    assert(
+      evaluationStorage.update(
+        listOf(evaluationForTestInsert),
+        listOf(evaluation1.featureId, evaluation2.featureId),
+        "12343",
+      ),
+    )
+    assert(evaluationStorage.get() == listOf(evaluationForTestInsert))
+
+    // check underlying storage
+    assert(evaluationSQLDao.get(userId) == listOf(evaluationForTestInsert))
+    assert(memCache.get(userId) == listOf(evaluationForTestInsert))
+    assert(evaluationSharedPrefs.evaluatedAt == "12343")
   }
 }

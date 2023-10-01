@@ -17,8 +17,8 @@ import io.bucketeer.sdk.android.internal.remote.UserEvaluationCondition
 import io.bucketeer.sdk.android.mocks.evaluation1
 import io.bucketeer.sdk.android.mocks.evaluation2
 import io.bucketeer.sdk.android.mocks.evaluation2ForUpdate
-import io.bucketeer.sdk.android.mocks.evaluation3
 import io.bucketeer.sdk.android.mocks.evaluation4
+import io.bucketeer.sdk.android.mocks.evaluationForTestInsert
 import io.bucketeer.sdk.android.mocks.user1
 import io.bucketeer.sdk.android.mocks.user1Evaluations
 import io.bucketeer.sdk.android.mocks.user1EvaluationsForceUpdate
@@ -395,7 +395,7 @@ class EvaluationInteractorTest {
     assertThat(storage.get()).isEqualTo(
       listOf(
         evaluation2ForUpdate,
-        evaluation3, // its a new evaluation
+        evaluationForTestInsert, // its a new evaluation
       ),
     )
     assertThat(storage.currentEvaluationsId).isEqualTo("user_evaluations_id_value_updated")
@@ -405,7 +405,7 @@ class EvaluationInteractorTest {
     assertThat(latestEvaluations).isEqualTo(
       listOf(
         evaluation2ForUpdate,
-        evaluation3, // its a new evaluation
+        evaluationForTestInsert, // its a new evaluation
       ),
     )
 
