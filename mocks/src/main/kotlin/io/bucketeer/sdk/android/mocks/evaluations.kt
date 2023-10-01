@@ -41,7 +41,7 @@ val user1EvaluationsUpsert: UserEvaluations by lazy {
     evaluations = listOf(
       evaluation1,
       evaluation2ForUpdate,
-      evaluation3,
+      evaluationForTestInsert,
     ),
     createdAt = "16907999999",
     forceUpdate = false,

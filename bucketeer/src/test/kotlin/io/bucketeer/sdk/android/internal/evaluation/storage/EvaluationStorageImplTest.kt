@@ -159,7 +159,6 @@ class EvaluationStorageImplTest {
     assert(evaluationStorage.get() == listOf(evaluation1, evaluation2))
   }
 
-
   fun `upsert - insert new`() {
     assert(
       evaluationStorage.update(
