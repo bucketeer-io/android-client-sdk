@@ -65,7 +65,6 @@ class BKTClientEvaluationUpdateTests {
     val client = BKTClient.getInstance() as BKTClientImpl
     val evaluationSQLDao = (client.component as ComponentImpl).dataModule.evaluationSQLDao
     val evaluationStorage = (client.component as ComponentImpl).dataModule.evaluationStorage
-    val evaluationSharedPrefs = (client.component as ComponentImpl).dataModule.evaluationSharedPrefs
     val evaluationInteractor = client.component.evaluationInteractor
     val tobeRemoveEvaluation = Evaluation(
       id = "test-feature-2:9:user id 1",
