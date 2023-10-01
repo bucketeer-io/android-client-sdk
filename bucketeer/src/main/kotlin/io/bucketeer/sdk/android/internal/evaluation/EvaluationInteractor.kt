@@ -89,6 +89,9 @@ internal class EvaluationInteractor(
             // 2- Save the UserEvaluations.CreatedAt in the response as evaluatedAt in the SharedPreferences
             evaluationStorage.deleteAllAndInsert(currentEvaluations, newEvaluatedAt)
           } else {
+            // 1- Check the evaluation list in the response and upsert them in the DB if the list is not empty
+            // 2- Check the list of the feature flags that were archived on the console and delete them from the DB
+            // 3- Save the UserEvaluations.CreatedAt in the response as evaluatedAt in the SharedPreferences
             val archivedFeatureIds = response.evaluations.archivedFeatureIds
             val updatedEvaluations = response.evaluations.evaluations
             shouldNotifyListener =
