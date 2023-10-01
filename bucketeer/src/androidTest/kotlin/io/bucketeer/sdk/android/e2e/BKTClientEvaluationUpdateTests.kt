@@ -143,11 +143,8 @@ class BKTClientEvaluationUpdateTests {
     evaluationStorage.deleteAllAndInsert(listOf(tobeRemoveEvaluation), "0")
     assert(evaluationStorage.get() == listOf(tobeRemoveEvaluation))
     assert(evaluationSQLDao.get(USER_ID).contains(tobeRemoveEvaluation))
-
-
     // Prepare for switch tag
     BKTClient.destroy()
-
     val configWithNewTag = BKTConfig.builder()
       .apiKey(BuildConfig.API_KEY)
       .apiEndpoint(BuildConfig.API_ENDPOINT)
