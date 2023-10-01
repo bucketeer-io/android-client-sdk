@@ -13,7 +13,7 @@ import io.bucketeer.sdk.android.internal.database.OpenHelperCallback
 import io.bucketeer.sdk.android.internal.database.getString
 import io.bucketeer.sdk.android.internal.database.transaction
 import io.bucketeer.sdk.android.internal.di.DataModule
-import io.bucketeer.sdk.android.internal.evaluation.db.EvaluationDaoImpl
+import io.bucketeer.sdk.android.internal.evaluation.db.EvaluationSQLDaoImpl
 import io.bucketeer.sdk.android.internal.event.db.EventDaoImpl
 import io.bucketeer.sdk.android.mocks.evaluation1
 import io.bucketeer.sdk.android.mocks.evaluationEvent
@@ -93,7 +93,7 @@ class MigrationTest {
   @Test
   fun testMigration2to3() {
     val openHelper = createOpenHelper(2)
-    val evaluationDao = EvaluationDaoImpl(openHelper, moshi)
+    val evaluationDao = EvaluationSQLDaoImpl(openHelper, moshi)
     val eventDao = EventDaoImpl(openHelper, moshi)
 
     // Put some data before migrating
