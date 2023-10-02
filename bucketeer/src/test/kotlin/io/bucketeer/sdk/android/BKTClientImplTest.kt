@@ -103,7 +103,7 @@ class BKTClientImplTest {
 
     Thread.sleep(100)
 
-    val dbEvents = client.componentImpl.dataModule.eventDao.getEvents()
+    val dbEvents = client.componentImpl.dataModule.eventSQLDao.getEvents()
     assertThat(dbEvents).hasSize(2)
     assertLatencyMetricsEvent(dbEvents[0], mapOf("tag" to config.featureTag), ApiId.GET_EVALUATIONS)
     val lastEvent = dbEvents[1]
@@ -152,7 +152,7 @@ class BKTClientImplTest {
     Thread.sleep(100)
 
     // timeout event should be saved
-    val dbEvents = client.componentImpl.dataModule.eventDao.getEvents()
+    val dbEvents = client.componentImpl.dataModule.eventSQLDao.getEvents()
     assertThat(dbEvents).hasSize(1)
     assertTimeoutErrorMetricsEvent(
       dbEvents[0],
@@ -386,7 +386,7 @@ class BKTClientImplTest {
 
     Thread.sleep(100)
 
-    val actualEvents = client.componentImpl.dataModule.eventDao.getEvents()
+    val actualEvents = client.componentImpl.dataModule.eventSQLDao.getEvents()
 
     assertThat(actualEvents).hasSize(3)
     val goalEvent = actualEvents.last()
@@ -527,7 +527,7 @@ class BKTClientImplTest {
     // 2 metrics events (latency , size) from the test code above
     // Because we filter duplicate
     // Finally we will have only 2 items
-    assertThat(client.componentImpl.dataModule.eventDao.getEvents()).hasSize(2)
+    assertThat(client.componentImpl.dataModule.eventSQLDao.getEvents()).hasSize(2)
   }
 
   @Test
@@ -574,7 +574,7 @@ class BKTClientImplTest {
 
     assertThat(client.componentImpl.dataModule.evaluationStorage.get()).hasSize(2)
 
-    val actualEvents = client.componentImpl.dataModule.eventDao.getEvents()
+    val actualEvents = client.componentImpl.dataModule.eventSQLDao.getEvents()
     assertThat(actualEvents).hasSize(3)
 
     val lastEvent = actualEvents.last()

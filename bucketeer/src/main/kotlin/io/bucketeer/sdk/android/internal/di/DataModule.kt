@@ -13,17 +13,17 @@ import io.bucketeer.sdk.android.internal.ClockImpl
 import io.bucketeer.sdk.android.internal.Constants
 import io.bucketeer.sdk.android.internal.IdGenerator
 import io.bucketeer.sdk.android.internal.IdGeneratorImpl
+import io.bucketeer.sdk.android.internal.cache.MemCache
 import io.bucketeer.sdk.android.internal.database.OpenHelperCallback
 import io.bucketeer.sdk.android.internal.database.createDatabase
 import io.bucketeer.sdk.android.internal.evaluation.cache.EvaluationSharedPrefs
 import io.bucketeer.sdk.android.internal.evaluation.cache.EvaluationSharedPrefsImpl
-import io.bucketeer.sdk.android.internal.evaluation.cache.MemCache
 import io.bucketeer.sdk.android.internal.evaluation.db.EvaluationSQLDao
 import io.bucketeer.sdk.android.internal.evaluation.db.EvaluationSQLDaoImpl
 import io.bucketeer.sdk.android.internal.evaluation.storage.EvaluationStorage
 import io.bucketeer.sdk.android.internal.evaluation.storage.EvaluationStorageImpl
-import io.bucketeer.sdk.android.internal.event.db.EventDao
-import io.bucketeer.sdk.android.internal.event.db.EventDaoImpl
+import io.bucketeer.sdk.android.internal.event.db.EventSQLDao
+import io.bucketeer.sdk.android.internal.event.db.EventSQLDaoImpl
 import io.bucketeer.sdk.android.internal.model.Evaluation
 import io.bucketeer.sdk.android.internal.model.ReasonType
 import io.bucketeer.sdk.android.internal.model.User
@@ -84,8 +84,8 @@ internal open class DataModule(
     EvaluationSharedPrefsImpl(sharedPreferences)
   }
 
-  internal val eventDao: EventDao by lazy {
-    EventDaoImpl(sqliteOpenHelper, moshi)
+  internal val eventSQLDao: EventSQLDao by lazy {
+    EventSQLDaoImpl(sqliteOpenHelper, moshi)
   }
 
   internal val sharedPreferences: SharedPreferences by lazy {

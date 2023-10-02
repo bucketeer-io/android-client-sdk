@@ -382,7 +382,7 @@ class EventInteractorTest {
     interactor.trackGoalEvent("feature_tag_value", user1, "goal_id_value", 0.5)
     interactor.trackGoalEvent("feature_tag_value", user1, "goal_id_value2", 0.4)
 
-    assertThat(component.dataModule.eventDao.getEvents()).hasSize(4)
+    assertThat(component.dataModule.eventSQLDao.getEvents()).hasSize(4)
 
     val result = interactor.sendEvents(force = false)
 
@@ -464,7 +464,7 @@ class EventInteractorTest {
     require(result is SendEventsResult.Success)
     assertThat(result.sent).isTrue()
 
-    val actualEvents = component.dataModule.eventDao.getEvents()
+    val actualEvents = component.dataModule.eventSQLDao.getEvents()
     assertThat(actualEvents).hasSize(1)
 
     val eventData = actualEvents.first().event as EventData.GoalEvent
@@ -487,7 +487,7 @@ class EventInteractorTest {
     interactor.trackFetchEvaluationsSuccess("feature_tag_value", 0.1, 723)
     interactor.trackGoalEvent("feature_tag_value", user1, "goal_id_value", 0.5)
 
-    assertThat(component.dataModule.eventDao.getEvents()).hasSize(3)
+    assertThat(component.dataModule.eventSQLDao.getEvents()).hasSize(3)
 
     val result = interactor.sendEvents(force = false)
 
@@ -496,13 +496,13 @@ class EventInteractorTest {
     require(result is SendEventsResult.Failure)
     assertThat(result.error).isInstanceOf(BKTException.BadRequestException::class.java)
 
-    val events = component.dataModule.eventDao.getEvents()
+    val events = component.dataModule.eventSQLDao.getEvents()
     // Note: because `register_events` fail
     // https://github.com/bucketeer-io/android-client-sdk/issues/56
     // So there will be one more auto tracked error metric event
     // The Metric event will depend on the error (more details See [BKTExceptionToMetricEventsTest.kt])
     // In this case is MetricsEventData.BadRequestErrorMetricsEvent
-    assertThat(component.dataModule.eventDao.getEvents()).hasSize(4)
+    assertThat(component.dataModule.eventSQLDao.getEvents()).hasSize(4)
 
     val expectedEvents = listOf(
       Event(
@@ -602,7 +602,7 @@ class EventInteractorTest {
         ),
     )
 
-    assertThat(component.dataModule.eventDao.getEvents()).isEmpty()
+    assertThat(component.dataModule.eventSQLDao.getEvents()).isEmpty()
 
     val result = interactor.sendEvents(force = false)
 
@@ -611,7 +611,7 @@ class EventInteractorTest {
 
     assertThat(server.requestCount).isEqualTo(0)
 
-    assertThat(component.dataModule.eventDao.getEvents()).isEmpty()
+    assertThat(component.dataModule.eventSQLDao.getEvents()).isEmpty()
   }
 
   @Test
@@ -628,7 +628,7 @@ class EventInteractorTest {
 
     interactor.trackFetchEvaluationsSuccess("feature_tag_value", 0.1, 723)
 
-    assertThat(component.dataModule.eventDao.getEvents()).hasSize(2)
+    assertThat(component.dataModule.eventSQLDao.getEvents()).hasSize(2)
 
     val result = interactor.sendEvents(force = false)
 
@@ -637,7 +637,7 @@ class EventInteractorTest {
 
     assertThat(server.requestCount).isEqualTo(0)
 
-    assertThat(component.dataModule.eventDao.getEvents()).hasSize(2)
+    assertThat(component.dataModule.eventSQLDao.getEvents()).hasSize(2)
   }
 
   @Test
@@ -714,7 +714,7 @@ class EventInteractorTest {
       ),
     )
 
-    assertThat(component.dataModule.eventDao.getEvents()).isEmpty()
+    assertThat(component.dataModule.eventSQLDao.getEvents()).isEmpty()
   }
 
   @Test
@@ -738,7 +738,7 @@ class EventInteractorTest {
         ),
     )
 
-    assertThat(component.dataModule.eventDao.getEvents()).hasSize(4)
+    assertThat(component.dataModule.eventSQLDao.getEvents()).hasSize(4)
 
     interactor.sendEvents(force = false)
 
@@ -817,7 +817,7 @@ class EventInteractorTest {
       ),
     )
 
-    val actualEvents = component.dataModule.eventDao.getEvents()
+    val actualEvents = component.dataModule.eventSQLDao.getEvents()
     assertThat(actualEvents).hasSize(2)
 
     // retriable evaluation shouldn't be deleted
@@ -873,7 +873,7 @@ class EventInteractorTest {
     interactor.addMetricEvents(listOf(latencyMetricsEvent1, sizeMetricsEvent1))
     interactor.addMetricEvents(listOf(internalErrorMetricsEvent1))
 
-    var storedEvents = component.dataModule.eventDao.getEvents()
+    var storedEvents = component.dataModule.eventSQLDao.getEvents()
     var expectedStoredEvents = listOf(latencyMetricsEvent1, sizeMetricsEvent1, internalErrorMetricsEvent1)
 
     assertThat(storedEvents).hasSize(3)
@@ -889,14 +889,14 @@ class EventInteractorTest {
     )
     interactor.addMetricEvents(listOf(internalErrorMetricsEvent1.copy(id = "4be4-a613-759441a37802-a613")))
 
-    storedEvents = component.dataModule.eventDao.getEvents()
+    storedEvents = component.dataModule.eventSQLDao.getEvents()
     // Check if we haven't any duplicate events
     assertThat(storedEvents).hasSize(3)
     assertThat(storedEvents).containsExactlyElementsIn(expectedStoredEvents)
 
     // Simulate send event success by removing all data from the cache database
-    component.dataModule.eventDao.delete(expectedStoredEvents.map { it.id })
-    storedEvents = component.dataModule.eventDao.getEvents()
+    component.dataModule.eventSQLDao.delete(expectedStoredEvents.map { it.id })
+    storedEvents = component.dataModule.eventSQLDao.getEvents()
     assertThat(storedEvents).hasSize(0)
 
     // Simulate tracking metrics events again to see we could add duplicate events from now
@@ -911,7 +911,7 @@ class EventInteractorTest {
     // this case for make sure we didn't make any bug affecting other event type
     interactor.addMetricEvents(listOf(goalEvent1))
 
-    storedEvents = component.dataModule.eventDao.getEvents()
+    storedEvents = component.dataModule.eventSQLDao.getEvents()
     assertThat(storedEvents).hasSize(3)
     assertThat(storedEvents).containsExactlyElementsIn(expectedStoredEvents)
   }

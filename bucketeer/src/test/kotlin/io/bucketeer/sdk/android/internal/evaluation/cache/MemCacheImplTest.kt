@@ -1,5 +1,6 @@
 package io.bucketeer.sdk.android.internal.evaluation.cache
 
+import io.bucketeer.sdk.android.internal.cache.MemCache
 import org.junit.Test
 
 class MemCacheImplTest {

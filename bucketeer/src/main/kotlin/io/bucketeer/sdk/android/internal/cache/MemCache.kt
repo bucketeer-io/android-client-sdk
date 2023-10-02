@@ -1,4 +1,4 @@
-package io.bucketeer.sdk.android.internal.evaluation.cache
+package io.bucketeer.sdk.android.internal.cache
 
 internal interface MemCache<in Key : Any, Value : Any> {
   fun set(key: Key, value: Value)
