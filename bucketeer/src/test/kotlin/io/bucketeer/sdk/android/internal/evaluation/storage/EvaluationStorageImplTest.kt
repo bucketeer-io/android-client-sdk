@@ -4,12 +4,12 @@ import android.content.Context
 import androidx.sqlite.db.SupportSQLiteOpenHelper
 import androidx.test.core.app.ApplicationProvider
 import io.bucketeer.sdk.android.internal.Constants
+import io.bucketeer.sdk.android.internal.cache.MemCache
 import io.bucketeer.sdk.android.internal.database.OpenHelperCallback
 import io.bucketeer.sdk.android.internal.database.createDatabase
 import io.bucketeer.sdk.android.internal.di.DataModule
 import io.bucketeer.sdk.android.internal.evaluation.cache.EvaluationSharedPrefs
 import io.bucketeer.sdk.android.internal.evaluation.cache.EvaluationSharedPrefsImpl
-import io.bucketeer.sdk.android.internal.cache.MemCache
 import io.bucketeer.sdk.android.internal.evaluation.db.EvaluationSQLDao
 import io.bucketeer.sdk.android.internal.evaluation.db.EvaluationSQLDaoImpl
 import io.bucketeer.sdk.android.internal.model.Evaluation
