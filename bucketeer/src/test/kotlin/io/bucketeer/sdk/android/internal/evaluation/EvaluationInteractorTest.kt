@@ -558,7 +558,7 @@ class EvaluationInteractorTest {
 }
 
 // https://github.com/bucketeer-io/android-client-sdk/pull/89#discussion_r1342258888
-internal inline fun EvaluationInteractor.prepareDependencyAndRun(block: (EvaluationInteractor) -> Unit): EvaluationInteractor {
+internal fun EvaluationInteractor.prepareDependencyAndRun(block: (EvaluationInteractor) -> Unit): EvaluationInteractor {
   block(this)
   return this
 }

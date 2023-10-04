@@ -78,7 +78,7 @@ class BKTClientEvaluationUpdateTests {
         type = ReasonType.DEFAULT,
       ),
     )
-    evaluationStorage.deleteAllAndInsert(listOf(tobeRemoveEvaluation), "0")
+    evaluationStorage.deleteAllAndInsert("", listOf(tobeRemoveEvaluation), "0")
     assert(evaluationStorage.get() == listOf(tobeRemoveEvaluation))
     assert(evaluationSQLDao.get(USER_ID).contains(tobeRemoveEvaluation))
 
@@ -140,7 +140,7 @@ class BKTClientEvaluationUpdateTests {
         type = ReasonType.DEFAULT,
       ),
     )
-    evaluationStorage.deleteAllAndInsert(listOf(tobeRemoveEvaluation), "0")
+    evaluationStorage.deleteAllAndInsert("", listOf(tobeRemoveEvaluation), "0")
     assert(evaluationStorage.get() == listOf(tobeRemoveEvaluation))
     assert(evaluationSQLDao.get(USER_ID).contains(tobeRemoveEvaluation))
     // Prepare for switch tag

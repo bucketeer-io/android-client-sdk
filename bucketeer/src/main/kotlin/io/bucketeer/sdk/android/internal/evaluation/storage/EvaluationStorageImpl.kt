@@ -49,6 +49,7 @@ internal class EvaluationStorageImpl(
   }
 
   override fun deleteAllAndInsert(
+    evaluationsId: String,
     evaluations: List<Evaluation>,
     evaluatedAt: String,
   ) {
@@ -56,11 +57,13 @@ internal class EvaluationStorageImpl(
       evaluationSQLDao.deleteAll(userId)
       evaluationSQLDao.put(userId, evaluations)
     }
+    evaluationSharedPrefs.currentEvaluationsId = evaluationsId
     evaluationSharedPrefs.evaluatedAt = evaluatedAt
     memCache.set(userId, evaluations)
   }
 
   override fun update(
+    evaluationsId: String,
     evaluations: List<Evaluation>,
     archivedFeatureIds: List<String>,
     evaluatedAt: String,
@@ -77,7 +80,11 @@ internal class EvaluationStorageImpl(
     val currentEvaluations = currentEvaluationsByFeaturedId.values.filterNot {
       archivedFeatureIds.contains(it.featureId)
     }
-    deleteAllAndInsert(currentEvaluations, evaluatedAt)
+    deleteAllAndInsert(
+      evaluationsId = evaluationsId,
+      evaluations = currentEvaluations,
+      evaluatedAt = evaluatedAt,
+    )
     return evaluations.isNotEmpty() || archivedFeatureIds.isNotEmpty()
   }
 
