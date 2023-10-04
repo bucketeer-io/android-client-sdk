@@ -120,7 +120,7 @@ class EvaluationInteractorTest {
       ),
     )
 
-    componentBuildWithEmptyFeatureTag.evaluationInteractor.also {
+    componentBuildWithEmptyFeatureTag.evaluationInteractor.prepareDependencyAndRun {
       val storageBuildWithEmptyFeatureTag = componentBuildWithEmptyFeatureTag.dataModule.evaluationStorage
       assertThat(storageBuildWithEmptyFeatureTag.currentEvaluationsId).isEqualTo("")
       storageBuildWithEmptyFeatureTag.currentEvaluationsId = "should_be_clear"
@@ -146,7 +146,7 @@ class EvaluationInteractorTest {
       ),
     )
 
-    component.evaluationInteractor.also {
+    component.evaluationInteractor.prepareDependencyAndRun {
       assertThat(component.dataModule.evaluationStorage.currentEvaluationsId).isEqualTo("")
     }
   }
@@ -173,7 +173,7 @@ class EvaluationInteractorTest {
         mainHandler = Handler(Looper.getMainLooper()),
       ),
     )
-    component.evaluationInteractor.also {
+    component.evaluationInteractor.prepareDependencyAndRun {
       assertThat(component.dataModule.evaluationStorage.currentEvaluationsId).isEqualTo("should_not_change")
     }
   }
@@ -555,4 +555,10 @@ class EvaluationInteractorTest {
 
     assertThat(interactor.updateListeners).isEmpty()
   }
+}
+
+// https://github.com/bucketeer-io/android-client-sdk/pull/89#discussion_r1342258888
+internal inline fun EvaluationInteractor.prepareDependencyAndRun(block: (EvaluationInteractor) -> Unit): EvaluationInteractor {
+  block(this)
+  return this
 }
