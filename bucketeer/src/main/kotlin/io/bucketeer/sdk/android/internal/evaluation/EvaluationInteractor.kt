@@ -151,7 +151,7 @@ internal class EvaluationInteractor(
     updateListeners.clear()
   }
 
-  fun getLatest(userId: String, featureId: String): Evaluation? {
+  fun getLatest(featureId: String): Evaluation? {
     return evaluationStorage.getBy(featureId)
   }
 }

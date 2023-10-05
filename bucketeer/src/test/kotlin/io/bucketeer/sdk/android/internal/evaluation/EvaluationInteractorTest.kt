@@ -503,14 +503,14 @@ class EvaluationInteractorTest {
 
     interactor.refreshCache()
 
-    val actual = interactor.getLatest(user1.id, evaluation1.featureId)
+    val actual = interactor.getLatest(evaluation1.featureId)
 
     assertThat(actual).isEqualTo(evaluation1)
   }
 
   @Test
   fun `getLatest - no cache`() {
-    val actual = interactor.getLatest(user1.id, evaluation1.featureId)
+    val actual = interactor.getLatest(evaluation1.featureId)
 
     assertThat(actual).isNull()
   }
@@ -521,7 +521,7 @@ class EvaluationInteractorTest {
 
     interactor.refreshCache()
 
-    val actual = interactor.getLatest(user1.id, "invalid_feature_id")
+    val actual = interactor.getLatest("invalid_feature_id")
 
     assertThat(actual).isNull()
   }
