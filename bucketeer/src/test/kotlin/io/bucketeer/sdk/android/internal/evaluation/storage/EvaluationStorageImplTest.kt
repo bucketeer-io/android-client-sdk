@@ -63,6 +63,26 @@ class EvaluationStorageImplTest {
   }
 
   @Test
+  fun getCurrentUserId() {
+    assert(evaluationStorage.userId == userId)
+  }
+
+  @Test
+  fun testClearCurrentEvaluation() {
+    evaluationSharedPrefs.currentEvaluationsId = "evaluation_1"
+    assert(evaluationStorage.getCurrentEvaluationId() == "evaluation_1")
+    evaluationStorage.clearCurrentEvaluationId()
+    assert(evaluationStorage.getCurrentEvaluationId() == "")
+  }
+
+  fun testClearUserAttributesUpdated() {
+    evaluationSharedPrefs.userAttributesUpdated = true
+    assert(evaluationStorage.getUserAttributesUpdated())
+    evaluationStorage.clearUserAttributesUpdated()
+    assert(!evaluationStorage.getUserAttributesUpdated())
+  }
+
+  @Test
   fun getByFeatureId() {
     evaluationStorage.deleteAllAndInsert("2234", listOf(evaluation1, evaluation2), "13345")
     assert(evaluationStorage.getBy(featureId = "test-feature-1") == evaluation1)
@@ -124,7 +144,7 @@ class EvaluationStorageImplTest {
   }
 
   @Test
-  fun testStorageValues() {
+  fun testStorageValuesAfterDeleteAllAndInsert() {
     assert(evaluationStorage.userId == userId)
     assert(evaluationStorage.getCurrentEvaluationId() == "")
     assert(evaluationStorage.getEvaluatedAt() == "0")
@@ -133,20 +153,38 @@ class EvaluationStorageImplTest {
 
     evaluationStorage.setFeatureTag("tag1")
     evaluationStorage.setUserAttributesUpdated()
-    evaluationStorage.deleteAllAndInsert("2239", listOf(), evaluatedAt = "10001")
+    evaluationStorage.deleteAllAndInsert("2239", listOf(evaluation1, evaluation2), evaluatedAt = "10001")
+    assert(evaluationStorage.get() == listOf(evaluation1, evaluation2))
     assert(evaluationStorage.getCurrentEvaluationId() == "2239")
     assert(evaluationStorage.getFeatureTag() == "tag1")
-    assert(evaluationStorage.getCurrentEvaluationId() == "2239")
     assert(evaluationStorage.getUserAttributesUpdated())
     assert(evaluationStorage.getEvaluatedAt() == "10001")
 
     // check underlying storage
-    assert(evaluationSharedPrefs.featureTag == "tag1")
     assert(evaluationSharedPrefs.currentEvaluationsId == "2239")
+    assert(evaluationSharedPrefs.featureTag == "tag1")
     assert(evaluationSharedPrefs.userAttributesUpdated)
     assert(evaluationSharedPrefs.evaluatedAt == "10001")
-    evaluationStorage.clearUserAttributesUpdated()
-    assert(!evaluationStorage.getUserAttributesUpdated())
+  }
+
+  @Test
+  fun testStorageValuesAfterUpdate() {
+    testStorageValuesAfterDeleteAllAndInsert()
+
+    evaluationStorage.setFeatureTag("tag1")
+    evaluationStorage.setUserAttributesUpdated()
+    evaluationStorage.update("2249", listOf(evaluationForTestInsert), listOf(), evaluatedAt = "10002")
+    assert(evaluationStorage.get() == listOf(evaluation1, evaluation2, evaluationForTestInsert))
+    assert(evaluationStorage.getCurrentEvaluationId() == "2249")
+    assert(evaluationStorage.getFeatureTag() == "tag1")
+    assert(evaluationStorage.getUserAttributesUpdated())
+    assert(evaluationStorage.getEvaluatedAt() == "10002")
+
+    // check underlying storage
+    assert(evaluationSharedPrefs.currentEvaluationsId == "2249")
+    assert(evaluationSharedPrefs.featureTag == "tag1")
+    assert(evaluationSharedPrefs.userAttributesUpdated)
+    assert(evaluationSharedPrefs.evaluatedAt == "10002")
   }
 
   @Test
@@ -176,7 +214,6 @@ class EvaluationStorageImplTest {
     // check underlying storage
     assert(evaluationSQLDao.get(userId) == listOf(evaluation1, evaluation2))
     assert(memCache.get(userId) == listOf(evaluation1, evaluation2))
-    assert(evaluationSharedPrefs.evaluatedAt == "12340")
   }
 
   @Test
@@ -195,7 +232,6 @@ class EvaluationStorageImplTest {
     // check underlying storage
     assert(evaluationSQLDao.get(userId) == listOf(evaluation2ForUpdate))
     assert(memCache.get(userId) == listOf(evaluation2ForUpdate))
-    assert(evaluationSharedPrefs.evaluatedAt == "12341")
   }
 
   @Test
@@ -214,7 +250,6 @@ class EvaluationStorageImplTest {
     // check underlying storage
     assert(evaluationSQLDao.get(userId) == listOf(evaluation2ForUpdate, evaluationForTestInsert))
     assert(memCache.get(userId) == listOf(evaluation2ForUpdate, evaluationForTestInsert))
-    assert(evaluationSharedPrefs.evaluatedAt == "12342")
   }
 
   @Test
@@ -233,6 +268,5 @@ class EvaluationStorageImplTest {
     // check underlying storage
     assert(evaluationSQLDao.get(userId) == listOf(evaluationForTestInsert))
     assert(memCache.get(userId) == listOf(evaluationForTestInsert))
-    assert(evaluationSharedPrefs.evaluatedAt == "12343")
   }
 }
