@@ -11,32 +11,38 @@ internal class EvaluationStorageImpl(
   private val evaluationSharedPrefs: EvaluationSharedPrefs,
   private val memCache: MemCache<String, List<Evaluation>>,
 ) : EvaluationStorage {
-  override var currentEvaluationsId: String
-    get() = evaluationSharedPrefs.currentEvaluationsId
 
-    set(value) {
-      evaluationSharedPrefs.currentEvaluationsId = value
-    }
+  override fun getCurrentEvaluationId(): String {
+    return evaluationSharedPrefs.currentEvaluationsId
+  }
 
-  override var featureTag: String
-    get() = evaluationSharedPrefs.featureTag
+  override fun clearCurrentEvaluationId() {
+    evaluationSharedPrefs.currentEvaluationsId = ""
+  }
 
-    set(value) {
-      evaluationSharedPrefs.featureTag = value
-    }
-  override var userAttributesUpdated: Boolean
-    get() = evaluationSharedPrefs.userAttributesUpdated
+  override fun setFeatureTag(tag: String) {
+    evaluationSharedPrefs.featureTag = tag
+  }
 
-    set(value) {
-      evaluationSharedPrefs.userAttributesUpdated = value
-    }
+  override fun getFeatureTag(): String {
+    return evaluationSharedPrefs.featureTag
+  }
 
-  override var evaluatedAt: String
-    get() = evaluationSharedPrefs.evaluatedAt
+  override fun getEvaluatedAt(): String {
+    return evaluationSharedPrefs.evaluatedAt
+  }
 
-    set(value) {
-      evaluationSharedPrefs.evaluatedAt = value
-    }
+  override fun getUserAttributesUpdated(): Boolean {
+    return evaluationSharedPrefs.userAttributesUpdated
+  }
+
+  override fun setUserAttributesUpdated() {
+    evaluationSharedPrefs.userAttributesUpdated = true
+  }
+
+  override fun clearUserAttributesUpdated() {
+    evaluationSharedPrefs.userAttributesUpdated = false
+  }
 
   override fun getBy(featureId: String): Evaluation? {
     return get().firstOrNull {

@@ -64,29 +64,30 @@ class EvaluationStorageImplTest {
 
   @Test
   fun getByFeatureId() {
-    evaluationStorage.deleteAllAndInsert(listOf(evaluation1, evaluation2), "13345")
+    evaluationStorage.deleteAllAndInsert("2234", listOf(evaluation1, evaluation2), "13345")
     assert(evaluationStorage.getBy(featureId = "test-feature-1") == evaluation1)
     assert(evaluationStorage.getBy(featureId = "test-feature-2") == evaluation2)
-    assert(evaluationStorage.evaluatedAt == "13345")
   }
 
   @Test
   fun getByUserId() {
     assert(evaluationStorage.get().isEmpty())
-    evaluationStorage.deleteAllAndInsert(listOf(evaluation1, evaluation2), "13346")
+    evaluationStorage.deleteAllAndInsert("2235", listOf(evaluation1, evaluation2), "13346")
     assert(evaluationStorage.get() == listOf(evaluation1, evaluation2))
-    assert(evaluationStorage.evaluatedAt == "13346")
   }
 
   @Test
   fun `deleteAllAndInsert - insert`() {
     assert(evaluationStorage.get().isEmpty())
-    evaluationStorage.deleteAllAndInsert(listOf(evaluation1), "13346")
+    evaluationStorage.deleteAllAndInsert("2235", listOf(evaluation1), "13346")
     assert(evaluationStorage.get() == listOf(evaluation1))
-    assert(evaluationStorage.evaluatedAt == "13346")
-    evaluationStorage.deleteAllAndInsert(listOf(evaluation1, evaluation2), "13347")
+    assert(evaluationStorage.getEvaluatedAt() == "13346")
+    assert(evaluationStorage.getCurrentEvaluationId() == "2235")
+
+    evaluationStorage.deleteAllAndInsert("2236", listOf(evaluation1, evaluation2), "13347")
     assert(evaluationStorage.get() == listOf(evaluation1, evaluation2))
-    assert(evaluationStorage.evaluatedAt == "13347")
+    assert(evaluationStorage.getEvaluatedAt() == "13347")
+    assert(evaluationStorage.getCurrentEvaluationId() == "2236")
 
     // check underlying storage
     assert(evaluationSQLDao.get(userId) == listOf(evaluation1, evaluation2))
@@ -96,12 +97,15 @@ class EvaluationStorageImplTest {
   @Test
   fun `deleteAllAndInsert - remove old items`() {
     assert(evaluationStorage.get().isEmpty())
-    evaluationStorage.deleteAllAndInsert(listOf(evaluation1), "13346")
+    evaluationStorage.deleteAllAndInsert("2236", listOf(evaluation1), "13346")
     assert(evaluationStorage.get() == listOf(evaluation1))
-    assert(evaluationStorage.evaluatedAt == "13346")
-    evaluationStorage.deleteAllAndInsert(listOf(evaluation2), "13347")
+    assert(evaluationStorage.getEvaluatedAt() == "13346")
+    assert(evaluationStorage.getCurrentEvaluationId() == "2236")
+
+    evaluationStorage.deleteAllAndInsert("2237", listOf(evaluation2), "13347")
     assert(evaluationStorage.get() == listOf(evaluation2))
-    assert(evaluationStorage.evaluatedAt == "13347")
+    assert(evaluationStorage.getEvaluatedAt() == "13347")
+    assert(evaluationStorage.getCurrentEvaluationId() == "2237")
 
     // check underlying storage
     assert(evaluationSQLDao.get(userId) == listOf(evaluation2))
@@ -111,10 +115,10 @@ class EvaluationStorageImplTest {
   @Test
   fun `deleteAllAndInsert - should not return or affected other user's item`() {
     evaluationSQLDao.put(user2.id, listOf(evaluation3, evaluation4))
-    evaluationStorage.deleteAllAndInsert(listOf(evaluation1, evaluation2), "13347")
+    evaluationStorage.deleteAllAndInsert("2238", listOf(evaluation1, evaluation2), "13347")
     assert(evaluationStorage.get() == listOf(evaluation1, evaluation2))
-    assert(evaluationStorage.evaluatedAt == "13347")
-
+    assert(evaluationStorage.getEvaluatedAt() == "13347")
+    assert(evaluationStorage.getCurrentEvaluationId() == "2238")
     // check underlying storage
     assert(evaluationSQLDao.get(user2.id) == listOf(evaluation3, evaluation4))
   }
@@ -122,28 +126,27 @@ class EvaluationStorageImplTest {
   @Test
   fun testStorageValues() {
     assert(evaluationStorage.userId == userId)
-    assert(evaluationStorage.currentEvaluationsId == "")
-    assert(evaluationStorage.evaluatedAt == "0")
-    assert(evaluationStorage.featureTag == "")
-    assert(!evaluationStorage.userAttributesUpdated)
+    assert(evaluationStorage.getCurrentEvaluationId() == "")
+    assert(evaluationStorage.getEvaluatedAt() == "0")
+    assert(evaluationStorage.getFeatureTag() == "")
+    assert(!evaluationStorage.getUserAttributesUpdated())
 
-    evaluationStorage.featureTag = "tag1"
-    evaluationStorage.currentEvaluationsId = "id_001"
-    evaluationStorage.userAttributesUpdated = true
-    evaluationStorage.deleteAllAndInsert(listOf(), evaluatedAt = "10001")
-
-    assert(evaluationStorage.featureTag == "tag1")
-    assert(evaluationStorage.currentEvaluationsId == "id_001")
-    assert(evaluationStorage.userAttributesUpdated)
-    assert(evaluationStorage.evaluatedAt == "10001")
+    evaluationStorage.setFeatureTag("tag1")
+    evaluationStorage.setUserAttributesUpdated()
+    evaluationStorage.deleteAllAndInsert("2239", listOf(), evaluatedAt = "10001")
+    assert(evaluationStorage.getCurrentEvaluationId() == "2239")
+    assert(evaluationStorage.getFeatureTag() == "tag1")
+    assert(evaluationStorage.getCurrentEvaluationId() == "2239")
+    assert(evaluationStorage.getUserAttributesUpdated())
+    assert(evaluationStorage.getEvaluatedAt() == "10001")
 
     // check underlying storage
     assert(evaluationSharedPrefs.featureTag == "tag1")
-    assert(evaluationSharedPrefs.currentEvaluationsId == "id_001")
+    assert(evaluationSharedPrefs.currentEvaluationsId == "2239")
     assert(evaluationSharedPrefs.userAttributesUpdated)
     assert(evaluationSharedPrefs.evaluatedAt == "10001")
-    evaluationStorage.userAttributesUpdated = false
-    assert(!evaluationStorage.userAttributesUpdated)
+    evaluationStorage.clearUserAttributesUpdated()
+    assert(!evaluationStorage.getUserAttributesUpdated())
   }
 
   @Test
@@ -162,6 +165,7 @@ class EvaluationStorageImplTest {
   fun `upsert - insert new`() {
     assert(
       evaluationStorage.update(
+        "2240",
         listOf(evaluation1, evaluation2),
         emptyList(),
         "12340",
@@ -180,6 +184,7 @@ class EvaluationStorageImplTest {
     evaluationSQLDao.put(userId, listOf(evaluation1, evaluation2))
     assert(
       evaluationStorage.update(
+        "2260",
         listOf(evaluation2ForUpdate),
         listOf(evaluation1.featureId),
         "12341",
@@ -198,6 +203,7 @@ class EvaluationStorageImplTest {
     evaluationSQLDao.put(userId, listOf(evaluation1, evaluation2))
     assert(
       evaluationStorage.update(
+        "2230",
         listOf(evaluation2ForUpdate, evaluationForTestInsert),
         listOf(evaluation1.featureId),
         "12342",
@@ -216,6 +222,7 @@ class EvaluationStorageImplTest {
     evaluationSQLDao.put(userId, listOf(evaluation1, evaluation2))
     assert(
       evaluationStorage.update(
+        "22224",
         listOf(evaluationForTestInsert),
         listOf(evaluation1.featureId, evaluation2.featureId),
         "12343",

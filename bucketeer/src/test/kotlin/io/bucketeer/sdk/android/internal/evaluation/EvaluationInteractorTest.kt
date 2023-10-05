@@ -9,6 +9,7 @@ import io.bucketeer.sdk.android.BKTConfig
 import io.bucketeer.sdk.android.internal.di.ComponentImpl
 import io.bucketeer.sdk.android.internal.di.DataModule
 import io.bucketeer.sdk.android.internal.di.InteractorModule
+import io.bucketeer.sdk.android.internal.evaluation.cache.EvaluationSharedPrefs
 import io.bucketeer.sdk.android.internal.evaluation.storage.EvaluationStorage
 import io.bucketeer.sdk.android.internal.model.request.GetEvaluationsRequest
 import io.bucketeer.sdk.android.internal.model.response.GetEvaluationsResponse
@@ -41,6 +42,7 @@ class EvaluationInteractorTest {
 
   private lateinit var component: ComponentImpl
   private lateinit var storage: EvaluationStorage
+  private lateinit var prefs: EvaluationSharedPrefs
   private lateinit var moshi: Moshi
 
   private lateinit var interactor: EvaluationInteractor
@@ -70,6 +72,7 @@ class EvaluationInteractorTest {
     interactor = component.evaluationInteractor
     moshi = component.dataModule.moshi
     storage = component.dataModule.evaluationStorage
+    prefs = component.dataModule.evaluationSharedPrefs
   }
 
   @After
@@ -83,24 +86,24 @@ class EvaluationInteractorTest {
   @Test
   fun `checking evaluation condition after init`() {
     // the featureTag should be `feature_tag_value`
-    assertThat(storage.featureTag).isEqualTo("feature_tag_value")
+    assertThat(storage.getFeatureTag()).isEqualTo("feature_tag_value")
     // the evaluatedAt should be 0
-    assertThat(storage.evaluatedAt).isEqualTo("0")
+    assertThat(storage.getEvaluatedAt()).isEqualTo("0")
     // the userAttributesUpdated should be false
-    assertThat(storage.userAttributesUpdated).isEqualTo(false)
+    assertThat(storage.getUserAttributesUpdated()).isEqualTo(false)
   }
 
   @Test
   fun `set userAttributesUpdated`() {
     interactor.setUserAttributesUpdated()
     // the userAttributesUpdated should be true
-    assertThat(storage.userAttributesUpdated).isEqualTo(true)
+    assertThat(storage.getUserAttributesUpdated()).isEqualTo(true)
   }
 
   @Test
   fun `clear the userEvaluationsID in the SharedPreferences if the featureTag changes`() {
-    storage.currentEvaluationsId = "should_be_clear"
-    assertThat(storage.currentEvaluationsId).isEqualTo("should_be_clear")
+    prefs.currentEvaluationsId = "should_be_clear"
+    assertThat(storage.getCurrentEvaluationId()).isEqualTo("should_be_clear")
     // config feature_tag with empty string
     val configEmptyFeatureTag = BKTConfig.builder()
       .apiEndpoint(server.url("").toString())
@@ -122,9 +125,10 @@ class EvaluationInteractorTest {
 
     componentBuildWithEmptyFeatureTag.evaluationInteractor.prepareDependencyAndRun {
       val storageBuildWithEmptyFeatureTag = componentBuildWithEmptyFeatureTag.dataModule.evaluationStorage
-      assertThat(storageBuildWithEmptyFeatureTag.currentEvaluationsId).isEqualTo("")
-      storageBuildWithEmptyFeatureTag.currentEvaluationsId = "should_be_clear"
-      assertThat(storageBuildWithEmptyFeatureTag.currentEvaluationsId).isEqualTo("should_be_clear")
+      val sharedPrefsBuildWithEmptyFeatureTag = componentBuildWithEmptyFeatureTag.dataModule.evaluationSharedPrefs
+      assertThat(storageBuildWithEmptyFeatureTag.getCurrentEvaluationId()).isEqualTo("")
+      sharedPrefsBuildWithEmptyFeatureTag.currentEvaluationsId = "should_be_clear"
+      assertThat(storageBuildWithEmptyFeatureTag.getCurrentEvaluationId()).isEqualTo("should_be_clear")
     }
 
     val config = BKTConfig.builder()
@@ -147,14 +151,14 @@ class EvaluationInteractorTest {
     )
 
     component.evaluationInteractor.prepareDependencyAndRun {
-      assertThat(component.dataModule.evaluationStorage.currentEvaluationsId).isEqualTo("")
+      assertThat(component.dataModule.evaluationStorage.getCurrentEvaluationId()).isEqualTo("")
     }
   }
 
   @Test
   fun `userEvaluationsID should not change if the feature_tag didn't change`() {
-    storage.currentEvaluationsId = "should_not_change"
-    assertThat(storage.currentEvaluationsId).isEqualTo("should_not_change")
+    prefs.currentEvaluationsId = "should_not_change"
+    assertThat(storage.getCurrentEvaluationId()).isEqualTo("should_not_change")
     val config = BKTConfig.builder()
       .apiEndpoint(server.url("").toString())
       .featureTag("feature_tag_value")
@@ -174,7 +178,7 @@ class EvaluationInteractorTest {
       ),
     )
     component.evaluationInteractor.prepareDependencyAndRun {
-      assertThat(component.dataModule.evaluationStorage.currentEvaluationsId).isEqualTo("should_not_change")
+      assertThat(component.dataModule.evaluationStorage.getCurrentEvaluationId()).isEqualTo("should_not_change")
     }
   }
 
@@ -249,7 +253,7 @@ class EvaluationInteractorTest {
       listenerCalled = true
     }
 
-    assertThat(storage.currentEvaluationsId).isEmpty()
+    assertThat(storage.getCurrentEvaluationId()).isEmpty()
     // set setUserAttributesUpdated = true
     interactor.setUserAttributesUpdated()
 
@@ -279,18 +283,18 @@ class EvaluationInteractorTest {
     assert(success.value.evaluations.forceUpdate)
     assertThat(success.value.evaluations.createdAt).isEqualTo("1690798021")
 
-    assertThat(storage.currentEvaluationsId).isEqualTo("user_evaluations_id_value")
+    assertThat(storage.getCurrentEvaluationId()).isEqualTo("user_evaluations_id_value")
 
     assertThat(storage.get()).isEqualTo(listOf(evaluation1, evaluation2))
     val latestEvaluations = component.dataModule.evaluationSQLDao.get(user1.id)
     assertThat(latestEvaluations).isEqualTo(listOf(evaluation1, evaluation2))
 
     // the featureTag should be `feature_tag_value`
-    assertThat(storage.featureTag).isEqualTo("feature_tag_value")
+    assertThat(storage.getFeatureTag()).isEqualTo("feature_tag_value")
     // the evaluatedAt should be updated
-    assertThat(storage.evaluatedAt).isEqualTo("1690798021")
+    assertThat(storage.getEvaluatedAt()).isEqualTo("1690798021")
     // the userAttributesUpdated should be false after success request
-    assertThat(storage.userAttributesUpdated).isEqualTo(false)
+    assertThat(storage.getUserAttributesUpdated()).isEqualTo(false)
 
     shadowOf(Looper.getMainLooper()).idle()
 
@@ -336,17 +340,17 @@ class EvaluationInteractorTest {
 
     // check cache should not contain `evaluation1`
     assertThat(storage.get()).isEqualTo(listOf(evaluation2))
-    assertThat(storage.currentEvaluationsId).isEqualTo("user_evaluations_id_value_updated")
+    assertThat(storage.getCurrentEvaluationId()).isEqualTo("user_evaluations_id_value_updated")
     // check database should not contain `evaluation1`
     val latestEvaluations = component.dataModule.evaluationSQLDao.get(user1.id)
     assertThat(latestEvaluations).isEqualTo(listOf(evaluation2))
 
     // the featureTag should be `feature_tag_value`
-    assertThat(storage.featureTag).isEqualTo("feature_tag_value")
+    assertThat(storage.getFeatureTag()).isEqualTo("feature_tag_value")
     // the evaluatedAt should be updated
-    assertThat(storage.evaluatedAt).isEqualTo("1690798025")
+    assertThat(storage.getEvaluatedAt()).isEqualTo("1690798025")
     // the userAttributesUpdated should be false after success request
-    assertThat(storage.userAttributesUpdated).isEqualTo(false)
+    assertThat(storage.getUserAttributesUpdated()).isEqualTo(false)
 
     shadowOf(Looper.getMainLooper()).idle()
 
@@ -398,7 +402,7 @@ class EvaluationInteractorTest {
         evaluationForTestInsert, // its a new evaluation
       ),
     )
-    assertThat(storage.currentEvaluationsId).isEqualTo("user_evaluations_id_value_updated")
+    assertThat(storage.getCurrentEvaluationId()).isEqualTo("user_evaluations_id_value_updated")
     // check database should not contain `evaluation1` & `evaluation2`
     // https://github.com/bucketeer-io/android-client-sdk/pull/88/files#r1333847962
     val latestEvaluations = component.dataModule.evaluationSQLDao.get(user1.id)
@@ -410,11 +414,11 @@ class EvaluationInteractorTest {
     )
 
     // the featureTag should be `feature_tag_value`
-    assertThat(storage.featureTag).isEqualTo("feature_tag_value")
+    assertThat(storage.getFeatureTag()).isEqualTo("feature_tag_value")
     // the evaluatedAt should be updated
-    assertThat(storage.evaluatedAt).isEqualTo("16907999999")
+    assertThat(storage.getEvaluatedAt()).isEqualTo("16907999999")
     // the userAttributesUpdated should be false after success request
-    assertThat(storage.userAttributesUpdated).isEqualTo(false)
+    assertThat(storage.getUserAttributesUpdated()).isEqualTo(false)
 
     shadowOf(Looper.getMainLooper()).idle()
 
@@ -469,7 +473,7 @@ class EvaluationInteractorTest {
 
     assertThat(result).isInstanceOf(GetEvaluationsResult.Success::class.java)
 
-    assertThat(storage.currentEvaluationsId).isEqualTo("user_evaluations_id_value")
+    assertThat(storage.getCurrentEvaluationId()).isEqualTo("user_evaluations_id_value")
 
     assertThat(storage.get()).isEqualTo(listOf(evaluation1, evaluation2))
     val latestEvaluations = component.dataModule.evaluationSQLDao.get(user1.id)

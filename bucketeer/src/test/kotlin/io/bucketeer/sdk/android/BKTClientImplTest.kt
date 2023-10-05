@@ -517,7 +517,7 @@ class BKTClientImplTest {
 
     assertThat(result).isNull()
 
-    assertThat(client.componentImpl.dataModule.evaluationStorage.currentEvaluationsId)
+    assertThat(client.componentImpl.dataModule.evaluationStorage.getCurrentEvaluationId())
       .isEqualTo("user_evaluations_id_value_updated")
 
     assertThat(client.componentImpl.dataModule.evaluationStorage.get())
@@ -569,7 +569,7 @@ class BKTClientImplTest {
 
     assertThat(result).isInstanceOf(BKTException.InternalServerErrorException::class.java)
 
-    assertThat(client.componentImpl.dataModule.evaluationStorage.currentEvaluationsId)
+    assertThat(client.componentImpl.dataModule.evaluationStorage.getCurrentEvaluationId())
       .isEqualTo("user_evaluations_id_value")
 
     assertThat(client.componentImpl.dataModule.evaluationStorage.get()).hasSize(2)
@@ -617,7 +617,7 @@ class BKTClientImplTest {
       .isEqualTo(user1.toBKTUser().copy(attributes = attributes))
 
     val client = BKTClient.getInstance() as BKTClientImpl
-    assertThat(client.componentImpl.dataModule.evaluationStorage.currentEvaluationsId)
+    assertThat(client.componentImpl.dataModule.evaluationStorage.getCurrentEvaluationId())
       .isEmpty()
   }
 }

@@ -39,9 +39,9 @@ internal class EvaluationInteractor(
     // https://github.com/bucketeer-io/android-client-sdk/issues/69
     // 1- Save the featureTag in the SharedPreferences configured in the BKTConfig
     // 2- Clear the userEvaluationsID in the SharedPreferences if the featureTag changes
-    if (evaluationStorage.featureTag != value) {
-      evaluationStorage.currentEvaluationsId = ""
-      evaluationStorage.featureTag = value
+    if (evaluationStorage.getFeatureTag() != value) {
+      evaluationStorage.clearCurrentEvaluationId()
+      evaluationStorage.setFeatureTag(value)
     }
   }
 
@@ -49,15 +49,15 @@ internal class EvaluationInteractor(
   // userAttributesUpdated: when the user attributes change via the customAttributes interface,
   // the userAttributesUpdated field must be set to true in the next request.
   fun setUserAttributesUpdated() {
-    evaluationStorage.userAttributesUpdated = true
+    evaluationStorage.setUserAttributesUpdated()
   }
 
   @Suppress("MoveVariableDeclarationIntoWhen")
   fun fetch(user: User, timeoutMillis: Long?): GetEvaluationsResult {
-    val currentEvaluationsId = evaluationStorage.currentEvaluationsId
-    val evaluatedAt = evaluationStorage.evaluatedAt
-    val userAttributesUpdated = evaluationStorage.userAttributesUpdated.toString()
-    val featureTag = evaluationStorage.featureTag
+    val currentEvaluationsId = evaluationStorage.getCurrentEvaluationId()
+    val evaluatedAt = evaluationStorage.getEvaluatedAt()
+    val userAttributesUpdated = evaluationStorage.getUserAttributesUpdated().toString()
+    val featureTag = evaluationStorage.getFeatureTag()
     val condition = UserEvaluationCondition(
       evaluatedAt = evaluatedAt,
       userAttributesUpdated = userAttributesUpdated,
@@ -72,7 +72,7 @@ internal class EvaluationInteractor(
         if (currentEvaluationsId == newEvaluationsId) {
           logd { "Nothing to sync" }
           // make sure we set `userAttributesUpdated` back to `false` even in case nothing to sync
-          evaluationStorage.userAttributesUpdated = false
+          evaluationStorage.clearUserAttributesUpdated()
           return result
         }
 
@@ -115,7 +115,7 @@ internal class EvaluationInteractor(
           return result
         }
 
-        evaluationStorage.userAttributesUpdated = false
+        evaluationStorage.clearUserAttributesUpdated()
 
         // Update listeners should be called on the main thread
         // to avoid unintentional lock on Interactor's execution thread.

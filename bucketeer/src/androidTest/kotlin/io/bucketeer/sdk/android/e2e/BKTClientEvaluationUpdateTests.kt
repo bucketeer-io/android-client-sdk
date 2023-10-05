@@ -82,9 +82,9 @@ class BKTClientEvaluationUpdateTests {
     assert(evaluationStorage.get() == listOf(tobeRemoveEvaluation))
     assert(evaluationSQLDao.get(USER_ID).contains(tobeRemoveEvaluation))
 
-    evaluationStorage.currentEvaluationsId = ""
-    assertThat(evaluationStorage.currentEvaluationsId).isEmpty()
-    assertThat(evaluationStorage.evaluatedAt).isEqualTo("0")
+    evaluationStorage.clearCurrentEvaluationId()
+    assertThat(evaluationStorage.getCurrentEvaluationId()).isEmpty()
+    assertThat(evaluationStorage.getEvaluatedAt()).isEqualTo("0")
 
     // Prepare for switch tag
     BKTClient.destroy()
@@ -103,8 +103,8 @@ class BKTClientEvaluationUpdateTests {
     val evaluationStorageWithNewTag = (clientWithNewTag.component as ComponentImpl).dataModule.evaluationStorage
     // Should not contain the previous data
     assert(evaluationStorageWithNewTag.get().contains(tobeRemoveEvaluation).not())
-    assertThat(evaluationStorageWithNewTag.currentEvaluationsId).isNotEmpty()
-    assertThat(evaluationStorageWithNewTag.evaluatedAt).isNotEmpty()
+    assertThat(evaluationStorageWithNewTag.getCurrentEvaluationId()).isNotEmpty()
+    assertThat(evaluationStorageWithNewTag.getEvaluatedAt()).isNotEmpty()
   }
 
   @Test
