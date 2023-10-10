@@ -31,7 +31,7 @@ class EvaluationInteractorCaptureErrorTests {
         apiClient = case.apiClient,
         evaluationStorage = case.storage,
         idGenerator = IdGeneratorImpl(),
-        featureTag =  "feature_tag_value",
+        featureTag = "feature_tag_value",
         mainHandler = Handler(Looper.getMainLooper()),
       )
 
@@ -71,7 +71,7 @@ class EvaluationInteractorCaptureErrorTests {
     STORAGE_ERROR(
       apiClient = MockReturnSuccessAPIClient(),
       storage = MockEvaluationStorage("test_user_1"),
-      expected =  GetEvaluationsResult.Failure(
+      expected = GetEvaluationsResult.Failure(
         BKTException.IllegalStateException("error: runtime exception"),
         "feature_tag_value",
       ),
@@ -166,7 +166,7 @@ private class MockEvaluationStorage(override val userId: String) : EvaluationSto
   }
 
   override fun setFeatureTag(tag: String) {
-    featureTag= tag
+    featureTag = tag
   }
 
   override fun getBy(featureId: String): Evaluation? {
@@ -195,5 +195,4 @@ private class MockEvaluationStorage(override val userId: String) : EvaluationSto
   }
 
   override fun refreshCache() {}
-
 }
