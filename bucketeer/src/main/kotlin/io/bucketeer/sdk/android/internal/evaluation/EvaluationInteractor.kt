@@ -108,15 +108,13 @@ internal class EvaluationInteractor(
           }
         } catch (ex: Exception) {
           loge { "Failed to update latest evaluations" }
-          GetEvaluationsResult.Failure(
+          return GetEvaluationsResult.Failure(
             BKTException.IllegalStateException("error: ${ex.message}"),
             featureTag,
           )
-          return result
         }
 
         evaluationStorage.clearUserAttributesUpdated()
-
         // Update listeners should be called on the main thread
         // to avoid unintentional lock on Interactor's execution thread.
         if (shouldNotifyListener) {
