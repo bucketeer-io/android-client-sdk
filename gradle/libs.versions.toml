@@ -15,7 +15,7 @@ okhttp-mockwebserver = { module = "com.squareup.okhttp3:mockwebserver", version.
 
 androidx-sqlite = { module = "androidx.sqlite:sqlite-framework", version = "2.2.0" }
 
-googlePlayServices-basement = { module = "com.google.android.gms:play-services-basement", version = "18.1.0" }
+googlePlayServices-basement = { module = "com.google.android.gms:play-services-basement", version = "18.2.0" }
 
 moshi-kotlin = { module = "com.squareup.moshi:moshi-kotlin", version.ref = "moshi" }
 moshi-codegen = { module = "com.squareup.moshi:moshi-kotlin-codegen", version.ref = "moshi" }
