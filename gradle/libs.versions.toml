@@ -36,7 +36,7 @@ androidx-appcompat = { module = "androidx.appcompat:appcompat", version = "1.5.1
 androidx-lifecycle-runtime = { module = "androidx.lifecycle:lifecycle-runtime", version.ref = "androidxLifecycle" }
 androidx-lifecycle-process = { module = "androidx.lifecycle:lifecycle-process", version.ref = "androidxLifecycle" }
 
-materialComponents = { module = "com.google.android.material:material", version = "1.7.0" }
+materialComponents = { module = "com.google.android.material:material", version = "1.10.0" }
 
 stetho = { module = "com.facebook.stetho:stetho", version = "1.6.0" }
 
