@@ -4,7 +4,7 @@ import androidx.annotation.VisibleForTesting
 import io.bucketeer.sdk.android.BKTException
 import io.bucketeer.sdk.android.internal.Clock
 import io.bucketeer.sdk.android.internal.IdGenerator
-import io.bucketeer.sdk.android.internal.event.db.EventDao
+import io.bucketeer.sdk.android.internal.event.db.EventSQLDao
 import io.bucketeer.sdk.android.internal.logd
 import io.bucketeer.sdk.android.internal.model.ApiId
 import io.bucketeer.sdk.android.internal.model.Evaluation
@@ -17,7 +17,7 @@ import io.bucketeer.sdk.android.internal.remote.RegisterEventsResult
 internal class EventInteractor(
   private val eventsMaxBatchQueueCount: Int,
   private val apiClient: ApiClient,
-  private val eventDao: EventDao,
+  private val eventSQLDao: EventSQLDao,
   private val clock: Clock,
   private val idGenerator: IdGenerator,
   private val appVersion: String,
@@ -31,7 +31,7 @@ internal class EventInteractor(
   }
 
   fun trackEvaluationEvent(featureTag: String, user: User, evaluation: Evaluation) {
-    eventDao.addEvent(
+    eventSQLDao.addEvent(
       newEvaluationEvent(clock, idGenerator, featureTag, user, evaluation, appVersion),
     )
 
@@ -39,7 +39,7 @@ internal class EventInteractor(
   }
 
   fun trackDefaultEvaluationEvent(featureTag: String, user: User, featureId: String) {
-    eventDao.addEvent(
+    eventSQLDao.addEvent(
       newDefaultEvaluationEvent(clock, idGenerator, featureTag, user, featureId, appVersion),
     )
 
@@ -47,7 +47,7 @@ internal class EventInteractor(
   }
 
   fun trackGoalEvent(featureTag: String, user: User, goalId: String, value: Double) {
-    eventDao.addEvent(
+    eventSQLDao.addEvent(
       newGoalEvent(clock, idGenerator, goalId, value, featureTag, user, appVersion),
     )
 
@@ -112,7 +112,7 @@ internal class EventInteractor(
     // 2 Get metrics data unique key
     // 3 Filter the list
     // 4 If list is not empty -> add to database
-    val storedEvents = eventDao.getEvents()
+    val storedEvents = eventSQLDao.getEvents()
     val metricsEventUniqueKeys: List<String> = storedEvents
       .filter { it.event is EventData.MetricsEvent }
       .map { (it.event as EventData.MetricsEvent).uniqueKey() }
@@ -122,13 +122,13 @@ internal class EventInteractor(
       it.event is EventData.MetricsEvent && !metricsEventUniqueKeys.contains(it.event.uniqueKey())
     }
     if (newEvents.isNotEmpty()) {
-      eventDao.addEvents(newEvents)
+      eventSQLDao.addEvents(newEvents)
       updateEventsAndNotify()
     }
   }
 
   fun sendEvents(force: Boolean = false): SendEventsResult {
-    val current = eventDao.getEvents()
+    val current = eventSQLDao.getEvents()
 
     if (current.isEmpty()) {
       logd { "no events to register" }
@@ -155,7 +155,7 @@ internal class EventInteractor(
             !error.retriable
           }
 
-        eventDao.delete(deleteIds)
+        eventSQLDao.delete(deleteIds)
 
         updateEventsAndNotify()
 
@@ -183,7 +183,7 @@ internal class EventInteractor(
   )
 
   private fun updateEventsAndNotify() {
-    eventUpdateListener?.onUpdate(eventDao.getEvents())
+    eventUpdateListener?.onUpdate(eventSQLDao.getEvents())
   }
 
   fun interface EventUpdateListener {

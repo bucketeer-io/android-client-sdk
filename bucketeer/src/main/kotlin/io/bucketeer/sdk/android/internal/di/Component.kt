@@ -31,8 +31,7 @@ internal class ComponentImpl(
   override val evaluationInteractor: EvaluationInteractor by lazy {
     interactorModule.evaluationInteractor(
       apiClient = dataModule.apiClient,
-      evaluationDao = dataModule.evaluationDao,
-      sharedPreferences = dataModule.sharedPreferences,
+      evaluationStorage = dataModule.evaluationStorage,
       idGenerator = dataModule.idGenerator,
       featureTag = dataModule.config.featureTag,
     )
@@ -42,7 +41,7 @@ internal class ComponentImpl(
     interactorModule.eventInteractor(
       eventsMaxBatchQueueCount = dataModule.config.eventsMaxBatchQueueCount,
       apiClient = dataModule.apiClient,
-      eventDao = dataModule.eventDao,
+      eventSQLDao = dataModule.eventSQLDao,
       clock = dataModule.clock,
       idGenerator = dataModule.idGenerator,
       appVersion = dataModule.config.appVersion,

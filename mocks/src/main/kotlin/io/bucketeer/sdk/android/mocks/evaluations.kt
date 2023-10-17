@@ -41,7 +41,7 @@ val user1EvaluationsUpsert: UserEvaluations by lazy {
     evaluations = listOf(
       evaluation1,
       evaluation2ForUpdate,
-      evaluation3,
+      evaluationForTestInsert,
     ),
     createdAt = "16907999999",
     forceUpdate = false,
@@ -100,9 +100,24 @@ val evaluation2ForUpdate: Evaluation by lazy {
   )
 }
 
+val evaluationForTestInsert: Evaluation by lazy {
+  Evaluation(
+    id = "test-feature-3:9:user id 1",
+    featureId = "test-feature-3",
+    featureVersion = 9,
+    userId = "user id 1",
+    variationId = "test-feature-1-variation-A",
+    variationName = "test variation name2",
+    variationValue = "test variation value2",
+    reason = Reason(
+      type = ReasonType.DEFAULT,
+    ),
+  )
+}
+
 val evaluation3: Evaluation by lazy {
   Evaluation(
-    id = "test-feature-1:9:user id 3",
+    id = "test-feature-3:9:user id 2",
     featureId = "test-feature-3",
     featureVersion = 9,
     userId = "user id 2",
@@ -117,8 +132,8 @@ val evaluation3: Evaluation by lazy {
 
 val evaluation4: Evaluation by lazy {
   Evaluation(
-    id = "test-feature-1:9:user id 2",
-    featureId = "test-feature-3",
+    id = "test-feature-4:9:user id 2",
+    featureId = "test-feature-4",
     featureVersion = 9,
     userId = "user id 2",
     variationId = "test-feature-1-variation-A",

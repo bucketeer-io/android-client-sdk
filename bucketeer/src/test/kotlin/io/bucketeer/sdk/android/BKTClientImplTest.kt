@@ -6,7 +6,6 @@ import com.squareup.moshi.Moshi
 import io.bucketeer.sdk.android.internal.di.ComponentImpl
 import io.bucketeer.sdk.android.internal.di.DataModule
 import io.bucketeer.sdk.android.internal.model.ApiId
-import io.bucketeer.sdk.android.internal.model.Evaluation
 import io.bucketeer.sdk.android.internal.model.Event
 import io.bucketeer.sdk.android.internal.model.EventData
 import io.bucketeer.sdk.android.internal.model.EventType
@@ -96,15 +95,15 @@ class BKTClientImplTest {
 
     val client = BKTClient.getInstance() as BKTClientImpl
 
-    assertThat(client.componentImpl.evaluationInteractor.evaluations)
-      .isEqualTo(mapOf(user1.id to user1Evaluations.evaluations))
+    assertThat(client.componentImpl.dataModule.evaluationStorage.get())
+      .isEqualTo(user1Evaluations.evaluations)
 
-    assertThat(client.componentImpl.dataModule.evaluationDao.get(user1.id))
+    assertThat(client.componentImpl.dataModule.evaluationSQLDao.get(user1.id))
       .isEqualTo(user1Evaluations.evaluations)
 
     Thread.sleep(100)
 
-    val dbEvents = client.componentImpl.dataModule.eventDao.getEvents()
+    val dbEvents = client.componentImpl.dataModule.eventSQLDao.getEvents()
     assertThat(dbEvents).hasSize(2)
     assertLatencyMetricsEvent(dbEvents[0], mapOf("tag" to config.featureTag), ApiId.GET_EVALUATIONS)
     val lastEvent = dbEvents[1]
@@ -147,14 +146,13 @@ class BKTClientImplTest {
 
     val client = BKTClient.getInstance() as BKTClientImpl
 
-    assertThat(client.componentImpl.evaluationInteractor.evaluations)
-      .isEqualTo(mapOf(user1.id to emptyList<Evaluation>()))
-    assertThat(client.componentImpl.dataModule.evaluationDao.get(user1.id)).isEmpty()
+    assertThat(client.componentImpl.dataModule.evaluationStorage.get()).isEmpty()
+    assertThat(client.componentImpl.dataModule.evaluationSQLDao.get(user1.id)).isEmpty()
 
     Thread.sleep(100)
 
     // timeout event should be saved
-    val dbEvents = client.componentImpl.dataModule.eventDao.getEvents()
+    val dbEvents = client.componentImpl.dataModule.eventSQLDao.getEvents()
     assertThat(dbEvents).hasSize(1)
     assertTimeoutErrorMetricsEvent(
       dbEvents[0],
@@ -388,7 +386,7 @@ class BKTClientImplTest {
 
     Thread.sleep(100)
 
-    val actualEvents = client.componentImpl.dataModule.eventDao.getEvents()
+    val actualEvents = client.componentImpl.dataModule.eventSQLDao.getEvents()
 
     assertThat(actualEvents).hasSize(3)
     val goalEvent = actualEvents.last()
@@ -519,17 +517,17 @@ class BKTClientImplTest {
 
     assertThat(result).isNull()
 
-    assertThat(client.componentImpl.evaluationInteractor.currentEvaluationsId)
+    assertThat(client.componentImpl.dataModule.evaluationStorage.getCurrentEvaluationId())
       .isEqualTo("user_evaluations_id_value_updated")
 
-    assertThat(client.componentImpl.dataModule.evaluationDao.get(user1.id))
+    assertThat(client.componentImpl.dataModule.evaluationStorage.get())
       .isEqualTo(listOf(updatedEvaluation1))
 
     // 2 metrics events (latency , size) from the BKTClient internal init()
     // 2 metrics events (latency , size) from the test code above
     // Because we filter duplicate
     // Finally we will have only 2 items
-    assertThat(client.componentImpl.dataModule.eventDao.getEvents()).hasSize(2)
+    assertThat(client.componentImpl.dataModule.eventSQLDao.getEvents()).hasSize(2)
   }
 
   @Test
@@ -571,12 +569,12 @@ class BKTClientImplTest {
 
     assertThat(result).isInstanceOf(BKTException.InternalServerErrorException::class.java)
 
-    assertThat(client.componentImpl.evaluationInteractor.currentEvaluationsId)
+    assertThat(client.componentImpl.dataModule.evaluationStorage.getCurrentEvaluationId())
       .isEqualTo("user_evaluations_id_value")
 
-    assertThat(client.componentImpl.dataModule.evaluationDao.get(user1.id)).hasSize(2)
+    assertThat(client.componentImpl.dataModule.evaluationStorage.get()).hasSize(2)
 
-    val actualEvents = client.componentImpl.dataModule.eventDao.getEvents()
+    val actualEvents = client.componentImpl.dataModule.eventSQLDao.getEvents()
     assertThat(actualEvents).hasSize(3)
 
     val lastEvent = actualEvents.last()
@@ -619,7 +617,7 @@ class BKTClientImplTest {
       .isEqualTo(user1.toBKTUser().copy(attributes = attributes))
 
     val client = BKTClient.getInstance() as BKTClientImpl
-    assertThat(client.componentImpl.evaluationInteractor.currentEvaluationsId)
+    assertThat(client.componentImpl.dataModule.evaluationStorage.getCurrentEvaluationId())
       .isEmpty()
   }
 }

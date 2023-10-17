@@ -21,8 +21,8 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-class EventDaoImplTest {
-  private lateinit var dao: EventDaoImpl
+class EventSQLDaoImplTest {
+  private lateinit var dao: EventSQLDaoImpl
   private lateinit var openHelper: SupportSQLiteOpenHelper
   private lateinit var moshi: Moshi
   private lateinit var sharedPreferences: SharedPreferences
@@ -37,7 +37,7 @@ class EventDaoImplTest {
     )
     openHelper = createDatabase(context, OpenHelperCallback.FILE_NAME, sharedPreferences)
 
-    dao = EventDaoImpl(openHelper, moshi)
+    dao = EventSQLDaoImpl(openHelper, moshi)
   }
 
   @After

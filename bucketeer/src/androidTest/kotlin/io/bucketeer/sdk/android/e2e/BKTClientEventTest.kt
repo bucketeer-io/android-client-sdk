@@ -59,7 +59,7 @@ class BKTClientEventTest {
   @Test
   fun track() {
     val client = BKTClient.getInstance() as BKTClientImpl
-    val eventDao = (client.component as ComponentImpl).dataModule.eventDao
+    val eventDao = (client.component as ComponentImpl).dataModule.eventSQLDao
 
     Thread.sleep(100)
 

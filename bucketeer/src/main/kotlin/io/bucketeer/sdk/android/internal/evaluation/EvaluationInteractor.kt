@@ -1,13 +1,11 @@
 package io.bucketeer.sdk.android.internal.evaluation
 
-import android.annotation.SuppressLint
-import android.content.SharedPreferences
 import android.os.Handler
 import androidx.annotation.VisibleForTesting
 import io.bucketeer.sdk.android.BKTClient
-import io.bucketeer.sdk.android.internal.Constants
+import io.bucketeer.sdk.android.BKTException
 import io.bucketeer.sdk.android.internal.IdGenerator
-import io.bucketeer.sdk.android.internal.evaluation.db.EvaluationDao
+import io.bucketeer.sdk.android.internal.evaluation.storage.EvaluationStorage
 import io.bucketeer.sdk.android.internal.logd
 import io.bucketeer.sdk.android.internal.loge
 import io.bucketeer.sdk.android.internal.model.Evaluation
@@ -23,66 +21,14 @@ import io.bucketeer.sdk.android.internal.remote.UserEvaluationCondition
  */
 internal class EvaluationInteractor(
   private val apiClient: ApiClient,
-  private val evaluationDao: EvaluationDao,
-  private val sharedPrefs: SharedPreferences,
+  private val evaluationStorage: EvaluationStorage,
   private val idGenerator: IdGenerator,
   featureTag: String,
   private val mainHandler: Handler,
 ) {
-  // key: userId
-  @VisibleForTesting
-  internal val evaluations = mutableMapOf<String, List<Evaluation>>()
 
   @VisibleForTesting
   internal val updateListeners = mutableMapOf<String, BKTClient.EvaluationUpdateListener>()
-
-  @VisibleForTesting
-  internal var currentEvaluationsId: String
-    get() = sharedPrefs.getString(Constants.PREFERENCE_KEY_USER_EVALUATION_ID, "") ?: ""
-
-    @SuppressLint("ApplySharedPref")
-    set(value) {
-      sharedPrefs.edit()
-        .putString(Constants.PREFERENCE_KEY_USER_EVALUATION_ID, value)
-        .commit()
-    }
-
-  @VisibleForTesting
-  internal var featureTag: String
-    get() = sharedPrefs.getString(Constants.PREFERENCE_KEY_FEATURE_TAG, "") ?: ""
-
-    @SuppressLint("ApplySharedPref")
-    private set(value) {
-      sharedPrefs.edit()
-        .putString(Constants.PREFERENCE_KEY_FEATURE_TAG, value)
-        .commit()
-    }
-
-  // https://github.com/bucketeer-io/android-client-sdk/issues/69
-  // evaluatedAt: the last time the user was evaluated.
-  // The server will return in the get_evaluations response (UserEvaluations.CreatedAt),
-  // and it must be saved in the client
-  @VisibleForTesting
-  internal var evaluatedAt: String
-    get() = sharedPrefs.getString(Constants.PREFERENCE_KEY_EVALUATED_AT, "0") ?: "0"
-
-    @SuppressLint("ApplySharedPref")
-    set(value) {
-      sharedPrefs.edit()
-        .putString(Constants.PREFERENCE_KEY_EVALUATED_AT, value)
-        .commit()
-    }
-
-  @VisibleForTesting
-  internal var userAttributesUpdated: Boolean
-    get() = sharedPrefs.getBoolean(Constants.PREFERENCE_KEY_USER_ATTRIBUTES_UPDATED, false)
-
-    @SuppressLint("ApplySharedPref")
-    private set(value) {
-      sharedPrefs.edit()
-        .putBoolean(Constants.PREFERENCE_KEY_USER_ATTRIBUTES_UPDATED, value)
-        .commit()
-    }
 
   init {
     updateFeatureTag(featureTag)
@@ -93,9 +39,9 @@ internal class EvaluationInteractor(
     // https://github.com/bucketeer-io/android-client-sdk/issues/69
     // 1- Save the featureTag in the SharedPreferences configured in the BKTConfig
     // 2- Clear the userEvaluationsID in the SharedPreferences if the featureTag changes
-    if (this.featureTag != value) {
-      currentEvaluationsId = ""
-      this.featureTag = value
+    if (evaluationStorage.getFeatureTag() != value) {
+      evaluationStorage.clearCurrentEvaluationId()
+      evaluationStorage.setFeatureTag(value)
     }
   }
 
@@ -103,15 +49,18 @@ internal class EvaluationInteractor(
   // userAttributesUpdated: when the user attributes change via the customAttributes interface,
   // the userAttributesUpdated field must be set to true in the next request.
   fun setUserAttributesUpdated() {
-    userAttributesUpdated = true
+    evaluationStorage.setUserAttributesUpdated()
   }
 
   @Suppress("MoveVariableDeclarationIntoWhen")
   fun fetch(user: User, timeoutMillis: Long?): GetEvaluationsResult {
-    val currentEvaluationsId = this.currentEvaluationsId
+    val currentEvaluationsId = evaluationStorage.getCurrentEvaluationId()
+    val evaluatedAt = evaluationStorage.getEvaluatedAt()
+    val userAttributesUpdated = evaluationStorage.getUserAttributesUpdated().toString()
+    val featureTag = evaluationStorage.getFeatureTag()
     val condition = UserEvaluationCondition(
       evaluatedAt = evaluatedAt,
-      userAttributesUpdated = userAttributesUpdated.toString(),
+      userAttributesUpdated = userAttributesUpdated,
     )
     val result = apiClient.getEvaluations(user, currentEvaluationsId, timeoutMillis, condition)
 
@@ -123,52 +72,49 @@ internal class EvaluationInteractor(
         if (currentEvaluationsId == newEvaluationsId) {
           logd { "Nothing to sync" }
           // make sure we set `userAttributesUpdated` back to `false` even in case nothing to sync
-          userAttributesUpdated = false
+          evaluationStorage.clearUserAttributesUpdated()
           return result
         }
 
-        val currentEvaluations: List<Evaluation>
         var shouldNotifyListener = true
-
-        // https://github.com/bucketeer-io/android-client-sdk/issues/69
-        // forceUpdate: a boolean that tells the SDK to delete all the current data
-        // and save the latest evaluations from the response
-        val forceUpdate = response.evaluations.forceUpdate
-        if (forceUpdate) {
-          // 1- Delete all the evaluations from DB, and save the latest evaluations from the response into the DB
-          currentEvaluations = response.evaluations.evaluations
-        } else {
-          val archivedFeatureIds = response.evaluations.archivedFeatureIds
-          val updatedEvaluations = response.evaluations.evaluations
-          // We will use `featureId` to filter the data
-          // Details -> https://github.com/bucketeer-io/android-client-sdk/pull/88/files#r1333847962
-          val currentEvaluationsByFeaturedId = evaluationDao.get(user.id).associateBy { it.featureId }.toMutableMap()
-          // 1- Check the evaluation list in the response and upsert them in the DB if the list is not empty
-          updatedEvaluations.forEach { evaluation ->
-            currentEvaluationsByFeaturedId[evaluation.featureId] = evaluation
+        try {
+          // https://github.com/bucketeer-io/android-client-sdk/issues/69
+          // forceUpdate: a boolean that tells the SDK to delete all the current data
+          // and save the latest evaluations from the response
+          val forceUpdate = response.evaluations.forceUpdate
+          val newEvaluatedAt = response.evaluations.createdAt
+          if (forceUpdate) {
+            val currentEvaluations: List<Evaluation> = response.evaluations.evaluations
+            // 1- Delete all the evaluations from DB, and save the latest evaluations from the response into the DB
+            // 2- Save the UserEvaluations.CreatedAt in the response as evaluatedAt in the SharedPreferences
+            evaluationStorage.deleteAllAndInsert(
+              evaluationsId = newEvaluationsId,
+              evaluations = currentEvaluations,
+              evaluatedAt = newEvaluatedAt,
+            )
+          } else {
+            // 1- Check the evaluation list in the response and upsert them in the DB if the list is not empty
+            // 2- Check the list of the feature flags that were archived on the console and delete them from the DB
+            // 3- Save the UserEvaluations.CreatedAt in the response as evaluatedAt in the SharedPreferences
+            val archivedFeatureIds = response.evaluations.archivedFeatureIds
+            val updatedEvaluations = response.evaluations.evaluations
+            shouldNotifyListener =
+              evaluationStorage.update(
+                evaluationsId = newEvaluationsId,
+                evaluations = updatedEvaluations,
+                archivedFeatureIds = archivedFeatureIds,
+                evaluatedAt = newEvaluatedAt,
+              )
           }
-          // 2- Check the list of the feature flags that were archived on the console and delete them from the DB
-          currentEvaluations = currentEvaluationsByFeaturedId.values.filterNot {
-            archivedFeatureIds.contains(it.featureId)
-          }
-          shouldNotifyListener = updatedEvaluations.isNotEmpty() || archivedFeatureIds.isNotEmpty()
-        }
-
-        // save `currentEvaluations` to the database
-        val success = evaluationDao.deleteAllAndInsert(user.id, currentEvaluations)
-        if (!success) {
+        } catch (ex: Exception) {
           loge { "Failed to update latest evaluations" }
-          return result
+          return GetEvaluationsResult.Failure(
+            BKTException.IllegalStateException("error: ${ex.message}"),
+            featureTag,
+          )
         }
-        // directly update the in-memory cache
-        evaluations[user.id] = currentEvaluations
 
-        this.currentEvaluationsId = newEvaluationsId
-        userAttributesUpdated = false
-
-        // 3- Save the UserEvaluations.CreatedAt in the response as evaluatedAt in the SharedPreferences
-        evaluatedAt = response.evaluations.createdAt
-
+        evaluationStorage.clearUserAttributesUpdated()
         // Update listeners should be called on the main thread
         // to avoid unintentional lock on Interactor's execution thread.
         if (shouldNotifyListener) {
@@ -185,12 +131,8 @@ internal class EvaluationInteractor(
     return result
   }
 
-  fun refreshCache(userId: String) {
-    evaluations[userId] = evaluationDao.get(userId)
-  }
-
-  fun clearCurrentEvaluationsId() {
-    this.currentEvaluationsId = ""
+  fun refreshCache() {
+    evaluationStorage.refreshCache()
   }
 
   fun addUpdateListener(listener: BKTClient.EvaluationUpdateListener): String {
@@ -207,8 +149,7 @@ internal class EvaluationInteractor(
     updateListeners.clear()
   }
 
-  fun getLatest(userId: String, featureId: String): Evaluation? {
-    val evaluations = evaluations[userId] ?: return null
-    return evaluations.firstOrNull { it.featureId == featureId }
+  fun getLatest(featureId: String): Evaluation? {
+    return evaluationStorage.getBy(featureId)
   }
 }

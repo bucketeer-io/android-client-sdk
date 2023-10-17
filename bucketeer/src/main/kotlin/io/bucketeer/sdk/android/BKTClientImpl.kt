@@ -101,7 +101,7 @@ internal class BKTClientImpl(
 
   override fun evaluationDetails(featureId: String): BKTEvaluation? {
     val raw = component.evaluationInteractor
-      .getLatest(component.userHolder.userId, featureId) ?: return null
+      .getLatest(featureId) ?: return null
 
     return BKTEvaluation(
       id = raw.id,
@@ -128,7 +128,7 @@ internal class BKTClientImpl(
   }
 
   private fun refreshCache() {
-    component.evaluationInteractor.refreshCache(component.userHolder.userId)
+    component.evaluationInteractor.refreshCache()
   }
 
   @MainThread
@@ -143,7 +143,7 @@ internal class BKTClientImpl(
   private inline fun <reified T : Any> getVariationValue(featureId: String, defaultValue: T): T {
     logd { "BKTClient.getVariation(featureId = $featureId, defaultValue = $defaultValue) called" }
 
-    val raw = component.evaluationInteractor.getLatest(component.userHolder.userId, featureId)
+    val raw = component.evaluationInteractor.getLatest(featureId)
 
     val user = component.userHolder.get()
     val featureTag = config.featureTag

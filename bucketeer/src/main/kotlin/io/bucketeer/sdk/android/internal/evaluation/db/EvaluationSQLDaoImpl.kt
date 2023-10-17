@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.sqlite.db.SupportSQLiteOpenHelper
 import com.squareup.moshi.Moshi
+import io.bucketeer.sdk.android.BKTException
 import io.bucketeer.sdk.android.internal.database.asSequence
 import io.bucketeer.sdk.android.internal.database.getString
 import io.bucketeer.sdk.android.internal.database.select
@@ -15,19 +16,21 @@ import io.bucketeer.sdk.android.internal.evaluation.db.EvaluationEntity.COLUMN_U
 import io.bucketeer.sdk.android.internal.evaluation.db.EvaluationEntity.TABLE_NAME
 import io.bucketeer.sdk.android.internal.model.Evaluation
 
-internal class EvaluationDaoImpl(
+internal class EvaluationSQLDaoImpl(
   private val sqLiteOpenHelper: SupportSQLiteOpenHelper,
   moshi: Moshi,
-) : EvaluationDao {
+) : EvaluationSQLDao {
 
   private val adapter = moshi.adapter(Evaluation::class.java)
 
   override fun put(userId: String, list: List<Evaluation>) {
-    sqLiteOpenHelper.writableDatabase.transaction {
+    sqLiteOpenHelper.writableDatabase.apply {
       list.forEach { evaluation ->
-        val affectedRow = update(this@transaction, userId, evaluation)
+        val affectedRow = update(this, userId, evaluation)
         if (affectedRow == 0) {
-          insert(this@transaction, userId, evaluation)
+          if (insert(this, userId, evaluation) == -1L) {
+            throw BKTException.IllegalStateException("Could not insert data")
+          }
         }
       }
     }
@@ -79,29 +82,17 @@ internal class EvaluationDaoImpl(
     }
   }
 
-  private fun deleteAll(
-    database: SupportSQLiteDatabase,
-    userId: String,
-  ) {
-    database.delete(
+  override fun deleteAll(userId: String) {
+    sqLiteOpenHelper.writableDatabase.delete(
       TABLE_NAME,
       "$COLUMN_USER_ID=?",
       arrayOf(userId),
     )
   }
 
-  override fun deleteAllAndInsert(
-    userId: String,
-    list: List<Evaluation>,
-  ): Boolean {
+  override fun startTransaction(block: () -> Unit) {
     sqLiteOpenHelper.writableDatabase.transaction {
-      deleteAll(this, userId)
-      list.forEach {
-        if (insert(this, userId, it) == -1L) {
-          return false
-        }
-      }
+      block()
     }
-    return true
   }
 }

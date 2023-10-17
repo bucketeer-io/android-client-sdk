@@ -14,10 +14,10 @@ import io.bucketeer.sdk.android.internal.event.EventEntity.Companion.COLUMN_ID
 import io.bucketeer.sdk.android.internal.event.EventEntity.Companion.TABLE_NAME
 import io.bucketeer.sdk.android.internal.model.Event
 
-internal class EventDaoImpl(
+internal class EventSQLDaoImpl(
   private val sqLiteOpenHelper: SupportSQLiteOpenHelper,
   moshi: Moshi,
-) : EventDao {
+) : EventSQLDao {
 
   private val eventAdapter = moshi.adapter(Event::class.java)
 
