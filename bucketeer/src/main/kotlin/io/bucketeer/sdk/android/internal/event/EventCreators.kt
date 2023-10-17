@@ -253,7 +253,7 @@ internal fun newEventDataMetricEvent(
           apiId = apiId,
           labels = labels.apply {
             // https://github.com/bucketeer-io/android-client-sdk/issues/81
-            set("timeout", error.timeoutMillis.toTimeoutString())
+            set("timeout", error.timeoutMillis.toStringInDoubleFormat())
           },
         ),
       )
@@ -283,6 +283,6 @@ internal fun newEventDataMetricEvent(
   )
 }
 
-internal fun Long.toTimeoutString(): String {
+internal fun Long.toStringInDoubleFormat(): String {
   return  (this / 1000.0).toString()
 }
