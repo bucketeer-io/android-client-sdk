@@ -22,7 +22,7 @@ moshi-codegen = { module = "com.squareup.moshi:moshi-kotlin-codegen", version.re
 moshi-adapters = { module = "com.squareup.moshi:moshi-adapters", version.ref = "moshi" }
 
 junit = { module = "junit:junit", version = "4.13.2" }
-robolectric = { module = "org.robolectric:robolectric", version = "4.9.2" }
+robolectric = { module = "org.robolectric:robolectric", version = "4.10.3" }
 truth = { module = "com.google.truth:truth", version = "1.1.3" }
 testParameterInjector = { module = "com.google.testparameterinjector:test-parameter-injector", version = "1.10" }
 
