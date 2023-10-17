@@ -6,15 +6,14 @@
 ### Build System
 
 * **deps:** update plugin publish to v0.25.3 ([#84](https://github.com/bucketeer-io/android-client-sdk/issues/84)) ([df9f747](https://github.com/bucketeer-io/android-client-sdk/commit/df9f74760fd182735237f7d6c45cebe9d3444117))
-
+* **deps:** update actions/checkout action to v4 ([#98](https://github.com/bucketeer-io/android-client-sdk/issues/98)) ([a3a6700](https://github.com/bucketeer-io/android-client-sdk/commit/a3a6700a6160659685b7e901e9b062cf5f8b368d))
+* **deps:** update actions/setup-java action to v3.13.0 ([#102](https://github.com/bucketeer-io/android-client-sdk/issues/102)) ([9fb41a7](https://github.com/bucketeer-io/android-client-sdk/commit/9fb41a7819bf145addb96f7c301531f01b0dbfb4))
 
 ### Miscellaneous
 
 * add sdk version to the network requests ([#99](https://github.com/bucketeer-io/android-client-sdk/issues/99)) ([6c6fa90](https://github.com/bucketeer-io/android-client-sdk/commit/6c6fa90b8df78800a45ffeb3db990ba72f7aac38))
 * add the current timeout setting in the TimeoutErrorMetricsEvent ([#91](https://github.com/bucketeer-io/android-client-sdk/issues/91)) ([cd0fbde](https://github.com/bucketeer-io/android-client-sdk/commit/cd0fbde4d5697ad981fa9a1dd0cca6bd54872e00))
 * change timeout type from float to double ([#114](https://github.com/bucketeer-io/android-client-sdk/issues/114)) ([b8054d7](https://github.com/bucketeer-io/android-client-sdk/commit/b8054d7134b3f597c1b45d9da726dd615ee46092))
-* **deps:** update actions/checkout action to v4 ([#98](https://github.com/bucketeer-io/android-client-sdk/issues/98)) ([a3a6700](https://github.com/bucketeer-io/android-client-sdk/commit/a3a6700a6160659685b7e901e9b062cf5f8b368d))
-* **deps:** update actions/setup-java action to v3.13.0 ([#102](https://github.com/bucketeer-io/android-client-sdk/issues/102)) ([9fb41a7](https://github.com/bucketeer-io/android-client-sdk/commit/9fb41a7819bf145addb96f7c301531f01b0dbfb4))
 
 
 ### Bug Fixes
