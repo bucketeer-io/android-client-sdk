@@ -284,5 +284,5 @@ internal fun newEventDataMetricEvent(
 }
 
 internal fun Long.toStringInDoubleFormat(): String {
-  return  (this / 1000.0).toString()
+  return (this / 1000.0).toString()
 }
