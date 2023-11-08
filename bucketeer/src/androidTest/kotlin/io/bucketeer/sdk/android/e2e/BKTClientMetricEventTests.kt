@@ -76,9 +76,9 @@ class BKTClientMetricEventTests {
         val type = it.type
         val event = it.event
         return@any type == EventType.METRICS &&
-            event is EventData.MetricsEvent &&
-            event.type == MetricsEventType.FORBIDDEN_ERROR &&
-            event.event.apiId == ApiId.GET_EVALUATIONS
+          event is EventData.MetricsEvent &&
+          event.type == MetricsEventType.FORBIDDEN_ERROR &&
+          event.event.apiId == ApiId.GET_EVALUATIONS
       },
     ).isTrue()
 
@@ -126,9 +126,9 @@ class BKTClientMetricEventTests {
         val type = it.type
         val event = it.event
         return@any type == EventType.METRICS &&
-            event is EventData.MetricsEvent &&
-            event.type == MetricsEventType.TIMEOUT_ERROR &&
-            event.event.apiId == ApiId.GET_EVALUATIONS
+          event is EventData.MetricsEvent &&
+          event.type == MetricsEventType.TIMEOUT_ERROR &&
+          event.event.apiId == ApiId.GET_EVALUATIONS
       },
     ).isTrue()
 

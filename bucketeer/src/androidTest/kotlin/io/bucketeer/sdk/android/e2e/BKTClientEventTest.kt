@@ -106,8 +106,8 @@ class BKTClientEventTest {
         val type = it.type
         val event = it.event
         return@any type == EventType.EVALUATION &&
-            event is EventData.EvaluationEvent &&
-            event.reason.type == ReasonType.DEFAULT
+          event is EventData.EvaluationEvent &&
+          event.reason.type == ReasonType.DEFAULT
       },
     ).isTrue()
 
@@ -145,8 +145,8 @@ class BKTClientEventTest {
         val type = it.type
         val event = it.event
         return@any type == EventType.EVALUATION &&
-            event is EventData.EvaluationEvent &&
-            event.reason.type == ReasonType.CLIENT
+          event is EventData.EvaluationEvent &&
+          event.reason.type == ReasonType.CLIENT
       },
     ).isTrue()
 
