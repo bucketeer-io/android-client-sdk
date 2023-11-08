@@ -39,6 +39,9 @@ class BKTClientMetricEventTests {
       .commit()
   }
 
+
+  // Metrics Event Tests
+  // refs: https://github.com/bucketeer-io/javascript-client-sdk/blob/main/e2e/events.spec.ts#L112
   @Test
   fun testUsingRandomStringInTheAPIKeyShouldThrowForbidden() {
     config = BKTConfig.builder()
@@ -50,5 +53,15 @@ class BKTClientMetricEventTests {
 
     val result = BKTClient.initialize(context, config, user).get()
     Truth.assertThat(result).isNull()
+  }
+
+  @Test
+  fun testARandomStringInTheFeatureTagShouldNotAffectAPIRequest() {
+
+  }
+
+  @Test
+  fun testTimeout() {
+
   }
 }

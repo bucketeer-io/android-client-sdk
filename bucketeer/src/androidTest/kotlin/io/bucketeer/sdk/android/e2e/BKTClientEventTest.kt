@@ -77,4 +77,14 @@ class BKTClientEventTest {
 
     assertThat(eventDao.getEvents()).isEmpty()
   }
+
+  @Test
+  fun testEvaluationEvents() {
+
+  }
+
+  @Test
+  fun testDefaultEvaluationEvents() {
+
+  }
 }
