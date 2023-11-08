@@ -39,7 +39,6 @@ class BKTClientMetricEventTests {
       .commit()
   }
 
-
   // Metrics Event Tests
   // refs: https://github.com/bucketeer-io/javascript-client-sdk/blob/main/e2e/events.spec.ts#L112
   @Test
@@ -56,12 +55,8 @@ class BKTClientMetricEventTests {
   }
 
   @Test
-  fun testARandomStringInTheFeatureTagShouldNotAffectAPIRequest() {
-
-  }
+  fun testARandomStringInTheFeatureTagShouldNotAffectAPIRequest() {}
 
   @Test
-  fun testTimeout() {
-
-  }
+  fun testTimeout() {}
 }
