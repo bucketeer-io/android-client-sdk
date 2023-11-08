@@ -45,7 +45,6 @@ class BKTClientEventTest {
       .build()
 
     val result = BKTClient.initialize(context, config, user).get()
-
     assertThat(result).isNull()
   }
 
@@ -112,9 +111,7 @@ class BKTClientEventTest {
     ).isTrue()
 
     val result = client.flush().get()
-
     assertThat(result).isNull()
-
     assertThat(eventDao.getEvents()).isEmpty()
   }
 
@@ -135,7 +132,7 @@ class BKTClientEventTest {
       assertThat(values).isEqualTo(listOf<String>())
     }
 
-    val eventDao = (client.component as ComponentImpl).dataModule.eventSQLDao
+    val eventDao = client.component.dataModule.eventSQLDao
 
     Thread.sleep(100)
     val events = eventDao.getEvents()
@@ -151,9 +148,7 @@ class BKTClientEventTest {
     ).isTrue()
 
     val result = client.flush().get()
-
     assertThat(result).isNull()
-
     assertThat(eventDao.getEvents()).isEmpty()
   }
 }

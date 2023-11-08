@@ -83,7 +83,6 @@ class BKTClientMetricEventTests {
     ).isTrue()
 
     val flushResult = client.flush().get()
-    // Using a random string in the api key setting should throw Forbidden
     assertThat(flushResult).isInstanceOf(BKTException.ForbiddenException::class.java)
     assertThat(eventDao.getEvents().count()).isEqualTo(2)
   }
@@ -133,7 +132,6 @@ class BKTClientMetricEventTests {
     ).isTrue()
 
     val flushResult = client.flush().get()
-    // Using a random string in the api key setting should throw Forbidden
     assertThat(flushResult).isNull()
     assertThat(eventDao.getEvents().count()).isEqualTo(0)
   }
