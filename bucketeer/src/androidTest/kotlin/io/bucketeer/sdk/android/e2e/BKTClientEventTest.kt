@@ -13,6 +13,10 @@ import io.bucketeer.sdk.android.BuildConfig
 import io.bucketeer.sdk.android.internal.Constants
 import io.bucketeer.sdk.android.internal.database.OpenHelperCallback
 import io.bucketeer.sdk.android.internal.di.ComponentImpl
+import io.bucketeer.sdk.android.internal.model.EventData
+import io.bucketeer.sdk.android.internal.model.EventType
+import io.bucketeer.sdk.android.internal.model.ReasonType
+import org.json.JSONObject
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -41,7 +45,6 @@ class BKTClientEventTest {
       .build()
 
     val result = BKTClient.initialize(context, config, user).get()
-
     assertThat(result).isNull()
   }
 
@@ -75,6 +78,77 @@ class BKTClientEventTest {
 
     assertThat(result).isNull()
 
+    assertThat(eventDao.getEvents()).isEmpty()
+  }
+
+  @Test
+  fun testEvaluationEvents() {
+    val client = BKTClient.getInstance() as BKTClientImpl
+    assertThat(client.stringVariation(FEATURE_ID_STRING, "test")).isEqualTo("value-1")
+    assertThat(client.intVariation(FEATURE_ID_INT, 0)).isEqualTo(10)
+    assertThat(client.doubleVariation(FEATURE_ID_DOUBLE, 0.1)).isEqualTo(2.1)
+    assertThat(client.booleanVariation(FEATURE_ID_BOOLEAN, false)).isEqualTo(true)
+    client.jsonVariation(FEATURE_ID_JSON, JSONObject()).let { json ->
+      val keys = json.keys().asSequence().toList()
+      val values = keys.map { json.get(it) }
+      assertThat(keys).isEqualTo(listOf("key"))
+      assertThat(values).isEqualTo(listOf("value-1"))
+    }
+
+    val eventDao = (client.component as ComponentImpl).dataModule.eventSQLDao
+
+    Thread.sleep(100)
+    val events = eventDao.getEvents()
+    assertThat(events).hasSize(7)
+    assertThat(
+      events.any {
+        val type = it.type
+        val event = it.event
+        return@any type == EventType.EVALUATION &&
+          event is EventData.EvaluationEvent &&
+          event.reason.type == ReasonType.DEFAULT
+      },
+    ).isTrue()
+
+    val result = client.flush().get()
+    assertThat(result).isNull()
+    assertThat(eventDao.getEvents()).isEmpty()
+  }
+
+  @Test
+  fun testDefaultEvaluationEvents() {
+    val client = BKTClient.getInstance() as BKTClientImpl
+    val evaluationStorage = (client.component as ComponentImpl).dataModule.evaluationStorage
+    evaluationStorage.deleteAllAndInsert("", listOf(), "0")
+
+    assertThat(client.stringVariation(FEATURE_ID_STRING, "test")).isEqualTo("test")
+    assertThat(client.intVariation(FEATURE_ID_INT, 0)).isEqualTo(0)
+    assertThat(client.doubleVariation(FEATURE_ID_DOUBLE, 0.1)).isEqualTo(0.1)
+    assertThat(client.booleanVariation(FEATURE_ID_BOOLEAN, false)).isEqualTo(false)
+    client.jsonVariation(FEATURE_ID_JSON, JSONObject()).let { json ->
+      val keys = json.keys().asSequence().toList()
+      val values = keys.map { json.get(it) }
+      assertThat(keys).isEqualTo(listOf<String>())
+      assertThat(values).isEqualTo(listOf<String>())
+    }
+
+    val eventDao = client.component.dataModule.eventSQLDao
+
+    Thread.sleep(100)
+    val events = eventDao.getEvents()
+    assertThat(events).hasSize(7)
+    assertThat(
+      events.any {
+        val type = it.type
+        val event = it.event
+        return@any type == EventType.EVALUATION &&
+          event is EventData.EvaluationEvent &&
+          event.reason.type == ReasonType.CLIENT
+      },
+    ).isTrue()
+
+    val result = client.flush().get()
+    assertThat(result).isNull()
     assertThat(eventDao.getEvents()).isEmpty()
   }
 }
