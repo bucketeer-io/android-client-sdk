@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
-import androidx.annotation.MainThread
 import androidx.lifecycle.ProcessLifecycleOwner
 import io.bucketeer.sdk.android.internal.di.Component
 import io.bucketeer.sdk.android.internal.di.ComponentImpl
@@ -27,6 +26,7 @@ internal class BKTClientImpl(
   private val context: Context,
   private val config: BKTConfig,
   user: BKTUser,
+  private val mainHandler: Handler = Handler(Looper.getMainLooper()),
   internal val executor: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor(),
   internal val component: Component = ComponentImpl(
     dataModule = DataModule(
@@ -35,7 +35,7 @@ internal class BKTClientImpl(
       config = config,
     ),
     interactorModule = InteractorModule(
-      mainHandler = Handler(Looper.getMainLooper()),
+      mainHandler = mainHandler,
     ),
   ),
 ) : BKTClient {
@@ -131,7 +131,6 @@ internal class BKTClientImpl(
     component.evaluationInteractor.refreshCache()
   }
 
-  @MainThread
   internal fun initializeInternal(timeoutMillis: Long): Future<BKTException?> {
     scheduleTasks()
     return executor.submit<BKTException?> {
@@ -168,17 +167,21 @@ internal class BKTClientImpl(
     return raw.getVariationValue(defaultValue)
   }
 
-  @MainThread
   private fun scheduleTasks() {
     taskScheduler = TaskScheduler(component, executor)
-    ProcessLifecycleOwner.get().lifecycle.addObserver(taskScheduler!!)
+    // Lifecycle observer must be executed on the main thread
+    mainHandler.post {
+      ProcessLifecycleOwner.get().lifecycle.addObserver(taskScheduler!!)
+    }
   }
 
-  @MainThread
   internal fun resetTasks() {
     taskScheduler?.let {
       it.stop()
-      ProcessLifecycleOwner.get().lifecycle.removeObserver(it)
+      // Lifecycle observer must be executed on the main thread
+      mainHandler.post {
+        ProcessLifecycleOwner.get().lifecycle.removeObserver(it)
+      }
     }
     taskScheduler = null
   }

@@ -1,7 +1,6 @@
 package io.bucketeer.sdk.android
 
 import android.content.Context
-import androidx.annotation.MainThread
 import io.bucketeer.sdk.android.internal.LoggerHolder
 import io.bucketeer.sdk.android.internal.logw
 import io.bucketeer.sdk.android.internal.util.Futures
@@ -50,7 +49,6 @@ interface BKTClient {
       }
     }
 
-    @MainThread
     fun initialize(
       context: Context,
       config: BKTConfig,
@@ -75,7 +73,6 @@ interface BKTClient {
       }
     }
 
-    @MainThread
     fun destroy() {
       synchronized(this) {
         val client = instance ?: return
@@ -86,7 +83,7 @@ interface BKTClient {
   }
 
   fun interface EvaluationUpdateListener {
-    @MainThread
+    // The listener callback is called on the main thread.
     fun onUpdate()
   }
 }
