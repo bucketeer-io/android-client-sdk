@@ -237,7 +237,6 @@ class BKTClientImplTest {
     }
   }
 
-
   @Test
   @LooperMode(LooperMode.Mode.PAUSED)
   fun destroyAndReinitializeImmediately() {
@@ -265,7 +264,6 @@ class BKTClientImplTest {
     assertThat(BKTClient.getInstance()).isInstanceOf(BKTClient::class.java)
 
     BKTClient.destroy()
-
 
     assertThrows(BKTException.IllegalArgumentException::class.java) {
       BKTClient.getInstance()
