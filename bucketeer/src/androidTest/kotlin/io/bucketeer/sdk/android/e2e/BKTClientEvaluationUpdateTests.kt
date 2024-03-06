@@ -164,6 +164,12 @@ class BKTClientEvaluationUpdateTests {
   }
 
   @Test
+  fun testInitializeWithNewFeatureTagInNoneUIThread() {
+    // One more test to see what happen with we destroy & reinitialize the sdk from a normal thread.
+    testInitializeWithNewFeatureTag()
+  }
+
+  @Test
   @UiThreadTest
   fun testInitWithoutFeatureTagShouldRetrievesAllFeatures() {
     config = BKTConfig.builder()

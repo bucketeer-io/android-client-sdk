@@ -168,22 +168,22 @@ internal class BKTClientImpl(
   }
 
   private fun scheduleTasks() {
-    taskScheduler = TaskScheduler(component, executor)
     // Lifecycle observer must be executed on the main thread
     runOnMainThread {
+      taskScheduler = TaskScheduler(component, executor)
       ProcessLifecycleOwner.get().lifecycle.addObserver(taskScheduler!!)
     }
   }
 
   internal fun resetTasks() {
-    taskScheduler?.let {
-      it.stop()
-      // Lifecycle observer must be executed on the main thread
-      runOnMainThread {
+    runOnMainThread {
+      taskScheduler?.let {
+        it.stop()
+        // Lifecycle observer must be executed on the main thread
         ProcessLifecycleOwner.get().lifecycle.removeObserver(it)
       }
+      taskScheduler = null
     }
-    taskScheduler = null
   }
 
   private fun runOnMainThread(block: () -> Unit) {
