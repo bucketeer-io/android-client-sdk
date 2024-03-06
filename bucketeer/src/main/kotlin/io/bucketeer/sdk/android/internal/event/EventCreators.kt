@@ -273,6 +273,25 @@ internal fun newEventDataMetricEvent(
           labels = labels,
         ),
       )
+
+      is BKTException.PayloadTooLargeException -> Pair(
+        MetricsEventType.PAYLOAD_TOO_LARGE,
+        MetricsEventData.UnknownErrorMetricsEvent(
+          apiId = apiId,
+          labels = labels,
+        ),
+      )
+
+      is BKTException.RedirectRequestException -> Pair(
+        MetricsEventType.REDIRECT_REQUEST,
+        MetricsEventData.UnknownErrorMetricsEvent(
+          apiId = apiId,
+          labels = labels.apply {
+            // https://github.com/bucketeer-io/ios-client-sdk/issues/65
+            set("response_code", error.statusCode.toString())
+          },
+        ),
+      )
     }
   return EventData.MetricsEvent(
     timestamp = timestamp,

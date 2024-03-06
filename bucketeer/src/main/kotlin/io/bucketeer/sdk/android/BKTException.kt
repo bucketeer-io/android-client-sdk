@@ -7,6 +7,9 @@ sealed class BKTException(
   message,
   cause,
 ) {
+  // server redirect
+  class RedirectRequestException(message: String, val statusCode: Int) : BKTException(message)
+
   // server errors
   class BadRequestException(message: String) : BKTException(message)
   class UnauthorizedException(message: String) : BKTException(message)
@@ -14,6 +17,7 @@ sealed class BKTException(
   class FeatureNotFoundException(message: String) : BKTException(message)
   class ClientClosedRequestException(message: String) : BKTException(message)
   class InvalidHttpMethodException(message: String) : BKTException(message)
+  class PayloadTooLargeException(message: String) : BKTException(message)
   class InternalServerErrorException(message: String) : BKTException(message)
   class ServiceUnavailableException(message: String) : BKTException(message)
 
