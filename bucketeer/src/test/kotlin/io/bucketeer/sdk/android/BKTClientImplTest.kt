@@ -1,5 +1,6 @@
 package io.bucketeer.sdk.android
 
+import android.os.Looper
 import androidx.test.core.app.ApplicationProvider
 import com.google.common.truth.Truth.assertThat
 import com.squareup.moshi.Moshi
@@ -29,6 +30,8 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.Shadows
+import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeUnit
 
 @RunWith(RobolectricTestRunner::class)
@@ -232,6 +235,51 @@ class BKTClientImplTest {
     assertThrows(BKTException.IllegalArgumentException::class.java) {
       BKTClient.getInstance()
     }
+  }
+
+  @Test
+  @LooperMode(LooperMode.Mode.PAUSED)
+  fun destroyAndReinitializeImmediately() {
+    server.enqueue(
+      MockResponse()
+        .setResponseCode(200)
+        .setBody(
+          moshi.adapter(GetEvaluationsResponse::class.java)
+            .toJson(
+              GetEvaluationsResponse(
+                evaluations = user1Evaluations,
+                userEvaluationsId = "user_evaluations_id_value",
+              ),
+            ),
+        ),
+    )
+
+    BKTClient.initialize(
+      ApplicationProvider.getApplicationContext(),
+      config,
+      user1.toBKTUser(),
+      1000,
+    )
+
+    assertThat(BKTClient.getInstance()).isInstanceOf(BKTClient::class.java)
+
+    BKTClient.destroy()
+
+    assertThrows(BKTException.IllegalArgumentException::class.java) {
+      BKTClient.getInstance()
+    }
+
+    BKTClient.initialize(
+      ApplicationProvider.getApplicationContext(),
+      config,
+      user1.toBKTUser(),
+      1000,
+    )
+
+    // Allow all code that posted to the main run loop for executing here
+    Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+    assertThat(BKTClient.getInstance()).isInstanceOf(BKTClient::class.java)
   }
 
   @Test
