@@ -5,6 +5,7 @@
   "labels": ["deps"],
   "packageRules": [
     {
+      "automerge": true,
       "groupName": "all non-major github-actions dependencies",
       "groupSlug": "all-minor-patch",
       "managers": ["github-actions"],
@@ -22,6 +23,7 @@
       "commitMessageAction": "update"
     },
     {
+      "automerge": true,
       "groupName": "all non-major dependencies",
       "groupSlug": "all-minor-patch",
       "matchPackagePatterns": [
