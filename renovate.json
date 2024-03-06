@@ -1,18 +1,56 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:base",
-    ":timezone(Asia/Tokyo)",
-    "schedule:monthly"
-  ],
+  "extends": ["config:base", ":timezone(Asia/Tokyo)"],
+  "schedule": ["after 10am on the first day of the month"],
+  "labels": ["deps"],
   "packageRules": [
     {
-      "groupName": "Kotlin",
+      "groupName": "all non-major github-actions dependencies",
+      "groupSlug": "all-minor-patch",
+      "managers": ["github-actions"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "labels": ["ci"],
+      "commitMessagePrefix": "ci(deps):",
+      "commitMessageAction": "update"
+    },
+    {
+      "groupName": "all major github-actions dependencies",
+      "managers": ["github-actions"],
+      "matchUpdateTypes": ["major"],
+      "labels": ["ci"],
+      "commitMessagePrefix": "ci:",
+      "commitMessageAction": "update"
+    },
+    {
+      "groupName": "all non-major dependencies",
+      "groupSlug": "all-minor-patch",
       "matchPackagePatterns": [
-        "^org\\.jetbrains\\.kotlin:",
-        "^org\\.jetbrains\\.kotlin\\.",
-        "^com\\.google\\.devtools\\.ksp"
-      ]
+        "\\.gradle(\\.kts)?$",
+        "(^|/)gradle\\.properties$",
+        "(^|/)gradle/.+\\.toml$",
+        "(^|/)buildSrc/.+\\.kt$",
+        "\\.versions\\.toml$",
+        "(^|/)versions.props$",
+        "(^|/)versions.lock$"
+      ],
+      "matchUpdateTypes": ["minor", "patch"],
+      "commitMessagePrefix": "build(deps):",
+      "commitMessageAction": "update"
+    },
+    {
+      "groupName": "all major dependencies",
+      "matchPackagePatterns": [
+        "\\.gradle(\\.kts)?$",
+        "(^|/)gradle\\.properties$",
+        "(^|/)gradle/.+\\.toml$",
+        "(^|/)buildSrc/.+\\.kt$",
+        "\\.versions\\.toml$",
+        "(^|/)versions.props$",
+        "(^|/)versions.lock$"
+      ],
+      "matchUpdateTypes": ["major"],
+      "commitMessagePrefix": "build(deps):",
+      "commitMessageAction": "update"
     }
   ]
 }
