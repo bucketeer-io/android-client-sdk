@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.1.4](https://github.com/bucketeer-io/android-client-sdk/compare/v2.1.3...v2.1.4) (2024-03-06)
+
+
+### Miscellaneous
+
+* **deps:** update google-github-actions/release-please-action action to v3.7.13 ([#117](https://github.com/bucketeer-io/android-client-sdk/issues/117)) ([1fc8ba4](https://github.com/bucketeer-io/android-client-sdk/commit/1fc8ba4931f6a0c6e9194a4125b474d3b20cb59d))
+* lose the main thread dependency in the initialize and destroy implementation ([#129](https://github.com/bucketeer-io/android-client-sdk/issues/129)) ([748736b](https://github.com/bucketeer-io/android-client-sdk/commit/748736b07ccbd5c478a4ecd2876f2be6667ff56c))
+
+
+### Bug Fixes
+
+* npe when destroying and reinitializing the client SDK ([#133](https://github.com/bucketeer-io/android-client-sdk/issues/133)) ([6ecb8e4](https://github.com/bucketeer-io/android-client-sdk/commit/6ecb8e49f169b3413ae63e40e343a3d431a3bae6))
+* npe while initializing the sdk using sqlite-framework 2.3.0 ([#130](https://github.com/bucketeer-io/android-client-sdk/issues/130)) ([00a159c](https://github.com/bucketeer-io/android-client-sdk/commit/00a159ca190ca6718c14218d6814be7444ea760f))
+
 ## [2.1.3](https://github.com/bucketeer-io/android-client-sdk/compare/v2.1.2...v2.1.3) (2023-10-17)
 
 
