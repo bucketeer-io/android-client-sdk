@@ -7,7 +7,7 @@ plugins {
 android {
   namespace = "io.bucketeer.sdk.android.mocks"
 
-  compileSdkVersion project.findProperty("android.compileSdkVersion") as int
+  compileSdk project.findProperty("android.compileSdk") as int
 
   defaultConfig {
     minSdkVersion project.findProperty("android.minSdkVersion") as int
