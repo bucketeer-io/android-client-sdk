@@ -22,6 +22,9 @@ inline fun <T> SupportSQLiteDatabase.transaction(
   }
 }
 
+/**
+ * Be aware that `having` clauses are only permitted when using a `groupBy` clause.
+ */
 fun SupportSQLiteDatabase.select(
   table: String,
   columns: Array<String>? = null,
@@ -33,12 +36,24 @@ fun SupportSQLiteDatabase.select(
   limit: String? = null,
 ): Cursor {
   val builder = SupportSQLiteQueryBuilder.builder(table)
-    .columns(columns)
-    .selection(selection, selectionArgs)
-    .groupBy(groupBy)
-    .having(having)
-    .orderBy(orderBy)
-    .limit(limit)
 
+  if (!columns.isNullOrEmpty()) {
+    builder.columns(columns)
+  }
+  if (!selection.isNullOrEmpty() && !selectionArgs.isNullOrEmpty()) {
+    builder.selection(selection, selectionArgs)
+  }
+  if (!groupBy.isNullOrEmpty()) {
+    builder.groupBy(groupBy)
+  }
+  if (!having.isNullOrEmpty()) {
+    builder.having(having)
+  }
+  if (!orderBy.isNullOrEmpty()) {
+    builder.orderBy(orderBy)
+  }
+  if (!limit.isNullOrEmpty()) {
+    builder.limit(limit)
+  }
   return query(builder.create())
 }
