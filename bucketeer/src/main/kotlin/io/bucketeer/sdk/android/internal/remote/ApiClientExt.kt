@@ -16,10 +16,11 @@ fun Response.toBKTException(adapter: JsonAdapter<ErrorResponse>): BKTException {
   }.getOrNull()
 
   return when (code) {
-    in 300.. 399 -> {
+    in 300..399 -> {
       // https://github.com/bucketeer-io/ios-client-sdk/issues/65
       BKTException.RedirectRequestException(
-        message = errorBody?.error?.message ?: "RedirectRequest error", statusCode = code,
+        message = errorBody?.error?.message ?: "RedirectRequest error",
+        statusCode = code,
       )
     }
     400 -> {

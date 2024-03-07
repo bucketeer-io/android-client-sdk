@@ -514,7 +514,7 @@ class MetricsEventAdapterFactoryTest {
           labels = mapOf(
             "tag" to "tag_value",
             "response_code" to "418",
-            "error_message" to "code 418"
+            "error_message" to "code 418",
           ),
         ),
         sdkVersion = "2.0.1",

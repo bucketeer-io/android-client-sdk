@@ -46,9 +46,13 @@ internal class ApiClientImplTest {
     FORBIDDEN(403, BKTException.ForbiddenException::class.java, "error: 403"),
     NOT_FOUND(404, BKTException.FeatureNotFoundException::class.java, "error: 404"),
     METHOD_NOT_ALLOWED(405, BKTException.InvalidHttpMethodException::class.java, "error: 405"),
-    // 408 status code, the mock web server will treat it as Socket Exception, we should not control on it error message as it undefined with us.
-    // It could be `Request timeout error: timeout` or `Request timeout error: read timeout`
-    TIMEOUT(408, BKTException.TimeoutException::class.java, null),
+    TIMEOUT(
+      code = 408,
+      expectedClass = BKTException.TimeoutException::class.java,
+      // 408 status code, the mock web server will treat it as Socket Exception, we should not control on it error message as it undefined with us.
+      // It could be `Request timeout error: timeout` or `Request timeout error: read timeout`
+      expectedMessage = null,
+    ),
     PAYLOAD_TOO_LARGE(413, BKTException.PayloadTooLargeException::class.java, "error: 413"),
     CLIENT_CLOSED_REQUEST(499, BKTException.ClientClosedRequestException::class.java, "error: 499"),
     INTERNAL_SERVER_ERROR(500, BKTException.InternalServerErrorException::class.java, "error: 500"),
