@@ -31,4 +31,5 @@ sealed class BKTException(
 
   // unknown errors
   class UnknownException(message: String, cause: Throwable? = null) : BKTException(message, cause)
+  class UnknownServerException(message: String, cause: Throwable? = null, val statusCode: Int) : BKTException(message, cause)
 }

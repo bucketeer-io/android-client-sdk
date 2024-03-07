@@ -274,6 +274,18 @@ internal fun newEventDataMetricEvent(
         ),
       )
 
+      is BKTException.UnknownServerException -> Pair(
+        MetricsEventType.UNKNOWN,
+        MetricsEventData.UnknownErrorMetricsEvent(
+          apiId = apiId,
+          labels = labels.apply {
+            // https://github.com/bucketeer-io/ios-client-sdk/issues/65
+            set("response_code", error.statusCode.toString())
+            set("error_message", error.message ?: "UnknownServerException")
+          },
+        ),
+      )
+
       is BKTException.PayloadTooLargeException -> Pair(
         MetricsEventType.PAYLOAD_TOO_LARGE,
         MetricsEventData.PayloadTooLargeErrorMetricsEvent(

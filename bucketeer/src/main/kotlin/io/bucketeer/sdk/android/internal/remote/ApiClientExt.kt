@@ -80,7 +80,7 @@ fun Response.toBKTException(adapter: JsonAdapter<ErrorResponse>): BKTException {
         message = errorBody?.error?.message ?: "InternalServer error",
       )
     }
-    else -> BKTException.UnknownException("Unknown error: '$errorBody'")
+    else -> BKTException.UnknownServerException("Unknown error: '$errorBody'", statusCode = code)
   }
 }
 
