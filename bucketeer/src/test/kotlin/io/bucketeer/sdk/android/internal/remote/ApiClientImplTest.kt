@@ -36,21 +36,24 @@ internal class ApiClientImplTest {
   @Suppress("unused")
   enum class ErrorTestCase(
     val code: Int,
-    val expected: Class<*>,
+    val expectedClass: Class<*>,
+    val expectedMessage: String?,
   ) {
-    REDIRECT_REQUEST_301(301, BKTException.RedirectRequestException::class.java),
-    REDIRECT_REQUEST_302(302, BKTException.RedirectRequestException::class.java),
-    BAD_REQUEST(400, BKTException.BadRequestException::class.java),
-    UNAUTHORIZED(401, BKTException.UnauthorizedException::class.java),
-    FORBIDDEN(403, BKTException.ForbiddenException::class.java),
-    NOT_FOUND(404, BKTException.FeatureNotFoundException::class.java),
-    METHOD_NOT_ALLOWED(405, BKTException.InvalidHttpMethodException::class.java),
-    TIMEOUT(408, BKTException.TimeoutException::class.java),
-    PAYLOAD_TOO_LARGE(413, BKTException.PayloadTooLargeException::class.java),
-    CLIENT_CLOSED_REQUEST(499, BKTException.ClientClosedRequestException::class.java),
-    INTERNAL_SERVER_ERROR(500, BKTException.InternalServerErrorException::class.java),
-    SERVICE_UNAVAILABLE(503, BKTException.ServiceUnavailableException::class.java),
-    UNKNOWN_SERVER(418, BKTException.UnknownServerException::class.java),
+    REDIRECT_REQUEST_301(301, BKTException.RedirectRequestException::class.java, "error: 301"),
+    REDIRECT_REQUEST_302(302, BKTException.RedirectRequestException::class.java, "error: 302"),
+    BAD_REQUEST(400, BKTException.BadRequestException::class.java, "error: 400"),
+    UNAUTHORIZED(401, BKTException.UnauthorizedException::class.java, "error: 401"),
+    FORBIDDEN(403, BKTException.ForbiddenException::class.java, "error: 403"),
+    NOT_FOUND(404, BKTException.FeatureNotFoundException::class.java, "error: 404"),
+    METHOD_NOT_ALLOWED(405, BKTException.InvalidHttpMethodException::class.java, "error: 405"),
+    // 408 status code, the mock web server will treat it as Socket Exception, we should not control on it error message as it undefined with us.
+    // It could be `Request timeout error: timeout` or `Request timeout error: read timeout`
+    TIMEOUT(408, BKTException.TimeoutException::class.java, null),
+    PAYLOAD_TOO_LARGE(413, BKTException.PayloadTooLargeException::class.java, "error: 413"),
+    CLIENT_CLOSED_REQUEST(499, BKTException.ClientClosedRequestException::class.java, "error: 499"),
+    INTERNAL_SERVER_ERROR(500, BKTException.InternalServerErrorException::class.java, "error: 500"),
+    SERVICE_UNAVAILABLE(503, BKTException.ServiceUnavailableException::class.java, "error: 503"),
+    UNKNOWN_SERVER(418, BKTException.UnknownServerException::class.java, "UnknownServerException 418"),
   }
 
   @Before
@@ -225,7 +228,7 @@ internal class ApiClientImplTest {
               ErrorResponse(
                 ErrorResponse.ErrorDetail(
                   code = case.code,
-                  message = "error: ${case.code}",
+                  message = case.expectedMessage ?: "",
                 ),
               ),
             ),
@@ -251,8 +254,10 @@ internal class ApiClientImplTest {
     val failure = result as GetEvaluationsResult.Failure
     val error = failure.error
 
-    assertThat(error).isInstanceOf(case.expected)
-    assertThat(error.message).isEqualTo("error: ${case.code}")
+    assertThat(error).isInstanceOf(case.expectedClass)
+    if (case.expectedMessage != null) {
+      assertThat(error.message).contains(case.expectedMessage)
+    }
   }
 
   @Test
@@ -260,7 +265,7 @@ internal class ApiClientImplTest {
     server.enqueue(
       MockResponse()
         .setResponseCode(case.code)
-        .setBody("error: ${case.code}"),
+        .setBody(case.expectedMessage ?: ""),
     )
     client = ApiClientImpl(
       apiEndpoint = apiEndpoint,
@@ -282,7 +287,7 @@ internal class ApiClientImplTest {
     val failure = result as GetEvaluationsResult.Failure
     val error = failure.error
 
-    assertThat(error).isInstanceOf(case.expected)
+    assertThat(error).isInstanceOf(case.expectedClass)
     assertThat(error.message).doesNotContain("${case.code}")
   }
 
@@ -395,7 +400,7 @@ internal class ApiClientImplTest {
               ErrorResponse(
                 ErrorResponse.ErrorDetail(
                   code = case.code,
-                  message = "error: ${case.code}",
+                  message = case.expectedMessage ?: "",
                 ),
               ),
             ),
@@ -414,8 +419,10 @@ internal class ApiClientImplTest {
     val failure = result as RegisterEventsResult.Failure
     val error = failure.error
 
-    assertThat(error).isInstanceOf(case.expected)
-    assertThat(error.message).isEqualTo("error: ${case.code}")
+    assertThat(error).isInstanceOf(case.expectedClass)
+    if (case.expectedMessage != null) {
+      assertThat(error.message).contains(case.expectedMessage)
+    }
   }
 
   @Test
@@ -423,7 +430,7 @@ internal class ApiClientImplTest {
     server.enqueue(
       MockResponse()
         .setResponseCode(case.code)
-        .setBody("error: ${case.code}"),
+        .setBody(case.expectedMessage ?: ""),
     )
     client = ApiClientImpl(
       apiEndpoint = apiEndpoint,
@@ -438,7 +445,7 @@ internal class ApiClientImplTest {
     val failure = result as RegisterEventsResult.Failure
     val error = failure.error
 
-    assertThat(error).isInstanceOf(case.expected)
+    assertThat(error).isInstanceOf(case.expectedClass)
     assertThat(error.message).doesNotContain("${case.code}")
   }
 }
