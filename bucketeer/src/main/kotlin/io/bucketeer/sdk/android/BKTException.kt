@@ -22,7 +22,7 @@ sealed class BKTException(
   class ServiceUnavailableException(message: String) : BKTException(message)
 
   // network errors
-  class TimeoutException(message: String, cause: Throwable, val timeoutMillis: Long) : BKTException(message, cause)
+  class TimeoutException(message: String, cause: Throwable?, val timeoutMillis: Long) : BKTException(message, cause)
   class NetworkException(message: String, cause: Throwable) : BKTException(message, cause)
 
   // sdk errors

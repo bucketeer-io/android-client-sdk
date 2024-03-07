@@ -16,6 +16,12 @@ fun Response.toBKTException(adapter: JsonAdapter<ErrorResponse>): BKTException {
   }.getOrNull()
 
   return when (code) {
+    in 300.. 399 -> {
+      // https://github.com/bucketeer-io/ios-client-sdk/issues/65
+      BKTException.RedirectRequestException(
+        message = errorBody?.error?.message ?: "RedirectRequest error", statusCode = code,
+      )
+    }
     400 -> {
       // BadRequest
       // - gateway: context canceled
@@ -59,6 +65,10 @@ fun Response.toBKTException(adapter: JsonAdapter<ErrorResponse>): BKTException {
       BKTException.InvalidHttpMethodException(
         message = errorBody?.error?.message ?: "MethodNotAllowed error",
       )
+    }
+    408 -> {
+      // https://github.com/bucketeer-io/ios-client-sdk/issues/65
+      BKTException.TimeoutException("Request timeout error: 408", null, timeoutMillis = 0)
     }
     499 -> {
       // ClientClosedRequest
