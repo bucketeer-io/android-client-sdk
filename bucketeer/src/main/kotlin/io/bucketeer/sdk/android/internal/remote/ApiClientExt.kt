@@ -68,7 +68,17 @@ fun Response.toBKTException(adapter: JsonAdapter<ErrorResponse>): BKTException {
     }
     408 -> {
       // https://github.com/bucketeer-io/ios-client-sdk/issues/65
-      BKTException.TimeoutException("Request timeout error: 408", null, timeoutMillis = 0)
+      BKTException.TimeoutException(
+        message = errorBody?.error?.message ?: "Request timeout error: 408",
+        cause = null,
+        timeoutMillis = 0,
+      )
+    }
+    413 -> {
+      // https://github.com/bucketeer-io/ios-client-sdk/issues/65
+      BKTException.PayloadTooLargeException(
+        message = errorBody?.error?.message ?: "PayloadTooLarge error",
+      )
     }
     499 -> {
       // ClientClosedRequest
@@ -87,10 +97,13 @@ fun Response.toBKTException(adapter: JsonAdapter<ErrorResponse>): BKTException {
       // ServiceUnavailable
       // - gateway: internal
       BKTException.ServiceUnavailableException(
-        message = errorBody?.error?.message ?: "InternalServer error",
+        message = errorBody?.error?.message ?: "ServiceUnavailable error",
       )
     }
-    else -> BKTException.UnknownServerException("Unknown error: '$errorBody'", statusCode = code)
+    else -> BKTException.UnknownServerException(
+      message = "Unknown error: '$errorBody'",
+      statusCode = code,
+    )
   }
 }
 
