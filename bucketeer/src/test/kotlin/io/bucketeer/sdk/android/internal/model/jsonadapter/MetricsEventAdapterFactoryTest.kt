@@ -109,7 +109,8 @@ class MetricsEventAdapterFactoryTest {
         |  "event": {
         |    "apiId": 2,
         |    "labels": {
-        |      "tag": "tag_value"
+        |      "tag": "tag_value",
+        |      "timeout": "5.0"
         |    },
         |    "@type": "type.googleapis.com/bucketeer.event.client.TimeoutErrorMetricsEvent"
         |  },
@@ -129,6 +130,7 @@ class MetricsEventAdapterFactoryTest {
           ApiId.GET_EVALUATIONS,
           labels = mapOf(
             "tag" to "tag_value",
+            "timeout" to "5.0",
           ),
         ),
         sdkVersion = "2.0.1",
@@ -489,7 +491,9 @@ class MetricsEventAdapterFactoryTest {
         |  "event": {
         |    "apiId": 2,
         |    "labels": {
-        |      "tag": "tag_value"
+        |      "tag": "tag_value",
+        |      "response_code": "418",
+        |      "error_message": "code 418"
         |    },
         |    "@type": "type.googleapis.com/bucketeer.event.client.UnknownErrorMetricsEvent"
         |  },
@@ -506,6 +510,86 @@ class MetricsEventAdapterFactoryTest {
         timestamp = 1660210923777,
         type = MetricsEventType.UNKNOWN,
         event = MetricsEventData.UnknownErrorMetricsEvent(
+          ApiId.GET_EVALUATIONS,
+          labels = mapOf(
+            "tag" to "tag_value",
+            "response_code" to "418",
+            "error_message" to "code 418"
+          ),
+        ),
+        sdkVersion = "2.0.1",
+        metadata = mapOf(
+          "app_version" to "1.2.3",
+          "os_version" to "os_version_value",
+          "device_model" to "device_model_value",
+        ),
+      ),
+    ),
+    RedirectRequestErrorMetricsEvent(
+      json = """
+        |{
+        |  "timestamp": 1660210923777,
+        |  "type": 13,
+        |  "event": {
+        |    "apiId": 2,
+        |    "labels": {
+        |      "tag": "tag_value",
+        |      "response_code": "302"
+        |    },
+        |    "@type": "type.googleapis.com/bucketeer.event.client.RedirectionRequestExceptionEvent"
+        |  },
+        |  "sdkVersion": "2.0.1",
+        |  "metadata": {
+        |    "app_version": "1.2.3",
+        |    "os_version": "os_version_value",
+        |    "device_model": "device_model_value"
+        |  },
+        |  "@type": "type.googleapis.com/bucketeer.event.client.MetricsEvent"
+        |}
+      """.trimMargin(),
+      event = EventData.MetricsEvent(
+        timestamp = 1660210923777,
+        type = MetricsEventType.REDIRECT_REQUEST,
+        event = MetricsEventData.RedirectionRequestErrorMetricsEvent(
+          ApiId.GET_EVALUATIONS,
+          labels = mapOf(
+            "tag" to "tag_value",
+            "response_code" to "302",
+          ),
+        ),
+        sdkVersion = "2.0.1",
+        metadata = mapOf(
+          "app_version" to "1.2.3",
+          "os_version" to "os_version_value",
+          "device_model" to "device_model_value",
+        ),
+      ),
+    ),
+    PayloadTooLargeErrorMetricsEvent(
+      json = """
+        |{
+        |  "timestamp": 1660210923777,
+        |  "type": 14,
+        |  "event": {
+        |    "apiId": 2,
+        |    "labels": {
+        |      "tag": "tag_value"
+        |    },
+        |    "@type": "type.googleapis.com/bucketeer.event.client.PayloadTooLargeExceptionEvent"
+        |  },
+        |  "sdkVersion": "2.0.1",
+        |  "metadata": {
+        |    "app_version": "1.2.3",
+        |    "os_version": "os_version_value",
+        |    "device_model": "device_model_value"
+        |  },
+        |  "@type": "type.googleapis.com/bucketeer.event.client.MetricsEvent"
+        |}
+      """.trimMargin(),
+      event = EventData.MetricsEvent(
+        timestamp = 1660210923777,
+        type = MetricsEventType.PAYLOAD_TOO_LARGE,
+        event = MetricsEventData.PayloadTooLargeErrorMetricsEvent(
           ApiId.GET_EVALUATIONS,
           labels = mapOf(
             "tag" to "tag_value",
