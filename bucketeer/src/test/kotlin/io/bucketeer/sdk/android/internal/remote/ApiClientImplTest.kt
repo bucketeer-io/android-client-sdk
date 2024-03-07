@@ -38,14 +38,19 @@ internal class ApiClientImplTest {
     val code: Int,
     val expected: Class<*>,
   ) {
+    REDIRECT_REQUEST_301(301, BKTException.RedirectRequestException::class.java),
+    REDIRECT_REQUEST_302(302, BKTException.RedirectRequestException::class.java),
     BAD_REQUEST(400, BKTException.BadRequestException::class.java),
     UNAUTHORIZED(401, BKTException.UnauthorizedException::class.java),
     FORBIDDEN(403, BKTException.ForbiddenException::class.java),
     NOT_FOUND(404, BKTException.FeatureNotFoundException::class.java),
     METHOD_NOT_ALLOWED(405, BKTException.InvalidHttpMethodException::class.java),
+    TIMEOUT(408, BKTException.TimeoutException::class.java),
+    PAYLOAD_TOO_LARGE(413, BKTException.PayloadTooLargeException::class.java),
     CLIENT_CLOSED_REQUEST(499, BKTException.ClientClosedRequestException::class.java),
     INTERNAL_SERVER_ERROR(500, BKTException.InternalServerErrorException::class.java),
     SERVICE_UNAVAILABLE(503, BKTException.ServiceUnavailableException::class.java),
+    UNKNOWN_SERVER(418, BKTException.UnknownServerException::class.java),
   }
 
   @Before
