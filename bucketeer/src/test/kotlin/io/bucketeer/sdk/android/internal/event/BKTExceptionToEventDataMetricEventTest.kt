@@ -218,14 +218,14 @@ class BKTExceptionToEventDataMetricEventTest {
         type = MetricsEventType.PAYLOAD_TOO_LARGE,
         event = MetricsEventData.PayloadTooLargeErrorMetricsEvent(
           apiId = expectedApiId,
-          labels = expectedLabelsForUnknownServerException,
+          labels = expectedLabelsForOtherCases,
         ),
         sdkVersion = BuildConfig.SDK_VERSION,
         metadata = expectedMetadata,
       ),
     ),
     UNKNOWN_SERVER(
-      BKTException.UnknownServerException(message = "UnknownServerException", statusCode = 490),
+      BKTException.UnknownServerException(message = "UnknownServerException", statusCode = 499),
       EventData.MetricsEvent(
         timestamp = expectedTimestamp,
         type = MetricsEventType.UNKNOWN,
