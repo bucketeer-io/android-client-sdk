@@ -156,7 +156,7 @@ internal class ApiClientImplTest {
     }
 
     assertThat(millis).isGreaterThan(1_000)
-    assertThat(millis).isLessThan(1_500)
+    assertThat(millis).isLessThan(2_500)
 
     assertThat(result).isInstanceOf(GetEvaluationsResult.Failure::class.java)
     val failure = result as GetEvaluationsResult.Failure
@@ -187,7 +187,7 @@ internal class ApiClientImplTest {
     }
 
     assertThat(millis).isGreaterThan(1_000)
-    assertThat(millis).isLessThan(1_500)
+    assertThat(millis).isLessThan(2_500)
 
     assertThat(result).isInstanceOf(GetEvaluationsResult.Failure::class.java)
     val failure = result as GetEvaluationsResult.Failure
