@@ -135,7 +135,7 @@ internal class ApiClientImplTest {
   }
 
   @Test
-  fun `getEvaluations - default timeout`() {
+  fun `getEvaluations - custom timeout`() {
     client = ApiClientImpl(
       apiEndpoint = apiEndpoint,
       apiKey = "api_key_value",
@@ -166,7 +166,7 @@ internal class ApiClientImplTest {
   }
 
   @Test
-  fun `getEvaluations - custom timeout`() {
+  fun `getEvaluations - default timeout`() {
     client = ApiClientImpl(
       apiEndpoint = apiEndpoint,
       apiKey = "api_key_value",
@@ -187,7 +187,7 @@ internal class ApiClientImplTest {
     }
 
     assertThat(millis).isGreaterThan(1_000)
-    assertThat(millis).isLessThan(2_500)
+    assertThat(millis).isLessThan(DEFAULT_REQUEST_TIMEOUT_MILLIS + 2_500)
 
     assertThat(result).isInstanceOf(GetEvaluationsResult.Failure::class.java)
     val failure = result as GetEvaluationsResult.Failure
