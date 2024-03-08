@@ -2,12 +2,14 @@
 
 package io.bucketeer.sdk.android.internal.util
 
+import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
 import kotlin.reflect.KClass
 
+@SuppressLint("UnspecifiedImmutableFlag")
 internal fun <T : Any> createBroadcastPendingIntent(
   context: Context,
   targetClass: KClass<T>,

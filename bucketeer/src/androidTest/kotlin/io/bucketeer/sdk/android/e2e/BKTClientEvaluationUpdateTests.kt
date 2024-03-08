@@ -64,8 +64,7 @@ class BKTClientEvaluationUpdateTests {
     assertThat(result).isNull()
     val client = BKTClient.getInstance() as BKTClientImpl
     val evaluationSQLDao = (client.component as ComponentImpl).dataModule.evaluationSQLDao
-    val evaluationStorage = (client.component as ComponentImpl).dataModule.evaluationStorage
-    val evaluationInteractor = client.component.evaluationInteractor
+    val evaluationStorage = client.component.dataModule.evaluationStorage
     val tobeRemoveEvaluation = Evaluation(
       id = "test-feature-2:9:user id 1",
       featureId = "test-feature-2",
@@ -100,7 +99,8 @@ class BKTClientEvaluationUpdateTests {
 
     assertThat(resultWithNewTag).isNull()
     val clientWithNewTag = BKTClient.getInstance() as BKTClientImpl
-    val evaluationStorageWithNewTag = (clientWithNewTag.component as ComponentImpl).dataModule.evaluationStorage
+    val evaluationStorageWithNewTag =
+      (clientWithNewTag.component as ComponentImpl).dataModule.evaluationStorage
     // Should not contain the previous data
     assert(evaluationStorageWithNewTag.get().contains(tobeRemoveEvaluation).not())
     assertThat(evaluationStorageWithNewTag.getCurrentEvaluationId()).isNotEmpty()
@@ -127,7 +127,7 @@ class BKTClientEvaluationUpdateTests {
     assertThat(result).isNull()
     val client = BKTClient.getInstance() as BKTClientImpl
     val evaluationSQLDao = (client.component as ComponentImpl).dataModule.evaluationSQLDao
-    val evaluationStorage = (client.component as ComponentImpl).dataModule.evaluationStorage
+    val evaluationStorage = client.component.dataModule.evaluationStorage
     val tobeRemoveEvaluation = Evaluation(
       id = "test-feature-2:9:user id 1",
       featureId = "test-feature-2",
@@ -156,8 +156,9 @@ class BKTClientEvaluationUpdateTests {
 
     assertThat(resultWithNewTag).isNull()
     val clientWithNewTag = BKTClient.getInstance() as BKTClientImpl
-    val evaluationSQLDaoWithNewTag = (clientWithNewTag.component as ComponentImpl).dataModule.evaluationSQLDao
-    val evaluationStorageWithNewTag = (clientWithNewTag.component as ComponentImpl).dataModule.evaluationStorage
+    val evaluationSQLDaoWithNewTag =
+      (clientWithNewTag.component as ComponentImpl).dataModule.evaluationSQLDao
+    val evaluationStorageWithNewTag = clientWithNewTag.component.dataModule.evaluationStorage
     // Should not contain the previous data
     assert(evaluationSQLDaoWithNewTag.get(USER_ID).contains(tobeRemoveEvaluation).not())
     assert(evaluationStorageWithNewTag.get().contains(tobeRemoveEvaluation).not())
