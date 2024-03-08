@@ -77,6 +77,14 @@ androidComponents {
   })
 }
 
+configurations {
+  // Reduce duplicated dependencies
+  // Duplicate class com.google.common.util.concurrent.ListenableFuture
+  // found in modules guava-30.1.1-android (com.google.guava:guava:30.1.1-android)
+  // and listenablefuture-1.0 (com.google.guava:listenablefuture:1.0)
+  all*.exclude group: 'com.google.guava', module: 'listenablefuture'
+}
+
 dependencies {
   implementation libs.androidx.sqlite
 
