@@ -279,7 +279,6 @@ internal fun newEventDataMetricEvent(
         MetricsEventData.UnknownErrorMetricsEvent(
           apiId = apiId,
           labels = labels.apply {
-            // https://github.com/bucketeer-io/ios-client-sdk/issues/65
             set("response_code", error.statusCode.toString())
             set("error_message", error.message ?: "UnknownServerException")
           },
@@ -299,7 +298,6 @@ internal fun newEventDataMetricEvent(
         MetricsEventData.RedirectionRequestErrorMetricsEvent(
           apiId = apiId,
           labels = labels.apply {
-            // https://github.com/bucketeer-io/ios-client-sdk/issues/65
             set("response_code", error.statusCode.toString())
           },
         ),

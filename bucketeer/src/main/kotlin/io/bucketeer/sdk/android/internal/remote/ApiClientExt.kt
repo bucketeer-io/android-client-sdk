@@ -17,7 +17,6 @@ fun Response.toBKTException(adapter: JsonAdapter<ErrorResponse>): BKTException {
 
   return when (code) {
     in 300..399 -> {
-      // https://github.com/bucketeer-io/ios-client-sdk/issues/65
       BKTException.RedirectRequestException(
         message = errorBody?.error?.message ?: "RedirectRequest error",
         statusCode = code,
@@ -68,7 +67,6 @@ fun Response.toBKTException(adapter: JsonAdapter<ErrorResponse>): BKTException {
       )
     }
     408 -> {
-      // https://github.com/bucketeer-io/ios-client-sdk/issues/65
       BKTException.TimeoutException(
         message = errorBody?.error?.message ?: "Request timeout error: 408",
         cause = null,
@@ -76,7 +74,6 @@ fun Response.toBKTException(adapter: JsonAdapter<ErrorResponse>): BKTException {
       )
     }
     413 -> {
-      // https://github.com/bucketeer-io/ios-client-sdk/issues/65
       BKTException.PayloadTooLargeException(
         message = errorBody?.error?.message ?: "PayloadTooLarge error",
       )
