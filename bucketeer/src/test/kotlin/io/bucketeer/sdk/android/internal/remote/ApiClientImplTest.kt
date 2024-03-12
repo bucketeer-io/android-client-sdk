@@ -59,7 +59,7 @@ internal class ApiClientImplTest {
     OKAY_200_RANDOM_TEXT_RESPONSE(
       code = 200,
       expectedTextResponse = "okay",
-    )
+    ),
   }
 
   @Suppress("unused")
@@ -87,8 +87,6 @@ internal class ApiClientImplTest {
     INTERNAL_SERVER_ERROR(500, BKTException.InternalServerErrorException::class.java, "error: 500"),
     SERVICE_UNAVAILABLE(503, BKTException.ServiceUnavailableException::class.java, "error: 503"),
     UNKNOWN_SERVER(418, BKTException.UnknownServerException::class.java, "UnknownServerException 418"),
-
-
     REDIRECT_REQUEST_301_NULL_BODY_RESPONSE(301, BKTException.RedirectRequestException::class.java, null),
     REDIRECT_REQUEST_302_NULL_BODY_RESPONSE(302, BKTException.RedirectRequestException::class.java, null),
     BAD_REQUEST_NULL_BODY_RESPONSE(400, BKTException.BadRequestException::class.java, null),
@@ -311,7 +309,7 @@ internal class ApiClientImplTest {
           if (case.expectedResponse != null) {
             this.setBody(case.expectedResponse)
           }
-        }
+        },
     )
     client = ApiClientImpl(
       apiEndpoint = apiEndpoint,
@@ -480,7 +478,7 @@ internal class ApiClientImplTest {
           if (case.expectedResponse != null) {
             this.setBody(case.expectedResponse)
           }
-        }
+        },
     )
     client = ApiClientImpl(
       apiEndpoint = apiEndpoint,
@@ -537,7 +535,6 @@ internal class ApiClientImplTest {
       assertThat(result).isInstanceOf(GetEvaluationsResult.Success::class.java)
       val success = result as GetEvaluationsResult.Success
       assertThat(success.value).isEqualTo(case.expectedJSONResponse)
-
     } else {
       assertThat(result).isInstanceOf(GetEvaluationsResult.Failure::class.java)
       val failure = result as GetEvaluationsResult.Failure

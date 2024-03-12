@@ -1,6 +1,7 @@
 package io.bucketeer.sdk.android.internal.remote
 
 import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.JsonDataException
 import com.squareup.moshi.JsonEncodingException
 import io.bucketeer.sdk.android.BKTException
 import io.bucketeer.sdk.android.internal.model.response.ErrorResponse
@@ -116,8 +117,10 @@ internal fun Throwable.toBKTException(requestTimeoutMillis: Long, statusCode: In
       BKTException.TimeoutException("Request timeout error: ${this.message}", this, timeoutMillis = requestTimeoutMillis)
     is UnknownHostException ->
       BKTException.NetworkException("Network connection error: ${this.message}", this)
+    is JsonDataException,
     is JsonEncodingException,
-    is EOFException ->
+    is EOFException,
+    ->
       BKTException.UnknownServerException("Unknown server error: ${this.message}", this, statusCode = statusCode)
     else -> BKTException.UnknownException("Unknown error: ${this.message}", this)
   }
