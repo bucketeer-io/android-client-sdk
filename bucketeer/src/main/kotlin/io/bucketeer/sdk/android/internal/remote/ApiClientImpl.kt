@@ -73,11 +73,13 @@ internal class ApiClientImpl(
         .build()
     }
 
+    var responseStatusCode = 0
     val result = actualClient.newCall(request).runCatching {
       logd { "--> Fetch Evaluation\n$body" }
 
       val (millis, data) = measureTimeMillisWithResult {
         val rawResponse = execute()
+        responseStatusCode = rawResponse.code
 
         if (!rawResponse.isSuccessful) {
           throw rawResponse.toBKTException(errorResponseJsonAdapter)
@@ -108,6 +110,7 @@ internal class ApiClientImpl(
         GetEvaluationsResult.Failure(
           e.toBKTException(
             requestTimeoutMillis = client.callTimeoutMillis.toLong(),
+            statusCode = responseStatusCode,
           ),
           featureTag,
         )
@@ -128,9 +131,11 @@ internal class ApiClientImpl(
       .post(body = body.toJsonRequestBody())
       .build()
 
+    var responseStatusCode = 0
     val result = client.newCall(request).runCatching {
       logd { "--> Register events\n$body" }
       val response = execute()
+      responseStatusCode = response.code
 
       if (!response.isSuccessful) {
         val e = response.toBKTException(errorResponseJsonAdapter)
@@ -153,6 +158,7 @@ internal class ApiClientImpl(
         RegisterEventsResult.Failure(
           e.toBKTException(
             requestTimeoutMillis = client.callTimeoutMillis.toLong(),
+            statusCode = responseStatusCode,
           ),
         )
       },

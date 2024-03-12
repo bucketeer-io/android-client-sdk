@@ -34,10 +34,39 @@ internal class ApiClientImplTest {
   private lateinit var moshi: Moshi
 
   @Suppress("unused")
+  enum class SuccessWithAcceptableCodeTestCase(
+    val code: Int,
+    val expectedJSONResponse: GetEvaluationsResponse? = null,
+    val expectedTextResponse: String? = null,
+    val shouldSuccess: Boolean = false,
+  ) {
+    OKAY_200_VALID_RESPONSE(
+      code = 200,
+      expectedJSONResponse = GetEvaluationsResponse(
+        evaluations = user1Evaluations,
+        userEvaluationsId = "user_evaluation_id",
+      ),
+      expectedTextResponse = null,
+      shouldSuccess = true,
+    ),
+    OKAY_200_NULL_RESPONSE(
+      code = 200,
+    ),
+    OKAY_200_EMPTY_TEXT_RESPONSE(
+      code = 200,
+      expectedTextResponse = "",
+    ),
+    OKAY_200_RANDOM_TEXT_RESPONSE(
+      code = 200,
+      expectedTextResponse = "okay",
+    )
+  }
+
+  @Suppress("unused")
   enum class ErrorTestCase(
     val code: Int,
     val expectedClass: Class<*>,
-    val expectedMessage: String?,
+    val expectedResponse: String?,
   ) {
     REDIRECT_REQUEST_301(301, BKTException.RedirectRequestException::class.java, "error: 301"),
     REDIRECT_REQUEST_302(302, BKTException.RedirectRequestException::class.java, "error: 302"),
@@ -51,13 +80,22 @@ internal class ApiClientImplTest {
       expectedClass = BKTException.TimeoutException::class.java,
       // 408 status code, the mock web server will treat it as Socket Exception, we should not control on it error message as it undefined with us.
       // It could be `Request timeout error: timeout` or `Request timeout error: read timeout`
-      expectedMessage = null,
+      expectedResponse = null,
     ),
     PAYLOAD_TOO_LARGE(413, BKTException.PayloadTooLargeException::class.java, "error: 413"),
     CLIENT_CLOSED_REQUEST(499, BKTException.ClientClosedRequestException::class.java, "error: 499"),
     INTERNAL_SERVER_ERROR(500, BKTException.InternalServerErrorException::class.java, "error: 500"),
     SERVICE_UNAVAILABLE(503, BKTException.ServiceUnavailableException::class.java, "error: 503"),
     UNKNOWN_SERVER(418, BKTException.UnknownServerException::class.java, "UnknownServerException 418"),
+
+
+    REDIRECT_REQUEST_301_NULL_BODY_RESPONSE(301, BKTException.RedirectRequestException::class.java, null),
+    REDIRECT_REQUEST_302_NULL_BODY_RESPONSE(302, BKTException.RedirectRequestException::class.java, null),
+    BAD_REQUEST_NULL_BODY_RESPONSE(400, BKTException.BadRequestException::class.java, null),
+    UNAUTHORIZED_NULL_BODY_RESPONSE(401, BKTException.UnauthorizedException::class.java, null),
+    FORBIDDEN_NULL_BODY_RESPONSE(403, BKTException.ForbiddenException::class.java, null),
+    NOT_FOUND_NULL_BODY_RESPONSE(404, BKTException.FeatureNotFoundException::class.java, null),
+    METHOD_NOT_ALLOWED_NULL_BODY_RESPONSE(405, BKTException.InvalidHttpMethodException::class.java, null),
   }
 
   @Before
@@ -232,7 +270,7 @@ internal class ApiClientImplTest {
               ErrorResponse(
                 ErrorResponse.ErrorDetail(
                   code = case.code,
-                  message = case.expectedMessage ?: "",
+                  message = case.expectedResponse ?: "",
                 ),
               ),
             ),
@@ -259,8 +297,8 @@ internal class ApiClientImplTest {
     val error = failure.error
 
     assertThat(error).isInstanceOf(case.expectedClass)
-    if (case.expectedMessage != null) {
-      assertThat(error.message).contains(case.expectedMessage)
+    if (case.expectedResponse != null) {
+      assertThat(error.message).contains(case.expectedResponse)
     }
   }
 
@@ -269,7 +307,11 @@ internal class ApiClientImplTest {
     server.enqueue(
       MockResponse()
         .setResponseCode(case.code)
-        .setBody(case.expectedMessage ?: ""),
+        .apply {
+          if (case.expectedResponse != null) {
+            this.setBody(case.expectedResponse)
+          }
+        }
     )
     client = ApiClientImpl(
       apiEndpoint = apiEndpoint,
@@ -404,7 +446,7 @@ internal class ApiClientImplTest {
               ErrorResponse(
                 ErrorResponse.ErrorDetail(
                   code = case.code,
-                  message = case.expectedMessage ?: "",
+                  message = case.expectedResponse ?: "",
                 ),
               ),
             ),
@@ -424,8 +466,8 @@ internal class ApiClientImplTest {
     val error = failure.error
 
     assertThat(error).isInstanceOf(case.expectedClass)
-    if (case.expectedMessage != null) {
-      assertThat(error.message).contains(case.expectedMessage)
+    if (case.expectedResponse != null) {
+      assertThat(error.message).contains(case.expectedResponse)
     }
   }
 
@@ -434,7 +476,11 @@ internal class ApiClientImplTest {
     server.enqueue(
       MockResponse()
         .setResponseCode(case.code)
-        .setBody(case.expectedMessage ?: ""),
+        .apply {
+          if (case.expectedResponse != null) {
+            this.setBody(case.expectedResponse)
+          }
+        }
     )
     client = ApiClientImpl(
       apiEndpoint = apiEndpoint,
@@ -451,5 +497,54 @@ internal class ApiClientImplTest {
 
     assertThat(error).isInstanceOf(case.expectedClass)
     assertThat(error.message).doesNotContain("${case.code}")
+  }
+
+  @Test
+  fun `test request success with acceptable code`(@TestParameter case: SuccessWithAcceptableCodeTestCase) {
+    server.enqueue(
+      MockResponse()
+        .setBodyDelay(1, TimeUnit.SECONDS)
+        .apply {
+          if (case.expectedJSONResponse != null) {
+            this.setBody(
+              moshi.adapter(GetEvaluationsResponse::class.java).toJson(case.expectedJSONResponse),
+            )
+          } else if (case.expectedTextResponse != null) {
+            this.setBody(case.expectedTextResponse)
+          }
+        }
+        .setResponseCode(200),
+    )
+
+    client = ApiClientImpl(
+      apiEndpoint = apiEndpoint,
+      apiKey = "api_key_value",
+      featureTag = "feature_tag_value",
+      moshi = moshi,
+    )
+
+    val result = client.getEvaluations(
+      user = user1,
+      userEvaluationsId = "user_evaluation_id",
+      condition = UserEvaluationCondition(
+        evaluatedAt = "1690798100",
+        userAttributesUpdated = "true",
+      ),
+    )
+
+    if (case.shouldSuccess) {
+      // assert response
+      assertThat(result).isInstanceOf(GetEvaluationsResult.Success::class.java)
+      val success = result as GetEvaluationsResult.Success
+      assertThat(success.value).isEqualTo(case.expectedJSONResponse)
+
+    } else {
+      assertThat(result).isInstanceOf(GetEvaluationsResult.Failure::class.java)
+      val failure = result as GetEvaluationsResult.Failure
+
+      assertThat(failure.error).isInstanceOf(BKTException.UnknownServerException::class.java)
+      val error = failure.error as BKTException.UnknownServerException
+      assertThat(error.statusCode).isEqualTo(case.code)
+    }
   }
 }
