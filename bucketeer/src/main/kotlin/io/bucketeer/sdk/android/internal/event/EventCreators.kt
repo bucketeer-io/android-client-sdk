@@ -273,6 +273,35 @@ internal fun newEventDataMetricEvent(
           labels = labels,
         ),
       )
+
+      is BKTException.UnknownServerException -> Pair(
+        MetricsEventType.UNKNOWN,
+        MetricsEventData.UnknownErrorMetricsEvent(
+          apiId = apiId,
+          labels = labels.apply {
+            set("response_code", error.statusCode.toString())
+            set("error_message", error.message ?: "UnknownServerException")
+          },
+        ),
+      )
+
+      is BKTException.PayloadTooLargeException -> Pair(
+        MetricsEventType.PAYLOAD_TOO_LARGE,
+        MetricsEventData.PayloadTooLargeErrorMetricsEvent(
+          apiId = apiId,
+          labels = labels,
+        ),
+      )
+
+      is BKTException.RedirectRequestException -> Pair(
+        MetricsEventType.REDIRECT_REQUEST,
+        MetricsEventData.RedirectionRequestErrorMetricsEvent(
+          apiId = apiId,
+          labels = labels.apply {
+            set("response_code", error.statusCode.toString())
+          },
+        ),
+      )
     }
   return EventData.MetricsEvent(
     timestamp = timestamp,

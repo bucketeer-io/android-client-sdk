@@ -43,6 +43,14 @@ sealed class MetricsEventData {
   ) : MetricsEventData()
 
   @JsonClass(generateAdapter = true)
+  data class RedirectionRequestErrorMetricsEvent(
+    override val apiId: ApiId,
+    val labels: Map<String, String> = emptyMap(),
+    @Json(name = "@type")
+    override val protobufType: String? = "type.googleapis.com/bucketeer.event.client.RedirectionRequestExceptionEvent",
+  ) : MetricsEventData()
+
+  @JsonClass(generateAdapter = true)
   data class BadRequestErrorMetricsEvent(
     override val apiId: ApiId,
     val labels: Map<String, String> = emptyMap(),
@@ -72,6 +80,14 @@ sealed class MetricsEventData {
     val labels: Map<String, String> = emptyMap(),
     @Json(name = "@type")
     override val protobufType: String? = "type.googleapis.com/bucketeer.event.client.NotFoundErrorMetricsEvent",
+  ) : MetricsEventData()
+
+  @JsonClass(generateAdapter = true)
+  data class PayloadTooLargeErrorMetricsEvent(
+    override val apiId: ApiId,
+    val labels: Map<String, String> = emptyMap(),
+    @Json(name = "@type")
+    override val protobufType: String? = "type.googleapis.com/bucketeer.event.client.PayloadTooLargeExceptionEvent",
   ) : MetricsEventData()
 
   @JsonClass(generateAdapter = true)

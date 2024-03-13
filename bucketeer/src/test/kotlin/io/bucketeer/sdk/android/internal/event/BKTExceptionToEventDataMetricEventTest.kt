@@ -18,6 +18,8 @@ class BKTExceptionToEventDataMetricEventTest {
     const val expectedTimestamp = 19998L
     val expectedLabelsForOtherCases = mapOf("tag" to "android")
     val expectedLabelsForTimeoutCase = mapOf("tag" to "android", "timeout" to "5.1")
+    val expectedLabelsForRedirectRequestException = mapOf("tag" to "android", "response_code" to "302")
+    val expectedLabelsForUnknownServerException = mapOf("tag" to "android", "response_code" to "499", "error_message" to "UnknownServerException")
     val expectedApiId = ApiId.GET_EVALUATIONS
     val expectedMetadata = newMetadata("1.0.0")
   }
@@ -191,6 +193,45 @@ class BKTExceptionToEventDataMetricEventTest {
         event = MetricsEventData.UnknownErrorMetricsEvent(
           apiId = expectedApiId,
           labels = expectedLabelsForOtherCases,
+        ),
+        sdkVersion = BuildConfig.SDK_VERSION,
+        metadata = expectedMetadata,
+      ),
+    ),
+    REDIRECT_REQUEST(
+      BKTException.RedirectRequestException(message = "", statusCode = 302),
+      EventData.MetricsEvent(
+        timestamp = expectedTimestamp,
+        type = MetricsEventType.REDIRECT_REQUEST,
+        event = MetricsEventData.RedirectionRequestErrorMetricsEvent(
+          apiId = expectedApiId,
+          labels = expectedLabelsForRedirectRequestException,
+        ),
+        sdkVersion = BuildConfig.SDK_VERSION,
+        metadata = expectedMetadata,
+      ),
+    ),
+    PAYLOAD_TOO_LARGE(
+      BKTException.PayloadTooLargeException(message = ""),
+      EventData.MetricsEvent(
+        timestamp = expectedTimestamp,
+        type = MetricsEventType.PAYLOAD_TOO_LARGE,
+        event = MetricsEventData.PayloadTooLargeErrorMetricsEvent(
+          apiId = expectedApiId,
+          labels = expectedLabelsForOtherCases,
+        ),
+        sdkVersion = BuildConfig.SDK_VERSION,
+        metadata = expectedMetadata,
+      ),
+    ),
+    UNKNOWN_SERVER(
+      BKTException.UnknownServerException(message = "UnknownServerException", statusCode = 499),
+      EventData.MetricsEvent(
+        timestamp = expectedTimestamp,
+        type = MetricsEventType.UNKNOWN,
+        event = MetricsEventData.UnknownErrorMetricsEvent(
+          apiId = expectedApiId,
+          labels = expectedLabelsForUnknownServerException,
         ),
         sdkVersion = BuildConfig.SDK_VERSION,
         metadata = expectedMetadata,

@@ -7,6 +7,9 @@ sealed class BKTException(
   message,
   cause,
 ) {
+  // server redirect
+  class RedirectRequestException(message: String, val statusCode: Int) : BKTException(message)
+
   // server errors
   class BadRequestException(message: String) : BKTException(message)
   class UnauthorizedException(message: String) : BKTException(message)
@@ -14,11 +17,12 @@ sealed class BKTException(
   class FeatureNotFoundException(message: String) : BKTException(message)
   class ClientClosedRequestException(message: String) : BKTException(message)
   class InvalidHttpMethodException(message: String) : BKTException(message)
+  class PayloadTooLargeException(message: String) : BKTException(message)
   class InternalServerErrorException(message: String) : BKTException(message)
   class ServiceUnavailableException(message: String) : BKTException(message)
 
   // network errors
-  class TimeoutException(message: String, cause: Throwable, val timeoutMillis: Long) : BKTException(message, cause)
+  class TimeoutException(message: String, cause: Throwable?, val timeoutMillis: Long) : BKTException(message, cause)
   class NetworkException(message: String, cause: Throwable) : BKTException(message, cause)
 
   // sdk errors
@@ -27,4 +31,5 @@ sealed class BKTException(
 
   // unknown errors
   class UnknownException(message: String, cause: Throwable? = null) : BKTException(message, cause)
+  class UnknownServerException(message: String, cause: Throwable? = null, val statusCode: Int) : BKTException(message, cause)
 }

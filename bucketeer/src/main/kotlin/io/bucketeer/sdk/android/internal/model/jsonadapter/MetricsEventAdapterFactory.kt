@@ -49,6 +49,10 @@ class MetricsEventAdapterFactory : JsonAdapter.Factory {
         moshi.adapter(MetricsEventData.ClientClosedRequestErrorMetricsEvent::class.java)
       private val serviceUnavailableErrorAdapter =
         moshi.adapter(MetricsEventData.ServiceUnavailableErrorMetricsEvent::class.java)
+      private val redirectRequestErrorAdapter =
+        moshi.adapter(MetricsEventData.RedirectionRequestErrorMetricsEvent::class.java)
+      private val payloadTooLargeErrorAdapter =
+        moshi.adapter(MetricsEventData.PayloadTooLargeErrorMetricsEvent::class.java)
 
       private val metadataAdapter: JsonAdapter<Map<String, String>?> =
         moshi.adapter(
@@ -81,6 +85,8 @@ class MetricsEventAdapterFactory : JsonAdapter.Factory {
           MetricsEventType.CLIENT_CLOSED_REQUEST_ERROR -> clientClosedRequestErrorAdapter
           MetricsEventType.SERVICE_UNAVAILABLE_ERROR -> serviceUnavailableErrorAdapter
           MetricsEventType.INTERNAL_SERVER_ERROR -> internalServerErrorAdapter
+          MetricsEventType.REDIRECT_REQUEST -> redirectRequestErrorAdapter
+          MetricsEventType.PAYLOAD_TOO_LARGE -> payloadTooLargeErrorAdapter
           null -> throw BKTException.IllegalStateException("unexpected type: $type")
         }
 
@@ -187,6 +193,19 @@ class MetricsEventAdapterFactory : JsonAdapter.Factory {
             internalServerErrorAdapter.toJson(
               writer,
               value.event as MetricsEventData.InternalServerErrorMetricsEvent,
+            )
+          }
+
+          MetricsEventType.REDIRECT_REQUEST -> {
+            redirectRequestErrorAdapter.toJson(
+              writer,
+              value.event as MetricsEventData.RedirectionRequestErrorMetricsEvent,
+            )
+          }
+          MetricsEventType.PAYLOAD_TOO_LARGE -> {
+            payloadTooLargeErrorAdapter.toJson(
+              writer,
+              value.event as MetricsEventData.PayloadTooLargeErrorMetricsEvent,
             )
           }
         }
