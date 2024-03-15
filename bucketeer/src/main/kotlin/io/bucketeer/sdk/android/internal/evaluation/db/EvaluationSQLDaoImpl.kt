@@ -75,11 +75,13 @@ internal class EvaluationSQLDaoImpl(
       selectionArgs = arrayOf(userId),
     )
 
-    return c.use {
+    val evaluations = c.use {
       c.asSequence()
         .mapNotNull { adapter.fromJson(it.getString(COLUMN_EVALUATION)) }
         .toList()
     }
+    c.close()
+    return evaluations
   }
 
   override fun deleteAll(userId: String) {

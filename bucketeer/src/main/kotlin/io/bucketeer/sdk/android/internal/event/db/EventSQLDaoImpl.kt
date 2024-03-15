@@ -38,11 +38,13 @@ internal class EventSQLDaoImpl(
       table = TABLE_NAME,
     )
 
-    return c.use {
+    val events = c.use {
       c.asSequence()
         .mapNotNull { eventAdapter.fromJson(it.getString(COLUMN_EVENT)) }
         .toList()
     }
+    c.close()
+    return events
   }
 
   override fun delete(ids: List<String>) {
