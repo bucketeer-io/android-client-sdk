@@ -70,6 +70,7 @@ class EventForegroundTaskTest {
     task.stop()
     server.shutdown()
     executor.shutdownNow()
+    component.dataModule.destroy()
   }
 
   @Test
