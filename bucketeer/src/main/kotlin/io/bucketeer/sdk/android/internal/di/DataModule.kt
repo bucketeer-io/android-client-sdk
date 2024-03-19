@@ -41,7 +41,7 @@ internal open class DataModule(
   val application: Application,
   user: User,
   val config: BKTConfig,
-  val inMemoryDB: Boolean = true,
+  val inMemoryDB: Boolean = false,
 ) {
 
   open val clock: Clock by lazy { ClockImpl() }
