@@ -177,13 +177,13 @@ internal class ApiClientImplTest {
       apiKey = "api_key_value",
       featureTag = "feature_tag_value",
       moshi = moshi,
-      defaultRequestTimeoutMillis = 1_000,
     )
 
     val (millis, result) = measureTimeMillisWithResult {
       client.getEvaluations(
         user = user1,
         userEvaluationsId = "user_evaluation_id",
+        timeoutMillis = TimeUnit.SECONDS.toMillis(2),
         condition = UserEvaluationCondition(
           evaluatedAt = "1690798200",
           userAttributesUpdated = "false",
@@ -191,8 +191,8 @@ internal class ApiClientImplTest {
       )
     }
 
-    assertThat(millis).isGreaterThan(1_000)
-    assertThat(millis).isLessThan(2_500)
+    assertThat(millis).isGreaterThan(2_000)
+    assertThat(millis).isLessThan(4_000)
 
     assertThat(result).isInstanceOf(GetEvaluationsResult.Failure::class.java)
     val failure = result as GetEvaluationsResult.Failure
