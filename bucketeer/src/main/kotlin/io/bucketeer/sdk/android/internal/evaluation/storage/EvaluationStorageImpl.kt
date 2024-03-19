@@ -95,7 +95,9 @@ internal class EvaluationStorageImpl(
   }
 
   override fun refreshCache() {
-    val evaluations = evaluationSQLDao.get(userId)
-    memCache.set(userId, evaluations)
+    runCatching {
+      val evaluations = evaluationSQLDao.get(userId)
+      memCache.set(userId, evaluations)
+    }
   }
 }

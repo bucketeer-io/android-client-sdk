@@ -68,7 +68,9 @@ class EvaluationForegroundTaskTest {
   fun tearDown() {
     task.stop()
     server.shutdown()
-    executor.shutdownNow()
+    executor.submit {
+      component.dataModule.destroy()
+    }
   }
 
   @Test

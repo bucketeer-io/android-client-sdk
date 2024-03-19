@@ -69,8 +69,9 @@ class EventForegroundTaskTest {
   fun tearDown() {
     task.stop()
     server.shutdown()
-    executor.shutdownNow()
-    component.dataModule.destroy()
+    executor.execute {
+      component.dataModule.destroy()
+    }
   }
 
   @Test

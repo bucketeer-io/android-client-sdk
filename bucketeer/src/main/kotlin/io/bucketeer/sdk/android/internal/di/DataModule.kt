@@ -41,7 +41,7 @@ internal open class DataModule(
   val application: Application,
   user: User,
   val config: BKTConfig,
-  val inMemoryDB: Boolean = false,
+  val inMemoryDB: Boolean = true,
 ) {
 
   open val clock: Clock by lazy { ClockImpl() }
@@ -95,7 +95,11 @@ internal open class DataModule(
   internal val userHolder: UserHolder by lazy { UserHolder(user) }
 
   internal fun destroy() {
-    sqliteOpenHelper.close()
+    runCatching {
+      eventSQLDao.close()
+      evaluationSQLDao.close()
+      sqliteOpenHelper.close()
+    }
   }
 
   companion object {

@@ -187,7 +187,9 @@ internal class BKTClientImpl(
   }
 
   internal fun destroy() {
-    (component as ComponentImpl).dataModule.destroy()
+    executor.execute {
+      (component as ComponentImpl).dataModule.destroy()
+    }
   }
 
   private fun runOnMainThread(block: () -> Unit) {

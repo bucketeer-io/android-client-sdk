@@ -44,7 +44,6 @@ class EvaluationBackgroundTaskTest {
   @After
   fun tearDown() {
     server.shutdown()
-    (BKTClient.getInstance() as BKTClientImpl).executor.shutdownNow()
     BKTClient.destroy()
   }
 

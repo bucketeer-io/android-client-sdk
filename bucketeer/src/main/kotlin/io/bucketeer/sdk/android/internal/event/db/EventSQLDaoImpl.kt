@@ -18,7 +18,7 @@ internal class EventSQLDaoImpl(
   private val sqLiteOpenHelper: SupportSQLiteOpenHelper,
   moshi: Moshi,
 ) : EventSQLDao {
-
+  override var isClosed = false
   private val eventAdapter = moshi.adapter(Event::class.java)
 
   override fun addEvent(event: Event) {
@@ -26,6 +26,9 @@ internal class EventSQLDaoImpl(
   }
 
   override fun addEvents(events: List<Event>) {
+    if (isClosed) {
+      return
+    }
     sqLiteOpenHelper.writableDatabase.transaction {
       events.forEach { event ->
         addEventInternal(this, event)
@@ -34,6 +37,9 @@ internal class EventSQLDaoImpl(
   }
 
   override fun getEvents(): List<Event> {
+    if (isClosed) {
+      return listOf()
+    }
     val c = sqLiteOpenHelper.readableDatabase.select(
       table = TABLE_NAME,
     )
@@ -43,11 +49,14 @@ internal class EventSQLDaoImpl(
         .mapNotNull { eventAdapter.fromJson(it.getString(COLUMN_EVENT)) }
         .toList()
     }
-    c.close()
+
     return events
   }
 
   override fun delete(ids: List<String>) {
+    if (isClosed) {
+      return
+    }
     @Suppress("MoveLambdaOutsideParentheses")
     val valuesIn = List(ids.count(), { "?" }).joinToString(separator = ",")
     val whereArgs = ids.toTypedArray()
@@ -57,6 +66,12 @@ internal class EventSQLDaoImpl(
       "$COLUMN_ID IN ($valuesIn)",
       whereArgs,
     )
+  }
+
+  override fun close() {
+    synchronized(this) {
+      isClosed = true;
+    }
   }
 
   private fun addEventInternal(writableDatabase: SupportSQLiteDatabase, event: Event) {
