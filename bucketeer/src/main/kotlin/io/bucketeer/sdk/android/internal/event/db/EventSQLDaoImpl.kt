@@ -68,7 +68,7 @@ internal class EventSQLDaoImpl(
 
   override fun close() {
     synchronized(this) {
-      isClosed = true;
+      isClosed = true
     }
   }
 
