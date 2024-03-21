@@ -49,4 +49,4 @@ jobs:
         run: |
           echo $ORG_GRADLE_PROJECT_VERSION_NAME
           ./gradlew :bucketeer:publishAllPublicationToMavenCentralRepository
-          ./gradlew closeAndReleaseRepository
+          ./gradlew releaseRepository
