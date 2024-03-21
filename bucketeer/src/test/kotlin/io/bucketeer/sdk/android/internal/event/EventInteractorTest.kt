@@ -91,6 +91,7 @@ class EventInteractorTest {
   @After
   fun tearDown() {
     server.shutdown()
+    component.dataModule.destroy()
   }
 
   @Test

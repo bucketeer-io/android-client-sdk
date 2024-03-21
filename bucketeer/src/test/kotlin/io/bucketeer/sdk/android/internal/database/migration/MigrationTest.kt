@@ -42,7 +42,7 @@ class MigrationTest {
 
   @Test
   fun testMigration1to2() {
-    var openHelper = createOpenHelper(1)
+    val openHelper = createOpenHelper(1)
     openHelper.writableDatabase.transaction {
       // add new migration class here
       Migration1to2().migrate(this, sharedPreferences)
@@ -88,6 +88,8 @@ class MigrationTest {
 
     // make sure every table exists
     assertThat(tables).isEmpty()
+
+    openHelper.close()
   }
 
   @Test
@@ -120,6 +122,8 @@ class MigrationTest {
     assertThat(eventDao.getEvents()).isEmpty()
     assertThat(sharedPreferences.getString(Constants.PREFERENCE_KEY_USER_EVALUATION_ID, ""))
       .isEqualTo("")
+
+    openHelper.close()
   }
 }
 

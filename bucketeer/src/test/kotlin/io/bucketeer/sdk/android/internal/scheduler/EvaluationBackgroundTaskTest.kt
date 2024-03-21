@@ -5,7 +5,6 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.google.common.truth.Truth.assertThat
 import io.bucketeer.sdk.android.BKTClient
-import io.bucketeer.sdk.android.BKTClientImpl
 import io.bucketeer.sdk.android.BKTConfig
 import io.bucketeer.sdk.android.createTestBKTConfig
 import io.bucketeer.sdk.android.internal.user.toBKTUser
@@ -44,7 +43,6 @@ class EvaluationBackgroundTaskTest {
   @After
   fun tearDown() {
     server.shutdown()
-    (BKTClient.getInstance() as BKTClientImpl).executor.shutdownNow()
     BKTClient.destroy()
   }
 

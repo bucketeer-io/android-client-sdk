@@ -186,6 +186,12 @@ internal class BKTClientImpl(
     }
   }
 
+  internal fun destroy() {
+    executor.execute {
+      (component as ComponentImpl).dataModule.destroy()
+    }
+  }
+
   private fun runOnMainThread(block: () -> Unit) {
     if (Looper.myLooper() == Looper.getMainLooper()) {
       // Currently on the main thread, execute immediately
