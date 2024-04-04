@@ -26,14 +26,18 @@
       "automerge": true,
       "groupName": "all non-major dependencies",
       "groupSlug": "all-minor-patch",
-      "matchPackagePatterns": [
-        "\\.gradle(\\.kts)?$",
-        "(^|/)gradle\\.properties$",
-        "(^|/)gradle/.+\\.toml$",
-        "(^|/)buildSrc/.+\\.kt$",
-        "\\.versions\\.toml$",
-        "(^|/)versions.props$",
-        "(^|/)versions.lock$"
+      "matchPackagePrefixes": [
+        "com.squareup.",
+        "androidx.sqlite:",
+        "com.google.android.",
+        "androidx.appcompat:",
+        "androidx.lifecycle:",
+        "com.facebook.",
+        "org.jetbrains.",
+        "com.android.",
+        "com.vanniktech.",
+        "com.google.devtools.",
+        "org.jmailen."
       ],
       "matchUpdateTypes": ["minor", "patch"],
       "commitMessagePrefix": "build(deps):",
@@ -41,17 +45,49 @@
     },
     {
       "groupName": "all major dependencies",
-      "matchPackagePatterns": [
-        "\\.gradle(\\.kts)?$",
-        "(^|/)gradle\\.properties$",
-        "(^|/)gradle/.+\\.toml$",
-        "(^|/)buildSrc/.+\\.kt$",
-        "\\.versions\\.toml$",
-        "(^|/)versions.props$",
-        "(^|/)versions.lock$"
+      "matchPackagePrefixes": [
+        "com.squareup.",
+        "androidx.sqlite:",
+        "com.google.android.",
+        "androidx.appcompat:",
+        "androidx.lifecycle:",
+        "com.facebook.",
+        "org.jetbrains.",
+        "com.android.",
+        "com.vanniktech.",
+        "com.google.devtools.",
+        "org.jmailen."
       ],
       "matchUpdateTypes": ["major"],
       "commitMessagePrefix": "build(deps):",
+      "commitMessageAction": "update"
+    },
+    {
+      "automerge": true,
+      "groupName": "all non-major test dependencies",
+      "groupSlug": "all-minor-patch",
+      "matchPackagePrefixes": [
+        "junit:",
+        "org.robolectric:",
+        "com.google.truth:",
+        "com.google.testparameterinjector:",
+        "androidx.test:"
+      ],
+      "matchUpdateTypes": ["minor", "patch"],
+      "commitMessagePrefix": "test(deps):",
+      "commitMessageAction": "update"
+    },
+    {
+      "groupName": "all major test dependencies",
+      "matchPackagePrefixes": [
+        "junit:",
+        "org.robolectric:",
+        "com.google.truth:",
+        "com.google.testparameterinjector:",
+        "androidx.test:"
+      ],
+      "matchUpdateTypes": ["major"],
+      "commitMessagePrefix": "test(deps):",
       "commitMessageAction": "update"
     }
   ]
