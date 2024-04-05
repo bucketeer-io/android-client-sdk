@@ -1,39 +1,24 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:base", ":timezone(Asia/Tokyo)"],
-  "schedule": ["after 10am on the first day of the month"],
   "labels": ["deps"],
   "packageRules": [
     {
-      "automerge": true,
-      "groupName": "all non-major github-actions dependencies",
-      "groupSlug": "all-minor-patch",
       "managers": ["github-actions"],
-      "matchUpdateTypes": ["minor", "patch"],
-      "labels": ["ci"],
-      "commitMessagePrefix": "ci(deps):",
-      "commitMessageAction": "update"
-    },
-    {
-      "groupName": "all major github-actions dependencies",
-      "managers": ["github-actions"],
-      "matchUpdateTypes": ["major"],
       "labels": ["ci"],
       "commitMessagePrefix": "ci:",
-      "commitMessageAction": "update"
+      "commitMessageAction": "update",
+      "groupName": "github-actions"
     },
     {
-      "automerge": true,
       "groupName": "all non-major dependencies",
-      "groupSlug": "all-minor-patch",
-      "matchPackagePatterns": [
-        "\\.gradle(\\.kts)?$",
-        "(^|/)gradle\\.properties$",
-        "(^|/)gradle/.+\\.toml$",
-        "(^|/)buildSrc/.+\\.kt$",
-        "\\.versions\\.toml$",
-        "(^|/)versions.props$",
-        "(^|/)versions.lock$"
+      "matchPackagePatterns": ["*"],
+      "excludePackagePrefixes": [
+        "junit",
+        "org.robolectric",
+        "com.google.truth",
+        "com.google.testparameterinjector",
+        "androidx.test"
       ],
       "matchUpdateTypes": ["minor", "patch"],
       "commitMessagePrefix": "build(deps):",
@@ -41,17 +26,44 @@
     },
     {
       "groupName": "all major dependencies",
-      "matchPackagePatterns": [
-        "\\.gradle(\\.kts)?$",
-        "(^|/)gradle\\.properties$",
-        "(^|/)gradle/.+\\.toml$",
-        "(^|/)buildSrc/.+\\.kt$",
-        "\\.versions\\.toml$",
-        "(^|/)versions.props$",
-        "(^|/)versions.lock$"
+      "matchPackagePatterns": ["*"],
+      "excludePackagePrefixes": [
+        "junit",
+        "org.robolectric",
+        "com.google.truth",
+        "com.google.testparameterinjector",
+        "androidx.test"
       ],
       "matchUpdateTypes": ["major"],
       "commitMessagePrefix": "build(deps):",
+      "commitMessageAction": "update"
+    },
+    {
+      "groupName": "all non-major test dependencies",
+      "matchPackagePatterns": ["*"],
+      "matchPackagePrefixes": [
+        "junit",
+        "org.robolectric",
+        "com.google.truth",
+        "com.google.testparameterinjector",
+        "androidx.test"
+      ],
+      "matchUpdateTypes": ["minor", "patch"],
+      "commitMessagePrefix": "test(deps):",
+      "commitMessageAction": "update"
+    },
+    {
+      "groupName": "all major test dependencies",
+      "matchPackagePatterns": ["*"],
+      "matchPackagePrefixes": [
+        "junit",
+        "org.robolectric",
+        "com.google.truth",
+        "com.google.testparameterinjector",
+        "androidx.test"
+      ],
+      "matchUpdateTypes": ["major"],
+      "commitMessagePrefix": "test(deps):",
       "commitMessageAction": "update"
     }
   ]
