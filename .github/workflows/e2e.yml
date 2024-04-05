@@ -3,11 +3,6 @@ name: e2e
 on:
   workflow_dispatch:
   workflow_call:
-    secrets:
-      E2E_API_ENDPOINT:
-        required: true
-      E2E_API_KEY:
-        required: true
 
 jobs:
   e2e:

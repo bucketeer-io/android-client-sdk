@@ -42,9 +42,7 @@ jobs:
   e2e:
     needs: build
     uses: ./.github/workflows/e2e.yml
-    secrets:
-      E2E_API_ENDPOINT: ${{ secrets.E2E_API_ENDPOINT }}
-      E2E_API_KEY: ${{ secrets.E2E_API_KEY }}
+    secrets: inherit
 
 env:
   GRADLE_OPTS: -Dorg.gradle.daemon=false -Dorg.gradle.configureondemand=true -Dkotlin.incremental=false -Dorg.gradle.jvmargs="-XX:+HeapDumpOnOutOfMemoryError -XX:MetaspaceSize=1g"
