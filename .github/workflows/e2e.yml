@@ -1,0 +1,50 @@
+name: e2e
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  e2e:
+    runs-on: macos-latest # enables hardware acceleration in the virtual machine
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3.13.0
+        with:
+          distribution: 'temurin'
+          java-version: 17
+
+      - name: Setup gradle
+        uses: gradle/gradle-build-action@v2
+
+      - name: AVD cache
+        uses: actions/cache@v3
+        id: avd-cache
+        with:
+          path: |
+            ~/.android/avd/*
+            ~/.android/adb*
+          key: avd-29
+      - name: Run instrumentation tests
+        uses: reactivecircus/android-emulator-runner@v2
+        env:
+          API_KEY: ${{ secrets.E2E_API_KEY }}
+          API_ENDPOINT: ${{ secrets.E2E_API_ENDPOINT }}
+        with:
+          api-level: 29
+          arch: x86_64
+          script: ./gradlew connectedCheck --stacktrace
+
+      - name: upload bucketeer build reports
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: bucketeer-instrumentation-build-reports
+          path: bucketeer/build/reports
+
+env:
+  GRADLE_OPTS: -Dorg.gradle.daemon=false -Dorg.gradle.configureondemand=true -Dkotlin.incremental=false -Dorg.gradle.jvmargs="-XX:+HeapDumpOnOutOfMemoryError -XX:MetaspaceSize=1g"
+
