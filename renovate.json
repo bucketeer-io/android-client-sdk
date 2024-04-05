@@ -11,6 +11,32 @@
       "groupName": "github-actions"
     },
     {
+      "groupName": "all non-major test dependencies",
+      "matchPackagePrefixes": [
+        "junit",
+        "org.robolectric",
+        "com.google.truth",
+        "com.google.testparameterinjector",
+        "androidx.test"
+      ],
+      "matchUpdateTypes": ["minor", "patch"],
+      "commitMessagePrefix": "test(deps):",
+      "commitMessageAction": "update"
+    },
+    {
+      "groupName": "all major test dependencies",
+      "matchPackagePrefixes": [
+        "junit",
+        "org.robolectric",
+        "com.google.truth",
+        "com.google.testparameterinjector",
+        "androidx.test"
+      ],
+      "matchUpdateTypes": ["major"],
+      "commitMessagePrefix": "test(deps):",
+      "commitMessageAction": "update"
+    },
+    {
       "groupName": "all non-major dependencies",
       "matchPackagePatterns": ["*"],
       "excludePackagePrefixes": [
@@ -36,34 +62,6 @@
       ],
       "matchUpdateTypes": ["major"],
       "commitMessagePrefix": "build(deps):",
-      "commitMessageAction": "update"
-    },
-    {
-      "groupName": "all non-major test dependencies",
-      "matchPackagePatterns": ["*"],
-      "matchPackagePrefixes": [
-        "junit",
-        "org.robolectric",
-        "com.google.truth",
-        "com.google.testparameterinjector",
-        "androidx.test"
-      ],
-      "matchUpdateTypes": ["minor", "patch"],
-      "commitMessagePrefix": "test(deps):",
-      "commitMessageAction": "update"
-    },
-    {
-      "groupName": "all major test dependencies",
-      "matchPackagePatterns": ["*"],
-      "matchPackagePrefixes": [
-        "junit",
-        "org.robolectric",
-        "com.google.truth",
-        "com.google.testparameterinjector",
-        "androidx.test"
-      ],
-      "matchUpdateTypes": ["major"],
-      "commitMessagePrefix": "test(deps):",
       "commitMessageAction": "update"
     }
   ]
