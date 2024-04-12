@@ -6,6 +6,7 @@ import com.google.common.truth.Truth.assertThat
 import com.squareup.moshi.Moshi
 import io.bucketeer.sdk.android.internal.di.ComponentImpl
 import io.bucketeer.sdk.android.internal.di.DataModule
+import io.bucketeer.sdk.android.internal.evaluation.db.EvaluationSQLDaoImpl
 import io.bucketeer.sdk.android.internal.model.ApiId
 import io.bucketeer.sdk.android.internal.model.Event
 import io.bucketeer.sdk.android.internal.model.EventData
@@ -667,6 +668,27 @@ class BKTClientImplTest {
     val client = BKTClient.getInstance() as BKTClientImpl
     assertThat(client.componentImpl.dataModule.evaluationStorage.getCurrentEvaluationId())
       .isEmpty()
+  }
+
+  @Test
+  fun shouldCloseDatabase() {
+    BKTClient.initialize(
+      ApplicationProvider.getApplicationContext(),
+      config,
+      user1.toBKTUser(),
+      1000,
+    )
+    val clientImpl = BKTClient.getInstance() as BKTClientImpl
+    val dataModule = (clientImpl.component as ComponentImpl).dataModule
+    val evaluationSQLDao = (dataModule.evaluationSQLDao as EvaluationSQLDaoImpl)
+    val eventSQLDao = (dataModule.evaluationSQLDao as EvaluationSQLDaoImpl)
+    val sqliteHelper = evaluationSQLDao.sqLiteOpenHelper
+    val db = sqliteHelper.writableDatabase
+    BKTClient.destroy()
+    Thread.sleep(2000L)
+    assertThat(evaluationSQLDao.isClosed).isTrue()
+    assertThat(eventSQLDao.isClosed).isTrue()
+    assertThat(db.isOpen).isFalse()
   }
 }
 

@@ -81,6 +81,7 @@ class EvaluationInteractorTest {
     component.dataModule.sharedPreferences.edit()
       .clear()
       .commit()
+    component.dataModule.destroy()
   }
 
   @Test

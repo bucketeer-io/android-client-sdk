@@ -94,6 +94,14 @@ internal open class DataModule(
 
   internal val userHolder: UserHolder by lazy { UserHolder(user) }
 
+  internal fun destroy() {
+    runCatching {
+      eventSQLDao.close()
+      evaluationSQLDao.close()
+      sqliteOpenHelper.close()
+    }
+  }
+
   companion object {
     @VisibleForTesting
     internal fun createMoshi(): Moshi {

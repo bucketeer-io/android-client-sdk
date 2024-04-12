@@ -1,5 +1,24 @@
 # Changelog
 
+## [2.1.5](https://github.com/bucketeer-io/android-client-sdk/compare/v2.1.4...v2.1.5) (2024-03-21)
+
+
+### Build System
+
+* **deps:** update all non-major dependencies ([#135](https://github.com/bucketeer-io/android-client-sdk/issues/135)) ([1aa5ce8](https://github.com/bucketeer-io/android-client-sdk/commit/1aa5ce841b91bbf2068a266bd8e9cf9ed49bf248))
+* **deps:** update plugin publish to v0.28.0 ([#120](https://github.com/bucketeer-io/android-client-sdk/issues/120)) ([31bb8ae](https://github.com/bucketeer-io/android-client-sdk/commit/31bb8ae17f18609853d1f957f8242effe80d94c3))
+
+
+### Miscellaneous
+
+* update error metrics report ([#134](https://github.com/bucketeer-io/android-client-sdk/issues/134)) ([f548c41](https://github.com/bucketeer-io/android-client-sdk/commit/f548c41fcff45317c53b6a6aaf6bad871b8db6f8))
+
+
+### Bug Fixes
+
+* missing R8 / ProGuard file ([#141](https://github.com/bucketeer-io/android-client-sdk/issues/141)) ([f3db4db](https://github.com/bucketeer-io/android-client-sdk/commit/f3db4db89b17ca46fc0392fa663eee05ee41e33f))
+* potential memory leak when destroying the SDK client ([#142](https://github.com/bucketeer-io/android-client-sdk/issues/142)) ([5270ed8](https://github.com/bucketeer-io/android-client-sdk/commit/5270ed8f55dee3ef46c3ee9d2931c36525fb88d9))
+
 ## [2.1.4](https://github.com/bucketeer-io/android-client-sdk/compare/v2.1.3...v2.1.4) (2024-03-06)
 
 ### Miscellaneous
