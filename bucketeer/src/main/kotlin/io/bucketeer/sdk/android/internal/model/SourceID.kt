@@ -12,6 +12,6 @@ enum class SourceID(val value: Int) {
   ;
 
   companion object {
-    fun from(value: Int): SourceID = values().first { it.value == value }
+    fun from(value: Int): SourceID = entries.firstOrNull { it.value == value } ?: UNKNOWN
   }
 }

@@ -9,6 +9,7 @@ import io.bucketeer.sdk.android.BKTException
 import io.bucketeer.sdk.android.internal.model.EventData
 import io.bucketeer.sdk.android.internal.model.MetricsEventData
 import io.bucketeer.sdk.android.internal.model.MetricsEventType
+import io.bucketeer.sdk.android.internal.model.SourceID
 import java.lang.reflect.Type
 
 class MetricsEventAdapterFactory : JsonAdapter.Factory {
@@ -53,6 +54,7 @@ class MetricsEventAdapterFactory : JsonAdapter.Factory {
         moshi.adapter(MetricsEventData.RedirectionRequestErrorMetricsEvent::class.java)
       private val payloadTooLargeErrorAdapter =
         moshi.adapter(MetricsEventData.PayloadTooLargeErrorMetricsEvent::class.java)
+      private val sourceIDAdapter: JsonAdapter<SourceID> = moshi.adapter(SourceID::class.java)
 
       private val metadataAdapter: JsonAdapter<Map<String, String>?> =
         moshi.adapter(
@@ -94,6 +96,8 @@ class MetricsEventAdapterFactory : JsonAdapter.Factory {
           timestamp = (jsonObj["timestamp"] as Double).toLong(),
           event = adapter.fromJsonValue(jsonObj["event"]) as MetricsEventData,
           type = eventType,
+          // MetricsEvent created by version < `2.0.6` is missing `sourceId`
+          sourceId = sourceIDAdapter.fromJsonValue(jsonObj["sourceId"] ?: SourceID.ANDROID.value) as SourceID,
           sdkVersion = jsonObj["sdkVersion"]?.toString(),
           metadata = metadataAdapter.fromJsonValue(jsonObj["metadata"]),
         )
@@ -209,6 +213,9 @@ class MetricsEventAdapterFactory : JsonAdapter.Factory {
             )
           }
         }
+
+        writer.name("sourceId")
+        sourceIDAdapter.toJson(writer, value.sourceId)
 
         if (value.sdkVersion != null) {
           writer.name("sdkVersion")

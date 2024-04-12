@@ -293,6 +293,7 @@ class EventAdapterFactoryTest {
             ),
             latencySecond = 5.0,
           ),
+          sourceId = SourceID.ANDROID,
           sdkVersion = "2.0.1",
           metadata = mapOf(
             "app_version" to "1.2.3",
@@ -304,7 +305,7 @@ class EventAdapterFactoryTest {
     ),
 
     @Suppress("EnumEntryName", "ktlint:enum-entry-name-case")
-    Metrics_NoSdkVersion_NoMetadata(
+    Metrics_NoSdkVersion_NoMetadata_NoSourceId(
       json = """
         |{
         |  "id": "event_id",
@@ -339,6 +340,54 @@ class EventAdapterFactoryTest {
             ),
             latencySecond = 5.0,
           ),
+          sourceId = SourceID.ANDROID,
+          sdkVersion = null,
+          metadata = null,
+        ),
+      ),
+    ),
+
+    // Note: Please do not remove this test case. It is necessary.
+    // Because the default `source_id` is SourceId.Android.
+    // We need one more test to make sure the adapter logic for parser `source_id` is correct.
+    @Suppress("EnumEntryName", "ktlint:enum-entry-name-case")
+    Metrics_With_SourceId_Is_Not_Android(
+      json = """
+        |{
+        |  "id": "event_id",
+        |  "type": 4,
+        |  "event": {
+        |    "timestamp": 1660210923777,
+        |    "type": 1,
+        |    "event": {
+        |      "apiId": 2,
+        |      "labels": {
+        |        "key1": "value1",
+        |        "key2": "value2"
+        |      },
+        |      "latencySecond": 5.0,
+        |      "@type": "type.googleapis.com/bucketeer.event.client.LatencyMetricsEvent"
+        |    },
+        |    "sourceId": 4,
+        |    "@type": "type.googleapis.com/bucketeer.event.client.MetricsEvent"
+        |  }
+        |}
+      """.trimMargin(),
+      event = Event(
+        id = "event_id",
+        type = EventType.METRICS,
+        event = EventData.MetricsEvent(
+          timestamp = 1660210923777,
+          type = MetricsEventType.RESPONSE_LATENCY,
+          event = MetricsEventData.LatencyMetricsEvent(
+            ApiId.GET_EVALUATIONS,
+            labels = mapOf(
+              "key1" to "value1",
+              "key2" to "value2",
+            ),
+            latencySecond = 5.0,
+          ),
+          sourceId = SourceID.GOAL_BATCH,
           sdkVersion = null,
           metadata = null,
         ),
