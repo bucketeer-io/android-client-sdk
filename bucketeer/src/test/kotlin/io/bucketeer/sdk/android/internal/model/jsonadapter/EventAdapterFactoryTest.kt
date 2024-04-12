@@ -306,7 +306,7 @@ class EventAdapterFactoryTest {
     ),
 
     @Suppress("EnumEntryName", "ktlint:enum-entry-name-case")
-    Metrics_NoSdkVersion_NoMetadata_NoSourceId(
+    Metrics_NoSdkVersion_NoMetadata(
       json = """
         |{
         |  "id": "event_id",
