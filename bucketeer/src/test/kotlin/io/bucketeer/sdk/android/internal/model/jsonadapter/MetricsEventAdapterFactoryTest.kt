@@ -673,8 +673,6 @@ class MetricsEventAdapterFactoryTest {
       ),
     ),
 
-    // Versions of the SDK 2.0.5 and below are missing a 'source_id' in a 'EventData.MetricsEvent'.
-    // This test simulates the scenario where the app developer updates the SDK from version [2.0.5 or below] to [version 2.0.6 or higher].
     // Because the default `source_id` is SourceId.Android.
     // We need one more test to make sure the adapter logic for parser `source_id` is correct.
     @Suppress("EnumEntryName", "ktlint:standard:enum-entry-name-case")

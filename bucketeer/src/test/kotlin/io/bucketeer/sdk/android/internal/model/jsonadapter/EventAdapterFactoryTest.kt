@@ -269,6 +269,7 @@ class EventAdapterFactoryTest {
         |      "latencySecond": 5.0,
         |      "@type": "type.googleapis.com/bucketeer.event.client.LatencyMetricsEvent"
         |    },
+        |    "sourceId": 1,
         |    "sdkVersion": "2.0.1",
         |    "metadata": {
         |      "app_version": "1.2.3",
@@ -322,6 +323,7 @@ class EventAdapterFactoryTest {
         |      "latencySecond": 5.0,
         |      "@type": "type.googleapis.com/bucketeer.event.client.LatencyMetricsEvent"
         |    },
+        |    "sourceId": 1,
         |    "@type": "type.googleapis.com/bucketeer.event.client.MetricsEvent"
         |  }
         |}
