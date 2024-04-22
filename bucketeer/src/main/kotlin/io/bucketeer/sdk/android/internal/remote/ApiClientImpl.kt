@@ -4,6 +4,7 @@ import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import io.bucketeer.sdk.android.internal.logd
 import io.bucketeer.sdk.android.internal.model.Event
+import io.bucketeer.sdk.android.internal.model.SourceID
 import io.bucketeer.sdk.android.internal.model.User
 import io.bucketeer.sdk.android.internal.model.request.GetEvaluationsRequest
 import io.bucketeer.sdk.android.internal.model.request.RegisterEventsRequest
@@ -119,7 +120,7 @@ internal class ApiClientImpl(
   }
 
   override fun registerEvents(events: List<Event>): RegisterEventsResult {
-    val body = RegisterEventsRequest(events = events)
+    val body = RegisterEventsRequest(events = events, sourceId = SourceID.ANDROID)
 
     val request = Request.Builder()
       .url(

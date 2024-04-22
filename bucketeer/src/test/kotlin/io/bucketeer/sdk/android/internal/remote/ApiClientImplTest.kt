@@ -375,6 +375,7 @@ internal class ApiClientImplTest {
       RegisterEventsRequest(
         events = listOf(evaluationEvent1, latencyMetricsEvent1),
         sdkVersion = BuildConfig.SDK_VERSION,
+        sourceId = SourceID.ANDROID,
       ),
     )
 
