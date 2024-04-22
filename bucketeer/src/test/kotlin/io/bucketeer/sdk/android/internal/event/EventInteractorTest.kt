@@ -459,6 +459,7 @@ class EventInteractorTest {
             ),
           ),
         ),
+        sourceId = SourceID.ANDROID,
       ),
     )
 
@@ -712,6 +713,7 @@ class EventInteractorTest {
             ),
           ),
         ),
+        sourceId = SourceID.ANDROID,
       ),
     )
 
@@ -815,6 +817,7 @@ class EventInteractorTest {
             ),
           ),
         ),
+        sourceId = SourceID.ANDROID,
       ),
     )
 
@@ -875,7 +878,7 @@ class EventInteractorTest {
     interactor.addMetricEvents(listOf(internalErrorMetricsEvent1))
 
     var storedEvents = component.dataModule.eventSQLDao.getEvents()
-    var expectedStoredEvents = listOf(latencyMetricsEvent1, sizeMetricsEvent1, internalErrorMetricsEvent1)
+    val expectedStoredEvents = listOf(latencyMetricsEvent1, sizeMetricsEvent1, internalErrorMetricsEvent1)
 
     assertThat(storedEvents).hasSize(3)
     assertThat(storedEvents).containsExactlyElementsIn(expectedStoredEvents)

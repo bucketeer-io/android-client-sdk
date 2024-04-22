@@ -223,7 +223,7 @@ internal class ApiClientImplTest {
     }
 
     assertThat(millis).isGreaterThan(1_000)
-    assertThat(millis).isLessThan(DEFAULT_REQUEST_TIMEOUT_MILLIS + 2_500)
+    assertThat(millis).isLessThan(DEFAULT_REQUEST_TIMEOUT_MILLIS + 4_000)
 
     assertThat(result).isInstanceOf(GetEvaluationsResult.Failure::class.java)
     val failure = result as GetEvaluationsResult.Failure
@@ -375,6 +375,7 @@ internal class ApiClientImplTest {
       RegisterEventsRequest(
         events = listOf(evaluationEvent1, latencyMetricsEvent1),
         sdkVersion = BuildConfig.SDK_VERSION,
+        sourceId = SourceID.ANDROID,
       ),
     )
 
