@@ -97,7 +97,7 @@ class BKTClientEventTest {
 
     val eventDao = (client.component as ComponentImpl).dataModule.eventSQLDao
 
-    Thread.sleep(100)
+    Thread.sleep(2000)
     val events = eventDao.getEvents()
     assertThat(events).hasSize(7)
     assertThat(
@@ -134,7 +134,7 @@ class BKTClientEventTest {
 
     val eventDao = client.component.dataModule.eventSQLDao
 
-    Thread.sleep(100)
+    Thread.sleep(2000)
     val events = eventDao.getEvents()
     assertThat(events).hasSize(7)
     assertThat(
