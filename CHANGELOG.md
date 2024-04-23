@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.1.6](https://github.com/bucketeer-io/android-client-sdk/compare/v2.1.5...v2.1.6) (2024-04-23)
+
+
+### Miscellaneous
+
+* add the source ID to the register events API ([#165](https://github.com/bucketeer-io/android-client-sdk/issues/165)) ([c6df4d6](https://github.com/bucketeer-io/android-client-sdk/commit/c6df4d6113000546af9d7c8fa40ccd595dd1ebd5))
+
+
+### Bug Fixes
+
+* metric event reporting source ID as UNKNOWN  ([#164](https://github.com/bucketeer-io/android-client-sdk/issues/164)) ([9d6dc38](https://github.com/bucketeer-io/android-client-sdk/commit/9d6dc38fec4e8e79d3d66f1127d5d017c6bdb682))
+
 ## [2.1.5](https://github.com/bucketeer-io/android-client-sdk/compare/v2.1.4...v2.1.5) (2024-03-21)
 
 
