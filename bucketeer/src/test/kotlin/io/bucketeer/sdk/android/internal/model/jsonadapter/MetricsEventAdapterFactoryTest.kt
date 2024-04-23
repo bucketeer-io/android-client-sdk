@@ -9,6 +9,7 @@ import io.bucketeer.sdk.android.internal.model.ApiId
 import io.bucketeer.sdk.android.internal.model.EventData
 import io.bucketeer.sdk.android.internal.model.MetricsEventData
 import io.bucketeer.sdk.android.internal.model.MetricsEventType
+import io.bucketeer.sdk.android.internal.model.SourceID
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -31,6 +32,7 @@ class MetricsEventAdapterFactoryTest {
         |    "latencySecond": 5.0,
         |    "@type": "type.googleapis.com/bucketeer.event.client.LatencyMetricsEvent"
         |  },
+        |  "sourceId": 1,
         |  "sdkVersion": "2.0.1",
         |  "metadata": {
         |    "app_version": "1.2.3",
@@ -51,6 +53,7 @@ class MetricsEventAdapterFactoryTest {
           ),
           latencySecond = 5.0,
         ),
+        sourceId = SourceID.ANDROID,
         sdkVersion = "2.0.1",
         metadata = mapOf(
           "app_version" to "1.2.3",
@@ -73,6 +76,7 @@ class MetricsEventAdapterFactoryTest {
         |    "sizeByte": 1234,
         |    "@type": "type.googleapis.com/bucketeer.event.client.SizeMetricsEvent"
         |  },
+        |  "sourceId": 1,
         |  "sdkVersion": "2.0.1",
         |  "metadata": {
         |    "app_version": "1.2.3",
@@ -93,6 +97,7 @@ class MetricsEventAdapterFactoryTest {
           ),
           sizeByte = 1234,
         ),
+        sourceId = SourceID.ANDROID,
         sdkVersion = "2.0.1",
         metadata = mapOf(
           "app_version" to "1.2.3",
@@ -114,6 +119,7 @@ class MetricsEventAdapterFactoryTest {
         |    },
         |    "@type": "type.googleapis.com/bucketeer.event.client.TimeoutErrorMetricsEvent"
         |  },
+        |  "sourceId": 1,
         |  "sdkVersion": "2.0.1",
         |  "metadata": {
         |    "app_version": "1.2.3",
@@ -133,6 +139,7 @@ class MetricsEventAdapterFactoryTest {
             "timeout" to "5.0",
           ),
         ),
+        sourceId = SourceID.ANDROID,
         sdkVersion = "2.0.1",
         metadata = mapOf(
           "app_version" to "1.2.3",
@@ -153,6 +160,7 @@ class MetricsEventAdapterFactoryTest {
         |    },
         |    "@type": "type.googleapis.com/bucketeer.event.client.NetworkErrorMetricsEvent"
         |  },
+        |  "sourceId": 1,
         |  "sdkVersion": "2.0.1",
         |  "metadata": {
         |    "app_version": "1.2.3",
@@ -171,6 +179,7 @@ class MetricsEventAdapterFactoryTest {
             "tag" to "tag_value",
           ),
         ),
+        sourceId = SourceID.ANDROID,
         sdkVersion = "2.0.1",
         metadata = mapOf(
           "app_version" to "1.2.3",
@@ -191,6 +200,7 @@ class MetricsEventAdapterFactoryTest {
         |    },
         |    "@type": "type.googleapis.com/bucketeer.event.client.BadRequestErrorMetricsEvent"
         |  },
+        |  "sourceId": 1,
         |  "sdkVersion": "2.0.1",
         |  "metadata": {
         |    "app_version": "1.2.3",
@@ -209,6 +219,7 @@ class MetricsEventAdapterFactoryTest {
             "tag" to "tag_value",
           ),
         ),
+        sourceId = SourceID.ANDROID,
         sdkVersion = "2.0.1",
         metadata = mapOf(
           "app_version" to "1.2.3",
@@ -229,6 +240,7 @@ class MetricsEventAdapterFactoryTest {
         |    },
         |    "@type": "type.googleapis.com/bucketeer.event.client.UnauthorizedErrorMetricsEvent"
         |  },
+        |  "sourceId": 1,
         |  "sdkVersion": "2.0.1",
         |  "metadata": {
         |    "app_version": "1.2.3",
@@ -247,6 +259,7 @@ class MetricsEventAdapterFactoryTest {
             "tag" to "tag_value",
           ),
         ),
+        sourceId = SourceID.ANDROID,
         sdkVersion = "2.0.1",
         metadata = mapOf(
           "app_version" to "1.2.3",
@@ -267,6 +280,7 @@ class MetricsEventAdapterFactoryTest {
         |    },
         |    "@type": "type.googleapis.com/bucketeer.event.client.ForbiddenErrorMetricsEvent"
         |  },
+        |  "sourceId": 1,
         |  "sdkVersion": "2.0.1",
         |  "metadata": {
         |    "app_version": "1.2.3",
@@ -285,6 +299,7 @@ class MetricsEventAdapterFactoryTest {
             "tag" to "tag_value",
           ),
         ),
+        sourceId = SourceID.ANDROID,
         sdkVersion = "2.0.1",
         metadata = mapOf(
           "app_version" to "1.2.3",
@@ -305,6 +320,7 @@ class MetricsEventAdapterFactoryTest {
         |    },
         |    "@type": "type.googleapis.com/bucketeer.event.client.NotFoundErrorMetricsEvent"
         |  },
+        |  "sourceId": 1,
         |  "sdkVersion": "2.0.1",
         |  "metadata": {
         |    "app_version": "1.2.3",
@@ -323,6 +339,7 @@ class MetricsEventAdapterFactoryTest {
             "tag" to "tag_value",
           ),
         ),
+        sourceId = SourceID.ANDROID,
         sdkVersion = "2.0.1",
         metadata = mapOf(
           "app_version" to "1.2.3",
@@ -343,6 +360,7 @@ class MetricsEventAdapterFactoryTest {
         |    },
         |    "@type": "type.googleapis.com/bucketeer.event.client.ClientClosedRequestErrorMetricsEvent"
         |  },
+        |  "sourceId": 1,
         |  "sdkVersion": "2.0.1",
         |  "metadata": {
         |    "app_version": "1.2.3",
@@ -361,6 +379,7 @@ class MetricsEventAdapterFactoryTest {
             "tag" to "tag_value",
           ),
         ),
+        sourceId = SourceID.ANDROID,
         sdkVersion = "2.0.1",
         metadata = mapOf(
           "app_version" to "1.2.3",
@@ -381,6 +400,7 @@ class MetricsEventAdapterFactoryTest {
         |    },
         |    "@type": "type.googleapis.com/bucketeer.event.client.ServiceUnavailableErrorMetricsEvent"
         |  },
+        |  "sourceId": 1,
         |  "sdkVersion": "2.0.1",
         |  "metadata": {
         |    "app_version": "1.2.3",
@@ -399,6 +419,7 @@ class MetricsEventAdapterFactoryTest {
             "tag" to "tag_value",
           ),
         ),
+        sourceId = SourceID.ANDROID,
         sdkVersion = "2.0.1",
         metadata = mapOf(
           "app_version" to "1.2.3",
@@ -419,6 +440,7 @@ class MetricsEventAdapterFactoryTest {
         |    },
         |    "@type": "type.googleapis.com/bucketeer.event.client.InternalSdkErrorMetricsEvent"
         |  },
+        |  "sourceId": 1,
         |  "sdkVersion": "2.0.1",
         |  "metadata": {
         |    "app_version": "1.2.3",
@@ -437,6 +459,7 @@ class MetricsEventAdapterFactoryTest {
             "tag" to "tag_value",
           ),
         ),
+        sourceId = SourceID.ANDROID,
         sdkVersion = "2.0.1",
         metadata = mapOf(
           "app_version" to "1.2.3",
@@ -446,7 +469,8 @@ class MetricsEventAdapterFactoryTest {
       ),
     ),
     InternalServerErrorMetricsEvent(
-      json = """
+      json =
+      """
         |{
         |  "timestamp": 1660210923777,
         |  "type": 12,
@@ -457,6 +481,7 @@ class MetricsEventAdapterFactoryTest {
         |    },
         |    "@type": "type.googleapis.com/bucketeer.event.client.InternalServerErrorMetricsEvent"
         |  },
+        |  "sourceId": 1,
         |  "sdkVersion": "2.0.1",
         |  "metadata": {
         |    "app_version": "1.2.3",
@@ -475,6 +500,7 @@ class MetricsEventAdapterFactoryTest {
             "tag" to "tag_value",
           ),
         ),
+        sourceId = SourceID.ANDROID,
         sdkVersion = "2.0.1",
         metadata = mapOf(
           "app_version" to "1.2.3",
@@ -497,6 +523,7 @@ class MetricsEventAdapterFactoryTest {
         |    },
         |    "@type": "type.googleapis.com/bucketeer.event.client.UnknownErrorMetricsEvent"
         |  },
+        |  "sourceId": 1,
         |  "sdkVersion": "2.0.1",
         |  "metadata": {
         |    "app_version": "1.2.3",
@@ -517,6 +544,7 @@ class MetricsEventAdapterFactoryTest {
             "error_message" to "code 418",
           ),
         ),
+        sourceId = SourceID.ANDROID,
         sdkVersion = "2.0.1",
         metadata = mapOf(
           "app_version" to "1.2.3",
@@ -538,6 +566,7 @@ class MetricsEventAdapterFactoryTest {
         |    },
         |    "@type": "type.googleapis.com/bucketeer.event.client.RedirectionRequestExceptionEvent"
         |  },
+        |  "sourceId": 1,
         |  "sdkVersion": "2.0.1",
         |  "metadata": {
         |    "app_version": "1.2.3",
@@ -557,6 +586,7 @@ class MetricsEventAdapterFactoryTest {
             "response_code" to "302",
           ),
         ),
+        sourceId = SourceID.ANDROID,
         sdkVersion = "2.0.1",
         metadata = mapOf(
           "app_version" to "1.2.3",
@@ -577,6 +607,7 @@ class MetricsEventAdapterFactoryTest {
         |    },
         |    "@type": "type.googleapis.com/bucketeer.event.client.PayloadTooLargeExceptionEvent"
         |  },
+        |  "sourceId": 1,
         |  "sdkVersion": "2.0.1",
         |  "metadata": {
         |    "app_version": "1.2.3",
@@ -595,8 +626,95 @@ class MetricsEventAdapterFactoryTest {
             "tag" to "tag_value",
           ),
         ),
+        sourceId = SourceID.ANDROID,
         sdkVersion = "2.0.1",
-        metadata = mapOf(
+        metadata =
+        mapOf(
+          "app_version" to "1.2.3",
+          "os_version" to "os_version_value",
+          "device_model" to "device_model_value",
+        ),
+      ),
+    ),
+
+    @Suppress("EnumEntryName", "ktlint:standard:enum-entry-name-case")
+    Metrics_NoSdkVersion_NoMetadata(
+      json =
+      """
+        |{
+        |  "timestamp": 1660210923777,
+        |  "type": 14,
+        |  "event": {
+        |    "apiId": 2,
+        |    "labels": {
+        |      "tag": "tag_value"
+        |    },
+        |    "@type": "type.googleapis.com/bucketeer.event.client.PayloadTooLargeExceptionEvent"
+        |  },
+        |  "sourceId": 1,
+        |  "@type": "type.googleapis.com/bucketeer.event.client.MetricsEvent"
+        |}
+      """.trimMargin(),
+      event =
+      EventData.MetricsEvent(
+        timestamp = 1660210923777,
+        type = MetricsEventType.PAYLOAD_TOO_LARGE,
+        event =
+        MetricsEventData.PayloadTooLargeErrorMetricsEvent(
+          ApiId.GET_EVALUATIONS,
+          labels =
+          mapOf(
+            "tag" to "tag_value",
+          ),
+        ),
+        sourceId = SourceID.ANDROID,
+        sdkVersion = null,
+        metadata = null,
+      ),
+    ),
+
+    // Because the default `source_id` is SourceId.Android.
+    // We need one more test to make sure the adapter logic for parser `source_id` is correct.
+    @Suppress("EnumEntryName", "ktlint:standard:enum-entry-name-case")
+    Metrics_With_SourceId_Is_Not_Android(
+      json =
+      """
+        |{
+        |  "timestamp": 1660210923777,
+        |  "type": 14,
+        |  "event": {
+        |    "apiId": 2,
+        |    "labels": {
+        |      "tag": "tag_value"
+        |    },
+        |    "@type": "type.googleapis.com/bucketeer.event.client.PayloadTooLargeExceptionEvent"
+        |  },
+        |  "sourceId": 4,
+        |  "sdkVersion": "2.0.1",
+        |  "metadata": {
+        |    "app_version": "1.2.3",
+        |    "os_version": "os_version_value",
+        |    "device_model": "device_model_value"
+        |  },
+        |  "@type": "type.googleapis.com/bucketeer.event.client.MetricsEvent"
+        |}
+      """.trimMargin(),
+      event =
+      EventData.MetricsEvent(
+        timestamp = 1660210923777,
+        type = MetricsEventType.PAYLOAD_TOO_LARGE,
+        event =
+        MetricsEventData.PayloadTooLargeErrorMetricsEvent(
+          ApiId.GET_EVALUATIONS,
+          labels =
+          mapOf(
+            "tag" to "tag_value",
+          ),
+        ),
+        sourceId = SourceID.GOAL_BATCH,
+        sdkVersion = "2.0.1",
+        metadata =
+        mapOf(
           "app_version" to "1.2.3",
           "os_version" to "os_version_value",
           "device_model" to "device_model_value",
@@ -624,5 +742,58 @@ class MetricsEventAdapterFactoryTest {
     val result = adapter.indent("  ").toJson(case.event)
 
     assertThat(result).isEqualTo(case.json)
+  }
+
+  @Test
+  fun testMetricsIsMissingSourceId() {
+    // Versions of the SDK 2.0.5 and below are missing a 'source_id' in a 'EventData.MetricsEvent'.
+    // This test simulates the scenario where the app developer updates the SDK from version [2.0.5 or below] to [version 2.0.6 or higher].
+    val json =
+      """
+        |{
+        |  "timestamp": 1660210923777,
+        |  "type": 14,
+        |  "event": {
+        |    "apiId": 2,
+        |    "labels": {
+        |      "tag": "tag_value"
+        |    },
+        |    "@type": "type.googleapis.com/bucketeer.event.client.PayloadTooLargeExceptionEvent"
+        |  },
+        |  "sdkVersion": "2.0.1",
+        |  "metadata": {
+        |    "app_version": "1.2.3",
+        |    "os_version": "os_version_value",
+        |    "device_model": "device_model_value"
+        |  },
+        |  "@type": "type.googleapis.com/bucketeer.event.client.MetricsEvent"
+        |}
+      """.trimMargin()
+
+    val event =
+      EventData.MetricsEvent(
+        timestamp = 1660210923777,
+        type = MetricsEventType.PAYLOAD_TOO_LARGE,
+        event =
+        MetricsEventData.PayloadTooLargeErrorMetricsEvent(
+          ApiId.GET_EVALUATIONS,
+          labels =
+          mapOf(
+            "tag" to "tag_value",
+          ),
+        ),
+        sourceId = SourceID.ANDROID,
+        sdkVersion = "2.0.1",
+        metadata =
+        mapOf(
+          "app_version" to "1.2.3",
+          "os_version" to "os_version_value",
+          "device_model" to "device_model_value",
+        ),
+      )
+
+    val result = adapter.fromJson(json)
+
+    assertThat(result).isEqualTo(event)
   }
 }

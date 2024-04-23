@@ -44,6 +44,7 @@ sealed class EventData {
     val timestamp: Long,
     val event: MetricsEventData,
     val type: MetricsEventType,
+    val sourceId: SourceID,
     val sdkVersion: String? = null,
     val metadata: Map<String, String>? = null,
     @Json(name = "@type")

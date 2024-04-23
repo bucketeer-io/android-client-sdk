@@ -127,6 +127,7 @@ internal fun newSuccessMetricsEvents(
           labels = labels,
           latencySecond = latencySecond,
         ),
+        sourceId = SourceID.ANDROID,
         sdkVersion = BuildConfig.SDK_VERSION,
         metadata = newMetadata(appVersion),
       ),
@@ -142,6 +143,7 @@ internal fun newSuccessMetricsEvents(
           labels = labels,
           sizeByte = sizeByte,
         ),
+        sourceId = SourceID.ANDROID,
         sdkVersion = BuildConfig.SDK_VERSION,
         metadata = newMetadata(appVersion),
       ),
@@ -307,6 +309,7 @@ internal fun newEventDataMetricEvent(
     timestamp = timestamp,
     type = type,
     event = event,
+    sourceId = SourceID.ANDROID,
     sdkVersion = BuildConfig.SDK_VERSION,
     metadata = newMetadata(appVersion),
   )

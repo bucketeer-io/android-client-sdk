@@ -125,6 +125,7 @@ val latencyMetricsEvent1: Event by lazy {
       timestamp = 1661823274, // 2022-08-30 01:34:34
       event = getEvaluationLatencyMetricsEvent1,
       type = MetricsEventType.RESPONSE_LATENCY,
+      sourceId = SourceID.ANDROID,
       sdkVersion = io.bucketeer.sdk.android.BuildConfig.SDK_VERSION,
       metadata = mapOf(
         "app_version" to "1.2.3",
@@ -150,6 +151,7 @@ val duplicateLatencyMetricsEvent1: Event by lazy {
       timestamp = 1661823274, // 2022-08-30 01:34:34
       event = getEvaluationLatencyMetricsEvent1,
       type = MetricsEventType.RESPONSE_LATENCY,
+      sourceId = SourceID.ANDROID,
       sdkVersion = io.bucketeer.sdk.android.BuildConfig.SDK_VERSION,
       metadata = mapOf(
         "app_version" to "1.2.3",
@@ -168,6 +170,7 @@ val sizeMetricsEvent1: Event by lazy {
       timestamp = 1661823275,
       event = getEvaluationSizeMetricsEvent1,
       type = MetricsEventType.RESPONSE_SIZE,
+      sourceId = SourceID.ANDROID,
       sdkVersion = io.bucketeer.sdk.android.BuildConfig.SDK_VERSION,
       metadata = mapOf(
         "app_version" to "1.2.3",
@@ -195,6 +198,7 @@ val internalErrorMetricsEvent1: Event by lazy {
         labels = mapOf("tag" to "android", "state" to "FULL"),
       ),
       type = MetricsEventType.INTERNAL_SERVER_ERROR,
+      sourceId = SourceID.ANDROID,
       sdkVersion = io.bucketeer.sdk.android.BuildConfig.SDK_VERSION,
       metadata = mapOf(
         "app_version" to "1.2.3",

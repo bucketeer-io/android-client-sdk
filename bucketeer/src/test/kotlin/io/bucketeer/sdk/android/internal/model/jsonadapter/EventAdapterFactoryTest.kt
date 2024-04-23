@@ -269,6 +269,7 @@ class EventAdapterFactoryTest {
         |      "latencySecond": 5.0,
         |      "@type": "type.googleapis.com/bucketeer.event.client.LatencyMetricsEvent"
         |    },
+        |    "sourceId": 1,
         |    "sdkVersion": "2.0.1",
         |    "metadata": {
         |      "app_version": "1.2.3",
@@ -293,6 +294,7 @@ class EventAdapterFactoryTest {
             ),
             latencySecond = 5.0,
           ),
+          sourceId = SourceID.ANDROID,
           sdkVersion = "2.0.1",
           metadata = mapOf(
             "app_version" to "1.2.3",
@@ -321,6 +323,7 @@ class EventAdapterFactoryTest {
         |      "latencySecond": 5.0,
         |      "@type": "type.googleapis.com/bucketeer.event.client.LatencyMetricsEvent"
         |    },
+        |    "sourceId": 1,
         |    "@type": "type.googleapis.com/bucketeer.event.client.MetricsEvent"
         |  }
         |}
@@ -339,6 +342,7 @@ class EventAdapterFactoryTest {
             ),
             latencySecond = 5.0,
           ),
+          sourceId = SourceID.ANDROID,
           sdkVersion = null,
           metadata = null,
         ),

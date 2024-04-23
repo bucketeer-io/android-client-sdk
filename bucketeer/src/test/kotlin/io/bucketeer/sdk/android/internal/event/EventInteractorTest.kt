@@ -243,6 +243,7 @@ class EventInteractorTest {
             ),
             latencySecond = 1.1,
           ),
+          sourceId = SourceID.ANDROID,
           sdkVersion = BuildConfig.SDK_VERSION,
           metadata = mapOf(
             "app_version" to "1.2.3",
@@ -269,6 +270,7 @@ class EventInteractorTest {
             ),
             sizeByte = 723,
           ),
+          sourceId = SourceID.ANDROID,
           sdkVersion = BuildConfig.SDK_VERSION,
           metadata = mapOf(
             "app_version" to "1.2.3",
@@ -313,6 +315,7 @@ class EventInteractorTest {
               "timeout" to "5.0",
             ),
           ),
+          sourceId = SourceID.ANDROID,
           sdkVersion = BuildConfig.SDK_VERSION,
           metadata = mapOf(
             "app_version" to "1.2.3",
@@ -356,6 +359,7 @@ class EventInteractorTest {
               "tag" to "feature_tag_value",
             ),
           ),
+          sourceId = SourceID.ANDROID,
           sdkVersion = BuildConfig.SDK_VERSION,
           metadata = mapOf(
             "app_version" to "1.2.3",
@@ -410,6 +414,7 @@ class EventInteractorTest {
                 ),
                 latencySecond = 0.1,
               ),
+              sourceId = SourceID.ANDROID,
               sdkVersion = BuildConfig.SDK_VERSION,
               metadata = mapOf(
                 "app_version" to "1.2.3",
@@ -431,6 +436,7 @@ class EventInteractorTest {
                 ),
                 sizeByte = 723,
               ),
+              sourceId = SourceID.ANDROID,
               sdkVersion = BuildConfig.SDK_VERSION,
               metadata = mapOf(
                 "app_version" to "1.2.3",
@@ -520,6 +526,7 @@ class EventInteractorTest {
             ),
             latencySecond = 0.1,
           ),
+          sourceId = SourceID.ANDROID,
           sdkVersion = BuildConfig.SDK_VERSION,
           metadata = mapOf(
             "app_version" to "1.2.3",
@@ -541,6 +548,7 @@ class EventInteractorTest {
             ),
             sizeByte = 723,
           ),
+          sourceId = SourceID.ANDROID,
           sdkVersion = BuildConfig.SDK_VERSION,
           metadata = mapOf(
             "app_version" to "1.2.3",
@@ -580,6 +588,7 @@ class EventInteractorTest {
               "tag" to "feature_tag_value",
             ),
           ),
+          sourceId = SourceID.ANDROID,
           sdkVersion = BuildConfig.SDK_VERSION,
           metadata = mapOf(
             "app_version" to "1.2.3",
@@ -683,6 +692,7 @@ class EventInteractorTest {
                 ),
                 latencySecond = 0.1,
               ),
+              sourceId = SourceID.ANDROID,
               sdkVersion = BuildConfig.SDK_VERSION,
               metadata = mapOf(
                 "app_version" to "1.2.3",
@@ -704,6 +714,7 @@ class EventInteractorTest {
                 ),
                 sizeByte = 723,
               ),
+              sourceId = SourceID.ANDROID,
               sdkVersion = BuildConfig.SDK_VERSION,
               metadata = mapOf(
                 "app_version" to "1.2.3",
@@ -768,6 +779,7 @@ class EventInteractorTest {
                 ),
                 latencySecond = 0.1,
               ),
+              sourceId = SourceID.ANDROID,
               sdkVersion = BuildConfig.SDK_VERSION,
               metadata = mapOf(
                 "app_version" to "1.2.3",
@@ -789,6 +801,7 @@ class EventInteractorTest {
                 ),
                 sizeByte = 723,
               ),
+              sourceId = SourceID.ANDROID,
               sdkVersion = BuildConfig.SDK_VERSION,
               metadata = mapOf(
                 "app_version" to "1.2.3",
@@ -840,6 +853,7 @@ class EventInteractorTest {
               ),
               latencySecond = 0.1,
             ),
+            sourceId = SourceID.ANDROID,
             sdkVersion = BuildConfig.SDK_VERSION,
             metadata = mapOf(
               "app_version" to "1.2.3",
