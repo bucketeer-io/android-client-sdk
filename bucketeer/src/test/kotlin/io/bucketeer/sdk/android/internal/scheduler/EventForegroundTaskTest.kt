@@ -95,7 +95,7 @@ class EventForegroundTaskTest {
     val (time, _) = measureTimeMillisWithResult { server.takeRequest(2, TimeUnit.SECONDS) }
 
     assertThat(server.requestCount).isEqualTo(1)
-    assertThat(time).isAtLeast(988)
+    assertThat(time).isAtLeast(988L)
   }
 
   @Test
@@ -130,7 +130,7 @@ class EventForegroundTaskTest {
           .fromJson(request.body.readString(Charsets.UTF_8)),
       )
 
-    assertThat(time).isLessThan(100)
+    assertThat(time).isLessThan(100L)
 
     assertThat(requestBody.events.map { it.type })
       .isEqualTo(listOf(EventType.EVALUATION, EventType.EVALUATION, EventType.GOAL))
@@ -146,7 +146,7 @@ class EventForegroundTaskTest {
           .fromJson(request2.body.readString(Charsets.UTF_8)),
       )
     assertThat(requestBody2.events).hasSize(1)
-    assertThat(time2).isAtLeast(990)
+    assertThat(time2).isAtLeast(990L)
   }
 
   @Test

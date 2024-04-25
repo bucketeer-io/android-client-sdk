@@ -728,7 +728,7 @@ fun assertLatencyMetricsEvent(
 
   val actualMetricsEvent = actual.event as EventData.MetricsEvent
 
-  assertThat(actualMetricsEvent.timestamp).isGreaterThan(0)
+  assertThat(actualMetricsEvent.timestamp).isGreaterThan(0L)
 
   assertThat(actualMetricsEvent.type).isEqualTo(MetricsEventType.RESPONSE_LATENCY)
   assertThat(actualMetricsEvent.event)
@@ -751,7 +751,7 @@ fun assertSizeMetricsEvent(
 
   val actualMetricsEvent = actual.event as EventData.MetricsEvent
 
-  assertThat(actualMetricsEvent.timestamp).isGreaterThan(0)
+  assertThat(actualMetricsEvent.timestamp).isGreaterThan(0L)
   assertThat(actualMetricsEvent.type).isEqualTo(MetricsEventType.RESPONSE_SIZE)
   assertThat(actualMetricsEvent.event)
     .isInstanceOf(MetricsEventData.SizeMetricsEvent::class.java)

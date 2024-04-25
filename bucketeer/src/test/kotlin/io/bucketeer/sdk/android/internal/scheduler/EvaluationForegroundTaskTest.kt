@@ -94,7 +94,7 @@ class EvaluationForegroundTaskTest {
     val (time, _) = measureTimeMillisWithResult { server.takeRequest(2, TimeUnit.SECONDS) }
 
     assertThat(server.requestCount).isEqualTo(1)
-    assertThat(time).isAtLeast(980)
+    assertThat(time).isAtLeast(980L)
   }
 
   @Test
@@ -145,32 +145,32 @@ class EvaluationForegroundTaskTest {
     // initial request
     val (time1, _) = measureTimeMillisWithResult { server.takeRequest(2, TimeUnit.SECONDS) }
 
-    assertThat(time1).isAtLeast(990)
+    assertThat(time1).isAtLeast(990L)
 
     // retry request 1
     val (time2, _) = measureTimeMillisWithResult { server.takeRequest(2, TimeUnit.SECONDS) }
 
-    assertThat(time2).isAtLeast(790)
-    assertThat(time2).isLessThan(1000)
+    assertThat(time2).isAtLeast(790L)
+    assertThat(time2).isLessThan(1000L)
 
     // retry request 2
     val (time3, _) = measureTimeMillisWithResult { server.takeRequest(2, TimeUnit.SECONDS) }
-    assertThat(time3).isAtLeast(790)
-    assertThat(time3).isLessThan(1000)
+    assertThat(time3).isAtLeast(790L)
+    assertThat(time3).isLessThan(1000L)
 
     // retry request 3
     val (time4, _) = measureTimeMillisWithResult { server.takeRequest(2, TimeUnit.SECONDS) }
-    assertThat(time4).isAtLeast(790)
-    assertThat(time4).isLessThan(1000)
+    assertThat(time4).isAtLeast(790L)
+    assertThat(time4).isLessThan(1000L)
 
     // back to normal interval after retryMaxCount
     val (time5, _) = measureTimeMillisWithResult { server.takeRequest(2, TimeUnit.SECONDS) }
-    assertThat(time5).isAtLeast(990)
+    assertThat(time5).isAtLeast(990L)
 
     // and then retry interval again
     val (time6, _) = measureTimeMillisWithResult { server.takeRequest(2, TimeUnit.SECONDS) }
-    assertThat(time6).isAtLeast(790)
-    assertThat(time6).isLessThan(1000)
+    assertThat(time6).isAtLeast(790L)
+    assertThat(time6).isLessThan(1000L)
   }
 
   @Test
@@ -206,16 +206,16 @@ class EvaluationForegroundTaskTest {
     // initial request
     val (time1, _) = measureTimeMillisWithResult { server.takeRequest(2, TimeUnit.SECONDS) }
 
-    assertThat(time1).isAtLeast(990)
+    assertThat(time1).isAtLeast(990L)
 
     // retry request 1
     val (time2, _) = measureTimeMillisWithResult { server.takeRequest(2, TimeUnit.SECONDS) }
 
-    assertThat(time2).isAtLeast(790)
-    assertThat(time2).isLessThan(1000)
+    assertThat(time2).isAtLeast(790L)
+    assertThat(time2).isLessThan(1000L)
 
     // back to normal interval after successful request
     val (time3, _) = measureTimeMillisWithResult { server.takeRequest(2, TimeUnit.SECONDS) }
-    assertThat(time3).isAtLeast(990)
+    assertThat(time3).isAtLeast(990L)
   }
 }
