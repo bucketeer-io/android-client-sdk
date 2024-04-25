@@ -73,24 +73,25 @@ class MetricsEventAdapterFactory : JsonAdapter.Factory {
 
         val eventType = metricsEventTypeAdapter.fromJsonValue(jsonObj["type"])
 
-        val adapter = when (eventType) {
-          MetricsEventType.RESPONSE_LATENCY -> latencyMetricsEventAdapter
-          MetricsEventType.RESPONSE_SIZE -> sizeMetricsEventJsonAdapter
-          MetricsEventType.TIMEOUT_ERROR -> timeoutErrorAdapter
-          MetricsEventType.INTERNAL_SDK_ERROR -> internalSDKErrorAdapter
-          MetricsEventType.UNKNOWN -> unknownErrorAdapter
-          MetricsEventType.NETWORK_ERROR -> networkErrorAdapter
-          MetricsEventType.BAD_REQUEST_ERROR -> badRequestErrorEventAdapter
-          MetricsEventType.UNAUTHORIZED_ERROR -> unauthorizedErrorAdapter
-          MetricsEventType.FORBIDDEN_ERROR -> forbiddenErrorAdapter
-          MetricsEventType.NOT_FOUND_ERROR -> notFoundErrorAdapter
-          MetricsEventType.CLIENT_CLOSED_REQUEST_ERROR -> clientClosedRequestErrorAdapter
-          MetricsEventType.SERVICE_UNAVAILABLE_ERROR -> serviceUnavailableErrorAdapter
-          MetricsEventType.INTERNAL_SERVER_ERROR -> internalServerErrorAdapter
-          MetricsEventType.REDIRECT_REQUEST -> redirectRequestErrorAdapter
-          MetricsEventType.PAYLOAD_TOO_LARGE -> payloadTooLargeErrorAdapter
-          null -> throw BKTException.IllegalStateException("unexpected type: $type")
-        }
+        val adapter =
+          when (eventType) {
+            MetricsEventType.RESPONSE_LATENCY -> latencyMetricsEventAdapter
+            MetricsEventType.RESPONSE_SIZE -> sizeMetricsEventJsonAdapter
+            MetricsEventType.TIMEOUT_ERROR -> timeoutErrorAdapter
+            MetricsEventType.INTERNAL_SDK_ERROR -> internalSDKErrorAdapter
+            MetricsEventType.UNKNOWN -> unknownErrorAdapter
+            MetricsEventType.NETWORK_ERROR -> networkErrorAdapter
+            MetricsEventType.BAD_REQUEST_ERROR -> badRequestErrorEventAdapter
+            MetricsEventType.UNAUTHORIZED_ERROR -> unauthorizedErrorAdapter
+            MetricsEventType.FORBIDDEN_ERROR -> forbiddenErrorAdapter
+            MetricsEventType.NOT_FOUND_ERROR -> notFoundErrorAdapter
+            MetricsEventType.CLIENT_CLOSED_REQUEST_ERROR -> clientClosedRequestErrorAdapter
+            MetricsEventType.SERVICE_UNAVAILABLE_ERROR -> serviceUnavailableErrorAdapter
+            MetricsEventType.INTERNAL_SERVER_ERROR -> internalServerErrorAdapter
+            MetricsEventType.REDIRECT_REQUEST -> redirectRequestErrorAdapter
+            MetricsEventType.PAYLOAD_TOO_LARGE -> payloadTooLargeErrorAdapter
+            null -> throw BKTException.IllegalStateException("unexpected type: $type")
+          }
 
         return EventData.MetricsEvent(
           timestamp = (jsonObj["timestamp"] as Double).toLong(),
@@ -103,7 +104,10 @@ class MetricsEventAdapterFactory : JsonAdapter.Factory {
         )
       }
 
-      override fun toJson(writer: JsonWriter, value: EventData.MetricsEvent?) {
+      override fun toJson(
+        writer: JsonWriter,
+        value: EventData.MetricsEvent?,
+      ) {
         if (value == null) {
           writer.nullValue()
           return

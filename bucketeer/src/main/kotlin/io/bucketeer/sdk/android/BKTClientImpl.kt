@@ -28,41 +28,61 @@ internal class BKTClientImpl(
   user: BKTUser,
   private val mainHandler: Handler = Handler(Looper.getMainLooper()),
   internal val executor: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor(),
-  internal val component: Component = ComponentImpl(
-    dataModule = DataModule(
-      application = context.applicationContext as Application,
-      user = user.toUser(),
-      config = config,
+  internal val component: Component =
+    ComponentImpl(
+      dataModule =
+        DataModule(
+          application = context.applicationContext as Application,
+          user = user.toUser(),
+          config = config,
+        ),
+      interactorModule =
+        InteractorModule(
+          mainHandler = mainHandler,
+        ),
     ),
-    interactorModule = InteractorModule(
-      mainHandler = mainHandler,
-    ),
-  ),
 ) : BKTClient {
-
   private var taskScheduler: TaskScheduler? = null
 
-  override fun stringVariation(featureId: String, defaultValue: String): String {
+  override fun stringVariation(
+    featureId: String,
+    defaultValue: String,
+  ): String {
     return getVariationValue(featureId, defaultValue)
   }
 
-  override fun intVariation(featureId: String, defaultValue: Int): Int {
+  override fun intVariation(
+    featureId: String,
+    defaultValue: Int,
+  ): Int {
     return getVariationValue(featureId, defaultValue)
   }
 
-  override fun doubleVariation(featureId: String, defaultValue: Double): Double {
+  override fun doubleVariation(
+    featureId: String,
+    defaultValue: Double,
+  ): Double {
     return getVariationValue(featureId, defaultValue)
   }
 
-  override fun booleanVariation(featureId: String, defaultValue: Boolean): Boolean {
+  override fun booleanVariation(
+    featureId: String,
+    defaultValue: Boolean,
+  ): Boolean {
     return getVariationValue(featureId, defaultValue)
   }
 
-  override fun jsonVariation(featureId: String, defaultValue: JSONObject): JSONObject {
+  override fun jsonVariation(
+    featureId: String,
+    defaultValue: JSONObject,
+  ): JSONObject {
     return getVariationValue(featureId, defaultValue)
   }
 
-  override fun track(goalId: String, value: Double) {
+  override fun track(
+    goalId: String,
+    value: Double,
+  ) {
     val user = component.userHolder.get()
     val featureTag = config.featureTag
     executor.execute {
@@ -100,8 +120,9 @@ internal class BKTClientImpl(
   }
 
   override fun evaluationDetails(featureId: String): BKTEvaluation? {
-    val raw = component.evaluationInteractor
-      .getLatest(featureId) ?: return null
+    val raw =
+      component.evaluationInteractor
+        .getLatest(featureId) ?: return null
 
     return BKTEvaluation(
       id = raw.id,
@@ -139,7 +160,10 @@ internal class BKTClientImpl(
     }
   }
 
-  private inline fun <reified T : Any> getVariationValue(featureId: String, defaultValue: T): T {
+  private inline fun <reified T : Any> getVariationValue(
+    featureId: String,
+    defaultValue: T,
+  ): T {
     logd { "BKTClient.getVariation(featureId = $featureId, defaultValue = $defaultValue) called" }
 
     val raw = component.evaluationInteractor.getLatest(featureId)
@@ -208,8 +232,9 @@ internal class BKTClientImpl(
       executor: Executor,
       timeoutMillis: Long?,
     ): BKTException? {
-      val result = component.evaluationInteractor
-        .fetch(user = component.userHolder.get(), timeoutMillis)
+      val result =
+        component.evaluationInteractor
+          .fetch(user = component.userHolder.get(), timeoutMillis)
 
       executor.execute {
         val interactor = component.eventInteractor

@@ -32,10 +32,11 @@ class EvaluationSQLDaoImplTest {
   fun setup() {
     moshi = DataModule.createMoshi()
     val context: Context = ApplicationProvider.getApplicationContext()
-    sharedPreferences = context.getSharedPreferences(
-      Constants.PREFERENCES_NAME,
-      Context.MODE_PRIVATE,
-    )
+    sharedPreferences =
+      context.getSharedPreferences(
+        Constants.PREFERENCES_NAME,
+        Context.MODE_PRIVATE,
+      )
     openHelper = createDatabase(context, OpenHelperCallback.FILE_NAME, sharedPreferences)
     sqlDao = EvaluationSQLDaoImpl(openHelper, moshi)
   }

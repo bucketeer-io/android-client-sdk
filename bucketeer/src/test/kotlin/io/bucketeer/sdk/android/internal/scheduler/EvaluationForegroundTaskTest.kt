@@ -37,25 +37,29 @@ class EvaluationForegroundTaskTest {
   @Before
   fun setup() {
     server = MockWebServer()
-    val config = createTestBKTConfig(
-      apiKey = "api_key_value",
-      apiEndpoint = server.url("").toString(),
-      featureTag = "feature_tag_value",
-      eventsMaxBatchQueueCount = 3,
-      pollingInterval = 1000,
-      appVersion = "1.2.3",
-    )
-    component = ComponentImpl(
-      dataModule = DataModule(
-        application = ApplicationProvider.getApplicationContext(),
-        config = config,
-        user = user1,
-        inMemoryDB = true,
-      ),
-      interactorModule = InteractorModule(
-        mainHandler = Handler(Looper.getMainLooper()),
-      ),
-    )
+    val config =
+      createTestBKTConfig(
+        apiKey = "api_key_value",
+        apiEndpoint = server.url("").toString(),
+        featureTag = "feature_tag_value",
+        eventsMaxBatchQueueCount = 3,
+        pollingInterval = 1000,
+        appVersion = "1.2.3",
+      )
+    component =
+      ComponentImpl(
+        dataModule =
+          DataModule(
+            application = ApplicationProvider.getApplicationContext(),
+            config = config,
+            user = user1,
+            inMemoryDB = true,
+          ),
+        interactorModule =
+          InteractorModule(
+            mainHandler = Handler(Looper.getMainLooper()),
+          ),
+      )
 
     moshi = component.dataModule.moshi
 
@@ -114,12 +118,13 @@ class EvaluationForegroundTaskTest {
 
   @Test
   fun `retry - should back to normal interval after maxRetryCount`() {
-    task = EvaluationForegroundTask(
-      component,
-      executor,
-      retryPollingInterval = 800,
-      maxRetryCount = 3,
-    )
+    task =
+      EvaluationForegroundTask(
+        component,
+        executor,
+        retryPollingInterval = 800,
+        maxRetryCount = 3,
+      )
 
     server.enqueueResponse(moshi, 500, ErrorResponse(ErrorResponse.ErrorDetail(500, "500 error")))
     server.enqueueResponse(moshi, 500, ErrorResponse(ErrorResponse.ErrorDetail(500, "500 error")))
@@ -170,12 +175,13 @@ class EvaluationForegroundTaskTest {
 
   @Test
   fun `retry - should back to normal after successful request`() {
-    task = EvaluationForegroundTask(
-      component,
-      executor,
-      retryPollingInterval = 800,
-      maxRetryCount = 3,
-    )
+    task =
+      EvaluationForegroundTask(
+        component,
+        executor,
+        retryPollingInterval = 800,
+        maxRetryCount = 3,
+      )
 
     server.enqueueResponse(moshi, 500, ErrorResponse(ErrorResponse.ErrorDetail(500, "500 error")))
     server.enqueueResponse(

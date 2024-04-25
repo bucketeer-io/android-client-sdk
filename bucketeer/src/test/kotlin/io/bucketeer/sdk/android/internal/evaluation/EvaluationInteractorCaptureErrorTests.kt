@@ -23,21 +23,22 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 class EvaluationInteractorCaptureErrorTests {
-
   @Test
   fun captureErrors() {
     TestCase.values().forEach { case ->
-      val interactor = EvaluationInteractor(
-        apiClient = case.apiClient,
-        evaluationStorage = case.storage,
-        idGenerator = IdGeneratorImpl(),
-        featureTag = "feature_tag_value",
-        mainHandler = Handler(Looper.getMainLooper()),
-      )
+      val interactor =
+        EvaluationInteractor(
+          apiClient = case.apiClient,
+          evaluationStorage = case.storage,
+          idGenerator = IdGeneratorImpl(),
+          featureTag = "feature_tag_value",
+          mainHandler = Handler(Looper.getMainLooper()),
+        )
 
-      val user = User(
-        id = "test_user_1",
-      )
+      val user =
+        User(
+          id = "test_user_1",
+        )
 
       val result = interactor.fetch(user, timeoutMillis = 3000L)
       assert(result is GetEvaluationsResult.Failure)
@@ -59,22 +60,25 @@ class EvaluationInteractorCaptureErrorTests {
     API_ERROR(
       apiClient = MockErrorAPIClient(),
       storage = MockEvaluationStorage("test_user_1"),
-      expected = GetEvaluationsResult.Failure(
-        error = BKTException.TimeoutException(
-          message = "timeout",
-          cause = Exception("network error"),
-          timeoutMillis = 3000L,
+      expected =
+        GetEvaluationsResult.Failure(
+          error =
+            BKTException.TimeoutException(
+              message = "timeout",
+              cause = Exception("network error"),
+              timeoutMillis = 3000L,
+            ),
+          featureTag = "feature_tag_value",
         ),
-        featureTag = "feature_tag_value",
-      ),
     ),
     STORAGE_ERROR(
       apiClient = MockReturnSuccessAPIClient(),
       storage = MockEvaluationStorage("test_user_1"),
-      expected = GetEvaluationsResult.Failure(
-        BKTException.IllegalStateException("error: runtime exception"),
-        "feature_tag_value",
-      ),
+      expected =
+        GetEvaluationsResult.Failure(
+          BKTException.IllegalStateException("error: runtime exception"),
+          "feature_tag_value",
+        ),
     ),
   }
 }
@@ -87,10 +91,11 @@ private class MockReturnSuccessAPIClient : ApiClient {
     condition: UserEvaluationCondition,
   ): GetEvaluationsResult {
     return GetEvaluationsResult.Success(
-      value = GetEvaluationsResponse(
-        evaluations = user1Evaluations,
-        userEvaluationsId = "user_evaluation_id",
-      ),
+      value =
+        GetEvaluationsResponse(
+          evaluations = user1Evaluations,
+          userEvaluationsId = "user_evaluation_id",
+        ),
       sizeByte = 706,
       seconds = 1.0,
       featureTag = "feature_tag_value",
@@ -100,12 +105,14 @@ private class MockReturnSuccessAPIClient : ApiClient {
   override fun registerEvents(events: List<Event>): RegisterEventsResult {
     return RegisterEventsResult.Success(
       RegisterEventsResponse(
-        errors = mapOf(
-          evaluationEvent1.id to RegisterEventsErrorResponse(
-            retriable = true,
-            message = "error",
+        errors =
+          mapOf(
+            evaluationEvent1.id to
+              RegisterEventsErrorResponse(
+                retriable = true,
+                message = "error",
+              ),
           ),
-        ),
       ),
     )
   }
@@ -119,28 +126,29 @@ private class MockErrorAPIClient : ApiClient {
     condition: UserEvaluationCondition,
   ): GetEvaluationsResult {
     return GetEvaluationsResult.Failure(
-      error = BKTException.TimeoutException(
-        message = "timeout",
-        cause = Exception("network error"),
-        timeoutMillis = 3000L,
-      ),
+      error =
+        BKTException.TimeoutException(
+          message = "timeout",
+          cause = Exception("network error"),
+          timeoutMillis = 3000L,
+        ),
       featureTag = "feature_tag_value",
     )
   }
 
   override fun registerEvents(events: List<Event>): RegisterEventsResult {
     return RegisterEventsResult.Failure(
-      error = BKTException.TimeoutException(
-        message = "timeout",
-        cause = Exception("network error"),
-        timeoutMillis = 3000L,
-      ),
+      error =
+        BKTException.TimeoutException(
+          message = "timeout",
+          cause = Exception("network error"),
+          timeoutMillis = 3000L,
+        ),
     )
   }
 }
 
 private class MockEvaluationStorage(override val userId: String) : EvaluationStorage {
-
   private var featureTag = ""
 
   override fun getCurrentEvaluationId(): String {

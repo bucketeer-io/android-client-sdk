@@ -48,16 +48,18 @@ class BKTClientEvaluationUpdateTests {
   @UiThreadTest
   fun testUserEvaluationsIdMismatchAndEvaluatedAtTooOld() {
     // "userEvaluationsId is different and evaluatedAt is too old"
-    config = BKTConfig.builder()
-      .apiKey(BuildConfig.API_KEY)
-      .apiEndpoint(BuildConfig.API_ENDPOINT)
-      .featureTag("Android")
-      .appVersion("1.2.3")
-      .build()
+    config =
+      BKTConfig.builder()
+        .apiKey(BuildConfig.API_KEY)
+        .apiEndpoint(BuildConfig.API_ENDPOINT)
+        .featureTag("Android")
+        .appVersion("1.2.3")
+        .build()
 
-    user = BKTUser.builder()
-      .id(USER_ID)
-      .build()
+    user =
+      BKTUser.builder()
+        .id(USER_ID)
+        .build()
 
     val result = BKTClient.initialize(context, config, user).get()
 
@@ -65,18 +67,20 @@ class BKTClientEvaluationUpdateTests {
     val client = BKTClient.getInstance() as BKTClientImpl
     val evaluationSQLDao = (client.component as ComponentImpl).dataModule.evaluationSQLDao
     val evaluationStorage = client.component.dataModule.evaluationStorage
-    val tobeRemoveEvaluation = Evaluation(
-      id = "test-feature-2:9:user id 1",
-      featureId = "test-feature-2",
-      featureVersion = 9,
-      userId = "user id 1",
-      variationId = "test-feature-2-variation-A",
-      variationName = "test variation name2",
-      variationValue = "test variation value2",
-      reason = Reason(
-        type = ReasonType.DEFAULT,
-      ),
-    )
+    val tobeRemoveEvaluation =
+      Evaluation(
+        id = "test-feature-2:9:user id 1",
+        featureId = "test-feature-2",
+        featureVersion = 9,
+        userId = "user id 1",
+        variationId = "test-feature-2-variation-A",
+        variationName = "test variation name2",
+        variationValue = "test variation value2",
+        reason =
+          Reason(
+            type = ReasonType.DEFAULT,
+          ),
+      )
     evaluationStorage.deleteAllAndInsert("", listOf(tobeRemoveEvaluation), "0")
     assert(evaluationStorage.get() == listOf(tobeRemoveEvaluation))
     assert(evaluationSQLDao.get(USER_ID).contains(tobeRemoveEvaluation))
@@ -88,12 +92,13 @@ class BKTClientEvaluationUpdateTests {
     // Prepare for switch tag
     BKTClient.destroy()
 
-    val configWithNewTag = BKTConfig.builder()
-      .apiKey(BuildConfig.API_KEY)
-      .apiEndpoint(BuildConfig.API_ENDPOINT)
-      .featureTag(FEATURE_TAG)
-      .appVersion("1.2.3")
-      .build()
+    val configWithNewTag =
+      BKTConfig.builder()
+        .apiKey(BuildConfig.API_KEY)
+        .apiEndpoint(BuildConfig.API_ENDPOINT)
+        .featureTag(FEATURE_TAG)
+        .appVersion("1.2.3")
+        .build()
 
     val resultWithNewTag = BKTClient.initialize(context, configWithNewTag, user).get()
 
@@ -111,16 +116,18 @@ class BKTClientEvaluationUpdateTests {
   @UiThreadTest
   fun testInitializeWithNewFeatureTag() {
     // userEvaluationId is empty after feature_tag changed
-    config = BKTConfig.builder()
-      .apiKey(BuildConfig.API_KEY)
-      .apiEndpoint(BuildConfig.API_ENDPOINT)
-      .featureTag("Android_E2E_TEST_2023")
-      .appVersion("1.2.3")
-      .build()
+    config =
+      BKTConfig.builder()
+        .apiKey(BuildConfig.API_KEY)
+        .apiEndpoint(BuildConfig.API_ENDPOINT)
+        .featureTag("Android_E2E_TEST_2023")
+        .appVersion("1.2.3")
+        .build()
 
-    user = BKTUser.builder()
-      .id(USER_ID)
-      .build()
+    user =
+      BKTUser.builder()
+        .id(USER_ID)
+        .build()
 
     val result = BKTClient.initialize(context, config, user).get()
 
@@ -128,29 +135,32 @@ class BKTClientEvaluationUpdateTests {
     val client = BKTClient.getInstance() as BKTClientImpl
     val evaluationSQLDao = (client.component as ComponentImpl).dataModule.evaluationSQLDao
     val evaluationStorage = client.component.dataModule.evaluationStorage
-    val tobeRemoveEvaluation = Evaluation(
-      id = "test-feature-2:9:user id 1",
-      featureId = "test-feature-2",
-      featureVersion = 9,
-      userId = "user id 1",
-      variationId = "test-feature-2-variation-A",
-      variationName = "test variation name2",
-      variationValue = "test variation value2",
-      reason = Reason(
-        type = ReasonType.DEFAULT,
-      ),
-    )
+    val tobeRemoveEvaluation =
+      Evaluation(
+        id = "test-feature-2:9:user id 1",
+        featureId = "test-feature-2",
+        featureVersion = 9,
+        userId = "user id 1",
+        variationId = "test-feature-2-variation-A",
+        variationName = "test variation name2",
+        variationValue = "test variation value2",
+        reason =
+          Reason(
+            type = ReasonType.DEFAULT,
+          ),
+      )
     evaluationStorage.deleteAllAndInsert("", listOf(tobeRemoveEvaluation), "0")
     assert(evaluationStorage.get() == listOf(tobeRemoveEvaluation))
     assert(evaluationSQLDao.get(USER_ID).contains(tobeRemoveEvaluation))
     // Prepare for switch tag
     BKTClient.destroy()
-    val configWithNewTag = BKTConfig.builder()
-      .apiKey(BuildConfig.API_KEY)
-      .apiEndpoint(BuildConfig.API_ENDPOINT)
-      .featureTag(FEATURE_TAG)
-      .appVersion("1.2.3")
-      .build()
+    val configWithNewTag =
+      BKTConfig.builder()
+        .apiKey(BuildConfig.API_KEY)
+        .apiEndpoint(BuildConfig.API_ENDPOINT)
+        .featureTag(FEATURE_TAG)
+        .appVersion("1.2.3")
+        .build()
 
     val resultWithNewTag = BKTClient.initialize(context, configWithNewTag, user).get()
 
@@ -173,15 +183,17 @@ class BKTClientEvaluationUpdateTests {
   @Test
   @UiThreadTest
   fun testInitWithoutFeatureTagShouldRetrievesAllFeatures() {
-    config = BKTConfig.builder()
-      .apiKey(BuildConfig.API_KEY)
-      .apiEndpoint(BuildConfig.API_ENDPOINT)
-      .appVersion("1.2.3")
-      .build()
+    config =
+      BKTConfig.builder()
+        .apiKey(BuildConfig.API_KEY)
+        .apiEndpoint(BuildConfig.API_ENDPOINT)
+        .appVersion("1.2.3")
+        .build()
 
-    user = BKTUser.builder()
-      .id(USER_ID)
-      .build()
+    user =
+      BKTUser.builder()
+        .id(USER_ID)
+        .build()
 
     val result = BKTClient.initialize(context, config, user).get()
     assertThat(result).isNull()

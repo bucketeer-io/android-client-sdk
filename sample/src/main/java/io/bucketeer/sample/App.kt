@@ -16,7 +16,6 @@ import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 
 class App : Application(), LifecycleObserver {
-
   private val sharedPref by lazy {
     getSharedPreferences(
       Constants.PREFERENCE_FILE_KEY,
@@ -31,27 +30,30 @@ class App : Application(), LifecycleObserver {
   }
 
   private fun initBucketeer() {
-    val config = BKTConfig.builder()
-      .apiKey(BuildConfig.API_KEY)
-      .apiEndpoint(BuildConfig.API_ENDPOINT)
-      .featureTag(getTag())
-      .appVersion(BuildConfig.VERSION_NAME)
-      .eventsMaxQueueSize(10)
-      .pollingInterval(TimeUnit.SECONDS.toMillis(20))
-      .backgroundPollingInterval(TimeUnit.SECONDS.toMillis(60))
-      .eventsFlushInterval(TimeUnit.SECONDS.toMillis(20))
-      .build()
+    val config =
+      BKTConfig.builder()
+        .apiKey(BuildConfig.API_KEY)
+        .apiEndpoint(BuildConfig.API_ENDPOINT)
+        .featureTag(getTag())
+        .appVersion(BuildConfig.VERSION_NAME)
+        .eventsMaxQueueSize(10)
+        .pollingInterval(TimeUnit.SECONDS.toMillis(20))
+        .backgroundPollingInterval(TimeUnit.SECONDS.toMillis(60))
+        .eventsFlushInterval(TimeUnit.SECONDS.toMillis(20))
+        .build()
 
-    val user = BKTUser.builder()
-      .id(getUserId())
-      .build()
+    val user =
+      BKTUser.builder()
+        .id(getUserId())
+        .build()
 
     val future = BKTClient.initialize(this, config, user)
 
     MainScope().launch {
-      val result = withContext(Dispatchers.IO) {
-        future.get()
-      }
+      val result =
+        withContext(Dispatchers.IO) {
+          future.get()
+        }
       println("result: $result")
       Toast.makeText(this@App, "User Evaluations has been updated", Toast.LENGTH_LONG).show()
     }

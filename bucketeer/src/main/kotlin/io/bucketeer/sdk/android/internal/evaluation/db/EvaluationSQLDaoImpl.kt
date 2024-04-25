@@ -25,7 +25,10 @@ internal class EvaluationSQLDaoImpl(
   override var isClosed = false
   private val adapter = moshi.adapter(Evaluation::class.java)
 
-  override fun put(userId: String, list: List<Evaluation>) {
+  override fun put(
+    userId: String,
+    list: List<Evaluation>,
+  ) {
     if (isClosed) {
       return
     }
@@ -49,11 +52,12 @@ internal class EvaluationSQLDaoImpl(
     if (isClosed) {
       return -1
     }
-    val contentValue = ContentValues().apply {
-      put(COLUMN_USER_ID, userId)
-      put(COLUMN_FEATURE_ID, evaluation.featureId)
-      put(COLUMN_EVALUATION, adapter.toJson(evaluation))
-    }
+    val contentValue =
+      ContentValues().apply {
+        put(COLUMN_USER_ID, userId)
+        put(COLUMN_FEATURE_ID, evaluation.featureId)
+        put(COLUMN_EVALUATION, adapter.toJson(evaluation))
+      }
     return database.insert(TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE, contentValue)
   }
 
@@ -65,9 +69,10 @@ internal class EvaluationSQLDaoImpl(
     if (isClosed) {
       return 0
     }
-    val contentValues = ContentValues().apply {
-      put(COLUMN_EVALUATION, adapter.toJson(evaluation))
-    }
+    val contentValues =
+      ContentValues().apply {
+        put(COLUMN_EVALUATION, adapter.toJson(evaluation))
+      }
     return database.update(
       TABLE_NAME,
       SQLiteDatabase.CONFLICT_REPLACE,
@@ -82,12 +87,13 @@ internal class EvaluationSQLDaoImpl(
       return listOf()
     }
     val projection = arrayOf(COLUMN_USER_ID, COLUMN_EVALUATION)
-    val c = sqLiteOpenHelper.readableDatabase.select(
-      table = TABLE_NAME,
-      columns = projection,
-      selection = "$COLUMN_USER_ID=?",
-      selectionArgs = arrayOf(userId),
-    )
+    val c =
+      sqLiteOpenHelper.readableDatabase.select(
+        table = TABLE_NAME,
+        columns = projection,
+        selection = "$COLUMN_USER_ID=?",
+        selectionArgs = arrayOf(userId),
+      )
 
     return c.use {
       c.asSequence()

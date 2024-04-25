@@ -20,7 +20,6 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class BKTClientVariationTest {
-
   private lateinit var context: Context
   private lateinit var config: BKTConfig
   private lateinit var user: BKTUser
@@ -30,16 +29,18 @@ class BKTClientVariationTest {
   fun setup() {
     context = ApplicationProvider.getApplicationContext()
 
-    config = BKTConfig.builder()
-      .apiKey(BuildConfig.API_KEY)
-      .apiEndpoint(BuildConfig.API_ENDPOINT)
-      .featureTag(FEATURE_TAG)
-      .appVersion("1.2.3")
-      .build()
+    config =
+      BKTConfig.builder()
+        .apiKey(BuildConfig.API_KEY)
+        .apiEndpoint(BuildConfig.API_ENDPOINT)
+        .featureTag(FEATURE_TAG)
+        .appVersion("1.2.3")
+        .build()
 
-    user = BKTUser.builder()
-      .id(USER_ID)
-      .build()
+    user =
+      BKTUser.builder()
+        .id(USER_ID)
+        .build()
 
     val result = BKTClient.initialize(context, config, user).get()
 
@@ -59,8 +60,9 @@ class BKTClientVariationTest {
 
   @Test
   fun stringVariation() {
-    val result = BKTClient.getInstance()
-      .stringVariation(FEATURE_ID_STRING, "test")
+    val result =
+      BKTClient.getInstance()
+        .stringVariation(FEATURE_ID_STRING, "test")
     assertThat(result).isEqualTo("value-1")
   }
 
@@ -84,8 +86,9 @@ class BKTClientVariationTest {
 
   @Test
   fun intVariation() {
-    val result = BKTClient.getInstance()
-      .intVariation(FEATURE_ID_INT, 0)
+    val result =
+      BKTClient.getInstance()
+        .intVariation(FEATURE_ID_INT, 0)
     assertThat(result).isEqualTo(10)
   }
 
@@ -109,8 +112,9 @@ class BKTClientVariationTest {
 
   @Test
   fun doubleVariation() {
-    val result = BKTClient.getInstance()
-      .doubleVariation(FEATURE_ID_DOUBLE, 0.1)
+    val result =
+      BKTClient.getInstance()
+        .doubleVariation(FEATURE_ID_DOUBLE, 0.1)
     assertThat(result).isEqualTo(2.1)
   }
 
@@ -134,8 +138,9 @@ class BKTClientVariationTest {
 
   @Test
   fun booleanVariation() {
-    val result = BKTClient.getInstance()
-      .booleanVariation(FEATURE_ID_BOOLEAN, false)
+    val result =
+      BKTClient.getInstance()
+        .booleanVariation(FEATURE_ID_BOOLEAN, false)
     assertThat(result).isTrue()
   }
 
@@ -159,8 +164,9 @@ class BKTClientVariationTest {
 
   @Test
   fun jsonVariation() {
-    val result = BKTClient.getInstance()
-      .jsonVariation(FEATURE_ID_JSON, JSONObject())
+    val result =
+      BKTClient.getInstance()
+        .jsonVariation(FEATURE_ID_JSON, JSONObject())
 
     val keys = result.keys().asSequence().toList()
     val values = keys.map { result.get(it) }

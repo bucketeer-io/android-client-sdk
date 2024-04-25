@@ -19,30 +19,31 @@ internal class EventForegroundTask(
   private val component: Component,
   private val executor: ScheduledExecutorService,
 ) : ScheduledTask {
-
   private var scheduledFuture: ScheduledFuture<*>? = null
 
   // This listener is called whenever the event cache is updated
-  private val eventUpdateListener = EventInteractor.EventUpdateListener { _ ->
-    executor.execute {
-      // send events if the cache exceeded the limit
-      val result = component.eventInteractor.sendEvents(force = false)
-      if (result is SendEventsResult.Success && result.sent) {
-        // reschedule the background task if event is actually sent.
-        reschedule()
+  private val eventUpdateListener =
+    EventInteractor.EventUpdateListener { _ ->
+      executor.execute {
+        // send events if the cache exceeded the limit
+        val result = component.eventInteractor.sendEvents(force = false)
+        if (result is SendEventsResult.Success && result.sent) {
+          // reschedule the background task if event is actually sent.
+          reschedule()
+        }
       }
     }
-  }
 
   private fun reschedule() {
     scheduledFuture?.cancel(false)
-    scheduledFuture = executor.scheduleWithFixedDelay(
-      // background task should flush(force-send) events
-      { component.eventInteractor.sendEvents(force = true) },
-      component.config.eventsFlushInterval,
-      component.config.eventsFlushInterval,
-      TimeUnit.MILLISECONDS,
-    )
+    scheduledFuture =
+      executor.scheduleWithFixedDelay(
+        // background task should flush(force-send) events
+        { component.eventInteractor.sendEvents(force = true) },
+        component.config.eventsFlushInterval,
+        component.config.eventsFlushInterval,
+        TimeUnit.MILLISECONDS,
+      )
   }
 
   override fun start() {

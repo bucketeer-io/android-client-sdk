@@ -26,7 +26,6 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 class MigrationTest {
-
   private lateinit var moshi: Moshi
   private lateinit var sharedPreferences: SharedPreferences
 
@@ -34,10 +33,11 @@ class MigrationTest {
   fun setup() {
     moshi = DataModule.createMoshi()
     val context: Context = ApplicationProvider.getApplicationContext()
-    sharedPreferences = context.getSharedPreferences(
-      Constants.PREFERENCES_NAME,
-      Context.MODE_PRIVATE,
-    )
+    sharedPreferences =
+      context.getSharedPreferences(
+        Constants.PREFERENCES_NAME,
+        Context.MODE_PRIVATE,
+      )
   }
 
   @Test
@@ -50,13 +50,14 @@ class MigrationTest {
 
     val db = openHelper.writableDatabase
 
-    val c = db.query(
-      """
-      SELECT name, sql FROM sqlite_master 
-      WHERE type = 'table' 
-      AND (name NOT LIKE 'sqlite_%' AND name NOT LIKE 'android_%')
-      """.trimIndent(),
-    )
+    val c =
+      db.query(
+        """
+        SELECT name, sql FROM sqlite_master 
+        WHERE type = 'table' 
+        AND (name NOT LIKE 'sqlite_%' AND name NOT LIKE 'android_%')
+        """.trimIndent(),
+      )
 
     // Here we just compare table definition.
     // Update assertions as we add new migration.
@@ -128,20 +129,25 @@ class MigrationTest {
 }
 
 private fun createOpenHelper(version: Int): SupportSQLiteOpenHelper {
-  val callback = object : SupportSQLiteOpenHelper.Callback(version) {
-    override fun onCreate(db: SupportSQLiteDatabase) {
-      if (version == 1) {
-        v1Schema(db)
+  val callback =
+    object : SupportSQLiteOpenHelper.Callback(version) {
+      override fun onCreate(db: SupportSQLiteDatabase) {
+        if (version == 1) {
+          v1Schema(db)
+        }
+        if (version == 2) {
+          OpenHelperCallback.v2Schema(db)
+        }
       }
-      if (version == 2) {
-        OpenHelperCallback.v2Schema(db)
-      }
-    }
 
-    override fun onUpgrade(db: SupportSQLiteDatabase, oldVersion: Int, newVersion: Int) {
-      // no-op
+      override fun onUpgrade(
+        db: SupportSQLiteDatabase,
+        oldVersion: Int,
+        newVersion: Int,
+      ) {
+        // no-op
+      }
     }
-  }
   val config =
     SupportSQLiteOpenHelper.Configuration.builder(ApplicationProvider.getApplicationContext())
       .callback(callback)

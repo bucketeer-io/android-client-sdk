@@ -62,24 +62,28 @@ class EventInteractorTest {
   fun setup() {
     server = MockWebServer()
 
-    val config = BKTConfig.builder()
-      .apiEndpoint(server.url("").toString())
-      .apiKey("api_key_value")
-      .featureTag("feature_tag_value")
-      .eventsMaxQueueSize(3)
-      .appVersion("1.2.3")
-      .build()
+    val config =
+      BKTConfig.builder()
+        .apiEndpoint(server.url("").toString())
+        .apiKey("api_key_value")
+        .featureTag("feature_tag_value")
+        .eventsMaxQueueSize(3)
+        .appVersion("1.2.3")
+        .build()
 
-    component = ComponentImpl(
-      dataModule = TestDataModule(
-        application = ApplicationProvider.getApplicationContext(),
-        config = config,
-        defaultRequestTimeoutMillis = TimeUnit.SECONDS.toMillis(1),
-      ),
-      interactorModule = InteractorModule(
-        mainHandler = Handler(Looper.getMainLooper()),
-      ),
-    )
+    component =
+      ComponentImpl(
+        dataModule =
+          TestDataModule(
+            application = ApplicationProvider.getApplicationContext(),
+            config = config,
+            defaultRequestTimeoutMillis = TimeUnit.SECONDS.toMillis(1),
+          ),
+        interactorModule =
+          InteractorModule(
+            mainHandler = Handler(Looper.getMainLooper()),
+          ),
+      )
 
     interactor = component.eventInteractor
 
@@ -114,23 +118,25 @@ class EventInteractorTest {
       Event(
         id = idGenerator.calls[0],
         type = EventType.EVALUATION,
-        event = EventData.EvaluationEvent(
-          timestamp = clock.currentTimeSecondsCalls[0],
-          featureId = evaluation1.featureId,
-          featureVersion = evaluation1.featureVersion,
-          userId = user1.id,
-          variationId = evaluation1.variationId,
-          user = user1,
-          reason = evaluation1.reason,
-          tag = "feature_tag_value",
-          sourceId = SourceID.ANDROID,
-          sdkVersion = BuildConfig.SDK_VERSION,
-          metadata = mapOf(
-            "app_version" to "1.2.3",
-            "os_version" to "16",
-            "device_model" to "robolectric",
+        event =
+          EventData.EvaluationEvent(
+            timestamp = clock.currentTimeSecondsCalls[0],
+            featureId = evaluation1.featureId,
+            featureVersion = evaluation1.featureVersion,
+            userId = user1.id,
+            variationId = evaluation1.variationId,
+            user = user1,
+            reason = evaluation1.reason,
+            tag = "feature_tag_value",
+            sourceId = SourceID.ANDROID,
+            sdkVersion = BuildConfig.SDK_VERSION,
+            metadata =
+              mapOf(
+                "app_version" to "1.2.3",
+                "os_version" to "16",
+                "device_model" to "robolectric",
+              ),
           ),
-        ),
       ),
     )
   }
@@ -155,21 +161,23 @@ class EventInteractorTest {
       Event(
         id = idGenerator.calls[0],
         type = EventType.EVALUATION,
-        event = EventData.EvaluationEvent(
-          timestamp = clock.currentTimeSecondsCalls[0],
-          featureId = "feature_id_value",
-          userId = user1.id,
-          user = user1,
-          reason = Reason(ReasonType.CLIENT),
-          tag = "feature_tag_value",
-          sourceId = SourceID.ANDROID,
-          sdkVersion = BuildConfig.SDK_VERSION,
-          metadata = mapOf(
-            "app_version" to "1.2.3",
-            "os_version" to "16",
-            "device_model" to "robolectric",
+        event =
+          EventData.EvaluationEvent(
+            timestamp = clock.currentTimeSecondsCalls[0],
+            featureId = "feature_id_value",
+            userId = user1.id,
+            user = user1,
+            reason = Reason(ReasonType.CLIENT),
+            tag = "feature_tag_value",
+            sourceId = SourceID.ANDROID,
+            sdkVersion = BuildConfig.SDK_VERSION,
+            metadata =
+              mapOf(
+                "app_version" to "1.2.3",
+                "os_version" to "16",
+                "device_model" to "robolectric",
+              ),
           ),
-        ),
       ),
     )
   }
@@ -194,21 +202,23 @@ class EventInteractorTest {
       Event(
         id = idGenerator.calls[0],
         type = EventType.GOAL,
-        event = EventData.GoalEvent(
-          timestamp = clock.currentTimeSecondsCalls[0],
-          goalId = "goal_id_value",
-          userId = user1.id,
-          value = 0.5,
-          user = user1,
-          tag = "feature_tag_value",
-          sourceId = SourceID.ANDROID,
-          sdkVersion = BuildConfig.SDK_VERSION,
-          metadata = mapOf(
-            "app_version" to "1.2.3",
-            "os_version" to "16",
-            "device_model" to "robolectric",
+        event =
+          EventData.GoalEvent(
+            timestamp = clock.currentTimeSecondsCalls[0],
+            goalId = "goal_id_value",
+            userId = user1.id,
+            value = 0.5,
+            user = user1,
+            tag = "feature_tag_value",
+            sourceId = SourceID.ANDROID,
+            sdkVersion = BuildConfig.SDK_VERSION,
+            metadata =
+              mapOf(
+                "app_version" to "1.2.3",
+                "os_version" to "16",
+                "device_model" to "robolectric",
+              ),
           ),
-        ),
       ),
     )
   }
@@ -233,24 +243,28 @@ class EventInteractorTest {
       Event(
         id = idGenerator.calls[0],
         type = EventType.METRICS,
-        event = EventData.MetricsEvent(
-          timestamp = clock.currentTimeSecondsCalls[0],
-          type = MetricsEventType.RESPONSE_LATENCY,
-          event = MetricsEventData.LatencyMetricsEvent(
-            ApiId.GET_EVALUATIONS,
-            labels = mapOf(
-              "tag" to "feature_tag_value",
-            ),
-            latencySecond = 1.1,
+        event =
+          EventData.MetricsEvent(
+            timestamp = clock.currentTimeSecondsCalls[0],
+            type = MetricsEventType.RESPONSE_LATENCY,
+            event =
+              MetricsEventData.LatencyMetricsEvent(
+                ApiId.GET_EVALUATIONS,
+                labels =
+                  mapOf(
+                    "tag" to "feature_tag_value",
+                  ),
+                latencySecond = 1.1,
+              ),
+            sourceId = SourceID.ANDROID,
+            sdkVersion = BuildConfig.SDK_VERSION,
+            metadata =
+              mapOf(
+                "app_version" to "1.2.3",
+                "os_version" to "16",
+                "device_model" to "robolectric",
+              ),
           ),
-          sourceId = SourceID.ANDROID,
-          sdkVersion = BuildConfig.SDK_VERSION,
-          metadata = mapOf(
-            "app_version" to "1.2.3",
-            "os_version" to "16",
-            "device_model" to "robolectric",
-          ),
-        ),
       ),
     )
 
@@ -260,24 +274,28 @@ class EventInteractorTest {
       Event(
         id = idGenerator.calls[1],
         type = EventType.METRICS,
-        event = EventData.MetricsEvent(
-          timestamp = clock.currentTimeSecondsCalls[1],
-          type = MetricsEventType.RESPONSE_SIZE,
-          event = MetricsEventData.SizeMetricsEvent(
-            ApiId.GET_EVALUATIONS,
-            labels = mapOf(
-              "tag" to "feature_tag_value",
-            ),
-            sizeByte = 723,
+        event =
+          EventData.MetricsEvent(
+            timestamp = clock.currentTimeSecondsCalls[1],
+            type = MetricsEventType.RESPONSE_SIZE,
+            event =
+              MetricsEventData.SizeMetricsEvent(
+                ApiId.GET_EVALUATIONS,
+                labels =
+                  mapOf(
+                    "tag" to "feature_tag_value",
+                  ),
+                sizeByte = 723,
+              ),
+            sourceId = SourceID.ANDROID,
+            sdkVersion = BuildConfig.SDK_VERSION,
+            metadata =
+              mapOf(
+                "app_version" to "1.2.3",
+                "os_version" to "16",
+                "device_model" to "robolectric",
+              ),
           ),
-          sourceId = SourceID.ANDROID,
-          sdkVersion = BuildConfig.SDK_VERSION,
-          metadata = mapOf(
-            "app_version" to "1.2.3",
-            "os_version" to "16",
-            "device_model" to "robolectric",
-          ),
-        ),
       ),
     )
   }
@@ -305,24 +323,27 @@ class EventInteractorTest {
       Event(
         id = idGenerator.calls[0],
         type = EventType.METRICS,
-        event = EventData.MetricsEvent(
-          timestamp = clock.currentTimeSecondsCalls[0],
-          type = MetricsEventType.TIMEOUT_ERROR,
-          event = MetricsEventData.TimeoutErrorMetricsEvent(
-            ApiId.GET_EVALUATIONS,
-            mapOf(
-              "tag" to "feature_tag_value",
-              "timeout" to "5.0",
-            ),
+        event =
+          EventData.MetricsEvent(
+            timestamp = clock.currentTimeSecondsCalls[0],
+            type = MetricsEventType.TIMEOUT_ERROR,
+            event =
+              MetricsEventData.TimeoutErrorMetricsEvent(
+                ApiId.GET_EVALUATIONS,
+                mapOf(
+                  "tag" to "feature_tag_value",
+                  "timeout" to "5.0",
+                ),
+              ),
+            sourceId = SourceID.ANDROID,
+            sdkVersion = BuildConfig.SDK_VERSION,
+            metadata =
+              mapOf(
+                "app_version" to "1.2.3",
+                "os_version" to "16",
+                "device_model" to "robolectric",
+              ),
           ),
-          sourceId = SourceID.ANDROID,
-          sdkVersion = BuildConfig.SDK_VERSION,
-          metadata = mapOf(
-            "app_version" to "1.2.3",
-            "os_version" to "16",
-            "device_model" to "robolectric",
-          ),
-        ),
       ),
     )
   }
@@ -350,23 +371,26 @@ class EventInteractorTest {
       Event(
         id = idGenerator.calls[0],
         type = EventType.METRICS,
-        event = EventData.MetricsEvent(
-          timestamp = clock.currentTimeSecondsCalls[0],
-          type = MetricsEventType.BAD_REQUEST_ERROR,
-          event = MetricsEventData.BadRequestErrorMetricsEvent(
-            ApiId.GET_EVALUATIONS,
-            mapOf(
-              "tag" to "feature_tag_value",
-            ),
+        event =
+          EventData.MetricsEvent(
+            timestamp = clock.currentTimeSecondsCalls[0],
+            type = MetricsEventType.BAD_REQUEST_ERROR,
+            event =
+              MetricsEventData.BadRequestErrorMetricsEvent(
+                ApiId.GET_EVALUATIONS,
+                mapOf(
+                  "tag" to "feature_tag_value",
+                ),
+              ),
+            sourceId = SourceID.ANDROID,
+            sdkVersion = BuildConfig.SDK_VERSION,
+            metadata =
+              mapOf(
+                "app_version" to "1.2.3",
+                "os_version" to "16",
+                "device_model" to "robolectric",
+              ),
           ),
-          sourceId = SourceID.ANDROID,
-          sdkVersion = BuildConfig.SDK_VERSION,
-          metadata = mapOf(
-            "app_version" to "1.2.3",
-            "os_version" to "16",
-            "device_model" to "robolectric",
-          ),
-        ),
       ),
     )
   }
@@ -394,77 +418,89 @@ class EventInteractorTest {
     assertThat(server.requestCount).isEqualTo(1)
 
     val request = server.takeRequest()
-    val requestBody = moshi.adapter(RegisterEventsRequest::class.java)
-      .fromJson(request.body.readString(Charsets.UTF_8))
+    val requestBody =
+      moshi.adapter(RegisterEventsRequest::class.java)
+        .fromJson(request.body.readString(Charsets.UTF_8))
 
     // eventsMaxBatchQueueCount is 3, so should send 3 events
     assertThat(requestBody).isEqualTo(
       RegisterEventsRequest(
-        events = listOf(
-          Event(
-            id = idGenerator.calls[0],
-            type = EventType.METRICS,
-            event = EventData.MetricsEvent(
-              timestamp = clock.currentTimeSecondsCalls[0],
-              type = MetricsEventType.RESPONSE_LATENCY,
-              event = MetricsEventData.LatencyMetricsEvent(
-                ApiId.GET_EVALUATIONS,
-                labels = mapOf(
-                  "tag" to "feature_tag_value",
+        events =
+          listOf(
+            Event(
+              id = idGenerator.calls[0],
+              type = EventType.METRICS,
+              event =
+                EventData.MetricsEvent(
+                  timestamp = clock.currentTimeSecondsCalls[0],
+                  type = MetricsEventType.RESPONSE_LATENCY,
+                  event =
+                    MetricsEventData.LatencyMetricsEvent(
+                      ApiId.GET_EVALUATIONS,
+                      labels =
+                        mapOf(
+                          "tag" to "feature_tag_value",
+                        ),
+                      latencySecond = 0.1,
+                    ),
+                  sourceId = SourceID.ANDROID,
+                  sdkVersion = BuildConfig.SDK_VERSION,
+                  metadata =
+                    mapOf(
+                      "app_version" to "1.2.3",
+                      "os_version" to "16",
+                      "device_model" to "robolectric",
+                    ),
                 ),
-                latencySecond = 0.1,
-              ),
-              sourceId = SourceID.ANDROID,
-              sdkVersion = BuildConfig.SDK_VERSION,
-              metadata = mapOf(
-                "app_version" to "1.2.3",
-                "os_version" to "16",
-                "device_model" to "robolectric",
-              ),
             ),
-          ),
-          Event(
-            id = idGenerator.calls[1],
-            type = EventType.METRICS,
-            event = EventData.MetricsEvent(
-              timestamp = clock.currentTimeSecondsCalls[1],
-              type = MetricsEventType.RESPONSE_SIZE,
-              event = MetricsEventData.SizeMetricsEvent(
-                ApiId.GET_EVALUATIONS,
-                labels = mapOf(
-                  "tag" to "feature_tag_value",
+            Event(
+              id = idGenerator.calls[1],
+              type = EventType.METRICS,
+              event =
+                EventData.MetricsEvent(
+                  timestamp = clock.currentTimeSecondsCalls[1],
+                  type = MetricsEventType.RESPONSE_SIZE,
+                  event =
+                    MetricsEventData.SizeMetricsEvent(
+                      ApiId.GET_EVALUATIONS,
+                      labels =
+                        mapOf(
+                          "tag" to "feature_tag_value",
+                        ),
+                      sizeByte = 723,
+                    ),
+                  sourceId = SourceID.ANDROID,
+                  sdkVersion = BuildConfig.SDK_VERSION,
+                  metadata =
+                    mapOf(
+                      "app_version" to "1.2.3",
+                      "os_version" to "16",
+                      "device_model" to "robolectric",
+                    ),
                 ),
-                sizeByte = 723,
-              ),
-              sourceId = SourceID.ANDROID,
-              sdkVersion = BuildConfig.SDK_VERSION,
-              metadata = mapOf(
-                "app_version" to "1.2.3",
-                "os_version" to "16",
-                "device_model" to "robolectric",
-              ),
+            ),
+            Event(
+              id = idGenerator.calls[2],
+              type = EventType.GOAL,
+              event =
+                EventData.GoalEvent(
+                  timestamp = clock.currentTimeSecondsCalls[2],
+                  goalId = "goal_id_value",
+                  userId = user1.id,
+                  value = 0.5,
+                  user = user1,
+                  tag = "feature_tag_value",
+                  sourceId = SourceID.ANDROID,
+                  sdkVersion = BuildConfig.SDK_VERSION,
+                  metadata =
+                    mapOf(
+                      "app_version" to "1.2.3",
+                      "os_version" to "16",
+                      "device_model" to "robolectric",
+                    ),
+                ),
             ),
           ),
-          Event(
-            id = idGenerator.calls[2],
-            type = EventType.GOAL,
-            event = EventData.GoalEvent(
-              timestamp = clock.currentTimeSecondsCalls[2],
-              goalId = "goal_id_value",
-              userId = user1.id,
-              value = 0.5,
-              user = user1,
-              tag = "feature_tag_value",
-              sourceId = SourceID.ANDROID,
-              sdkVersion = BuildConfig.SDK_VERSION,
-              metadata = mapOf(
-                "app_version" to "1.2.3",
-                "os_version" to "16",
-                "device_model" to "robolectric",
-              ),
-            ),
-          ),
-        ),
         sourceId = SourceID.ANDROID,
       ),
     )
@@ -512,92 +548,107 @@ class EventInteractorTest {
     // In this case is MetricsEventData.BadRequestErrorMetricsEvent
     assertThat(component.dataModule.eventSQLDao.getEvents()).hasSize(4)
 
-    val expectedEvents = listOf(
-      Event(
-        id = idGenerator.calls[0],
-        type = EventType.METRICS,
-        event = EventData.MetricsEvent(
-          timestamp = clock.currentTimeSecondsCalls[0],
-          type = MetricsEventType.RESPONSE_LATENCY,
-          event = MetricsEventData.LatencyMetricsEvent(
-            ApiId.GET_EVALUATIONS,
-            labels = mapOf(
-              "tag" to "feature_tag_value",
+    val expectedEvents =
+      listOf(
+        Event(
+          id = idGenerator.calls[0],
+          type = EventType.METRICS,
+          event =
+            EventData.MetricsEvent(
+              timestamp = clock.currentTimeSecondsCalls[0],
+              type = MetricsEventType.RESPONSE_LATENCY,
+              event =
+                MetricsEventData.LatencyMetricsEvent(
+                  ApiId.GET_EVALUATIONS,
+                  labels =
+                    mapOf(
+                      "tag" to "feature_tag_value",
+                    ),
+                  latencySecond = 0.1,
+                ),
+              sourceId = SourceID.ANDROID,
+              sdkVersion = BuildConfig.SDK_VERSION,
+              metadata =
+                mapOf(
+                  "app_version" to "1.2.3",
+                  "os_version" to "16",
+                  "device_model" to "robolectric",
+                ),
             ),
-            latencySecond = 0.1,
-          ),
-          sourceId = SourceID.ANDROID,
-          sdkVersion = BuildConfig.SDK_VERSION,
-          metadata = mapOf(
-            "app_version" to "1.2.3",
-            "os_version" to "16",
-            "device_model" to "robolectric",
-          ),
         ),
-      ),
-      Event(
-        id = idGenerator.calls[1],
-        type = EventType.METRICS,
-        event = EventData.MetricsEvent(
-          timestamp = clock.currentTimeSecondsCalls[1],
-          type = MetricsEventType.RESPONSE_SIZE,
-          event = MetricsEventData.SizeMetricsEvent(
-            ApiId.GET_EVALUATIONS,
-            labels = mapOf(
-              "tag" to "feature_tag_value",
+        Event(
+          id = idGenerator.calls[1],
+          type = EventType.METRICS,
+          event =
+            EventData.MetricsEvent(
+              timestamp = clock.currentTimeSecondsCalls[1],
+              type = MetricsEventType.RESPONSE_SIZE,
+              event =
+                MetricsEventData.SizeMetricsEvent(
+                  ApiId.GET_EVALUATIONS,
+                  labels =
+                    mapOf(
+                      "tag" to "feature_tag_value",
+                    ),
+                  sizeByte = 723,
+                ),
+              sourceId = SourceID.ANDROID,
+              sdkVersion = BuildConfig.SDK_VERSION,
+              metadata =
+                mapOf(
+                  "app_version" to "1.2.3",
+                  "os_version" to "16",
+                  "device_model" to "robolectric",
+                ),
             ),
-            sizeByte = 723,
-          ),
-          sourceId = SourceID.ANDROID,
-          sdkVersion = BuildConfig.SDK_VERSION,
-          metadata = mapOf(
-            "app_version" to "1.2.3",
-            "os_version" to "16",
-            "device_model" to "robolectric",
-          ),
         ),
-      ),
-      Event(
-        id = idGenerator.calls[2],
-        type = EventType.GOAL,
-        event = EventData.GoalEvent(
-          timestamp = clock.currentTimeSecondsCalls[2],
-          goalId = "goal_id_value",
-          userId = user1.id,
-          value = 0.5,
-          user = user1,
-          tag = "feature_tag_value",
-          sourceId = SourceID.ANDROID,
-          sdkVersion = BuildConfig.SDK_VERSION,
-          metadata = mapOf(
-            "app_version" to "1.2.3",
-            "os_version" to "16",
-            "device_model" to "robolectric",
-          ),
-        ),
-      ),
-      Event(
-        id = idGenerator.calls[3],
-        type = EventType.METRICS,
-        event = EventData.MetricsEvent(
-          timestamp = clock.currentTimeSecondsCalls[3],
-          type = MetricsEventType.BAD_REQUEST_ERROR,
-          event = MetricsEventData.BadRequestErrorMetricsEvent(
-            ApiId.REGISTER_EVENTS,
-            labels = mapOf(
-              "tag" to "feature_tag_value",
+        Event(
+          id = idGenerator.calls[2],
+          type = EventType.GOAL,
+          event =
+            EventData.GoalEvent(
+              timestamp = clock.currentTimeSecondsCalls[2],
+              goalId = "goal_id_value",
+              userId = user1.id,
+              value = 0.5,
+              user = user1,
+              tag = "feature_tag_value",
+              sourceId = SourceID.ANDROID,
+              sdkVersion = BuildConfig.SDK_VERSION,
+              metadata =
+                mapOf(
+                  "app_version" to "1.2.3",
+                  "os_version" to "16",
+                  "device_model" to "robolectric",
+                ),
             ),
-          ),
-          sourceId = SourceID.ANDROID,
-          sdkVersion = BuildConfig.SDK_VERSION,
-          metadata = mapOf(
-            "app_version" to "1.2.3",
-            "os_version" to "16",
-            "device_model" to "robolectric",
-          ),
         ),
-      ),
-    )
+        Event(
+          id = idGenerator.calls[3],
+          type = EventType.METRICS,
+          event =
+            EventData.MetricsEvent(
+              timestamp = clock.currentTimeSecondsCalls[3],
+              type = MetricsEventType.BAD_REQUEST_ERROR,
+              event =
+                MetricsEventData.BadRequestErrorMetricsEvent(
+                  ApiId.REGISTER_EVENTS,
+                  labels =
+                    mapOf(
+                      "tag" to "feature_tag_value",
+                    ),
+                ),
+              sourceId = SourceID.ANDROID,
+              sdkVersion = BuildConfig.SDK_VERSION,
+              metadata =
+                mapOf(
+                  "app_version" to "1.2.3",
+                  "os_version" to "16",
+                  "device_model" to "robolectric",
+                ),
+            ),
+        ),
+      )
     assertThat(events).isEqualTo(expectedEvents)
   }
 
@@ -673,57 +724,67 @@ class EventInteractorTest {
     assertThat(server.requestCount).isEqualTo(1)
 
     val request = server.takeRequest()
-    val requestBody = moshi.adapter(RegisterEventsRequest::class.java)
-      .fromJson(request.body.readString(Charsets.UTF_8))
+    val requestBody =
+      moshi.adapter(RegisterEventsRequest::class.java)
+        .fromJson(request.body.readString(Charsets.UTF_8))
 
     assertThat(requestBody).isEqualTo(
       RegisterEventsRequest(
-        events = listOf(
-          Event(
-            id = idGenerator.calls[0],
-            type = EventType.METRICS,
-            event = EventData.MetricsEvent(
-              timestamp = clock.currentTimeSecondsCalls[0],
-              type = MetricsEventType.RESPONSE_LATENCY,
-              event = MetricsEventData.LatencyMetricsEvent(
-                ApiId.GET_EVALUATIONS,
-                labels = mapOf(
-                  "tag" to "feature_tag_value",
+        events =
+          listOf(
+            Event(
+              id = idGenerator.calls[0],
+              type = EventType.METRICS,
+              event =
+                EventData.MetricsEvent(
+                  timestamp = clock.currentTimeSecondsCalls[0],
+                  type = MetricsEventType.RESPONSE_LATENCY,
+                  event =
+                    MetricsEventData.LatencyMetricsEvent(
+                      ApiId.GET_EVALUATIONS,
+                      labels =
+                        mapOf(
+                          "tag" to "feature_tag_value",
+                        ),
+                      latencySecond = 0.1,
+                    ),
+                  sourceId = SourceID.ANDROID,
+                  sdkVersion = BuildConfig.SDK_VERSION,
+                  metadata =
+                    mapOf(
+                      "app_version" to "1.2.3",
+                      "os_version" to "16",
+                      "device_model" to "robolectric",
+                    ),
                 ),
-                latencySecond = 0.1,
-              ),
-              sourceId = SourceID.ANDROID,
-              sdkVersion = BuildConfig.SDK_VERSION,
-              metadata = mapOf(
-                "app_version" to "1.2.3",
-                "os_version" to "16",
-                "device_model" to "robolectric",
-              ),
+            ),
+            Event(
+              id = idGenerator.calls[1],
+              type = EventType.METRICS,
+              event =
+                EventData.MetricsEvent(
+                  timestamp = clock.currentTimeSecondsCalls[1],
+                  type = MetricsEventType.RESPONSE_SIZE,
+                  event =
+                    MetricsEventData.SizeMetricsEvent(
+                      ApiId.GET_EVALUATIONS,
+                      labels =
+                        mapOf(
+                          "tag" to "feature_tag_value",
+                        ),
+                      sizeByte = 723,
+                    ),
+                  sourceId = SourceID.ANDROID,
+                  sdkVersion = BuildConfig.SDK_VERSION,
+                  metadata =
+                    mapOf(
+                      "app_version" to "1.2.3",
+                      "os_version" to "16",
+                      "device_model" to "robolectric",
+                    ),
+                ),
             ),
           ),
-          Event(
-            id = idGenerator.calls[1],
-            type = EventType.METRICS,
-            event = EventData.MetricsEvent(
-              timestamp = clock.currentTimeSecondsCalls[1],
-              type = MetricsEventType.RESPONSE_SIZE,
-              event = MetricsEventData.SizeMetricsEvent(
-                ApiId.GET_EVALUATIONS,
-                labels = mapOf(
-                  "tag" to "feature_tag_value",
-                ),
-                sizeByte = 723,
-              ),
-              sourceId = SourceID.ANDROID,
-              sdkVersion = BuildConfig.SDK_VERSION,
-              metadata = mapOf(
-                "app_version" to "1.2.3",
-                "os_version" to "16",
-                "device_model" to "robolectric",
-              ),
-            ),
-          ),
-        ),
         sourceId = SourceID.ANDROID,
       ),
     )
@@ -743,10 +804,11 @@ class EventInteractorTest {
         .setBody(
           moshi.adapter(RegisterEventsResponse::class.java).toJson(
             RegisterEventsResponse(
-              errors = mapOf(
-                idGenerator.calls[0] to RegisterEventsErrorResponse(retriable = true, "error"),
-                idGenerator.calls[1] to RegisterEventsErrorResponse(retriable = false, "error"),
-              ),
+              errors =
+                mapOf(
+                  idGenerator.calls[0] to RegisterEventsErrorResponse(retriable = true, "error"),
+                  idGenerator.calls[1] to RegisterEventsErrorResponse(retriable = false, "error"),
+                ),
             ),
           ),
         ),
@@ -759,77 +821,89 @@ class EventInteractorTest {
     assertThat(server.requestCount).isEqualTo(1)
 
     val request = server.takeRequest()
-    val requestBody = moshi.adapter(RegisterEventsRequest::class.java)
-      .fromJson(request.body.readString(Charsets.UTF_8))
+    val requestBody =
+      moshi.adapter(RegisterEventsRequest::class.java)
+        .fromJson(request.body.readString(Charsets.UTF_8))
 
     // eventsMaxBatchQueueCount is 3, so should send 3 events
     assertThat(requestBody).isEqualTo(
       RegisterEventsRequest(
-        events = listOf(
-          Event(
-            id = idGenerator.calls[0],
-            type = EventType.METRICS,
-            event = EventData.MetricsEvent(
-              timestamp = clock.currentTimeSecondsCalls[0],
-              type = MetricsEventType.RESPONSE_LATENCY,
-              event = MetricsEventData.LatencyMetricsEvent(
-                ApiId.GET_EVALUATIONS,
-                labels = mapOf(
-                  "tag" to "feature_tag_value",
+        events =
+          listOf(
+            Event(
+              id = idGenerator.calls[0],
+              type = EventType.METRICS,
+              event =
+                EventData.MetricsEvent(
+                  timestamp = clock.currentTimeSecondsCalls[0],
+                  type = MetricsEventType.RESPONSE_LATENCY,
+                  event =
+                    MetricsEventData.LatencyMetricsEvent(
+                      ApiId.GET_EVALUATIONS,
+                      labels =
+                        mapOf(
+                          "tag" to "feature_tag_value",
+                        ),
+                      latencySecond = 0.1,
+                    ),
+                  sourceId = SourceID.ANDROID,
+                  sdkVersion = BuildConfig.SDK_VERSION,
+                  metadata =
+                    mapOf(
+                      "app_version" to "1.2.3",
+                      "os_version" to "16",
+                      "device_model" to "robolectric",
+                    ),
                 ),
-                latencySecond = 0.1,
-              ),
-              sourceId = SourceID.ANDROID,
-              sdkVersion = BuildConfig.SDK_VERSION,
-              metadata = mapOf(
-                "app_version" to "1.2.3",
-                "os_version" to "16",
-                "device_model" to "robolectric",
-              ),
             ),
-          ),
-          Event(
-            id = idGenerator.calls[1],
-            type = EventType.METRICS,
-            event = EventData.MetricsEvent(
-              timestamp = clock.currentTimeSecondsCalls[1],
-              type = MetricsEventType.RESPONSE_SIZE,
-              event = MetricsEventData.SizeMetricsEvent(
-                ApiId.GET_EVALUATIONS,
-                labels = mapOf(
-                  "tag" to "feature_tag_value",
+            Event(
+              id = idGenerator.calls[1],
+              type = EventType.METRICS,
+              event =
+                EventData.MetricsEvent(
+                  timestamp = clock.currentTimeSecondsCalls[1],
+                  type = MetricsEventType.RESPONSE_SIZE,
+                  event =
+                    MetricsEventData.SizeMetricsEvent(
+                      ApiId.GET_EVALUATIONS,
+                      labels =
+                        mapOf(
+                          "tag" to "feature_tag_value",
+                        ),
+                      sizeByte = 723,
+                    ),
+                  sourceId = SourceID.ANDROID,
+                  sdkVersion = BuildConfig.SDK_VERSION,
+                  metadata =
+                    mapOf(
+                      "app_version" to "1.2.3",
+                      "os_version" to "16",
+                      "device_model" to "robolectric",
+                    ),
                 ),
-                sizeByte = 723,
-              ),
-              sourceId = SourceID.ANDROID,
-              sdkVersion = BuildConfig.SDK_VERSION,
-              metadata = mapOf(
-                "app_version" to "1.2.3",
-                "os_version" to "16",
-                "device_model" to "robolectric",
-              ),
+            ),
+            Event(
+              id = idGenerator.calls[2],
+              type = EventType.GOAL,
+              event =
+                EventData.GoalEvent(
+                  timestamp = clock.currentTimeSecondsCalls[2],
+                  goalId = "goal_id_value",
+                  userId = user1.id,
+                  value = 0.5,
+                  user = user1,
+                  tag = "feature_tag_value",
+                  sourceId = SourceID.ANDROID,
+                  sdkVersion = BuildConfig.SDK_VERSION,
+                  metadata =
+                    mapOf(
+                      "app_version" to "1.2.3",
+                      "os_version" to "16",
+                      "device_model" to "robolectric",
+                    ),
+                ),
             ),
           ),
-          Event(
-            id = idGenerator.calls[2],
-            type = EventType.GOAL,
-            event = EventData.GoalEvent(
-              timestamp = clock.currentTimeSecondsCalls[2],
-              goalId = "goal_id_value",
-              userId = user1.id,
-              value = 0.5,
-              user = user1,
-              tag = "feature_tag_value",
-              sourceId = SourceID.ANDROID,
-              sdkVersion = BuildConfig.SDK_VERSION,
-              metadata = mapOf(
-                "app_version" to "1.2.3",
-                "os_version" to "16",
-                "device_model" to "robolectric",
-              ),
-            ),
-          ),
-        ),
         sourceId = SourceID.ANDROID,
       ),
     )
@@ -843,43 +917,49 @@ class EventInteractorTest {
         Event(
           id = idGenerator.calls[0],
           type = EventType.METRICS,
-          event = EventData.MetricsEvent(
-            timestamp = clock.currentTimeSecondsCalls[0],
-            type = MetricsEventType.RESPONSE_LATENCY,
-            event = MetricsEventData.LatencyMetricsEvent(
-              ApiId.GET_EVALUATIONS,
-              labels = mapOf(
-                "tag" to "feature_tag_value",
-              ),
-              latencySecond = 0.1,
+          event =
+            EventData.MetricsEvent(
+              timestamp = clock.currentTimeSecondsCalls[0],
+              type = MetricsEventType.RESPONSE_LATENCY,
+              event =
+                MetricsEventData.LatencyMetricsEvent(
+                  ApiId.GET_EVALUATIONS,
+                  labels =
+                    mapOf(
+                      "tag" to "feature_tag_value",
+                    ),
+                  latencySecond = 0.1,
+                ),
+              sourceId = SourceID.ANDROID,
+              sdkVersion = BuildConfig.SDK_VERSION,
+              metadata =
+                mapOf(
+                  "app_version" to "1.2.3",
+                  "os_version" to "16",
+                  "device_model" to "robolectric",
+                ),
             ),
-            sourceId = SourceID.ANDROID,
-            sdkVersion = BuildConfig.SDK_VERSION,
-            metadata = mapOf(
-              "app_version" to "1.2.3",
-              "os_version" to "16",
-              "device_model" to "robolectric",
-            ),
-          ),
         ),
         Event(
           id = idGenerator.calls[3],
           type = EventType.GOAL,
-          event = EventData.GoalEvent(
-            timestamp = clock.currentTimeSecondsCalls[3],
-            goalId = "goal_id_value2",
-            userId = user1.id,
-            value = 0.4,
-            user = user1,
-            tag = "feature_tag_value",
-            sourceId = SourceID.ANDROID,
-            sdkVersion = BuildConfig.SDK_VERSION,
-            metadata = mapOf(
-              "app_version" to "1.2.3",
-              "os_version" to "16",
-              "device_model" to "robolectric",
+          event =
+            EventData.GoalEvent(
+              timestamp = clock.currentTimeSecondsCalls[3],
+              goalId = "goal_id_value2",
+              userId = user1.id,
+              value = 0.4,
+              user = user1,
+              tag = "feature_tag_value",
+              sourceId = SourceID.ANDROID,
+              sdkVersion = BuildConfig.SDK_VERSION,
+              metadata =
+                mapOf(
+                  "app_version" to "1.2.3",
+                  "os_version" to "16",
+                  "device_model" to "robolectric",
+                ),
             ),
-          ),
         ),
       ),
     )
@@ -936,7 +1016,6 @@ class EventInteractorTest {
 }
 
 private class FakeEventUpdateListener() : EventInteractor.EventUpdateListener {
-
   val calls = mutableListOf<List<Event>>()
 
   override fun onUpdate(events: List<Event>) {
@@ -956,7 +1035,6 @@ private class FakeIdGenerator : IdGenerator {
 }
 
 private class FakeClock : Clock {
-
   val currentTimeMillisCalls = mutableListOf<Long>()
 
   val currentTimeSecondsCalls = mutableListOf<Long>()
@@ -979,7 +1057,6 @@ private class TestDataModule(
   config: BKTConfig,
   defaultRequestTimeoutMillis: Long,
 ) : DataModule(application, user1, config, inMemoryDB = true) {
-
   override val clock: Clock by lazy { FakeClock() }
 
   override val idGenerator: IdGenerator by lazy { FakeIdGenerator() }

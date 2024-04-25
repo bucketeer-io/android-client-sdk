@@ -33,16 +33,18 @@ class BKTClientEventTest {
   fun setup() {
     context = ApplicationProvider.getApplicationContext()
 
-    config = BKTConfig.builder()
-      .apiKey(BuildConfig.API_KEY)
-      .apiEndpoint(BuildConfig.API_ENDPOINT)
-      .featureTag(FEATURE_TAG)
-      .appVersion("1.2.3")
-      .build()
+    config =
+      BKTConfig.builder()
+        .apiKey(BuildConfig.API_KEY)
+        .apiEndpoint(BuildConfig.API_ENDPOINT)
+        .featureTag(FEATURE_TAG)
+        .appVersion("1.2.3")
+        .build()
 
-    user = BKTUser.builder()
-      .id(USER_ID)
-      .build()
+    user =
+      BKTUser.builder()
+        .id(USER_ID)
+        .build()
 
     val result = BKTClient.initialize(context, config, user).get()
     assertThat(result).isNull()

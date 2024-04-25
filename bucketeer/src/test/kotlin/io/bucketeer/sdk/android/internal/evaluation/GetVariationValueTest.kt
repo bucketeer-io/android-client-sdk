@@ -17,7 +17,6 @@ class GetVariationValueTest_String(
   private val defaultValue: String,
   private val expectedValue: String,
 ) {
-
   companion object {
     @ParameterizedRobolectricTestRunner.Parameters(name = "getVariation String: {0} -> {1}")
     @JvmStatic

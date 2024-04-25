@@ -1,7 +1,6 @@
 package io.bucketeer.sample
 
 class Constants {
-
   companion object {
     const val DEFAULT_FEATURE_FLAG_ID = "bucketeer-feature-flag-id"
     const val DEFAULT_GOAL_ID = "bucketeer-goal-id"

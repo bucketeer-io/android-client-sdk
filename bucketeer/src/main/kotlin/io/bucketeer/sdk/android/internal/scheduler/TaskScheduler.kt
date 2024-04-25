@@ -9,22 +9,23 @@ internal class TaskScheduler(
   private val component: Component,
   private val executor: ScheduledExecutorService,
 ) : DefaultLifecycleObserver {
+  private val foregroundSchedulers: List<ScheduledTask> =
+    listOf(
+      EvaluationForegroundTask(component, executor),
+      EventForegroundTask(component, executor),
+    )
 
-  private val foregroundSchedulers: List<ScheduledTask> = listOf(
-    EvaluationForegroundTask(component, executor),
-    EventForegroundTask(component, executor),
-  )
-
-  private val backgroundSchedulers: List<ScheduledTask> = listOf(
-    EvaluationBackgroundTask.Scheduler(
-      component.context,
-      component.config.backgroundPollingInterval,
-    ),
-    EventBackgroundTask.Scheduler(
-      component.context,
-      component.config.eventsFlushInterval,
-    ),
-  )
+  private val backgroundSchedulers: List<ScheduledTask> =
+    listOf(
+      EvaluationBackgroundTask.Scheduler(
+        component.context,
+        component.config.backgroundPollingInterval,
+      ),
+      EventBackgroundTask.Scheduler(
+        component.context,
+        component.config.eventsFlushInterval,
+      ),
+    )
 
   // app start or back to foreground
   override fun onStart(owner: LifecycleOwner) {

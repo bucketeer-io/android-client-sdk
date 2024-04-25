@@ -1,7 +1,11 @@
 package io.bucketeer.sdk.android.internal.cache
 
 internal interface MemCache<in Key : Any, Value : Any> {
-  fun set(key: Key, value: Value)
+  fun set(
+    key: Key,
+    value: Value,
+  )
+
   fun get(key: Key): Value?
 
   class Builder<K : Any, V : Any> {
@@ -13,7 +17,11 @@ internal interface MemCache<in Key : Any, Value : Any> {
 
 private class MemCacheImpl<in Key : Any, Value : Any> : MemCache<Key, Value> {
   private val map = mutableMapOf<Key, Value>()
-  override fun set(key: Key, value: Value) {
+
+  override fun set(
+    key: Key,
+    value: Value,
+  ) {
     map[key] = value
   }
 

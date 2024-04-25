@@ -14,7 +14,6 @@ import io.bucketeer.sdk.android.internal.event.EventEntity
 class OpenHelperCallback(
   private val sharedPreferences: SharedPreferences,
 ) : SupportSQLiteOpenHelper.Callback(VERSION) {
-
   companion object {
     const val FILE_NAME = "bucketeer.db"
     const val VERSION = 3
@@ -50,7 +49,11 @@ class OpenHelperCallback(
     v2Schema(db)
   }
 
-  override fun onUpgrade(db: SupportSQLiteDatabase, oldVersion: Int, newVersion: Int) {
+  override fun onUpgrade(
+    db: SupportSQLiteDatabase,
+    oldVersion: Int,
+    newVersion: Int,
+  ) {
     if (oldVersion < 2) {
       Migration1to2().migrate(db, sharedPreferences)
     }
@@ -65,10 +68,11 @@ fun createDatabase(
   fileName: String? = OpenHelperCallback.FILE_NAME,
   sharedPreferences: SharedPreferences,
 ): SupportSQLiteOpenHelper {
-  val config = SupportSQLiteOpenHelper.Configuration.builder(context)
-    .name(fileName)
-    .callback(OpenHelperCallback(sharedPreferences))
-    .build()
+  val config =
+    SupportSQLiteOpenHelper.Configuration.builder(context)
+      .name(fileName)
+      .callback(OpenHelperCallback(sharedPreferences))
+      .build()
 
   return FrameworkSQLiteOpenHelperFactory().create(config)
 }

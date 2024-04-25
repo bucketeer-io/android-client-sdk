@@ -21,13 +21,13 @@ import org.junit.runner.RunWith
 
 @RunWith(TestParameterInjector::class)
 class EventAdapterFactoryTest {
-
   // we don't need test case for GOAL_BATCH,
   // as it doesn't used in Client SDK.
   @Suppress("unused")
   enum class TestCase(val json: String, val event: Event) {
     Goal(
-      json = """
+      json =
+        """
         |{
         |  "id": "event_id",
         |  "type": 1,
@@ -54,37 +54,43 @@ class EventAdapterFactoryTest {
         |    "@type": "type.googleapis.com/bucketeer.event.client.GoalEvent"
         |  }
         |}
-      """.trimMargin(),
-      event = Event(
-        id = "event_id",
-        type = EventType.GOAL,
-        event = EventData.GoalEvent(
-          timestamp = 1660210923777,
-          goalId = "goal_id_value",
-          userId = "user_id_value",
-          value = 1.04,
-          user = User(
-            id = "user_id_value",
-            data = mapOf(
-              "gender" to "male",
-              "age" to "40",
+        """.trimMargin(),
+      event =
+        Event(
+          id = "event_id",
+          type = EventType.GOAL,
+          event =
+            EventData.GoalEvent(
+              timestamp = 1660210923777,
+              goalId = "goal_id_value",
+              userId = "user_id_value",
+              value = 1.04,
+              user =
+                User(
+                  id = "user_id_value",
+                  data =
+                    mapOf(
+                      "gender" to "male",
+                      "age" to "40",
+                    ),
+                ),
+              tag = "tag_value",
+              sourceId = SourceID.ANDROID,
+              sdkVersion = "2.0.1",
+              metadata =
+                mapOf(
+                  "app_version" to "1.2.3",
+                  "os_version" to "os_version_value",
+                  "device_model" to "device_model_value",
+                ),
             ),
-          ),
-          tag = "tag_value",
-          sourceId = SourceID.ANDROID,
-          sdkVersion = "2.0.1",
-          metadata = mapOf(
-            "app_version" to "1.2.3",
-            "os_version" to "os_version_value",
-            "device_model" to "device_model_value",
-          ),
         ),
-      ),
     ),
 
-    @Suppress("EnumEntryName", "ktlint:enum-entry-name-case")
+    @Suppress("EnumEntryName", "ktlint:standard:enum-entry-name-case")
     Goal_NoSdkVersion_NoMetadata(
-      json = """
+      json =
+        """
         |{
         |  "id": "event_id",
         |  "type": 1,
@@ -105,31 +111,36 @@ class EventAdapterFactoryTest {
         |    "@type": "type.googleapis.com/bucketeer.event.client.GoalEvent"
         |  }
         |}
-      """.trimMargin(),
-      event = Event(
-        id = "event_id",
-        type = EventType.GOAL,
-        event = EventData.GoalEvent(
-          timestamp = 1660210923777,
-          goalId = "goal_id_value",
-          userId = "user_id_value",
-          value = 1.04,
-          user = User(
-            id = "user_id_value",
-            data = mapOf(
-              "gender" to "male",
-              "age" to "40",
+        """.trimMargin(),
+      event =
+        Event(
+          id = "event_id",
+          type = EventType.GOAL,
+          event =
+            EventData.GoalEvent(
+              timestamp = 1660210923777,
+              goalId = "goal_id_value",
+              userId = "user_id_value",
+              value = 1.04,
+              user =
+                User(
+                  id = "user_id_value",
+                  data =
+                    mapOf(
+                      "gender" to "male",
+                      "age" to "40",
+                    ),
+                ),
+              tag = "tag_value",
+              sourceId = SourceID.ANDROID,
+              sdkVersion = null,
+              metadata = null,
             ),
-          ),
-          tag = "tag_value",
-          sourceId = SourceID.ANDROID,
-          sdkVersion = null,
-          metadata = null,
         ),
-      ),
     ),
     Evaluation(
-      json = """
+      json =
+        """
         |{
         |  "id": "event_id",
         |  "type": 3,
@@ -161,42 +172,49 @@ class EventAdapterFactoryTest {
         |    "@type": "type.googleapis.com/bucketeer.event.client.EvaluationEvent"
         |  }
         |}
-      """.trimMargin(),
-      event = Event(
-        id = "event_id",
-        type = EventType.EVALUATION,
-        event = EventData.EvaluationEvent(
-          timestamp = 1660210923777,
-          featureId = "feature_id_value",
-          featureVersion = 2,
-          userId = "user_id_value",
-          variationId = "variation_id_value",
-          user = User(
-            id = "user_id_value",
-            data = mapOf(
-              "gender" to "male",
-              "age" to "40",
+        """.trimMargin(),
+      event =
+        Event(
+          id = "event_id",
+          type = EventType.EVALUATION,
+          event =
+            EventData.EvaluationEvent(
+              timestamp = 1660210923777,
+              featureId = "feature_id_value",
+              featureVersion = 2,
+              userId = "user_id_value",
+              variationId = "variation_id_value",
+              user =
+                User(
+                  id = "user_id_value",
+                  data =
+                    mapOf(
+                      "gender" to "male",
+                      "age" to "40",
+                    ),
+                ),
+              reason =
+                Reason(
+                  type = ReasonType.CLIENT,
+                  ruleId = "rule_id_value",
+                ),
+              tag = "tag_value",
+              sourceId = SourceID.ANDROID,
+              sdkVersion = "2.0.1",
+              metadata =
+                mapOf(
+                  "app_version" to "1.2.3",
+                  "os_version" to "os_version_value",
+                  "device_model" to "device_model_value",
+                ),
             ),
-          ),
-          reason = Reason(
-            type = ReasonType.CLIENT,
-            ruleId = "rule_id_value",
-          ),
-          tag = "tag_value",
-          sourceId = SourceID.ANDROID,
-          sdkVersion = "2.0.1",
-          metadata = mapOf(
-            "app_version" to "1.2.3",
-            "os_version" to "os_version_value",
-            "device_model" to "device_model_value",
-          ),
         ),
-      ),
     ),
 
-    @Suppress("EnumEntryName", "ktlint:enum-entry-name-case")
+    @Suppress("EnumEntryName", "ktlint:standard:enum-entry-name-case")
     Evaluation_NoSdkVersion_NoMetadata(
-      json = """
+      json =
+        """
         |{
         |  "id": "event_id",
         |  "type": 3,
@@ -222,38 +240,44 @@ class EventAdapterFactoryTest {
         |    "@type": "type.googleapis.com/bucketeer.event.client.EvaluationEvent"
         |  }
         |}
-      """.trimMargin(),
-      event = Event(
-        id = "event_id",
-        type = EventType.EVALUATION,
-        event = EventData.EvaluationEvent(
-          timestamp = 1660210923777,
-          featureId = "feature_id_value",
-          featureVersion = 2,
-          userId = "user_id_value",
-          variationId = "variation_id_value",
-          user = User(
-            id = "user_id_value",
-            data = mapOf(
-              "gender" to "male",
-              "age" to "40",
+        """.trimMargin(),
+      event =
+        Event(
+          id = "event_id",
+          type = EventType.EVALUATION,
+          event =
+            EventData.EvaluationEvent(
+              timestamp = 1660210923777,
+              featureId = "feature_id_value",
+              featureVersion = 2,
+              userId = "user_id_value",
+              variationId = "variation_id_value",
+              user =
+                User(
+                  id = "user_id_value",
+                  data =
+                    mapOf(
+                      "gender" to "male",
+                      "age" to "40",
+                    ),
+                ),
+              reason =
+                Reason(
+                  // Note: we don't need ReasonTypeAdapterTest anymore
+                  // ReasonTypeAdapter is autogenerate by Moshi
+                  // We could validate ReasonType toJson and fromJson in this test file.
+                  type = ReasonType.CLIENT,
+                  ruleId = "rule_id_value",
+                ),
+              tag = "tag_value",
+              sourceId = SourceID.ANDROID,
+              sdkVersion = null,
             ),
-          ),
-          reason = Reason(
-            // Note: we don't need ReasonTypeAdapterTest anymore
-            // ReasonTypeAdapter is autogenerate by Moshi
-            // We could validate ReasonType toJson and fromJson in this test file.
-            type = ReasonType.CLIENT,
-            ruleId = "rule_id_value",
-          ),
-          tag = "tag_value",
-          sourceId = SourceID.ANDROID,
-          sdkVersion = null,
         ),
-      ),
     ),
     Metrics(
-      json = """
+      json =
+        """
         |{
         |  "id": "event_id",
         |  "type": 4,
@@ -279,35 +303,41 @@ class EventAdapterFactoryTest {
         |    "@type": "type.googleapis.com/bucketeer.event.client.MetricsEvent"
         |  }
         |}
-      """.trimMargin(),
-      event = Event(
-        id = "event_id",
-        type = EventType.METRICS,
-        event = EventData.MetricsEvent(
-          timestamp = 1660210923777,
-          type = MetricsEventType.RESPONSE_LATENCY,
-          event = MetricsEventData.LatencyMetricsEvent(
-            ApiId.GET_EVALUATIONS,
-            labels = mapOf(
-              "key1" to "value1",
-              "key2" to "value2",
+        """.trimMargin(),
+      event =
+        Event(
+          id = "event_id",
+          type = EventType.METRICS,
+          event =
+            EventData.MetricsEvent(
+              timestamp = 1660210923777,
+              type = MetricsEventType.RESPONSE_LATENCY,
+              event =
+                MetricsEventData.LatencyMetricsEvent(
+                  ApiId.GET_EVALUATIONS,
+                  labels =
+                    mapOf(
+                      "key1" to "value1",
+                      "key2" to "value2",
+                    ),
+                  latencySecond = 5.0,
+                ),
+              sourceId = SourceID.ANDROID,
+              sdkVersion = "2.0.1",
+              metadata =
+                mapOf(
+                  "app_version" to "1.2.3",
+                  "os_version" to "os_version_value",
+                  "device_model" to "device_model_value",
+                ),
             ),
-            latencySecond = 5.0,
-          ),
-          sourceId = SourceID.ANDROID,
-          sdkVersion = "2.0.1",
-          metadata = mapOf(
-            "app_version" to "1.2.3",
-            "os_version" to "os_version_value",
-            "device_model" to "device_model_value",
-          ),
         ),
-      ),
     ),
 
-    @Suppress("EnumEntryName", "ktlint:enum-entry-name-case")
+    @Suppress("EnumEntryName", "ktlint:standard:enum-entry-name-case")
     Metrics_NoSdkVersion_NoMetadata(
-      json = """
+      json =
+        """
         |{
         |  "id": "event_id",
         |  "type": 4,
@@ -327,26 +357,30 @@ class EventAdapterFactoryTest {
         |    "@type": "type.googleapis.com/bucketeer.event.client.MetricsEvent"
         |  }
         |}
-      """.trimMargin(),
-      event = Event(
-        id = "event_id",
-        type = EventType.METRICS,
-        event = EventData.MetricsEvent(
-          timestamp = 1660210923777,
-          type = MetricsEventType.RESPONSE_LATENCY,
-          event = MetricsEventData.LatencyMetricsEvent(
-            ApiId.GET_EVALUATIONS,
-            labels = mapOf(
-              "key1" to "value1",
-              "key2" to "value2",
+        """.trimMargin(),
+      event =
+        Event(
+          id = "event_id",
+          type = EventType.METRICS,
+          event =
+            EventData.MetricsEvent(
+              timestamp = 1660210923777,
+              type = MetricsEventType.RESPONSE_LATENCY,
+              event =
+                MetricsEventData.LatencyMetricsEvent(
+                  ApiId.GET_EVALUATIONS,
+                  labels =
+                    mapOf(
+                      "key1" to "value1",
+                      "key2" to "value2",
+                    ),
+                  latencySecond = 5.0,
+                ),
+              sourceId = SourceID.ANDROID,
+              sdkVersion = null,
+              metadata = null,
             ),
-            latencySecond = 5.0,
-          ),
-          sourceId = SourceID.ANDROID,
-          sdkVersion = null,
-          metadata = null,
         ),
-      ),
     ),
   }
 
@@ -358,14 +392,18 @@ class EventAdapterFactoryTest {
   }
 
   @Test
-  fun fromJson(@TestParameter case: TestCase) {
+  fun fromJson(
+    @TestParameter case: TestCase,
+  ) {
     val result = adapter.fromJson(case.json)
 
     Truth.assertThat(result).isEqualTo(case.event)
   }
 
   @Test
-  fun toJson(@TestParameter case: TestCase) {
+  fun toJson(
+    @TestParameter case: TestCase,
+  ) {
     val result = adapter.indent("  ").toJson(case.event)
 
     Truth.assertThat(result).isEqualTo(case.json)

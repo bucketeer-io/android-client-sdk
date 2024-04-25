@@ -9,14 +9,14 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 class EvaluationSharedPrefsImplTest {
-
   @Test
   fun testGetAndSetData() {
     val context: Context = ApplicationProvider.getApplicationContext()
-    val sharedPreferences = context.getSharedPreferences(
-      Constants.PREFERENCES_NAME,
-      Context.MODE_PRIVATE,
-    )
+    val sharedPreferences =
+      context.getSharedPreferences(
+        Constants.PREFERENCES_NAME,
+        Context.MODE_PRIVATE,
+      )
     val sharedPrefsDao = EvaluationSharedPrefsImpl(sharedPreferences)
     sharedPrefsDao.evaluatedAt = "1000"
     sharedPrefsDao.currentEvaluationsId = "test01"

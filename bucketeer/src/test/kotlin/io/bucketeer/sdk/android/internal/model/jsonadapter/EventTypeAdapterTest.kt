@@ -12,7 +12,6 @@ import org.junit.runner.RunWith
 
 @RunWith(TestParameterInjector::class)
 class EventTypeAdapterTest {
-
   lateinit var adapter: JsonAdapter<EventType>
 
   @Before
@@ -21,14 +20,18 @@ class EventTypeAdapterTest {
   }
 
   @Test
-  fun fromJson(@TestParameter type: EventType) {
+  fun fromJson(
+    @TestParameter type: EventType,
+  ) {
     val result = adapter.fromJson(type.value.toString())
 
     assertThat(result).isEqualTo(type)
   }
 
   @Test
-  fun toJson(@TestParameter type: EventType) {
+  fun toJson(
+    @TestParameter type: EventType,
+  ) {
     val result = adapter.toJson(type)
 
     assertThat(result).isEqualTo(type.value.toString())

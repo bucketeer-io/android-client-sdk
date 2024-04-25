@@ -33,12 +33,13 @@ class EventAdapterFactory : JsonAdapter.Factory {
 
         val eventType = eventTypeAdapter.fromJsonValue(jsonObj["type"])
 
-        val adapter = when (eventType) {
-          EventType.EVALUATION -> evaluationAdapter
-          EventType.GOAL -> goalEventAdapter
-          EventType.METRICS -> metricsEventAdapter
-          else -> throw BKTException.IllegalStateException("unexpected type: $type")
-        }
+        val adapter =
+          when (eventType) {
+            EventType.EVALUATION -> evaluationAdapter
+            EventType.GOAL -> goalEventAdapter
+            EventType.METRICS -> metricsEventAdapter
+            else -> throw BKTException.IllegalStateException("unexpected type: $type")
+          }
 
         return Event(
           id = jsonObj["id"] as String,
@@ -47,7 +48,10 @@ class EventAdapterFactory : JsonAdapter.Factory {
         )
       }
 
-      override fun toJson(writer: JsonWriter, value: Event?) {
+      override fun toJson(
+        writer: JsonWriter,
+        value: Event?,
+      ) {
         if (value == null) {
           writer.nullValue()
           return

@@ -26,7 +26,6 @@ internal class EvaluationInteractor(
   featureTag: String,
   private val mainHandler: Handler,
 ) {
-
   @VisibleForTesting
   internal val updateListeners = mutableMapOf<String, BKTClient.EvaluationUpdateListener>()
 
@@ -53,15 +52,19 @@ internal class EvaluationInteractor(
   }
 
   @Suppress("MoveVariableDeclarationIntoWhen")
-  fun fetch(user: User, timeoutMillis: Long?): GetEvaluationsResult {
+  fun fetch(
+    user: User,
+    timeoutMillis: Long?,
+  ): GetEvaluationsResult {
     val currentEvaluationsId = evaluationStorage.getCurrentEvaluationId()
     val evaluatedAt = evaluationStorage.getEvaluatedAt()
     val userAttributesUpdated = evaluationStorage.getUserAttributesUpdated().toString()
     val featureTag = evaluationStorage.getFeatureTag()
-    val condition = UserEvaluationCondition(
-      evaluatedAt = evaluatedAt,
-      userAttributesUpdated = userAttributesUpdated,
-    )
+    val condition =
+      UserEvaluationCondition(
+        evaluatedAt = evaluatedAt,
+        userAttributesUpdated = userAttributesUpdated,
+      )
     val result = apiClient.getEvaluations(user, currentEvaluationsId, timeoutMillis, condition)
 
     when (result) {

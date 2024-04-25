@@ -19,7 +19,8 @@ class MetricsEventAdapterFactoryTest {
   @Suppress("unused")
   enum class TestCase(val json: String, val event: EventData.MetricsEvent) {
     LatencyMetric(
-      json = """
+      json =
+        """
         |{
         |  "timestamp": 1660210923777,
         |  "type": 1,
@@ -41,29 +42,34 @@ class MetricsEventAdapterFactoryTest {
         |  },
         |  "@type": "type.googleapis.com/bucketeer.event.client.MetricsEvent"
         |}
-      """.trimMargin(),
-      event = EventData.MetricsEvent(
-        timestamp = 1660210923777,
-        type = MetricsEventType.RESPONSE_LATENCY,
-        event = MetricsEventData.LatencyMetricsEvent(
-          ApiId.GET_EVALUATIONS,
-          labels = mapOf(
-            "key1" to "value1",
-            "key2" to "value2",
-          ),
-          latencySecond = 5.0,
+        """.trimMargin(),
+      event =
+        EventData.MetricsEvent(
+          timestamp = 1660210923777,
+          type = MetricsEventType.RESPONSE_LATENCY,
+          event =
+            MetricsEventData.LatencyMetricsEvent(
+              ApiId.GET_EVALUATIONS,
+              labels =
+                mapOf(
+                  "key1" to "value1",
+                  "key2" to "value2",
+                ),
+              latencySecond = 5.0,
+            ),
+          sourceId = SourceID.ANDROID,
+          sdkVersion = "2.0.1",
+          metadata =
+            mapOf(
+              "app_version" to "1.2.3",
+              "os_version" to "os_version_value",
+              "device_model" to "device_model_value",
+            ),
         ),
-        sourceId = SourceID.ANDROID,
-        sdkVersion = "2.0.1",
-        metadata = mapOf(
-          "app_version" to "1.2.3",
-          "os_version" to "os_version_value",
-          "device_model" to "device_model_value",
-        ),
-      ),
     ),
     SizeMetricsEvent(
-      json = """
+      json =
+        """
         |{
         |  "timestamp": 1660210923777,
         |  "type": 2,
@@ -85,29 +91,34 @@ class MetricsEventAdapterFactoryTest {
         |  },
         |  "@type": "type.googleapis.com/bucketeer.event.client.MetricsEvent"
         |}
-      """.trimMargin(),
-      event = EventData.MetricsEvent(
-        timestamp = 1660210923777,
-        type = MetricsEventType.RESPONSE_SIZE,
-        event = MetricsEventData.SizeMetricsEvent(
-          ApiId.GET_EVALUATIONS,
-          labels = mapOf(
-            "key1" to "value1",
-            "key2" to "value2",
-          ),
-          sizeByte = 1234,
+        """.trimMargin(),
+      event =
+        EventData.MetricsEvent(
+          timestamp = 1660210923777,
+          type = MetricsEventType.RESPONSE_SIZE,
+          event =
+            MetricsEventData.SizeMetricsEvent(
+              ApiId.GET_EVALUATIONS,
+              labels =
+                mapOf(
+                  "key1" to "value1",
+                  "key2" to "value2",
+                ),
+              sizeByte = 1234,
+            ),
+          sourceId = SourceID.ANDROID,
+          sdkVersion = "2.0.1",
+          metadata =
+            mapOf(
+              "app_version" to "1.2.3",
+              "os_version" to "os_version_value",
+              "device_model" to "device_model_value",
+            ),
         ),
-        sourceId = SourceID.ANDROID,
-        sdkVersion = "2.0.1",
-        metadata = mapOf(
-          "app_version" to "1.2.3",
-          "os_version" to "os_version_value",
-          "device_model" to "device_model_value",
-        ),
-      ),
     ),
     TimeoutErrorMetric(
-      json = """
+      json =
+        """
         |{
         |  "timestamp": 1660210923777,
         |  "type": 3,
@@ -128,28 +139,33 @@ class MetricsEventAdapterFactoryTest {
         |  },
         |  "@type": "type.googleapis.com/bucketeer.event.client.MetricsEvent"
         |}
-      """.trimMargin(),
-      event = EventData.MetricsEvent(
-        timestamp = 1660210923777,
-        type = MetricsEventType.TIMEOUT_ERROR,
-        event = MetricsEventData.TimeoutErrorMetricsEvent(
-          ApiId.GET_EVALUATIONS,
-          labels = mapOf(
-            "tag" to "tag_value",
-            "timeout" to "5.0",
-          ),
+        """.trimMargin(),
+      event =
+        EventData.MetricsEvent(
+          timestamp = 1660210923777,
+          type = MetricsEventType.TIMEOUT_ERROR,
+          event =
+            MetricsEventData.TimeoutErrorMetricsEvent(
+              ApiId.GET_EVALUATIONS,
+              labels =
+                mapOf(
+                  "tag" to "tag_value",
+                  "timeout" to "5.0",
+                ),
+            ),
+          sourceId = SourceID.ANDROID,
+          sdkVersion = "2.0.1",
+          metadata =
+            mapOf(
+              "app_version" to "1.2.3",
+              "os_version" to "os_version_value",
+              "device_model" to "device_model_value",
+            ),
         ),
-        sourceId = SourceID.ANDROID,
-        sdkVersion = "2.0.1",
-        metadata = mapOf(
-          "app_version" to "1.2.3",
-          "os_version" to "os_version_value",
-          "device_model" to "device_model_value",
-        ),
-      ),
     ),
     NetworkErrorMetricsEvent(
-      json = """
+      json =
+        """
         |{
         |  "timestamp": 1660210923777,
         |  "type": 4,
@@ -169,27 +185,32 @@ class MetricsEventAdapterFactoryTest {
         |  },
         |  "@type": "type.googleapis.com/bucketeer.event.client.MetricsEvent"
         |}
-      """.trimMargin(),
-      event = EventData.MetricsEvent(
-        timestamp = 1660210923777,
-        type = MetricsEventType.NETWORK_ERROR,
-        event = MetricsEventData.NetworkErrorMetricsEvent(
-          ApiId.GET_EVALUATIONS,
-          labels = mapOf(
-            "tag" to "tag_value",
-          ),
+        """.trimMargin(),
+      event =
+        EventData.MetricsEvent(
+          timestamp = 1660210923777,
+          type = MetricsEventType.NETWORK_ERROR,
+          event =
+            MetricsEventData.NetworkErrorMetricsEvent(
+              ApiId.GET_EVALUATIONS,
+              labels =
+                mapOf(
+                  "tag" to "tag_value",
+                ),
+            ),
+          sourceId = SourceID.ANDROID,
+          sdkVersion = "2.0.1",
+          metadata =
+            mapOf(
+              "app_version" to "1.2.3",
+              "os_version" to "os_version_value",
+              "device_model" to "device_model_value",
+            ),
         ),
-        sourceId = SourceID.ANDROID,
-        sdkVersion = "2.0.1",
-        metadata = mapOf(
-          "app_version" to "1.2.3",
-          "os_version" to "os_version_value",
-          "device_model" to "device_model_value",
-        ),
-      ),
     ),
     BadRequestErrorMetricsEvent(
-      json = """
+      json =
+        """
         |{
         |  "timestamp": 1660210923777,
         |  "type": 6,
@@ -209,27 +230,32 @@ class MetricsEventAdapterFactoryTest {
         |  },
         |  "@type": "type.googleapis.com/bucketeer.event.client.MetricsEvent"
         |}
-      """.trimMargin(),
-      event = EventData.MetricsEvent(
-        timestamp = 1660210923777,
-        type = MetricsEventType.BAD_REQUEST_ERROR,
-        event = MetricsEventData.BadRequestErrorMetricsEvent(
-          ApiId.GET_EVALUATIONS,
-          labels = mapOf(
-            "tag" to "tag_value",
-          ),
+        """.trimMargin(),
+      event =
+        EventData.MetricsEvent(
+          timestamp = 1660210923777,
+          type = MetricsEventType.BAD_REQUEST_ERROR,
+          event =
+            MetricsEventData.BadRequestErrorMetricsEvent(
+              ApiId.GET_EVALUATIONS,
+              labels =
+                mapOf(
+                  "tag" to "tag_value",
+                ),
+            ),
+          sourceId = SourceID.ANDROID,
+          sdkVersion = "2.0.1",
+          metadata =
+            mapOf(
+              "app_version" to "1.2.3",
+              "os_version" to "os_version_value",
+              "device_model" to "device_model_value",
+            ),
         ),
-        sourceId = SourceID.ANDROID,
-        sdkVersion = "2.0.1",
-        metadata = mapOf(
-          "app_version" to "1.2.3",
-          "os_version" to "os_version_value",
-          "device_model" to "device_model_value",
-        ),
-      ),
     ),
     UnauthorizedErrorMetricsEvent(
-      json = """
+      json =
+        """
         |{
         |  "timestamp": 1660210923777,
         |  "type": 7,
@@ -249,27 +275,32 @@ class MetricsEventAdapterFactoryTest {
         |  },
         |  "@type": "type.googleapis.com/bucketeer.event.client.MetricsEvent"
         |}
-      """.trimMargin(),
-      event = EventData.MetricsEvent(
-        timestamp = 1660210923777,
-        type = MetricsEventType.UNAUTHORIZED_ERROR,
-        event = MetricsEventData.UnauthorizedErrorMetricsEvent(
-          ApiId.GET_EVALUATIONS,
-          labels = mapOf(
-            "tag" to "tag_value",
-          ),
+        """.trimMargin(),
+      event =
+        EventData.MetricsEvent(
+          timestamp = 1660210923777,
+          type = MetricsEventType.UNAUTHORIZED_ERROR,
+          event =
+            MetricsEventData.UnauthorizedErrorMetricsEvent(
+              ApiId.GET_EVALUATIONS,
+              labels =
+                mapOf(
+                  "tag" to "tag_value",
+                ),
+            ),
+          sourceId = SourceID.ANDROID,
+          sdkVersion = "2.0.1",
+          metadata =
+            mapOf(
+              "app_version" to "1.2.3",
+              "os_version" to "os_version_value",
+              "device_model" to "device_model_value",
+            ),
         ),
-        sourceId = SourceID.ANDROID,
-        sdkVersion = "2.0.1",
-        metadata = mapOf(
-          "app_version" to "1.2.3",
-          "os_version" to "os_version_value",
-          "device_model" to "device_model_value",
-        ),
-      ),
     ),
     ForbiddenErrorMetricsEvent(
-      json = """
+      json =
+        """
         |{
         |  "timestamp": 1660210923777,
         |  "type": 8,
@@ -289,27 +320,32 @@ class MetricsEventAdapterFactoryTest {
         |  },
         |  "@type": "type.googleapis.com/bucketeer.event.client.MetricsEvent"
         |}
-      """.trimMargin(),
-      event = EventData.MetricsEvent(
-        timestamp = 1660210923777,
-        type = MetricsEventType.FORBIDDEN_ERROR,
-        event = MetricsEventData.ForbiddenErrorMetricsEvent(
-          ApiId.GET_EVALUATIONS,
-          labels = mapOf(
-            "tag" to "tag_value",
-          ),
+        """.trimMargin(),
+      event =
+        EventData.MetricsEvent(
+          timestamp = 1660210923777,
+          type = MetricsEventType.FORBIDDEN_ERROR,
+          event =
+            MetricsEventData.ForbiddenErrorMetricsEvent(
+              ApiId.GET_EVALUATIONS,
+              labels =
+                mapOf(
+                  "tag" to "tag_value",
+                ),
+            ),
+          sourceId = SourceID.ANDROID,
+          sdkVersion = "2.0.1",
+          metadata =
+            mapOf(
+              "app_version" to "1.2.3",
+              "os_version" to "os_version_value",
+              "device_model" to "device_model_value",
+            ),
         ),
-        sourceId = SourceID.ANDROID,
-        sdkVersion = "2.0.1",
-        metadata = mapOf(
-          "app_version" to "1.2.3",
-          "os_version" to "os_version_value",
-          "device_model" to "device_model_value",
-        ),
-      ),
     ),
     NotFoundErrorMetricsEvent(
-      json = """
+      json =
+        """
         |{
         |  "timestamp": 1660210923777,
         |  "type": 9,
@@ -329,27 +365,32 @@ class MetricsEventAdapterFactoryTest {
         |  },
         |  "@type": "type.googleapis.com/bucketeer.event.client.MetricsEvent"
         |}
-      """.trimMargin(),
-      event = EventData.MetricsEvent(
-        timestamp = 1660210923777,
-        type = MetricsEventType.NOT_FOUND_ERROR,
-        event = MetricsEventData.NotFoundErrorMetricsEvent(
-          ApiId.GET_EVALUATIONS,
-          labels = mapOf(
-            "tag" to "tag_value",
-          ),
+        """.trimMargin(),
+      event =
+        EventData.MetricsEvent(
+          timestamp = 1660210923777,
+          type = MetricsEventType.NOT_FOUND_ERROR,
+          event =
+            MetricsEventData.NotFoundErrorMetricsEvent(
+              ApiId.GET_EVALUATIONS,
+              labels =
+                mapOf(
+                  "tag" to "tag_value",
+                ),
+            ),
+          sourceId = SourceID.ANDROID,
+          sdkVersion = "2.0.1",
+          metadata =
+            mapOf(
+              "app_version" to "1.2.3",
+              "os_version" to "os_version_value",
+              "device_model" to "device_model_value",
+            ),
         ),
-        sourceId = SourceID.ANDROID,
-        sdkVersion = "2.0.1",
-        metadata = mapOf(
-          "app_version" to "1.2.3",
-          "os_version" to "os_version_value",
-          "device_model" to "device_model_value",
-        ),
-      ),
     ),
     ClientClosedRequestErrorMetricsEvent(
-      json = """
+      json =
+        """
         |{
         |  "timestamp": 1660210923777,
         |  "type": 10,
@@ -369,27 +410,32 @@ class MetricsEventAdapterFactoryTest {
         |  },
         |  "@type": "type.googleapis.com/bucketeer.event.client.MetricsEvent"
         |}
-      """.trimMargin(),
-      event = EventData.MetricsEvent(
-        timestamp = 1660210923777,
-        type = MetricsEventType.CLIENT_CLOSED_REQUEST_ERROR,
-        event = MetricsEventData.ClientClosedRequestErrorMetricsEvent(
-          ApiId.GET_EVALUATIONS,
-          labels = mapOf(
-            "tag" to "tag_value",
-          ),
+        """.trimMargin(),
+      event =
+        EventData.MetricsEvent(
+          timestamp = 1660210923777,
+          type = MetricsEventType.CLIENT_CLOSED_REQUEST_ERROR,
+          event =
+            MetricsEventData.ClientClosedRequestErrorMetricsEvent(
+              ApiId.GET_EVALUATIONS,
+              labels =
+                mapOf(
+                  "tag" to "tag_value",
+                ),
+            ),
+          sourceId = SourceID.ANDROID,
+          sdkVersion = "2.0.1",
+          metadata =
+            mapOf(
+              "app_version" to "1.2.3",
+              "os_version" to "os_version_value",
+              "device_model" to "device_model_value",
+            ),
         ),
-        sourceId = SourceID.ANDROID,
-        sdkVersion = "2.0.1",
-        metadata = mapOf(
-          "app_version" to "1.2.3",
-          "os_version" to "os_version_value",
-          "device_model" to "device_model_value",
-        ),
-      ),
     ),
     ServiceUnavailableErrorMetricsEvent(
-      json = """
+      json =
+        """
         |{
         |  "timestamp": 1660210923777,
         |  "type": 11,
@@ -409,27 +455,32 @@ class MetricsEventAdapterFactoryTest {
         |  },
         |  "@type": "type.googleapis.com/bucketeer.event.client.MetricsEvent"
         |}
-      """.trimMargin(),
-      event = EventData.MetricsEvent(
-        timestamp = 1660210923777,
-        type = MetricsEventType.SERVICE_UNAVAILABLE_ERROR,
-        event = MetricsEventData.ServiceUnavailableErrorMetricsEvent(
-          ApiId.GET_EVALUATIONS,
-          labels = mapOf(
-            "tag" to "tag_value",
-          ),
+        """.trimMargin(),
+      event =
+        EventData.MetricsEvent(
+          timestamp = 1660210923777,
+          type = MetricsEventType.SERVICE_UNAVAILABLE_ERROR,
+          event =
+            MetricsEventData.ServiceUnavailableErrorMetricsEvent(
+              ApiId.GET_EVALUATIONS,
+              labels =
+                mapOf(
+                  "tag" to "tag_value",
+                ),
+            ),
+          sourceId = SourceID.ANDROID,
+          sdkVersion = "2.0.1",
+          metadata =
+            mapOf(
+              "app_version" to "1.2.3",
+              "os_version" to "os_version_value",
+              "device_model" to "device_model_value",
+            ),
         ),
-        sourceId = SourceID.ANDROID,
-        sdkVersion = "2.0.1",
-        metadata = mapOf(
-          "app_version" to "1.2.3",
-          "os_version" to "os_version_value",
-          "device_model" to "device_model_value",
-        ),
-      ),
     ),
     InternalSdkErrorMetric(
-      json = """
+      json =
+        """
         |{
         |  "timestamp": 1660210923777,
         |  "type": 5,
@@ -449,28 +500,32 @@ class MetricsEventAdapterFactoryTest {
         |  },
         |  "@type": "type.googleapis.com/bucketeer.event.client.MetricsEvent"
         |}
-      """.trimMargin(),
-      event = EventData.MetricsEvent(
-        timestamp = 1660210923777,
-        type = MetricsEventType.INTERNAL_SDK_ERROR,
-        event = MetricsEventData.InternalSdkErrorMetricsEvent(
-          ApiId.GET_EVALUATIONS,
-          labels = mapOf(
-            "tag" to "tag_value",
-          ),
+        """.trimMargin(),
+      event =
+        EventData.MetricsEvent(
+          timestamp = 1660210923777,
+          type = MetricsEventType.INTERNAL_SDK_ERROR,
+          event =
+            MetricsEventData.InternalSdkErrorMetricsEvent(
+              ApiId.GET_EVALUATIONS,
+              labels =
+                mapOf(
+                  "tag" to "tag_value",
+                ),
+            ),
+          sourceId = SourceID.ANDROID,
+          sdkVersion = "2.0.1",
+          metadata =
+            mapOf(
+              "app_version" to "1.2.3",
+              "os_version" to "os_version_value",
+              "device_model" to "device_model_value",
+            ),
         ),
-        sourceId = SourceID.ANDROID,
-        sdkVersion = "2.0.1",
-        metadata = mapOf(
-          "app_version" to "1.2.3",
-          "os_version" to "os_version_value",
-          "device_model" to "device_model_value",
-        ),
-      ),
     ),
     InternalServerErrorMetricsEvent(
       json =
-      """
+        """
         |{
         |  "timestamp": 1660210923777,
         |  "type": 12,
@@ -490,27 +545,32 @@ class MetricsEventAdapterFactoryTest {
         |  },
         |  "@type": "type.googleapis.com/bucketeer.event.client.MetricsEvent"
         |}
-      """.trimMargin(),
-      event = EventData.MetricsEvent(
-        timestamp = 1660210923777,
-        type = MetricsEventType.INTERNAL_SERVER_ERROR,
-        event = MetricsEventData.InternalServerErrorMetricsEvent(
-          ApiId.GET_EVALUATIONS,
-          labels = mapOf(
-            "tag" to "tag_value",
-          ),
+        """.trimMargin(),
+      event =
+        EventData.MetricsEvent(
+          timestamp = 1660210923777,
+          type = MetricsEventType.INTERNAL_SERVER_ERROR,
+          event =
+            MetricsEventData.InternalServerErrorMetricsEvent(
+              ApiId.GET_EVALUATIONS,
+              labels =
+                mapOf(
+                  "tag" to "tag_value",
+                ),
+            ),
+          sourceId = SourceID.ANDROID,
+          sdkVersion = "2.0.1",
+          metadata =
+            mapOf(
+              "app_version" to "1.2.3",
+              "os_version" to "os_version_value",
+              "device_model" to "device_model_value",
+            ),
         ),
-        sourceId = SourceID.ANDROID,
-        sdkVersion = "2.0.1",
-        metadata = mapOf(
-          "app_version" to "1.2.3",
-          "os_version" to "os_version_value",
-          "device_model" to "device_model_value",
-        ),
-      ),
     ),
     UnknownErrorMetricsEvent(
-      json = """
+      json =
+        """
         |{
         |  "timestamp": 1660210923777,
         |  "type": 0,
@@ -532,29 +592,34 @@ class MetricsEventAdapterFactoryTest {
         |  },
         |  "@type": "type.googleapis.com/bucketeer.event.client.MetricsEvent"
         |}
-      """.trimMargin(),
-      event = EventData.MetricsEvent(
-        timestamp = 1660210923777,
-        type = MetricsEventType.UNKNOWN,
-        event = MetricsEventData.UnknownErrorMetricsEvent(
-          ApiId.GET_EVALUATIONS,
-          labels = mapOf(
-            "tag" to "tag_value",
-            "response_code" to "418",
-            "error_message" to "code 418",
-          ),
+        """.trimMargin(),
+      event =
+        EventData.MetricsEvent(
+          timestamp = 1660210923777,
+          type = MetricsEventType.UNKNOWN,
+          event =
+            MetricsEventData.UnknownErrorMetricsEvent(
+              ApiId.GET_EVALUATIONS,
+              labels =
+                mapOf(
+                  "tag" to "tag_value",
+                  "response_code" to "418",
+                  "error_message" to "code 418",
+                ),
+            ),
+          sourceId = SourceID.ANDROID,
+          sdkVersion = "2.0.1",
+          metadata =
+            mapOf(
+              "app_version" to "1.2.3",
+              "os_version" to "os_version_value",
+              "device_model" to "device_model_value",
+            ),
         ),
-        sourceId = SourceID.ANDROID,
-        sdkVersion = "2.0.1",
-        metadata = mapOf(
-          "app_version" to "1.2.3",
-          "os_version" to "os_version_value",
-          "device_model" to "device_model_value",
-        ),
-      ),
     ),
     RedirectRequestErrorMetricsEvent(
-      json = """
+      json =
+        """
         |{
         |  "timestamp": 1660210923777,
         |  "type": 13,
@@ -575,28 +640,33 @@ class MetricsEventAdapterFactoryTest {
         |  },
         |  "@type": "type.googleapis.com/bucketeer.event.client.MetricsEvent"
         |}
-      """.trimMargin(),
-      event = EventData.MetricsEvent(
-        timestamp = 1660210923777,
-        type = MetricsEventType.REDIRECT_REQUEST,
-        event = MetricsEventData.RedirectionRequestErrorMetricsEvent(
-          ApiId.GET_EVALUATIONS,
-          labels = mapOf(
-            "tag" to "tag_value",
-            "response_code" to "302",
-          ),
+        """.trimMargin(),
+      event =
+        EventData.MetricsEvent(
+          timestamp = 1660210923777,
+          type = MetricsEventType.REDIRECT_REQUEST,
+          event =
+            MetricsEventData.RedirectionRequestErrorMetricsEvent(
+              ApiId.GET_EVALUATIONS,
+              labels =
+                mapOf(
+                  "tag" to "tag_value",
+                  "response_code" to "302",
+                ),
+            ),
+          sourceId = SourceID.ANDROID,
+          sdkVersion = "2.0.1",
+          metadata =
+            mapOf(
+              "app_version" to "1.2.3",
+              "os_version" to "os_version_value",
+              "device_model" to "device_model_value",
+            ),
         ),
-        sourceId = SourceID.ANDROID,
-        sdkVersion = "2.0.1",
-        metadata = mapOf(
-          "app_version" to "1.2.3",
-          "os_version" to "os_version_value",
-          "device_model" to "device_model_value",
-        ),
-      ),
     ),
     PayloadTooLargeErrorMetricsEvent(
-      json = """
+      json =
+        """
         |{
         |  "timestamp": 1660210923777,
         |  "type": 14,
@@ -616,31 +686,34 @@ class MetricsEventAdapterFactoryTest {
         |  },
         |  "@type": "type.googleapis.com/bucketeer.event.client.MetricsEvent"
         |}
-      """.trimMargin(),
-      event = EventData.MetricsEvent(
-        timestamp = 1660210923777,
-        type = MetricsEventType.PAYLOAD_TOO_LARGE,
-        event = MetricsEventData.PayloadTooLargeErrorMetricsEvent(
-          ApiId.GET_EVALUATIONS,
-          labels = mapOf(
-            "tag" to "tag_value",
-          ),
+        """.trimMargin(),
+      event =
+        EventData.MetricsEvent(
+          timestamp = 1660210923777,
+          type = MetricsEventType.PAYLOAD_TOO_LARGE,
+          event =
+            MetricsEventData.PayloadTooLargeErrorMetricsEvent(
+              ApiId.GET_EVALUATIONS,
+              labels =
+                mapOf(
+                  "tag" to "tag_value",
+                ),
+            ),
+          sourceId = SourceID.ANDROID,
+          sdkVersion = "2.0.1",
+          metadata =
+            mapOf(
+              "app_version" to "1.2.3",
+              "os_version" to "os_version_value",
+              "device_model" to "device_model_value",
+            ),
         ),
-        sourceId = SourceID.ANDROID,
-        sdkVersion = "2.0.1",
-        metadata =
-        mapOf(
-          "app_version" to "1.2.3",
-          "os_version" to "os_version_value",
-          "device_model" to "device_model_value",
-        ),
-      ),
     ),
 
     @Suppress("EnumEntryName", "ktlint:standard:enum-entry-name-case")
     Metrics_NoSdkVersion_NoMetadata(
       json =
-      """
+        """
         |{
         |  "timestamp": 1660210923777,
         |  "type": 14,
@@ -654,23 +727,23 @@ class MetricsEventAdapterFactoryTest {
         |  "sourceId": 1,
         |  "@type": "type.googleapis.com/bucketeer.event.client.MetricsEvent"
         |}
-      """.trimMargin(),
+        """.trimMargin(),
       event =
-      EventData.MetricsEvent(
-        timestamp = 1660210923777,
-        type = MetricsEventType.PAYLOAD_TOO_LARGE,
-        event =
-        MetricsEventData.PayloadTooLargeErrorMetricsEvent(
-          ApiId.GET_EVALUATIONS,
-          labels =
-          mapOf(
-            "tag" to "tag_value",
-          ),
+        EventData.MetricsEvent(
+          timestamp = 1660210923777,
+          type = MetricsEventType.PAYLOAD_TOO_LARGE,
+          event =
+            MetricsEventData.PayloadTooLargeErrorMetricsEvent(
+              ApiId.GET_EVALUATIONS,
+              labels =
+                mapOf(
+                  "tag" to "tag_value",
+                ),
+            ),
+          sourceId = SourceID.ANDROID,
+          sdkVersion = null,
+          metadata = null,
         ),
-        sourceId = SourceID.ANDROID,
-        sdkVersion = null,
-        metadata = null,
-      ),
     ),
 
     // Because the default `source_id` is SourceId.Android.
@@ -678,7 +751,7 @@ class MetricsEventAdapterFactoryTest {
     @Suppress("EnumEntryName", "ktlint:standard:enum-entry-name-case")
     Metrics_With_SourceId_Is_Not_Android(
       json =
-      """
+        """
         |{
         |  "timestamp": 1660210923777,
         |  "type": 14,
@@ -698,28 +771,28 @@ class MetricsEventAdapterFactoryTest {
         |  },
         |  "@type": "type.googleapis.com/bucketeer.event.client.MetricsEvent"
         |}
-      """.trimMargin(),
+        """.trimMargin(),
       event =
-      EventData.MetricsEvent(
-        timestamp = 1660210923777,
-        type = MetricsEventType.PAYLOAD_TOO_LARGE,
-        event =
-        MetricsEventData.PayloadTooLargeErrorMetricsEvent(
-          ApiId.GET_EVALUATIONS,
-          labels =
-          mapOf(
-            "tag" to "tag_value",
-          ),
+        EventData.MetricsEvent(
+          timestamp = 1660210923777,
+          type = MetricsEventType.PAYLOAD_TOO_LARGE,
+          event =
+            MetricsEventData.PayloadTooLargeErrorMetricsEvent(
+              ApiId.GET_EVALUATIONS,
+              labels =
+                mapOf(
+                  "tag" to "tag_value",
+                ),
+            ),
+          sourceId = SourceID.GOAL_BATCH,
+          sdkVersion = "2.0.1",
+          metadata =
+            mapOf(
+              "app_version" to "1.2.3",
+              "os_version" to "os_version_value",
+              "device_model" to "device_model_value",
+            ),
         ),
-        sourceId = SourceID.GOAL_BATCH,
-        sdkVersion = "2.0.1",
-        metadata =
-        mapOf(
-          "app_version" to "1.2.3",
-          "os_version" to "os_version_value",
-          "device_model" to "device_model_value",
-        ),
-      ),
     ),
   }
 
@@ -731,14 +804,18 @@ class MetricsEventAdapterFactoryTest {
   }
 
   @Test
-  fun fromJson(@TestParameter case: TestCase) {
+  fun fromJson(
+    @TestParameter case: TestCase,
+  ) {
     val result = adapter.fromJson(case.json)
 
     assertThat(result).isEqualTo(case.event)
   }
 
   @Test
-  fun toJson(@TestParameter case: TestCase) {
+  fun toJson(
+    @TestParameter case: TestCase,
+  ) {
     val result = adapter.indent("  ").toJson(case.event)
 
     assertThat(result).isEqualTo(case.json)
@@ -775,21 +852,21 @@ class MetricsEventAdapterFactoryTest {
         timestamp = 1660210923777,
         type = MetricsEventType.PAYLOAD_TOO_LARGE,
         event =
-        MetricsEventData.PayloadTooLargeErrorMetricsEvent(
-          ApiId.GET_EVALUATIONS,
-          labels =
-          mapOf(
-            "tag" to "tag_value",
+          MetricsEventData.PayloadTooLargeErrorMetricsEvent(
+            ApiId.GET_EVALUATIONS,
+            labels =
+              mapOf(
+                "tag" to "tag_value",
+              ),
           ),
-        ),
         sourceId = SourceID.ANDROID,
         sdkVersion = "2.0.1",
         metadata =
-        mapOf(
-          "app_version" to "1.2.3",
-          "os_version" to "os_version_value",
-          "device_model" to "device_model_value",
-        ),
+          mapOf(
+            "app_version" to "1.2.3",
+            "os_version" to "os_version_value",
+            "device_model" to "device_model_value",
+          ),
       )
 
     val result = adapter.fromJson(json)

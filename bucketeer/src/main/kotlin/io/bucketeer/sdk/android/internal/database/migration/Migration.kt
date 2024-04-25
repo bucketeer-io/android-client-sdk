@@ -4,5 +4,8 @@ import android.content.SharedPreferences
 import androidx.sqlite.db.SupportSQLiteDatabase
 
 interface Migration {
-  fun migrate(db: SupportSQLiteDatabase, sharedPreferences: SharedPreferences)
+  fun migrate(
+    db: SupportSQLiteDatabase,
+    sharedPreferences: SharedPreferences,
+  )
 }

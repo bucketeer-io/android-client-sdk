@@ -20,7 +20,6 @@ import java.util.concurrent.TimeUnit
 
 @RunWith(RobolectricTestRunner::class)
 class EvaluationBackgroundTaskTest {
-
   private lateinit var server: MockWebServer
 
   private lateinit var config: BKTConfig
@@ -31,11 +30,12 @@ class EvaluationBackgroundTaskTest {
   fun setup() {
     server = MockWebServer()
 
-    config = createTestBKTConfig(
-      apiKey = "api_key_value",
-      apiEndpoint = server.url("").toString(),
-      featureTag = "feature_tag_value",
-    )
+    config =
+      createTestBKTConfig(
+        apiKey = "api_key_value",
+        apiEndpoint = server.url("").toString(),
+        featureTag = "feature_tag_value",
+      )
 
     context = ApplicationProvider.getApplicationContext()
   }
