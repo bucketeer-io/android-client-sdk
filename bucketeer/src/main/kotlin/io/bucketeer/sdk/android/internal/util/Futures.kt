@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit
 
 internal object Futures {
   fun <V> success(value: V): Future<V> = SuccessFuture(value)
+
   fun <V> failure(error: BKTException): Future<V> = FailureFuture(error)
 }
 
@@ -21,7 +22,10 @@ internal class SuccessFuture<V>(
 
   override fun get(): V = value
 
-  override fun get(p0: Long, p1: TimeUnit?): V = value
+  override fun get(
+    p0: Long,
+    p1: TimeUnit?,
+  ): V = value
 }
 
 internal class FailureFuture<V>(
@@ -35,5 +39,8 @@ internal class FailureFuture<V>(
 
   override fun get(): V = throw ExecutionException(error)
 
-  override fun get(p0: Long, p1: TimeUnit?): V = throw ExecutionException(error)
+  override fun get(
+    p0: Long,
+    p1: TimeUnit?,
+  ): V = throw ExecutionException(error)
 }

@@ -11,7 +11,6 @@ internal class EvaluationStorageImpl(
   private val evaluationSharedPrefs: EvaluationSharedPrefs,
   private val memCache: MemCache<String, List<Evaluation>>,
 ) : EvaluationStorage {
-
   override fun getCurrentEvaluationId(): String {
     return evaluationSharedPrefs.currentEvaluationsId
   }
@@ -83,9 +82,10 @@ internal class EvaluationStorageImpl(
       currentEvaluationsByFeaturedId[evaluation.featureId] = evaluation
     }
     // 2- Check the list of the feature flags that were archived on the console and delete them from the DB
-    val currentEvaluations = currentEvaluationsByFeaturedId.values.filterNot {
-      archivedFeatureIds.contains(it.featureId)
-    }
+    val currentEvaluations =
+      currentEvaluationsByFeaturedId.values.filterNot {
+        archivedFeatureIds.contains(it.featureId)
+      }
     deleteAllAndInsert(
       evaluationsId = evaluationsId,
       evaluations = currentEvaluations,

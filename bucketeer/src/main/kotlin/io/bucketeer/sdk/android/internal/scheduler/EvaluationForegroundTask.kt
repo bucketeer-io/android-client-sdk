@@ -15,19 +15,19 @@ internal class EvaluationForegroundTask(
   private val retryPollingInterval: Long = RETRY_POLLING_INTERVAL,
   private val maxRetryCount: Int = MAX_RETRY_COUNT,
 ) : ScheduledTask {
-
   private var scheduledFuture: ScheduledFuture<*>? = null
 
   private var retryCount: Int = 0
 
   private fun reschedule(interval: Long) {
     scheduledFuture?.cancel(false)
-    scheduledFuture = executor.scheduleWithFixedDelay(
-      { fetchEvaluations() },
-      interval,
-      interval,
-      TimeUnit.MILLISECONDS,
-    )
+    scheduledFuture =
+      executor.scheduleWithFixedDelay(
+        { fetchEvaluations() },
+        interval,
+        interval,
+        TimeUnit.MILLISECONDS,
+      )
   }
 
   private fun fetchEvaluations() {

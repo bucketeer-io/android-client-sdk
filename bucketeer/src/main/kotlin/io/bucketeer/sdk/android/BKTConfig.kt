@@ -23,7 +23,6 @@ data class BKTConfig internal constructor(
   val appVersion: String,
   val logger: BKTLogger?,
 ) {
-
   companion object {
     fun builder(): Builder = Builder()
   }
@@ -95,7 +94,10 @@ data class BKTConfig internal constructor(
       }
 
       if (this.backgroundPollingInterval < MINIMUM_BACKGROUND_POLLING_INTERVAL_MILLIS) {
-        logw { "backgroundPollingInterval: $backgroundPollingInterval is set but must be above $MINIMUM_BACKGROUND_POLLING_INTERVAL_MILLIS" }
+        logw {
+          "backgroundPollingInterval: $backgroundPollingInterval is set but must be above " +
+            "$MINIMUM_BACKGROUND_POLLING_INTERVAL_MILLIS"
+        }
         this.backgroundPollingInterval = MINIMUM_BACKGROUND_POLLING_INTERVAL_MILLIS
       }
 

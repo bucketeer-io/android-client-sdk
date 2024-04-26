@@ -23,14 +23,17 @@ internal class EventInteractor(
   private val appVersion: String,
   private val featureTag: String,
 ) {
-
   private var eventUpdateListener: EventUpdateListener? = null
 
   fun setEventUpdateListener(listener: EventUpdateListener?) {
     this.eventUpdateListener = listener
   }
 
-  fun trackEvaluationEvent(featureTag: String, user: User, evaluation: Evaluation) {
+  fun trackEvaluationEvent(
+    featureTag: String,
+    user: User,
+    evaluation: Evaluation,
+  ) {
     eventSQLDao.addEvent(
       newEvaluationEvent(clock, idGenerator, featureTag, user, evaluation, appVersion),
     )
@@ -38,7 +41,11 @@ internal class EventInteractor(
     updateEventsAndNotify()
   }
 
-  fun trackDefaultEvaluationEvent(featureTag: String, user: User, featureId: String) {
+  fun trackDefaultEvaluationEvent(
+    featureTag: String,
+    user: User,
+    featureId: String,
+  ) {
     eventSQLDao.addEvent(
       newDefaultEvaluationEvent(clock, idGenerator, featureTag, user, featureId, appVersion),
     )
@@ -46,7 +53,12 @@ internal class EventInteractor(
     updateEventsAndNotify()
   }
 
-  fun trackGoalEvent(featureTag: String, user: User, goalId: String, value: Double) {
+  fun trackGoalEvent(
+    featureTag: String,
+    user: User,
+    goalId: String,
+    value: Double,
+  ) {
     eventSQLDao.addEvent(
       newGoalEvent(clock, idGenerator, goalId, value, featureTag, user, appVersion),
     )
@@ -61,15 +73,16 @@ internal class EventInteractor(
   ) {
     // For get_evaluations, we will report all metrics events, Including the latency and size metrics events.
     // https://github.com/bucketeer-io/android-client-sdk/issues/56
-    val events = newSuccessMetricsEvents(
-      clock = clock,
-      idGenerator = idGenerator,
-      featureTag = featureTag,
-      appVersion = appVersion,
-      apiId = ApiId.GET_EVALUATIONS,
-      latencySecond = seconds,
-      sizeByte = sizeByte,
-    )
+    val events =
+      newSuccessMetricsEvents(
+        clock = clock,
+        idGenerator = idGenerator,
+        featureTag = featureTag,
+        appVersion = appVersion,
+        apiId = ApiId.GET_EVALUATIONS,
+        latencySecond = seconds,
+        sizeByte = sizeByte,
+      )
     addMetricEvents(events)
   }
 
@@ -87,14 +100,15 @@ internal class EventInteractor(
     error: BKTException,
     apiId: ApiId,
   ) {
-    val event = newErrorMetricsEvent(
-      clock = clock,
-      idGenerator = idGenerator,
-      featureTag = featureTag,
-      appVersion = appVersion,
-      error = error,
-      apiId = apiId,
-    )
+    val event =
+      newErrorMetricsEvent(
+        clock = clock,
+        idGenerator = idGenerator,
+        featureTag = featureTag,
+        appVersion = appVersion,
+        error = error,
+        apiId = apiId,
+      )
     addMetricEvents(listOf(event))
   }
 
@@ -105,22 +119,22 @@ internal class EventInteractor(
    * @params events: should be a list of `EventData.MetricsEvent`
    */
   @VisibleForTesting
-  internal fun addMetricEvents(
-    events: List<Event>,
-  ) {
+  internal fun addMetricEvents(events: List<Event>) {
     // 1 Get all event
     // 2 Get metrics data unique key
     // 3 Filter the list
     // 4 If list is not empty -> add to database
     val storedEvents = eventSQLDao.getEvents()
-    val metricsEventUniqueKeys: List<String> = storedEvents
-      .filter { it.event is EventData.MetricsEvent }
-      .map { (it.event as EventData.MetricsEvent).uniqueKey() }
+    val metricsEventUniqueKeys: List<String> =
+      storedEvents
+        .filter { it.event is EventData.MetricsEvent }
+        .map { (it.event as EventData.MetricsEvent).uniqueKey() }
     // For get_evaluations, we will report all metrics events, Including the latency and size metrics events.
     // https://github.com/bucketeer-io/android-client-sdk/issues/56
-    val newEvents = events.filter {
-      it.event is EventData.MetricsEvent && !metricsEventUniqueKeys.contains(it.event.uniqueKey())
-    }
+    val newEvents =
+      events.filter {
+        it.event is EventData.MetricsEvent && !metricsEventUniqueKeys.contains(it.event.uniqueKey())
+      }
     if (newEvents.isNotEmpty()) {
       eventSQLDao.addEvents(newEvents)
       updateEventsAndNotify()
@@ -147,13 +161,14 @@ internal class EventInteractor(
     return when (result) {
       is RegisterEventsResult.Success -> {
         val errors = result.value.errors
-        val deleteIds = sendingEvents.map { it.id }
-          .filter { eventId ->
-            // if the event does not contain in error, delete it
-            val error = errors[eventId] ?: return@filter true
-            // if the error is not retriable, delete it
-            !error.retriable
-          }
+        val deleteIds =
+          sendingEvents.map { it.id }
+            .filter { eventId ->
+              // if the event does not contain in error, delete it
+              val error = errors[eventId] ?: return@filter true
+              // if the error is not retriable, delete it
+              !error.retriable
+            }
 
         eventSQLDao.delete(deleteIds)
 
@@ -173,14 +188,13 @@ internal class EventInteractor(
     }
   }
 
-  private fun trackSendEventsFailure(
-    error: BKTException,
-  ) = trackApiFailureMetricsEvent(
-    // discussed: here https://github.com/bucketeer-io/android-client-sdk/pull/64/files#r1214187627
-    featureTag = featureTag,
-    error,
-    ApiId.REGISTER_EVENTS,
-  )
+  private fun trackSendEventsFailure(error: BKTException) =
+    trackApiFailureMetricsEvent(
+      // discussed: here https://github.com/bucketeer-io/android-client-sdk/pull/64/files#r1214187627
+      featureTag = featureTag,
+      error,
+      ApiId.REGISTER_EVENTS,
+    )
 
   private fun updateEventsAndNotify() {
     eventUpdateListener?.onUpdate(eventSQLDao.getEvents())

@@ -14,9 +14,10 @@ import kotlin.contracts.ExperimentalContracts
 
 fun Response.toBKTException(adapter: JsonAdapter<ErrorResponse>): BKTException {
   val bodyString = body?.string() ?: ""
-  val errorBody: ErrorResponse? = kotlin.runCatching {
-    adapter.fromJson(bodyString)
-  }.getOrNull()
+  val errorBody: ErrorResponse? =
+    kotlin.runCatching {
+      adapter.fromJson(bodyString)
+    }.getOrNull()
 
   return when (code) {
     in 300..399 -> {
@@ -101,14 +102,18 @@ fun Response.toBKTException(adapter: JsonAdapter<ErrorResponse>): BKTException {
         message = errorBody?.error?.message ?: "ServiceUnavailable error",
       )
     }
-    else -> BKTException.UnknownServerException(
-      message = "Unknown error: '$errorBody'",
-      statusCode = code,
-    )
+    else ->
+      BKTException.UnknownServerException(
+        message = "Unknown error: '$errorBody'",
+        statusCode = code,
+      )
   }
 }
 
-internal fun Throwable.toBKTException(requestTimeoutMillis: Long, statusCode: Int = 0): BKTException {
+internal fun Throwable.toBKTException(
+  requestTimeoutMillis: Long,
+  statusCode: Int = 0,
+): BKTException {
   return when (this) {
     is BKTException -> this
     is SocketTimeoutException,

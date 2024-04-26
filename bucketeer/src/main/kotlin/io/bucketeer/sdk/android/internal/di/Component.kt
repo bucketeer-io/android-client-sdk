@@ -18,7 +18,6 @@ internal class ComponentImpl(
   val dataModule: DataModule,
   val interactorModule: InteractorModule,
 ) : Component {
-
   override val context: Context
     get() = dataModule.application
 

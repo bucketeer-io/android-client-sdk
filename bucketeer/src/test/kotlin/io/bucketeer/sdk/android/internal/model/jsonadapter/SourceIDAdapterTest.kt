@@ -12,7 +12,6 @@ import org.junit.runner.RunWith
 
 @RunWith(TestParameterInjector::class)
 class SourceIDAdapterTest {
-
   lateinit var adapter: JsonAdapter<SourceID>
 
   @Before
@@ -21,14 +20,18 @@ class SourceIDAdapterTest {
   }
 
   @Test
-  fun fromJson(@TestParameter sourceID: SourceID) {
+  fun fromJson(
+    @TestParameter sourceID: SourceID,
+  ) {
     val result = adapter.fromJson(sourceID.value.toString())
 
     assertThat(result).isEqualTo(sourceID)
   }
 
   @Test
-  fun toJson(@TestParameter sourceID: SourceID) {
+  fun toJson(
+    @TestParameter sourceID: SourceID,
+  ) {
     val result = adapter.toJson(sourceID)
 
     assertThat(result).isEqualTo(sourceID.value.toString())

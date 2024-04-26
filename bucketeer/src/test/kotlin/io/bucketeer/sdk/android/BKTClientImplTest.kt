@@ -48,12 +48,13 @@ class BKTClientImplTest {
   fun setup() {
     server = MockWebServer()
 
-    config = BKTConfig.builder()
-      .apiEndpoint(server.url("").toString())
-      .apiKey("api_key_value")
-      .featureTag("feature_tag_value")
-      .appVersion("1.2.3")
-      .build()
+    config =
+      BKTConfig.builder()
+        .apiEndpoint(server.url("").toString())
+        .apiKey("api_key_value")
+        .featureTag("feature_tag_value")
+        .appVersion("1.2.3")
+        .build()
 
     moshi = DataModule.createMoshi()
   }
@@ -84,12 +85,13 @@ class BKTClientImplTest {
         ),
     )
 
-    val future = BKTClient.initialize(
-      ApplicationProvider.getApplicationContext(),
-      config,
-      user1.toBKTUser(),
-      1000,
-    )
+    val future =
+      BKTClient.initialize(
+        ApplicationProvider.getApplicationContext(),
+        config,
+        user1.toBKTUser(),
+        1000,
+      )
 
     val result = future.get()
 
@@ -135,12 +137,13 @@ class BKTClientImplTest {
         ),
     )
 
-    val future = BKTClient.initialize(
-      ApplicationProvider.getApplicationContext(),
-      config,
-      user1.toBKTUser(),
-      1000,
-    )
+    val future =
+      BKTClient.initialize(
+        ApplicationProvider.getApplicationContext(),
+        config,
+        user1.toBKTUser(),
+        1000,
+      )
 
     val result = future.get()
 
@@ -183,19 +186,21 @@ class BKTClientImplTest {
     )
     server.enqueue(MockResponse().setResponseCode(500).setBody("500 error"))
 
-    val future1 = BKTClient.initialize(
-      ApplicationProvider.getApplicationContext(),
-      config,
-      user1.toBKTUser(),
-      1000,
-    )
+    val future1 =
+      BKTClient.initialize(
+        ApplicationProvider.getApplicationContext(),
+        config,
+        user1.toBKTUser(),
+        1000,
+      )
 
-    val future2 = BKTClient.initialize(
-      ApplicationProvider.getApplicationContext(),
-      config,
-      user1.toBKTUser(),
-      1000,
-    )
+    val future2 =
+      BKTClient.initialize(
+        ApplicationProvider.getApplicationContext(),
+        config,
+        user1.toBKTUser(),
+        1000,
+      )
 
     // future1 has not finished yet
     assertThat(future1.isDone).isFalse()
@@ -309,12 +314,13 @@ class BKTClientImplTest {
         ),
     )
 
-    val initializeFuture = BKTClient.initialize(
-      ApplicationProvider.getApplicationContext(),
-      config,
-      user1.toBKTUser(),
-      1000,
-    )
+    val initializeFuture =
+      BKTClient.initialize(
+        ApplicationProvider.getApplicationContext(),
+        config,
+        user1.toBKTUser(),
+        1000,
+      )
     initializeFuture.get()
 
     assertThat(server.requestCount).isEqualTo(1)
@@ -332,10 +338,11 @@ class BKTClientImplTest {
 
     assertThat(server.requestCount).isEqualTo(2)
     val request = server.takeRequest()
-    val requestBody = requireNotNull(
-      moshi.adapter(RegisterEventsRequest::class.java)
-        .fromJson(request.body.readString(Charsets.UTF_8)),
-    )
+    val requestBody =
+      requireNotNull(
+        moshi.adapter(RegisterEventsRequest::class.java)
+          .fromJson(request.body.readString(Charsets.UTF_8)),
+      )
 
     assertThat(requestBody.events).hasSize(2)
     assertThat(requestBody.sourceId).isEqualTo(SourceID.ANDROID)
@@ -371,12 +378,13 @@ class BKTClientImplTest {
         ),
     )
 
-    val initializeFuture = BKTClient.initialize(
-      ApplicationProvider.getApplicationContext(),
-      config,
-      user1.toBKTUser(),
-      1000,
-    )
+    val initializeFuture =
+      BKTClient.initialize(
+        ApplicationProvider.getApplicationContext(),
+        config,
+        user1.toBKTUser(),
+        1000,
+      )
     initializeFuture.get()
 
     assertThat(server.requestCount).isEqualTo(1)
@@ -394,10 +402,11 @@ class BKTClientImplTest {
 
     assertThat(server.requestCount).isEqualTo(2)
     val request = server.takeRequest()
-    val requestBody = requireNotNull(
-      moshi.adapter(RegisterEventsRequest::class.java)
-        .fromJson(request.body.readString(Charsets.UTF_8)),
-    )
+    val requestBody =
+      requireNotNull(
+        moshi.adapter(RegisterEventsRequest::class.java)
+          .fromJson(request.body.readString(Charsets.UTF_8)),
+      )
 
     assertThat(requestBody.events).hasSize(2)
     assertThat(requestBody.sourceId).isEqualTo(SourceID.ANDROID)
@@ -425,12 +434,13 @@ class BKTClientImplTest {
         ),
     )
 
-    val initializeFuture = BKTClient.initialize(
-      ApplicationProvider.getApplicationContext(),
-      config,
-      user1.toBKTUser(),
-      1000,
-    )
+    val initializeFuture =
+      BKTClient.initialize(
+        ApplicationProvider.getApplicationContext(),
+        config,
+        user1.toBKTUser(),
+        1000,
+      )
     initializeFuture.get()
 
     val client = BKTClient.getInstance() as BKTClientImpl
@@ -462,12 +472,13 @@ class BKTClientImplTest {
         ),
     )
 
-    val initializeFuture = BKTClient.initialize(
-      ApplicationProvider.getApplicationContext(),
-      config,
-      user1.toBKTUser(),
-      1000,
-    )
+    val initializeFuture =
+      BKTClient.initialize(
+        ApplicationProvider.getApplicationContext(),
+        config,
+        user1.toBKTUser(),
+        1000,
+      )
     initializeFuture.get()
 
     val actual = BKTClient.getInstance().evaluationDetails(evaluation1.featureId)
@@ -502,12 +513,13 @@ class BKTClientImplTest {
         ),
     )
 
-    val initializeFuture = BKTClient.initialize(
-      ApplicationProvider.getApplicationContext(),
-      config,
-      user1.toBKTUser(),
-      1000,
-    )
+    val initializeFuture =
+      BKTClient.initialize(
+        ApplicationProvider.getApplicationContext(),
+        config,
+        user1.toBKTUser(),
+        1000,
+      )
     initializeFuture.get()
 
     val actual = BKTClient.getInstance().evaluationDetails("unknown_feature_id")
@@ -524,20 +536,22 @@ class BKTClientImplTest {
           moshi.adapter(GetEvaluationsResponse::class.java)
             .toJson(
               GetEvaluationsResponse(
-                evaluations = UserEvaluations(
-                  id = "id_value",
-                  evaluations = listOf(evaluation1),
-                  createdAt = "1690798021",
-                  forceUpdate = true,
-                ),
+                evaluations =
+                  UserEvaluations(
+                    id = "id_value",
+                    evaluations = listOf(evaluation1),
+                    createdAt = "1690798021",
+                    forceUpdate = true,
+                  ),
                 userEvaluationsId = "user_evaluations_id_value",
               ),
             ),
         ),
     )
-    val updatedEvaluation1 = evaluation1.copy(
-      variationValue = "test variation value1 updated",
-    )
+    val updatedEvaluation1 =
+      evaluation1.copy(
+        variationValue = "test variation value1 updated",
+      )
     server.enqueue(
       MockResponse()
         .setResponseCode(200)
@@ -545,21 +559,23 @@ class BKTClientImplTest {
           moshi.adapter(GetEvaluationsResponse::class.java)
             .toJson(
               GetEvaluationsResponse(
-                evaluations = user1Evaluations.copy(
-                  evaluations = listOf(updatedEvaluation1),
-                ),
+                evaluations =
+                  user1Evaluations.copy(
+                    evaluations = listOf(updatedEvaluation1),
+                  ),
                 userEvaluationsId = "user_evaluations_id_value_updated",
               ),
             ),
         ),
     )
 
-    val initializeFuture = BKTClient.initialize(
-      ApplicationProvider.getApplicationContext(),
-      config,
-      user1.toBKTUser(),
-      1000,
-    )
+    val initializeFuture =
+      BKTClient.initialize(
+        ApplicationProvider.getApplicationContext(),
+        config,
+        user1.toBKTUser(),
+        1000,
+      )
     initializeFuture.get()
 
     val client = BKTClient.getInstance() as BKTClientImpl
@@ -606,12 +622,13 @@ class BKTClientImplTest {
         ),
     )
 
-    val initializeFuture = BKTClient.initialize(
-      ApplicationProvider.getApplicationContext(),
-      config,
-      user1.toBKTUser(),
-      1000,
-    )
+    val initializeFuture =
+      BKTClient.initialize(
+        ApplicationProvider.getApplicationContext(),
+        config,
+        user1.toBKTUser(),
+        1000,
+      )
     initializeFuture.get()
 
     val client = BKTClient.getInstance() as BKTClientImpl
@@ -658,10 +675,11 @@ class BKTClientImplTest {
       1000,
     )
 
-    val attributes = mapOf(
-      "custom_key" to "custom_key_value",
-      "custom_key_2" to "custom_key_value_2",
-    )
+    val attributes =
+      mapOf(
+        "custom_key" to "custom_key_value",
+        "custom_key_2" to "custom_key_value_2",
+      )
 
     BKTClient.getInstance().updateUserAttributes(attributes)
 
@@ -699,14 +717,18 @@ private val BKTClient.componentImpl: ComponentImpl
   get() = (this as BKTClientImpl).component as ComponentImpl
 
 // these assertion methods do not check full-equality, but that should be covered in other tests
-fun assertLatencyMetricsEvent(actual: Event, expectedLabels: Map<String, String>, apiId: ApiId) {
+fun assertLatencyMetricsEvent(
+  actual: Event,
+  expectedLabels: Map<String, String>,
+  apiId: ApiId,
+) {
   assertThat(actual.id).isNotEmpty() // id is not assertable here
   assertThat(actual.type).isEqualTo(EventType.METRICS)
   assertThat(actual.event).isInstanceOf(EventData.MetricsEvent::class.java)
 
   val actualMetricsEvent = actual.event as EventData.MetricsEvent
 
-  assertThat(actualMetricsEvent.timestamp).isGreaterThan(0)
+  assertThat(actualMetricsEvent.timestamp).isGreaterThan(0L)
 
   assertThat(actualMetricsEvent.type).isEqualTo(MetricsEventType.RESPONSE_LATENCY)
   assertThat(actualMetricsEvent.event)
@@ -729,7 +751,7 @@ fun assertSizeMetricsEvent(
 
   val actualMetricsEvent = actual.event as EventData.MetricsEvent
 
-  assertThat(actualMetricsEvent.timestamp).isGreaterThan(0)
+  assertThat(actualMetricsEvent.timestamp).isGreaterThan(0L)
   assertThat(actualMetricsEvent.type).isEqualTo(MetricsEventType.RESPONSE_SIZE)
   assertThat(actualMetricsEvent.event)
     .isInstanceOf(MetricsEventData.SizeMetricsEvent::class.java)

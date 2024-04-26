@@ -5,7 +5,9 @@ import io.bucketeer.sdk.android.internal.model.Event
 
 internal interface EventSQLDao : Closeable {
   fun addEvent(event: Event)
+
   fun addEvents(events: List<Event>)
+
   fun getEvents(): List<Event>
 
   /** delete rows by ID */

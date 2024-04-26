@@ -9,18 +9,35 @@ import org.json.JSONObject
 import java.util.concurrent.Future
 
 interface BKTClient {
+  fun stringVariation(
+    featureId: String,
+    defaultValue: String,
+  ): String
 
-  fun stringVariation(featureId: String, defaultValue: String): String
+  fun intVariation(
+    featureId: String,
+    defaultValue: Int,
+  ): Int
 
-  fun intVariation(featureId: String, defaultValue: Int): Int
+  fun doubleVariation(
+    featureId: String,
+    defaultValue: Double,
+  ): Double
 
-  fun doubleVariation(featureId: String, defaultValue: Double): Double
+  fun booleanVariation(
+    featureId: String,
+    defaultValue: Boolean,
+  ): Boolean
 
-  fun booleanVariation(featureId: String, defaultValue: Boolean): Boolean
+  fun jsonVariation(
+    featureId: String,
+    defaultValue: JSONObject,
+  ): JSONObject
 
-  fun jsonVariation(featureId: String, defaultValue: JSONObject): JSONObject
-
-  fun track(goalId: String, value: Double = 0.0)
+  fun track(
+    goalId: String,
+    value: Double = 0.0,
+  )
 
   fun currentUser(): BKTUser
 
@@ -39,7 +56,6 @@ interface BKTClient {
   fun clearEvaluationUpdateListeners()
 
   companion object {
-
     @Volatile
     private var instance: BKTClient? = null
 

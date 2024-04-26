@@ -14,16 +14,20 @@ import io.bucketeer.sdk.android.internal.util.createBroadcastPendingIntent
 import io.bucketeer.sdk.android.internal.util.getAlarmManager
 
 internal class EvaluationBackgroundTask : BroadcastReceiver() {
-  override fun onReceive(context: Context?, intent: Intent?) {
+  override fun onReceive(
+    context: Context?,
+    intent: Intent?,
+  ) {
     // We need to use BKTClient singleton because we can't serialize logger
     // This means
     // - BKTClient#initialize must be called first
     // - background polling happens as long as BKTClient singleton lives
-    val client = try {
-      BKTClient.getInstance() as BKTClientImpl
-    } catch (e: Throwable) {
-      null
-    }
+    val client =
+      try {
+        BKTClient.getInstance() as BKTClientImpl
+      } catch (e: Throwable) {
+        null
+      }
 
     if (client == null) {
       logd { "BKTClient is not initialized, skipping background Evaluation polling..." }

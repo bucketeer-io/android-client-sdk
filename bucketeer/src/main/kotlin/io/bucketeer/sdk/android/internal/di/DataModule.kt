@@ -43,7 +43,6 @@ internal open class DataModule(
   val config: BKTConfig,
   val inMemoryDB: Boolean = false,
 ) {
-
   open val clock: Clock by lazy { ClockImpl() }
 
   open val idGenerator: IdGenerator by lazy { IdGeneratorImpl() }

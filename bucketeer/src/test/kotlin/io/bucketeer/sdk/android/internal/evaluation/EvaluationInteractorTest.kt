@@ -51,24 +51,28 @@ class EvaluationInteractorTest {
   fun setup() {
     server = MockWebServer()
 
-    val config = BKTConfig.builder()
-      .apiEndpoint(server.url("").toString())
-      .apiKey("api_key_value")
-      .featureTag("feature_tag_value")
-      .appVersion("1.2.3")
-      .build()
+    val config =
+      BKTConfig.builder()
+        .apiEndpoint(server.url("").toString())
+        .apiKey("api_key_value")
+        .featureTag("feature_tag_value")
+        .appVersion("1.2.3")
+        .build()
 
-    component = ComponentImpl(
-      dataModule = DataModule(
-        application = ApplicationProvider.getApplicationContext(),
-        user = user1,
-        config = config,
-        inMemoryDB = true,
-      ),
-      interactorModule = InteractorModule(
-        mainHandler = Handler(Looper.getMainLooper()),
-      ),
-    )
+    component =
+      ComponentImpl(
+        dataModule =
+          DataModule(
+            application = ApplicationProvider.getApplicationContext(),
+            user = user1,
+            config = config,
+            inMemoryDB = true,
+          ),
+        interactorModule =
+          InteractorModule(
+            mainHandler = Handler(Looper.getMainLooper()),
+          ),
+      )
     interactor = component.evaluationInteractor
     moshi = component.dataModule.moshi
     storage = component.dataModule.evaluationStorage
@@ -106,23 +110,27 @@ class EvaluationInteractorTest {
     prefs.currentEvaluationsId = "should_be_clear"
     assertThat(storage.getCurrentEvaluationId()).isEqualTo("should_be_clear")
     // config feature_tag with empty string
-    val configEmptyFeatureTag = BKTConfig.builder()
-      .apiEndpoint(server.url("").toString())
-      .apiKey("api_key_value")
-      .appVersion("1.2.3")
-      .build()
+    val configEmptyFeatureTag =
+      BKTConfig.builder()
+        .apiEndpoint(server.url("").toString())
+        .apiKey("api_key_value")
+        .appVersion("1.2.3")
+        .build()
 
-    val componentBuildWithEmptyFeatureTag = ComponentImpl(
-      dataModule = DataModule(
-        application = ApplicationProvider.getApplicationContext(),
-        user = user1,
-        config = configEmptyFeatureTag,
-        inMemoryDB = true,
-      ),
-      interactorModule = InteractorModule(
-        mainHandler = Handler(Looper.getMainLooper()),
-      ),
-    )
+    val componentBuildWithEmptyFeatureTag =
+      ComponentImpl(
+        dataModule =
+          DataModule(
+            application = ApplicationProvider.getApplicationContext(),
+            user = user1,
+            config = configEmptyFeatureTag,
+            inMemoryDB = true,
+          ),
+        interactorModule =
+          InteractorModule(
+            mainHandler = Handler(Looper.getMainLooper()),
+          ),
+      )
 
     componentBuildWithEmptyFeatureTag.evaluationInteractor.prepareDependencyAndRun {
       val storageBuildWithEmptyFeatureTag = componentBuildWithEmptyFeatureTag.dataModule.evaluationStorage
@@ -132,24 +140,28 @@ class EvaluationInteractorTest {
       assertThat(storageBuildWithEmptyFeatureTag.getCurrentEvaluationId()).isEqualTo("should_be_clear")
     }
 
-    val config = BKTConfig.builder()
-      .apiEndpoint(server.url("").toString())
-      .featureTag("test")
-      .apiKey("api_key_value")
-      .appVersion("1.2.3")
-      .build()
+    val config =
+      BKTConfig.builder()
+        .apiEndpoint(server.url("").toString())
+        .featureTag("test")
+        .apiKey("api_key_value")
+        .appVersion("1.2.3")
+        .build()
 
-    val component = ComponentImpl(
-      dataModule = DataModule(
-        application = ApplicationProvider.getApplicationContext(),
-        user = user1,
-        config = config,
-        inMemoryDB = true,
-      ),
-      interactorModule = InteractorModule(
-        mainHandler = Handler(Looper.getMainLooper()),
-      ),
-    )
+    val component =
+      ComponentImpl(
+        dataModule =
+          DataModule(
+            application = ApplicationProvider.getApplicationContext(),
+            user = user1,
+            config = config,
+            inMemoryDB = true,
+          ),
+        interactorModule =
+          InteractorModule(
+            mainHandler = Handler(Looper.getMainLooper()),
+          ),
+      )
 
     component.evaluationInteractor.prepareDependencyAndRun {
       assertThat(component.dataModule.evaluationStorage.getCurrentEvaluationId()).isEqualTo("")
@@ -160,24 +172,28 @@ class EvaluationInteractorTest {
   fun `userEvaluationsID should not change if the feature_tag didn't change`() {
     prefs.currentEvaluationsId = "should_not_change"
     assertThat(storage.getCurrentEvaluationId()).isEqualTo("should_not_change")
-    val config = BKTConfig.builder()
-      .apiEndpoint(server.url("").toString())
-      .featureTag("feature_tag_value")
-      .apiKey("api_key_value")
-      .appVersion("1.2.3")
-      .build()
+    val config =
+      BKTConfig.builder()
+        .apiEndpoint(server.url("").toString())
+        .featureTag("feature_tag_value")
+        .apiKey("api_key_value")
+        .appVersion("1.2.3")
+        .build()
 
-    val component = ComponentImpl(
-      dataModule = DataModule(
-        application = ApplicationProvider.getApplicationContext(),
-        user = user1,
-        config = config,
-        inMemoryDB = true,
-      ),
-      interactorModule = InteractorModule(
-        mainHandler = Handler(Looper.getMainLooper()),
-      ),
-    )
+    val component =
+      ComponentImpl(
+        dataModule =
+          DataModule(
+            application = ApplicationProvider.getApplicationContext(),
+            user = user1,
+            config = config,
+            inMemoryDB = true,
+          ),
+        interactorModule =
+          InteractorModule(
+            mainHandler = Handler(Looper.getMainLooper()),
+          ),
+      )
     component.evaluationInteractor.prepareDependencyAndRun {
       assertThat(component.dataModule.evaluationStorage.getCurrentEvaluationId()).isEqualTo("should_not_change")
     }
@@ -204,8 +220,9 @@ class EvaluationInteractorTest {
 
     // assert request
     val firstRequest = server.takeRequest()
-    val firstRequestBody = moshi.adapter(GetEvaluationsRequest::class.java)
-      .fromJson(firstRequest.body.readString(Charsets.UTF_8))
+    val firstRequestBody =
+      moshi.adapter(GetEvaluationsRequest::class.java)
+        .fromJson(firstRequest.body.readString(Charsets.UTF_8))
     assertThat(firstRequestBody).isNotNull()
     assertThat(firstRequestBody!!.userEvaluationCondition).isEqualTo(
       UserEvaluationCondition(
@@ -218,8 +235,9 @@ class EvaluationInteractorTest {
     interactor.setUserAttributesUpdated()
     interactor.fetch(user1, null)
     val secondRequest = server.takeRequest()
-    val secondRequestBody = moshi.adapter(GetEvaluationsRequest::class.java)
-      .fromJson(secondRequest.body.readString(Charsets.UTF_8))
+    val secondRequestBody =
+      moshi.adapter(GetEvaluationsRequest::class.java)
+        .fromJson(secondRequest.body.readString(Charsets.UTF_8))
     assertThat(secondRequestBody).isNotNull()
     assertThat(secondRequestBody!!.userEvaluationCondition).isEqualTo(
       UserEvaluationCondition(
@@ -263,8 +281,9 @@ class EvaluationInteractorTest {
     // assert request
     assertThat(server.requestCount).isEqualTo(1)
     val request = server.takeRequest()
-    val requestBody = moshi.adapter(GetEvaluationsRequest::class.java)
-      .fromJson(request.body.readString(Charsets.UTF_8))
+    val requestBody =
+      moshi.adapter(GetEvaluationsRequest::class.java)
+        .fromJson(request.body.readString(Charsets.UTF_8))
 
     assertThat(requestBody!!.userEvaluationsId).isEmpty()
     assertThat(requestBody.tag).isEqualTo(component.dataModule.config.featureTag)
@@ -308,10 +327,11 @@ class EvaluationInteractorTest {
   fun `fetch - force update`() {
     `fetch - initial load`()
     // second response
-    val expectResponse = GetEvaluationsResponse(
-      evaluations = user1EvaluationsForceUpdate,
-      userEvaluationsId = "user_evaluations_id_value_updated",
-    )
+    val expectResponse =
+      GetEvaluationsResponse(
+        evaluations = user1EvaluationsForceUpdate,
+        userEvaluationsId = "user_evaluations_id_value_updated",
+      )
     server.enqueue(
       MockResponse()
         .setResponseCode(200)
@@ -365,10 +385,11 @@ class EvaluationInteractorTest {
     `fetch - initial load`()
 
     // second response(test target)
-    val expectResponse = GetEvaluationsResponse(
-      evaluations = user1EvaluationsUpsert,
-      userEvaluationsId = "user_evaluations_id_value_updated",
-    )
+    val expectResponse =
+      GetEvaluationsResponse(
+        evaluations = user1EvaluationsUpsert,
+        userEvaluationsId = "user_evaluations_id_value_updated",
+      )
     server.enqueue(
       MockResponse()
         .setResponseCode(200)

@@ -42,10 +42,11 @@ internal class ApiClientImplTest {
   ) {
     OKAY_200_VALID_RESPONSE(
       code = 200,
-      expectedJSONResponse = GetEvaluationsResponse(
-        evaluations = user1Evaluations,
-        userEvaluationsId = "user_evaluation_id",
-      ),
+      expectedJSONResponse =
+        GetEvaluationsResponse(
+          evaluations = user1Evaluations,
+          userEvaluationsId = "user_evaluation_id",
+        ),
       expectedTextResponse = null,
       shouldSuccess = true,
     ),
@@ -110,10 +111,11 @@ internal class ApiClientImplTest {
 
   @Test
   fun `getEvaluations - success`() {
-    val expected = GetEvaluationsResponse(
-      evaluations = user1Evaluations,
-      userEvaluationsId = "user_evaluation_id",
-    )
+    val expected =
+      GetEvaluationsResponse(
+        evaluations = user1Evaluations,
+        userEvaluationsId = "user_evaluation_id",
+      )
     server.enqueue(
       MockResponse()
         .setBodyDelay(1, TimeUnit.SECONDS)
@@ -123,21 +125,24 @@ internal class ApiClientImplTest {
         .setResponseCode(200),
     )
 
-    client = ApiClientImpl(
-      apiEndpoint = apiEndpoint,
-      apiKey = "api_key_value",
-      featureTag = "feature_tag_value",
-      moshi = moshi,
-    )
+    client =
+      ApiClientImpl(
+        apiEndpoint = apiEndpoint,
+        apiKey = "api_key_value",
+        featureTag = "feature_tag_value",
+        moshi = moshi,
+      )
 
-    val result = client.getEvaluations(
-      user = user1,
-      userEvaluationsId = "user_evaluation_id",
-      condition = UserEvaluationCondition(
-        evaluatedAt = "1690798100",
-        userAttributesUpdated = "true",
-      ),
-    )
+    val result =
+      client.getEvaluations(
+        user = user1,
+        userEvaluationsId = "user_evaluation_id",
+        condition =
+          UserEvaluationCondition(
+            evaluatedAt = "1690798100",
+            userAttributesUpdated = "true",
+          ),
+      )
 
     // assert request
     assertThat(server.requestCount).isEqualTo(1)
@@ -153,10 +158,11 @@ internal class ApiClientImplTest {
         user = user1,
         userEvaluationsId = "user_evaluation_id",
         sourceId = SourceID.ANDROID,
-        userEvaluationCondition = UserEvaluationCondition(
-          evaluatedAt = "1690798100",
-          userAttributesUpdated = "true",
-        ),
+        userEvaluationCondition =
+          UserEvaluationCondition(
+            evaluatedAt = "1690798100",
+            userAttributesUpdated = "true",
+          ),
         sdkVersion = BuildConfig.SDK_VERSION,
       ),
     )
@@ -172,27 +178,30 @@ internal class ApiClientImplTest {
 
   @Test
   fun `getEvaluations - custom timeout`() {
-    client = ApiClientImpl(
-      apiEndpoint = apiEndpoint,
-      apiKey = "api_key_value",
-      featureTag = "feature_tag_value",
-      moshi = moshi,
-    )
-
-    val (millis, result) = measureTimeMillisWithResult {
-      client.getEvaluations(
-        user = user1,
-        userEvaluationsId = "user_evaluation_id",
-        timeoutMillis = TimeUnit.SECONDS.toMillis(2),
-        condition = UserEvaluationCondition(
-          evaluatedAt = "1690798200",
-          userAttributesUpdated = "false",
-        ),
+    client =
+      ApiClientImpl(
+        apiEndpoint = apiEndpoint,
+        apiKey = "api_key_value",
+        featureTag = "feature_tag_value",
+        moshi = moshi,
       )
-    }
 
-    assertThat(millis).isGreaterThan(2_000)
-    assertThat(millis).isLessThan(4_000)
+    val (millis, result) =
+      measureTimeMillisWithResult {
+        client.getEvaluations(
+          user = user1,
+          userEvaluationsId = "user_evaluation_id",
+          timeoutMillis = TimeUnit.SECONDS.toMillis(2),
+          condition =
+            UserEvaluationCondition(
+              evaluatedAt = "1690798200",
+              userAttributesUpdated = "false",
+            ),
+        )
+      }
+
+    assertThat(millis).isGreaterThan(2_000L)
+    assertThat(millis).isLessThan(4_000L)
 
     assertThat(result).isInstanceOf(GetEvaluationsResult.Failure::class.java)
     val failure = result as GetEvaluationsResult.Failure
@@ -203,25 +212,28 @@ internal class ApiClientImplTest {
 
   @Test
   fun `getEvaluations - default timeout`() {
-    client = ApiClientImpl(
-      apiEndpoint = apiEndpoint,
-      apiKey = "api_key_value",
-      featureTag = "feature_tag_value",
-      moshi = moshi,
-    )
+    client =
+      ApiClientImpl(
+        apiEndpoint = apiEndpoint,
+        apiKey = "api_key_value",
+        featureTag = "feature_tag_value",
+        moshi = moshi,
+      )
 
     val timeout = TimeUnit.SECONDS.toMillis(2)
-    val (millis, result) = measureTimeMillisWithResult {
-      client.getEvaluations(
-        user = user1,
-        userEvaluationsId = "user_evaluation_id",
-        timeoutMillis = timeout,
-        condition = UserEvaluationCondition(
-          evaluatedAt = "1690798200",
-          userAttributesUpdated = "false",
-        ),
-      )
-    }
+    val (millis, result) =
+      measureTimeMillisWithResult {
+        client.getEvaluations(
+          user = user1,
+          userEvaluationsId = "user_evaluation_id",
+          timeoutMillis = timeout,
+          condition =
+            UserEvaluationCondition(
+              evaluatedAt = "1690798200",
+              userAttributesUpdated = "false",
+            ),
+        )
+      }
 
     // Because there might be a small difference when measuring,
     // We reduced it slightly to avoid false errors.
@@ -237,21 +249,24 @@ internal class ApiClientImplTest {
 
   @Test
   fun `getEvaluations - network error`() {
-    client = ApiClientImpl(
-      apiEndpoint = "https://thisdoesnotexist.bucketeer.io",
-      apiKey = "api_key_value",
-      featureTag = "feature_tag_value",
-      moshi = moshi,
-    )
+    client =
+      ApiClientImpl(
+        apiEndpoint = "https://thisdoesnotexist.bucketeer.io",
+        apiKey = "api_key_value",
+        featureTag = "feature_tag_value",
+        moshi = moshi,
+      )
 
-    val result = client.getEvaluations(
-      user = user1,
-      userEvaluationsId = "user_evaluation_id",
-      condition = UserEvaluationCondition(
-        evaluatedAt = "1690798200",
-        userAttributesUpdated = "false",
-      ),
-    )
+    val result =
+      client.getEvaluations(
+        user = user1,
+        userEvaluationsId = "user_evaluation_id",
+        condition =
+          UserEvaluationCondition(
+            evaluatedAt = "1690798200",
+            userAttributesUpdated = "false",
+          ),
+      )
 
     assertThat(result).isInstanceOf(GetEvaluationsResult.Failure::class.java)
     val failure = result as GetEvaluationsResult.Failure
@@ -261,7 +276,9 @@ internal class ApiClientImplTest {
   }
 
   @Test
-  fun `getEvaluations - error with body`(@TestParameter case: ErrorTestCase) {
+  fun `getEvaluations - error with body`(
+    @TestParameter case: ErrorTestCase,
+  ) {
     server.enqueue(
       MockResponse()
         .setResponseCode(case.code)
@@ -277,21 +294,24 @@ internal class ApiClientImplTest {
             ),
         ),
     )
-    client = ApiClientImpl(
-      apiEndpoint = apiEndpoint,
-      apiKey = "api_key_value",
-      featureTag = "feature_tag_value",
-      moshi = moshi,
-    )
+    client =
+      ApiClientImpl(
+        apiEndpoint = apiEndpoint,
+        apiKey = "api_key_value",
+        featureTag = "feature_tag_value",
+        moshi = moshi,
+      )
 
-    val result = client.getEvaluations(
-      user = user1,
-      userEvaluationsId = "user_evaluation_id",
-      condition = UserEvaluationCondition(
-        evaluatedAt = "1690799200",
-        userAttributesUpdated = "true",
-      ),
-    )
+    val result =
+      client.getEvaluations(
+        user = user1,
+        userEvaluationsId = "user_evaluation_id",
+        condition =
+          UserEvaluationCondition(
+            evaluatedAt = "1690799200",
+            userAttributesUpdated = "true",
+          ),
+      )
 
     assertThat(result).isInstanceOf(GetEvaluationsResult.Failure::class.java)
     val failure = result as GetEvaluationsResult.Failure
@@ -304,7 +324,9 @@ internal class ApiClientImplTest {
   }
 
   @Test
-  fun `getEvaluations - error without body`(@TestParameter case: ErrorTestCase) {
+  fun `getEvaluations - error without body`(
+    @TestParameter case: ErrorTestCase,
+  ) {
     server.enqueue(
       MockResponse()
         .setResponseCode(case.code)
@@ -314,21 +336,24 @@ internal class ApiClientImplTest {
           }
         },
     )
-    client = ApiClientImpl(
-      apiEndpoint = apiEndpoint,
-      apiKey = "api_key_value",
-      featureTag = "feature_tag_value",
-      moshi = moshi,
-    )
+    client =
+      ApiClientImpl(
+        apiEndpoint = apiEndpoint,
+        apiKey = "api_key_value",
+        featureTag = "feature_tag_value",
+        moshi = moshi,
+      )
 
-    val result = client.getEvaluations(
-      user = user1,
-      userEvaluationsId = "user_evaluation_id",
-      condition = UserEvaluationCondition(
-        evaluatedAt = "1690799200",
-        userAttributesUpdated = "true",
-      ),
-    )
+    val result =
+      client.getEvaluations(
+        user = user1,
+        userEvaluationsId = "user_evaluation_id",
+        condition =
+          UserEvaluationCondition(
+            evaluatedAt = "1690799200",
+            userAttributesUpdated = "true",
+          ),
+      )
 
     assertThat(result).isInstanceOf(GetEvaluationsResult.Failure::class.java)
     val failure = result as GetEvaluationsResult.Failure
@@ -347,22 +372,25 @@ internal class ApiClientImplTest {
           moshi.adapter(RegisterEventsResponse::class.java)
             .toJson(
               RegisterEventsResponse(
-                errors = mapOf(
-                  evaluationEvent1.id to RegisterEventsErrorResponse(
-                    retriable = true,
-                    message = "error",
+                errors =
+                  mapOf(
+                    evaluationEvent1.id to
+                      RegisterEventsErrorResponse(
+                        retriable = true,
+                        message = "error",
+                      ),
                   ),
-                ),
               ),
             ),
         ),
     )
-    client = ApiClientImpl(
-      apiEndpoint = apiEndpoint,
-      apiKey = "api_key_value",
-      featureTag = "feature_tag_value",
-      moshi = moshi,
-    )
+    client =
+      ApiClientImpl(
+        apiEndpoint = apiEndpoint,
+        apiKey = "api_key_value",
+        featureTag = "feature_tag_value",
+        moshi = moshi,
+      )
 
     val result = client.registerEvents(events = listOf(evaluationEvent1, latencyMetricsEvent1))
 
@@ -387,32 +415,36 @@ internal class ApiClientImplTest {
     val success = result as RegisterEventsResult.Success
     assertThat(success.value).isEqualTo(
       RegisterEventsResponse(
-        errors = mapOf(
-          evaluationEvent1.id to RegisterEventsErrorResponse(
-            retriable = true,
-            message = "error",
+        errors =
+          mapOf(
+            evaluationEvent1.id to
+              RegisterEventsErrorResponse(
+                retriable = true,
+                message = "error",
+              ),
           ),
-        ),
       ),
     )
   }
 
   @Test
   fun `registerEvents - timeout`() {
-    client = ApiClientImpl(
-      apiEndpoint = apiEndpoint,
-      apiKey = "api_key_value",
-      featureTag = "feature_tag_value",
-      moshi = moshi,
-      defaultRequestTimeoutMillis = 1_000,
-    )
+    client =
+      ApiClientImpl(
+        apiEndpoint = apiEndpoint,
+        apiKey = "api_key_value",
+        featureTag = "feature_tag_value",
+        moshi = moshi,
+        defaultRequestTimeoutMillis = 1_000,
+      )
 
-    val (millis, result) = measureTimeMillisWithResult {
-      client.registerEvents(events = listOf(evaluationEvent1, latencyMetricsEvent1))
-    }
+    val (millis, result) =
+      measureTimeMillisWithResult {
+        client.registerEvents(events = listOf(evaluationEvent1, latencyMetricsEvent1))
+      }
 
-    assertThat(millis).isGreaterThan(1_000)
-    assertThat(millis).isLessThan(1_500)
+    assertThat(millis).isGreaterThan(1_000L)
+    assertThat(millis).isLessThan(1_500L)
 
     assertThat(result).isInstanceOf(RegisterEventsResult.Failure::class.java)
     val failure = result as RegisterEventsResult.Failure
@@ -422,12 +454,13 @@ internal class ApiClientImplTest {
 
   @Test
   fun `registerEvents - network error`() {
-    client = ApiClientImpl(
-      apiEndpoint = "https://thisdoesnotexist.bucketeer.io",
-      apiKey = "api_key_value",
-      featureTag = "feature_tag_value",
-      moshi = moshi,
-    )
+    client =
+      ApiClientImpl(
+        apiEndpoint = "https://thisdoesnotexist.bucketeer.io",
+        apiKey = "api_key_value",
+        featureTag = "feature_tag_value",
+        moshi = moshi,
+      )
 
     val result = client.registerEvents(events = listOf(evaluationEvent1, latencyMetricsEvent1))
 
@@ -438,7 +471,9 @@ internal class ApiClientImplTest {
   }
 
   @Test
-  fun `registerEvents - error with body`(@TestParameter case: ErrorTestCase) {
+  fun `registerEvents - error with body`(
+    @TestParameter case: ErrorTestCase,
+  ) {
     server.enqueue(
       MockResponse()
         .setResponseCode(case.code)
@@ -454,12 +489,13 @@ internal class ApiClientImplTest {
             ),
         ),
     )
-    client = ApiClientImpl(
-      apiEndpoint = apiEndpoint,
-      apiKey = "api_key_value",
-      featureTag = "feature_tag_value",
-      moshi = moshi,
-    )
+    client =
+      ApiClientImpl(
+        apiEndpoint = apiEndpoint,
+        apiKey = "api_key_value",
+        featureTag = "feature_tag_value",
+        moshi = moshi,
+      )
 
     val result = client.registerEvents(events = listOf(evaluationEvent1, latencyMetricsEvent1))
 
@@ -474,7 +510,9 @@ internal class ApiClientImplTest {
   }
 
   @Test
-  fun `registerEvents - error without body`(@TestParameter case: ErrorTestCase) {
+  fun `registerEvents - error without body`(
+    @TestParameter case: ErrorTestCase,
+  ) {
     server.enqueue(
       MockResponse()
         .setResponseCode(case.code)
@@ -484,12 +522,13 @@ internal class ApiClientImplTest {
           }
         },
     )
-    client = ApiClientImpl(
-      apiEndpoint = apiEndpoint,
-      apiKey = "api_key_value",
-      featureTag = "feature_tag_value",
-      moshi = moshi,
-    )
+    client =
+      ApiClientImpl(
+        apiEndpoint = apiEndpoint,
+        apiKey = "api_key_value",
+        featureTag = "feature_tag_value",
+        moshi = moshi,
+      )
 
     val result = client.registerEvents(events = listOf(evaluationEvent1, latencyMetricsEvent1))
 
@@ -502,7 +541,9 @@ internal class ApiClientImplTest {
   }
 
   @Test
-  fun `test request success with acceptable code`(@TestParameter case: SuccessWithAcceptableCodeTestCase) {
+  fun `test request success with acceptable code`(
+    @TestParameter case: SuccessWithAcceptableCodeTestCase,
+  ) {
     server.enqueue(
       MockResponse()
         .setBodyDelay(1, TimeUnit.SECONDS)
@@ -518,21 +559,24 @@ internal class ApiClientImplTest {
         .setResponseCode(200),
     )
 
-    client = ApiClientImpl(
-      apiEndpoint = apiEndpoint,
-      apiKey = "api_key_value",
-      featureTag = "feature_tag_value",
-      moshi = moshi,
-    )
+    client =
+      ApiClientImpl(
+        apiEndpoint = apiEndpoint,
+        apiKey = "api_key_value",
+        featureTag = "feature_tag_value",
+        moshi = moshi,
+      )
 
-    val result = client.getEvaluations(
-      user = user1,
-      userEvaluationsId = "user_evaluation_id",
-      condition = UserEvaluationCondition(
-        evaluatedAt = "1690798100",
-        userAttributesUpdated = "true",
-      ),
-    )
+    val result =
+      client.getEvaluations(
+        user = user1,
+        userEvaluationsId = "user_evaluation_id",
+        condition =
+          UserEvaluationCondition(
+            evaluatedAt = "1690798100",
+            userAttributesUpdated = "true",
+          ),
+      )
 
     if (case.shouldSuccess) {
       // assert response

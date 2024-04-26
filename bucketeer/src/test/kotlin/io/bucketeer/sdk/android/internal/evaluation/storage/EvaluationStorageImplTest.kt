@@ -41,20 +41,22 @@ class EvaluationStorageImplTest {
     userId = user1.id
     val moshi = DataModule.createMoshi()
     val context: Context = ApplicationProvider.getApplicationContext()
-    val sharedPreferences = context.getSharedPreferences(
-      Constants.PREFERENCES_NAME,
-      Context.MODE_PRIVATE,
-    )
+    val sharedPreferences =
+      context.getSharedPreferences(
+        Constants.PREFERENCES_NAME,
+        Context.MODE_PRIVATE,
+      )
     openHelper = createDatabase(context, OpenHelperCallback.FILE_NAME, sharedPreferences)
     memCache = MemCache.Builder<String, List<Evaluation>>().build()
     evaluationSharedPrefs = EvaluationSharedPrefsImpl(sharedPreferences)
     evaluationSQLDao = EvaluationSQLDaoImpl(openHelper, moshi)
-    evaluationStorage = EvaluationStorageImpl(
-      userId,
-      evaluationSQLDao,
-      evaluationSharedPrefs,
-      memCache,
-    )
+    evaluationStorage =
+      EvaluationStorageImpl(
+        userId,
+        evaluationSQLDao,
+        evaluationSharedPrefs,
+        memCache,
+      )
   }
 
   @After
@@ -190,12 +192,13 @@ class EvaluationStorageImplTest {
   @Test
   fun refreshCache() {
     evaluationSQLDao.put(userId, listOf(evaluation1, evaluation2))
-    val evaluationStorage = EvaluationStorageImpl(
-      userId,
-      evaluationSQLDao,
-      evaluationSharedPrefs,
-      memCache,
-    )
+    val evaluationStorage =
+      EvaluationStorageImpl(
+        userId,
+        evaluationSQLDao,
+        evaluationSharedPrefs,
+        memCache,
+      )
     evaluationStorage.refreshCache()
     assert(evaluationStorage.get() == listOf(evaluation1, evaluation2))
   }

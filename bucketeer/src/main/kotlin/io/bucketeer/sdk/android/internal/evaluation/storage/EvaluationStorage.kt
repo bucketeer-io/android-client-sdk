@@ -8,25 +8,37 @@ internal interface EvaluationStorage {
   val userId: String
 
   fun getCurrentEvaluationId(): String
+
   fun clearCurrentEvaluationId()
+
   fun setUserAttributesUpdated()
+
   fun clearUserAttributesUpdated()
+
   fun getUserAttributesUpdated(): Boolean
+
   fun getEvaluatedAt(): String
+
   fun getFeatureTag(): String
+
   fun setFeatureTag(tag: String)
+
   fun getBy(featureId: String): Evaluation?
+
   fun get(): List<Evaluation>
+
   fun deleteAllAndInsert(
     evaluationsId: String,
     evaluations: List<Evaluation>,
     evaluatedAt: String,
   )
+
   fun update(
     evaluationsId: String,
     evaluations: List<Evaluation>,
     archivedFeatureIds: List<String>,
     evaluatedAt: String,
   ): Boolean
+
   fun refreshCache()
 }

@@ -1,4 +1,4 @@
-@file:Suppress("ktlint:filename")
+@file:Suppress("ktlint:standard:filename")
 
 package io.bucketeer.sdk.android.mocks
 
@@ -15,10 +15,11 @@ import io.bucketeer.sdk.android.internal.model.UserEvaluations
 val user1Evaluations: UserEvaluations by lazy {
   UserEvaluations(
     id = "17388826713971171773",
-    evaluations = listOf(
-      evaluation1,
-      evaluation2,
-    ),
+    evaluations =
+      listOf(
+        evaluation1,
+        evaluation2,
+      ),
     createdAt = "1690798021",
     forceUpdate = true,
   )
@@ -27,9 +28,10 @@ val user1Evaluations: UserEvaluations by lazy {
 val user1EvaluationsForceUpdate: UserEvaluations by lazy {
   UserEvaluations(
     id = "17388826713971171773",
-    evaluations = listOf(
-      evaluation2,
-    ),
+    evaluations =
+      listOf(
+        evaluation2,
+      ),
     createdAt = "1690798025",
     forceUpdate = true,
   )
@@ -38,11 +40,12 @@ val user1EvaluationsForceUpdate: UserEvaluations by lazy {
 val user1EvaluationsUpsert: UserEvaluations by lazy {
   UserEvaluations(
     id = "17388826713971171773",
-    evaluations = listOf(
-      evaluation1,
-      evaluation2ForUpdate,
-      evaluationForTestInsert,
-    ),
+    evaluations =
+      listOf(
+        evaluation1,
+        evaluation2ForUpdate,
+        evaluationForTestInsert,
+      ),
     createdAt = "16907999999",
     forceUpdate = false,
     archivedFeatureIds = listOf("test-feature-1"),
@@ -67,9 +70,10 @@ val evaluation1: Evaluation by lazy {
     variationId = "test-feature-1-variation-A",
     variationName = "test variation name1",
     variationValue = "test variation value1",
-    reason = Reason(
-      type = ReasonType.DEFAULT,
-    ),
+    reason =
+      Reason(
+        type = ReasonType.DEFAULT,
+      ),
   )
 }
 
@@ -82,9 +86,10 @@ val evaluation2: Evaluation by lazy {
     variationId = "test-feature-2-variation-A",
     variationName = "test variation name2",
     variationValue = "test variation value2",
-    reason = Reason(
-      type = ReasonType.DEFAULT,
-    ),
+    reason =
+      Reason(
+        type = ReasonType.DEFAULT,
+      ),
   )
 }
 
@@ -109,9 +114,10 @@ val evaluationForTestInsert: Evaluation by lazy {
     variationId = "test-feature-1-variation-A",
     variationName = "test variation name2",
     variationValue = "test variation value2",
-    reason = Reason(
-      type = ReasonType.DEFAULT,
-    ),
+    reason =
+      Reason(
+        type = ReasonType.DEFAULT,
+      ),
   )
 }
 
@@ -124,9 +130,10 @@ val evaluation3: Evaluation by lazy {
     variationId = "test-feature-1-variation-A",
     variationName = "test variation name2",
     variationValue = "test variation value2",
-    reason = Reason(
-      type = ReasonType.DEFAULT,
-    ),
+    reason =
+      Reason(
+        type = ReasonType.DEFAULT,
+      ),
   )
 }
 
@@ -139,9 +146,10 @@ val evaluation4: Evaluation by lazy {
     variationId = "test-feature-1-variation-A",
     variationName = "test variation name2",
     variationValue = "test variation value2",
-    reason = Reason(
-      type = ReasonType.DEFAULT,
-    ),
+    reason =
+      Reason(
+        type = ReasonType.DEFAULT,
+      ),
   )
 }
 
@@ -153,9 +161,10 @@ val evaluationEvent: Event by lazy {
       featureVersion = 9,
       userId = "user-id",
       variationId = "test-feature-1-variation-A",
-      reason = Reason(
-        type = ReasonType.DEFAULT,
-      ),
+      reason =
+        Reason(
+          type = ReasonType.DEFAULT,
+        ),
       tag = "android",
       timestamp = 10,
       sourceId = SourceID.ANDROID,

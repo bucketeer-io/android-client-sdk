@@ -20,11 +20,12 @@ internal class DefaultLogger(
   ) {
     if (!Log.isLoggable(tag, priority)) return
 
-    val message = buildString {
-      messageCreator?.invoke()?.let { append(it) }
-      if (throwable != null) append("\n")
-      if (throwable != null) append(Log.getStackTraceString(throwable))
-    }
+    val message =
+      buildString {
+        messageCreator?.invoke()?.let { append(it) }
+        if (throwable != null) append("\n")
+        if (throwable != null) append(Log.getStackTraceString(throwable))
+      }
     if (message.isBlank()) return
 
     Log.println(priority, tag, message)

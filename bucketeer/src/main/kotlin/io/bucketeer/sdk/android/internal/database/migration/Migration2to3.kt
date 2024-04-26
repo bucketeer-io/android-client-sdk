@@ -7,8 +7,10 @@ import io.bucketeer.sdk.android.internal.evaluation.db.EvaluationEntity
 import io.bucketeer.sdk.android.internal.event.EventEntity
 
 class Migration2to3 : Migration {
-
-  override fun migrate(db: SupportSQLiteDatabase, sharedPreferences: SharedPreferences) {
+  override fun migrate(
+    db: SupportSQLiteDatabase,
+    sharedPreferences: SharedPreferences,
+  ) {
     // Due to changes in the API endpoint, we must delete all the data stored in the SQLite because
     // the data model has changed from snake case to camel case.
     // Reference: https://github.com/bucketeer-io/android-client-sdk/pull/63

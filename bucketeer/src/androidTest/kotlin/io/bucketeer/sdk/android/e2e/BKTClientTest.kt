@@ -19,7 +19,6 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class BKTClientTest {
-
   private lateinit var context: Context
   private lateinit var config: BKTConfig
   private lateinit var user: BKTUser
@@ -29,16 +28,18 @@ class BKTClientTest {
   fun setup() {
     context = ApplicationProvider.getApplicationContext()
 
-    config = BKTConfig.builder()
-      .apiKey(BuildConfig.API_KEY)
-      .apiEndpoint(BuildConfig.API_ENDPOINT)
-      .featureTag(FEATURE_TAG)
-      .appVersion("1.2.3")
-      .build()
+    config =
+      BKTConfig.builder()
+        .apiKey(BuildConfig.API_KEY)
+        .apiEndpoint(BuildConfig.API_ENDPOINT)
+        .featureTag(FEATURE_TAG)
+        .appVersion("1.2.3")
+        .build()
 
-    user = BKTUser.builder()
-      .id(USER_ID)
-      .build()
+    user =
+      BKTUser.builder()
+        .id(USER_ID)
+        .build()
 
     val result = BKTClient.initialize(context, config, user).get()
 

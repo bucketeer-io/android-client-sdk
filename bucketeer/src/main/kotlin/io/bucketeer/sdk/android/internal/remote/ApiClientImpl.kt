@@ -30,13 +30,13 @@ internal class ApiClientImpl(
   private val moshi: Moshi,
   defaultRequestTimeoutMillis: Long = DEFAULT_REQUEST_TIMEOUT_MILLIS,
 ) : ApiClient {
-
   private val apiEndpoint = apiEndpoint.toHttpUrl()
 
-  private val client: OkHttpClient = OkHttpClient.Builder()
-    .addNetworkInterceptor(FixJsonContentTypeInterceptor())
-    .callTimeout(defaultRequestTimeoutMillis, TimeUnit.MILLISECONDS)
-    .build()
+  private val client: OkHttpClient =
+    OkHttpClient.Builder()
+      .addNetworkInterceptor(FixJsonContentTypeInterceptor())
+      .callTimeout(defaultRequestTimeoutMillis, TimeUnit.MILLISECONDS)
+      .build()
 
   private val errorResponseJsonAdapter: JsonAdapter<ErrorResponse> by lazy {
     moshi.adapter(ErrorResponse::class.java)
@@ -48,61 +48,66 @@ internal class ApiClientImpl(
     timeoutMillis: Long?,
     condition: UserEvaluationCondition,
   ): GetEvaluationsResult {
-    val body = GetEvaluationsRequest(
-      tag = featureTag,
-      user = user,
-      userEvaluationsId = userEvaluationsId,
-      userEvaluationCondition = condition,
-    )
-
-    val request = Request.Builder()
-      .url(
-        apiEndpoint.newBuilder()
-          .addPathSegments("get_evaluations")
-          .build(),
+    val body =
+      GetEvaluationsRequest(
+        tag = featureTag,
+        user = user,
+        userEvaluationsId = userEvaluationsId,
+        userEvaluationCondition = condition,
       )
-      .applyHeaders()
-      .post(body = body.toJsonRequestBody())
-      .build()
 
-    val actualClient = if (timeoutMillis == null) {
-      client
-    } else {
-      client.newBuilder()
-        .callTimeout(timeoutMillis, TimeUnit.MILLISECONDS)
+    val request =
+      Request.Builder()
+        .url(
+          apiEndpoint.newBuilder()
+            .addPathSegments("get_evaluations")
+            .build(),
+        )
+        .applyHeaders()
+        .post(body = body.toJsonRequestBody())
         .build()
-    }
 
-    var responseStatusCode = 0
-    val result = actualClient.newCall(request).runCatching {
-      logd { "--> Fetch Evaluation\n$body" }
-
-      val (millis, data) = measureTimeMillisWithResult {
-        val rawResponse = execute()
-        responseStatusCode = rawResponse.code
-
-        if (!rawResponse.isSuccessful) {
-          throw rawResponse.toBKTException(errorResponseJsonAdapter)
-        }
-
-        val response =
-          requireNotNull(rawResponse.fromJson<GetEvaluationsResponse>()) { "failed to parse GetEvaluationsResponse" }
-
-        response to (rawResponse.body?.contentLength() ?: -1).toInt()
+    val actualClient =
+      if (timeoutMillis == null) {
+        client
+      } else {
+        client.newBuilder()
+          .callTimeout(timeoutMillis, TimeUnit.MILLISECONDS)
+          .build()
       }
 
-      val (response, contentLength) = data
+    var responseStatusCode = 0
+    val result =
+      actualClient.newCall(request).runCatching {
+        logd { "--> Fetch Evaluation\n$body" }
 
-      logd { "--> END Fetch Evaluation" }
-      logd { "<-- Fetch Evaluation\n$response\n<-- END Evaluation response" }
+        val (millis, data) =
+          measureTimeMillisWithResult {
+            val rawResponse = execute()
+            responseStatusCode = rawResponse.code
 
-      GetEvaluationsResult.Success(
-        value = response,
-        seconds = millis / 1000.0,
-        sizeByte = contentLength,
-        featureTag = featureTag,
-      )
-    }
+            if (!rawResponse.isSuccessful) {
+              throw rawResponse.toBKTException(errorResponseJsonAdapter)
+            }
+
+            val response =
+              requireNotNull(rawResponse.fromJson<GetEvaluationsResponse>()) { "failed to parse GetEvaluationsResponse" }
+
+            response to (rawResponse.body?.contentLength() ?: -1).toInt()
+          }
+
+        val (response, contentLength) = data
+
+        logd { "--> END Fetch Evaluation" }
+        logd { "<-- Fetch Evaluation\n$response\n<-- END Evaluation response" }
+
+        GetEvaluationsResult.Success(
+          value = response,
+          seconds = millis / 1000.0,
+          sizeByte = contentLength,
+          featureTag = featureTag,
+        )
+      }
 
     return result.fold(
       onSuccess = { res -> res },
@@ -121,36 +126,38 @@ internal class ApiClientImpl(
   override fun registerEvents(events: List<Event>): RegisterEventsResult {
     val body = RegisterEventsRequest(events = events)
 
-    val request = Request.Builder()
-      .url(
-        apiEndpoint.newBuilder()
-          .addPathSegments("register_events")
-          .build(),
-      )
-      .applyHeaders()
-      .post(body = body.toJsonRequestBody())
-      .build()
+    val request =
+      Request.Builder()
+        .url(
+          apiEndpoint.newBuilder()
+            .addPathSegments("register_events")
+            .build(),
+        )
+        .applyHeaders()
+        .post(body = body.toJsonRequestBody())
+        .build()
 
     var responseStatusCode = 0
-    val result = client.newCall(request).runCatching {
-      logd { "--> Register events\n$body" }
-      val response = execute()
-      responseStatusCode = response.code
+    val result =
+      client.newCall(request).runCatching {
+        logd { "--> Register events\n$body" }
+        val response = execute()
+        responseStatusCode = response.code
 
-      if (!response.isSuccessful) {
-        val e = response.toBKTException(errorResponseJsonAdapter)
-        logd(throwable = e) { "<-- Register events error" }
-        throw e
+        if (!response.isSuccessful) {
+          val e = response.toBKTException(errorResponseJsonAdapter)
+          logd(throwable = e) { "<-- Register events error" }
+          throw e
+        }
+
+        val result =
+          requireNotNull(response.fromJson<RegisterEventsResponse>()) { "failed to parse RegisterEventsResponse" }
+
+        logd { "--> END Register events" }
+        logd { "<-- Register events\n$result\n<-- END Register events" }
+
+        RegisterEventsResult.Success(value = result)
       }
-
-      val result =
-        requireNotNull(response.fromJson<RegisterEventsResponse>()) { "failed to parse RegisterEventsResponse" }
-
-      logd { "--> END Register events" }
-      logd { "<-- Register events\n$result\n<-- END Register events" }
-
-      RegisterEventsResult.Success(value = result)
-    }
 
     return result.fold(
       onSuccess = { res -> res },
@@ -195,9 +202,10 @@ private class FixJsonContentTypeInterceptor : Interceptor {
   override fun intercept(chain: Interceptor.Chain): Response {
     val original = chain.request()
 
-    val fixed = original.newBuilder()
-      .header("Content-Type", "application/json")
-      .build()
+    val fixed =
+      original.newBuilder()
+        .header("Content-Type", "application/json")
+        .build()
 
     return chain.proceed(fixed)
   }

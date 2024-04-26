@@ -11,9 +11,10 @@ internal class UserHolder(
   fun get(): User = user
 
   fun updateAttributes(updater: (previous: Map<String, String>) -> Map<String, String>) {
-    this.user = user.copy(
-      data = updater(user.data),
-    )
+    this.user =
+      user.copy(
+        data = updater(user.data),
+      )
   }
 }
 

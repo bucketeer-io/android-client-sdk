@@ -12,7 +12,6 @@ import io.bucketeer.sdk.android.BKTClient
 import io.bucketeer.sdk.android.sample.R
 
 class MainActivity : Activity() {
-
   private val sharedPref by lazy {
     getSharedPreferences(
       Constants.PREFERENCE_FILE_KEY,

@@ -40,9 +40,10 @@ internal class EventSQLDaoImpl(
     if (isClosed) {
       return listOf()
     }
-    val c = sqLiteOpenHelper.readableDatabase.select(
-      table = TABLE_NAME,
-    )
+    val c =
+      sqLiteOpenHelper.readableDatabase.select(
+        table = TABLE_NAME,
+      )
 
     return c.use {
       c.asSequence()
@@ -72,11 +73,15 @@ internal class EventSQLDaoImpl(
     }
   }
 
-  private fun addEventInternal(writableDatabase: SupportSQLiteDatabase, event: Event) {
-    val contentValues = ContentValues().apply {
-      put(COLUMN_ID, event.id)
-      put(COLUMN_EVENT, eventAdapter.toJson(event))
-    }
+  private fun addEventInternal(
+    writableDatabase: SupportSQLiteDatabase,
+    event: Event,
+  ) {
+    val contentValues =
+      ContentValues().apply {
+        put(COLUMN_ID, event.id)
+        put(COLUMN_EVENT, eventAdapter.toJson(event))
+      }
 
     writableDatabase.insert(
       TABLE_NAME,

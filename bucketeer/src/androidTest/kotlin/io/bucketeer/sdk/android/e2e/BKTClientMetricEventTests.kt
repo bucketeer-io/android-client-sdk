@@ -33,9 +33,10 @@ class BKTClientMetricEventTests {
   @UiThreadTest
   fun setup() {
     context = ApplicationProvider.getApplicationContext()
-    user = BKTUser.builder()
-      .id(USER_ID)
-      .build()
+    user =
+      BKTUser.builder()
+        .id(USER_ID)
+        .build()
   }
 
   @After
@@ -54,12 +55,13 @@ class BKTClientMetricEventTests {
   @Test
   @UiThreadTest
   fun testUsingRandomStringInTheAPIKeyShouldThrowForbidden() {
-    config = BKTConfig.builder()
-      .apiKey("random_key")
-      .apiEndpoint(BuildConfig.API_ENDPOINT)
-      .featureTag(FEATURE_TAG)
-      .appVersion("1.2.3")
-      .build()
+    config =
+      BKTConfig.builder()
+        .apiKey("random_key")
+        .apiEndpoint(BuildConfig.API_ENDPOINT)
+        .featureTag(FEATURE_TAG)
+        .appVersion("1.2.3")
+        .build()
 
     val result = BKTClient.initialize(context, config, user).get()
     // Using a random string in the api key setting should throw Forbidden
@@ -90,12 +92,13 @@ class BKTClientMetricEventTests {
   @Test
   @UiThreadTest
   fun testARandomStringInTheFeatureTagShouldNotAffectAPIRequest() {
-    config = BKTConfig.builder()
-      .apiKey(BuildConfig.API_KEY)
-      .apiEndpoint(BuildConfig.API_ENDPOINT)
-      .featureTag("random-string-abc")
-      .appVersion("1.2.3")
-      .build()
+    config =
+      BKTConfig.builder()
+        .apiKey(BuildConfig.API_KEY)
+        .apiEndpoint(BuildConfig.API_ENDPOINT)
+        .featureTag("random-string-abc")
+        .appVersion("1.2.3")
+        .build()
 
     val result = BKTClient.initialize(context, config, user).get()
     assertThat(result).isNull()
@@ -104,12 +107,13 @@ class BKTClientMetricEventTests {
   @Test
   @UiThreadTest
   fun testTimeout() {
-    config = BKTConfig.builder()
-      .apiKey(BuildConfig.API_KEY)
-      .apiEndpoint(BuildConfig.API_ENDPOINT)
-      .featureTag("random-string-abc")
-      .appVersion("1.2.3")
-      .build()
+    config =
+      BKTConfig.builder()
+        .apiKey(BuildConfig.API_KEY)
+        .apiEndpoint(BuildConfig.API_ENDPOINT)
+        .featureTag("random-string-abc")
+        .appVersion("1.2.3")
+        .build()
 
     val result = BKTClient.initialize(context, config, user, timeoutMillis = 10).get()
     assertThat(result).isInstanceOf(BKTException.TimeoutException::class.java)
