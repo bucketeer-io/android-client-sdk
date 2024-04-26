@@ -221,17 +221,19 @@ internal class ApiClientImplTest {
       )
 
     val timeout = TimeUnit.SECONDS.toMillis(2)
-    val (millis, result) = measureTimeMillisWithResult {
-      client.getEvaluations(
-        user = user1,
-        userEvaluationsId = "user_evaluation_id",
-        timeoutMillis = timeout,
-        condition = UserEvaluationCondition(
-          evaluatedAt = "1690798200",
-          userAttributesUpdated = "false",
-        ),
-      )
-    }
+    val (millis, result) =
+      measureTimeMillisWithResult {
+        client.getEvaluations(
+          user = user1,
+          userEvaluationsId = "user_evaluation_id",
+          timeoutMillis = timeout,
+          condition =
+            UserEvaluationCondition(
+              evaluatedAt = "1690798200",
+              userAttributesUpdated = "false",
+            ),
+        )
+      }
 
     // Because there might be a small difference when measuring,
     // We reduced it slightly to avoid false errors.
