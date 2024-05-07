@@ -1,17 +1,25 @@
 package io.bucketeer.sample
 
-import android.app.Activity
 import android.content.Context
-import android.content.Intent
-import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.textfield.TextInputLayout
 import io.bucketeer.sdk.android.BKTClient
+import io.bucketeer.sdk.android.BKTConfig
+import io.bucketeer.sdk.android.BKTException
+import io.bucketeer.sdk.android.BKTUser
+import io.bucketeer.sdk.android.sample.BuildConfig
 import io.bucketeer.sdk.android.sample.R
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.util.concurrent.TimeUnit
 
-class MainActivity : Activity() {
+class MainActivity : FragmentActivity() {
   private val sharedPref by lazy {
     getSharedPreferences(
       Constants.PREFERENCE_FILE_KEY,
@@ -22,7 +30,14 @@ class MainActivity : Activity() {
   public override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
-
+    lifecycleScope.launch {
+      val rs = initBucketeer()
+      if (rs == null || rs is BKTException.TimeoutException) {
+        Toast.makeText(this@MainActivity, "The BKTClient SDK has been initialized", Toast.LENGTH_LONG).show()
+      } else {
+        Toast.makeText(this@MainActivity, "Failed with error ${rs.message}", Toast.LENGTH_LONG).show()
+      }
+    }
     setGetVariation()
     setGoalId()
     setSwitchUser()
@@ -91,7 +106,14 @@ class MainActivity : Activity() {
         putString(Constants.PREFERENCE_KEY_USER_ID, userId)
         commit()
       }
-      restartApp()
+      lifecycleScope.launch {
+        val rs = reInitializeTheSDK()
+        if (rs == null) {
+          Toast.makeText(this@MainActivity, "Successful switch the user.", Toast.LENGTH_LONG).show()
+        } else {
+          Toast.makeText(this@MainActivity, "Failed with error ${rs.message}", Toast.LENGTH_LONG).show()
+        }
+      }
     }
   }
 
@@ -112,23 +134,20 @@ class MainActivity : Activity() {
         putString(Constants.PREFERENCE_KEY_TAG, tag)
         commit()
       }
-      restartApp()
+      lifecycleScope.launch {
+        val rs = reInitializeTheSDK()
+        if (rs == null) {
+          Toast.makeText(this@MainActivity, "Successful change the tag.", Toast.LENGTH_LONG).show()
+        } else {
+          Toast.makeText(this@MainActivity, "Failed with error ${rs.message}", Toast.LENGTH_LONG).show()
+        }
+      }
     }
   }
 
-  private fun restartApp() {
-    val builder = AlertDialog.Builder(this)
-    builder.setMessage(getString(R.string.app_will_be_restarted))
-    builder.setIcon(android.R.drawable.ic_dialog_alert)
-    builder.setPositiveButton(getString(R.string.dialog_btn_ok)) { _, _ ->
-      val intent = Intent(applicationContext, MainActivity::class.java)
-      intent.addFlags(FLAG_ACTIVITY_NEW_TASK)
-      startActivity(intent)
-      finish()
-      Runtime.getRuntime().exit(0)
-    }
-    val alertDialog: AlertDialog = builder.create()
-    alertDialog.show()
+  private suspend fun reInitializeTheSDK(): BKTException? {
+    BKTClient.destroy()
+    return initBucketeer()
   }
 
   private fun showDialog(message: String) {
@@ -138,5 +157,47 @@ class MainActivity : Activity() {
     builder.setPositiveButton(getString(R.string.dialog_btn_ok)) { _, _ -> }
     val alertDialog: AlertDialog = builder.create()
     alertDialog.show()
+  }
+
+  private suspend fun initBucketeer(): BKTException? {
+    val config =
+      BKTConfig.builder()
+        .apiKey(BuildConfig.API_KEY)
+        .apiEndpoint(BuildConfig.API_ENDPOINT)
+        .featureTag(getTag())
+        .appVersion(BuildConfig.VERSION_NAME)
+        .eventsMaxQueueSize(10)
+        .pollingInterval(TimeUnit.SECONDS.toMillis(20))
+        .backgroundPollingInterval(TimeUnit.SECONDS.toMillis(60))
+        .eventsFlushInterval(TimeUnit.SECONDS.toMillis(20))
+        .build()
+
+    val user =
+      BKTUser.builder()
+        .id(getUserId())
+        .build()
+
+    val future = BKTClient.initialize(this, config, user)
+
+    val result =
+      withContext(Dispatchers.IO) {
+        future.get()
+      }
+    println("Initialize result: $result")
+    return result
+  }
+
+  private fun getTag(): String {
+    return sharedPref.getString(
+      Constants.PREFERENCE_KEY_TAG,
+      Constants.DEFAULT_TAG,
+    ) ?: Constants.DEFAULT_TAG
+  }
+
+  private fun getUserId(): String {
+    return sharedPref.getString(
+      Constants.PREFERENCE_KEY_USER_ID,
+      Constants.DEFAULT_USER_ID,
+    ) ?: Constants.DEFAULT_USER_ID
   }
 }

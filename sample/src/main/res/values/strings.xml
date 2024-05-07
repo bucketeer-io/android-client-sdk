@@ -8,7 +8,7 @@
     <string name="app_will_be_restarted">The app will be restarted for the changes to take effect</string>
 
     <string name="btn_switch_tag">Switch Tag</string>
-    <string name="btn_get_variation">Get variation</string>
+    <string name="btn_get_variation">Get boolean variation</string>
     <string name="btn_send_goal">Send goal</string>
     <string name="btn_switch_user">Switch user</string>
 
