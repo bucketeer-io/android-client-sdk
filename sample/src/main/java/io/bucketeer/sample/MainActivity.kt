@@ -44,11 +44,12 @@ class MainActivity : FragmentActivity() {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
     variantTypeSpinner = findViewById(R.id.spinner)
-    val adapter = ArrayAdapter(
-      this,
-      android.R.layout.simple_spinner_item,
-      VariantType.entries.map { it.type },
-    )
+    val adapter =
+      ArrayAdapter(
+        this,
+        android.R.layout.simple_spinner_item,
+        VariantType.entries.map { it.type },
+      )
     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
     variantTypeSpinner.adapter = adapter
 
@@ -94,13 +95,14 @@ class MainActivity : FragmentActivity() {
     inputGetVariation.error = null
     val type = VariantType.entries.getOrNull(variantTypeSpinner.selectedItemPosition) ?: VariantType.BOOLEAN
     val client = BKTClient.getInstance()
-    val variation: Any = when (type) {
-      VariantType.INT -> client.intVariation(featureId, 0)
-      VariantType.STRING -> client.stringVariation(featureId, "")
-      VariantType.BOOLEAN -> client.booleanVariation(featureId, false)
-      VariantType.DOUBLE -> client.doubleVariation(featureId, 0.0)
-      VariantType.JSON -> client.jsonVariation(featureId, JSONObject())
-    }
+    val variation: Any =
+      when (type) {
+        VariantType.INT -> client.intVariation(featureId, 0)
+        VariantType.STRING -> client.stringVariation(featureId, "")
+        VariantType.BOOLEAN -> client.booleanVariation(featureId, false)
+        VariantType.DOUBLE -> client.doubleVariation(featureId, 0.0)
+        VariantType.JSON -> client.jsonVariation(featureId, JSONObject())
+      }
     with(sharedPref.edit()) {
       putString(Constants.PREFERENCE_KEY_FEATURE_FLAG_ID, featureId)
       commit()
