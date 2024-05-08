@@ -3,6 +3,8 @@ package io.bucketeer.sample
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import android.widget.ArrayAdapter
+import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.FragmentActivity
@@ -17,7 +19,16 @@ import io.bucketeer.sdk.android.sample.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.json.JSONObject
 import java.util.concurrent.TimeUnit
+
+enum class VariantType(val type: String) {
+  INT(type = "INT"),
+  STRING(type = "STRING"),
+  BOOLEAN(type = "BOOLEAN"),
+  DOUBLE(type = "DOUBLE"),
+  JSON(type = "JSON"),
+}
 
 class MainActivity : FragmentActivity() {
   private val sharedPref by lazy {
@@ -27,24 +38,40 @@ class MainActivity : FragmentActivity() {
     )
   }
 
+  private lateinit var variantTypeSpinner: Spinner
+
   public override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
+    variantTypeSpinner = findViewById(R.id.spinner)
+    val adapter = ArrayAdapter(
+      this,
+      android.R.layout.simple_spinner_item,
+      VariantType.entries.map { it.type },
+    )
+    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+    variantTypeSpinner.adapter = adapter
+
     lifecycleScope.launch {
       val rs = initBucketeer()
       if (rs == null || rs is BKTException.TimeoutException) {
-        Toast.makeText(this@MainActivity, "The BKTClient SDK has been initialized", Toast.LENGTH_LONG).show()
+        Toast.makeText(
+          this@MainActivity,
+          "The BKTClient SDK has been initialized",
+          Toast.LENGTH_LONG,
+        ).show()
       } else {
-        Toast.makeText(this@MainActivity, "Failed with error ${rs.message}", Toast.LENGTH_LONG).show()
+        Toast.makeText(this@MainActivity, "Failed with error ${rs.message}", Toast.LENGTH_LONG)
+          .show()
       }
     }
-    setGetVariation()
+    setDefaultVariation()
     setGoalId()
     setSwitchUser()
     setTag()
   }
 
-  private fun setGetVariation() {
+  private fun setDefaultVariation() {
     val inputGetVariation = findViewById<TextInputLayout>(R.id.get_variation)
     inputGetVariation.editText?.setText(
       sharedPref.getString(
@@ -53,19 +80,33 @@ class MainActivity : FragmentActivity() {
       ),
     )
     findViewById<View>(R.id.btn_get_variation).setOnClickListener {
-      val featureId = inputGetVariation.editText?.text.toString().trim()
-      if (featureId.isEmpty()) {
-        inputGetVariation.error = getString(R.string.error_feature_flag_id_required)
-        return@setOnClickListener
-      }
-      inputGetVariation.error = null
-      val variation = BKTClient.getInstance().booleanVariation(featureId, false)
-      with(sharedPref.edit()) {
-        putString(Constants.PREFERENCE_KEY_FEATURE_FLAG_ID, featureId)
-        commit()
-      }
-      showDialog(getString(R.string.dialog_get_variation, variation))
+      handleGetVariant()
     }
+  }
+
+  private fun handleGetVariant() {
+    val inputGetVariation = findViewById<TextInputLayout>(R.id.get_variation)
+    val featureId = inputGetVariation.editText?.text.toString().trim()
+    if (featureId.isEmpty()) {
+      inputGetVariation.error = getString(R.string.error_feature_flag_id_required)
+      return
+    }
+    inputGetVariation.error = null
+    val type = VariantType.entries.getOrNull(variantTypeSpinner.selectedItemPosition) ?: VariantType.BOOLEAN
+    val client = BKTClient.getInstance()
+    val variation: Any = when (type) {
+      VariantType.INT -> client.intVariation(featureId, 0)
+      VariantType.STRING -> client.stringVariation(featureId, "")
+      VariantType.BOOLEAN -> client.booleanVariation(featureId, false)
+      VariantType.DOUBLE -> client.doubleVariation(featureId, 0.0)
+      VariantType.JSON -> client.jsonVariation(featureId, JSONObject())
+    }
+    with(sharedPref.edit()) {
+      putString(Constants.PREFERENCE_KEY_FEATURE_FLAG_ID, featureId)
+      commit()
+    }
+    val valueString = variation.toString()
+    showDialog(getString(R.string.dialog_get_variation, valueString))
   }
 
   private fun setGoalId() {
@@ -111,7 +152,8 @@ class MainActivity : FragmentActivity() {
         if (rs == null) {
           Toast.makeText(this@MainActivity, "Successful switch the user.", Toast.LENGTH_LONG).show()
         } else {
-          Toast.makeText(this@MainActivity, "Failed with error ${rs.message}", Toast.LENGTH_LONG).show()
+          Toast.makeText(this@MainActivity, "Failed with error ${rs.message}", Toast.LENGTH_LONG)
+            .show()
         }
       }
     }
@@ -139,7 +181,8 @@ class MainActivity : FragmentActivity() {
         if (rs == null) {
           Toast.makeText(this@MainActivity, "Successful change the tag.", Toast.LENGTH_LONG).show()
         } else {
-          Toast.makeText(this@MainActivity, "Failed with error ${rs.message}", Toast.LENGTH_LONG).show()
+          Toast.makeText(this@MainActivity, "Failed with error ${rs.message}", Toast.LENGTH_LONG)
+            .show()
         }
       }
     }
