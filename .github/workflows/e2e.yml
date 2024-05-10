@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         api-level:
-          - 29
+          - 32
         target:
           - google_apis
         arch:
