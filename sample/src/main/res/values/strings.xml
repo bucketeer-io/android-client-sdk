@@ -13,7 +13,7 @@
     <string name="btn_switch_user">Switch user</string>
 
     <string name="dialog_btn_ok">OK</string>
-    <string name="dialog_get_variation">Variation: %1$b</string>
+    <string name="dialog_get_variation">Variation: %1$s</string>
     <string name="dialog_evaluations_updated">User Evaluations has been updated</string>
     <string name="dialog_goal_event_queued">Goal event is queued. It will be sent within 1 minute</string>
 
@@ -21,4 +21,5 @@
     <string name="error_goal_id_required">Goal Id is required</string>
     <string name="error_user_id_required">User Id is required</string>
     <string name="error_tag_id_required">Tag is required</string>
+    <string name="variant_type">Variant Type</string>
 </resources>
