@@ -4,6 +4,7 @@ import io.bucketeer.sdk.android.internal.logd
 import io.bucketeer.sdk.android.internal.model.Evaluation
 import org.json.JSONObject
 import java.util.Locale
+import kotlin.text.isEmpty
 
 internal inline fun <reified T : Any> Evaluation?.getVariationValue(defaultValue: T): T {
   val value = this?.variationValue
