@@ -47,7 +47,22 @@ interface BKTClient {
 
   fun flush(): Future<BKTException?>
 
+  @Deprecated(
+    message =
+      "evaluationDetails is deprecated. Use intEvaluationDetails, doubleEvaluationDetails," +
+        " boolEvaluationDetails, stringEvaluationDetails, or jsonEvaluationDetails instead.",
+  )
   fun evaluationDetails(featureId: String): BKTEvaluation?
+
+  fun intEvaluationDetails(featureId: String): BKTEvaluationDetail<Int>?
+
+  fun doubleEvaluationDetails(featureId: String): BKTEvaluationDetail<Double>?
+
+  fun boolEvaluationDetails(featureId: String): BKTEvaluationDetail<Boolean>?
+
+  fun stringEvaluationDetails(featureId: String): BKTEvaluationDetail<String>?
+
+  fun jsonEvaluationDetails(featureId: String): BKTEvaluationDetail<JSONObject>?
 
   fun addEvaluationUpdateListener(listener: EvaluationUpdateListener): String
 

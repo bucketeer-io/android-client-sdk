@@ -136,6 +136,26 @@ internal class BKTClientImpl(
     )
   }
 
+  override fun intEvaluationDetails(featureId: String): BKTEvaluationDetail<Int>? {
+    TODO("Not yet implemented")
+  }
+
+  override fun doubleEvaluationDetails(featureId: String): BKTEvaluationDetail<Double>? {
+    TODO("Not yet implemented")
+  }
+
+  override fun boolEvaluationDetails(featureId: String): BKTEvaluationDetail<Boolean>? {
+    TODO("Not yet implemented")
+  }
+
+  override fun stringEvaluationDetails(featureId: String): BKTEvaluationDetail<String>? {
+    TODO("Not yet implemented")
+  }
+
+  override fun jsonEvaluationDetails(featureId: String): BKTEvaluationDetail<JSONObject>? {
+    TODO("Not yet implemented")
+  }
+
   override fun addEvaluationUpdateListener(listener: BKTClient.EvaluationUpdateListener): String {
     return component.evaluationInteractor.addUpdateListener(listener)
   }

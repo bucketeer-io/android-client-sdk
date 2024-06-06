@@ -1,11 +1,7 @@
 package io.bucketeer.sdk.android
 
-@Deprecated(
-  message = "BKTEvaluation is deprecated in favor of BKTEvaluationDetails<T>",
-  replaceWith = ReplaceWith("BKTEvaluationDetails<T>"),
-)
-data class BKTEvaluation(
-  var id: String,
+data class BKTEvaluationDetail<T>(
+  var id: T,
   val featureId: String,
   val featureVersion: Int,
   val userId: String,
