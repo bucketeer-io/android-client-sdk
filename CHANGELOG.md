@@ -5,7 +5,7 @@
 
 ### Bug Fixes
 
-* concurrentModificationException while initializationing ([#179](https://github.com/bucketeer-io/android-client-sdk/issues/179)) ([610bef0](https://github.com/bucketeer-io/android-client-sdk/commit/610bef08e0973016ed960cdd56437a545906b122))
+* concurrentModificationException while initializing ([#179](https://github.com/bucketeer-io/android-client-sdk/issues/179)) ([610bef0](https://github.com/bucketeer-io/android-client-sdk/commit/610bef08e0973016ed960cdd56437a545906b122))
 
 
 ### Miscellaneous
