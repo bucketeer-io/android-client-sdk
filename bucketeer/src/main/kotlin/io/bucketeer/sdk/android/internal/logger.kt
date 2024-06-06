@@ -9,7 +9,9 @@ internal object LoggerHolder {
   private val logHandlers: MutableList<BKTLogger> = mutableListOf()
 
   fun addLogger(logger: BKTLogger) {
-    logHandlers.add(logger)
+    synchronized(logHandlers) {
+      logHandlers.add(logger)
+    }
   }
 
   fun log(
@@ -17,8 +19,10 @@ internal object LoggerHolder {
     messageCreator: (() -> String?)? = null,
     throwable: Throwable? = null,
   ) {
-    logHandlers.forEach {
-      it.log(priority, messageCreator, throwable)
+    synchronized(logHandlers) {
+      logHandlers.forEach {
+        it.log(priority, messageCreator, throwable)
+      }
     }
   }
 }

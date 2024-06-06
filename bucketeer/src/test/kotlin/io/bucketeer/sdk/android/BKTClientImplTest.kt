@@ -711,6 +711,41 @@ class BKTClientImplTest {
     assertThat(eventSQLDao.isClosed).isTrue()
     assertThat(db.isOpen).isFalse()
   }
+
+  @Test
+  fun getEvaluationDetailsWhileInitialization() {
+    server.enqueue(
+      MockResponse()
+        .setResponseCode(200)
+        .setBody(
+          moshi.adapter(GetEvaluationsResponse::class.java)
+            .toJson(
+              GetEvaluationsResponse(
+                evaluations = user1Evaluations,
+                userEvaluationsId = "user_evaluations_id_value",
+              ),
+            ),
+        ),
+    )
+
+    val configWithLogger =
+      BKTConfig.builder()
+        .apiEndpoint(config.apiEndpoint)
+        .apiKey(config.apiKey)
+        .featureTag(config.featureTag)
+        .appVersion(config.appVersion)
+        .logger(DefaultLogger())
+        .build()
+
+    BKTClient.initialize(
+      ApplicationProvider.getApplicationContext(),
+      configWithLogger,
+      user1.toBKTUser(),
+      1000,
+    )
+    val actual = BKTClient.getInstance().evaluationDetails(evaluation1.featureId)
+    assertThat(actual).isNotInstanceOf(BKTException::class.java)
+  }
 }
 
 private val BKTClient.componentImpl: ComponentImpl
