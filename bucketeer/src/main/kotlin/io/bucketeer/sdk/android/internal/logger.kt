@@ -17,7 +17,11 @@ internal object LoggerHolder {
     messageCreator: (() -> String?)? = null,
     throwable: Throwable? = null,
   ) {
-    logHandlers.forEach {
+    val handlersCopy: List<BKTLogger>
+    synchronized(this) {
+      handlersCopy = logHandlers.toList()
+    }
+    handlersCopy.forEach {
       it.log(priority, messageCreator, throwable)
     }
   }
