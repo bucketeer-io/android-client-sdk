@@ -1,4 +1,4 @@
-name: release
+name: Release
 
 on:
   workflow_dispatch:
@@ -11,17 +11,6 @@ jobs:
     name: Release Please
     runs-on: ubuntu-latest
     steps:
-      - uses: google-github-actions/release-please-action@v3.7.13
+      - uses: googleapis/release-please-action@f3969c04a4ec81d7a9aa4010d84ae6a7602f86a7 # v4.1.1
         with:
-          changelog-types: |
-            [
-              {"type":"build","section":"Build System","hidden":false},
-              {"type":"chore","section":"Miscellaneous","hidden":false},
-              {"type":"feat","section":"Features","hidden":false},
-              {"type":"fix","section":"Bug Fixes","hidden":false},
-              {"type":"perf","section":"Performance Improvements","hidden":false},
-              {"type":"refactor","section":"Refactoring","hidden":false},
-              {"type":"revert","section":"Reverts","hidden":false}
-            ]
-          release-type: simple
-          token: ${{ secrets.WORKFLOW_TOKEN }}
+          token: ${{ secrets.WORKFLOW_TOKEN }} # We need to set the PAT so the publish workflow can be triggered
