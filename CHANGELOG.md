@@ -1,5 +1,26 @@
 # Changelog
 
+## [2.1.7](https://github.com/bucketeer-io/android-client-sdk/compare/v2.1.6...v2.1.7) (2024-06-06)
+
+
+### Bug Fixes
+
+* concurrentModificationException while initializing ([#179](https://github.com/bucketeer-io/android-client-sdk/issues/179)) ([610bef0](https://github.com/bucketeer-io/android-client-sdk/commit/610bef08e0973016ed960cdd56437a545906b122))
+
+
+### Miscellaneous
+
+* **sample:** enable switching user and tag during runtime. ([#172](https://github.com/bucketeer-io/android-client-sdk/issues/172)) ([a61ef0a](https://github.com/bucketeer-io/android-client-sdk/commit/a61ef0af10cd94c91e428e706422962b7e0c2576))
+
+
+### Build System
+
+* **deps:** update all non-major dependencies ([#161](https://github.com/bucketeer-io/android-client-sdk/issues/161)) ([8aa2f7c](https://github.com/bucketeer-io/android-client-sdk/commit/8aa2f7cf07194586286698d85d357b1f90298e93))
+* **deps:** update all non-major dependencies ([#168](https://github.com/bucketeer-io/android-client-sdk/issues/168)) ([35721d5](https://github.com/bucketeer-io/android-client-sdk/commit/35721d525c180a0d1d7f298675d01e8294a588da))
+* **deps:** update all non-major dependencies ([#173](https://github.com/bucketeer-io/android-client-sdk/issues/173)) ([c6bcd55](https://github.com/bucketeer-io/android-client-sdk/commit/c6bcd5572076bcebb9a46c736f604d0c64d3a359))
+* **deps:** update plugin ksp to v2.0.0-1.0.22 ([#176](https://github.com/bucketeer-io/android-client-sdk/issues/176)) ([f06f789](https://github.com/bucketeer-io/android-client-sdk/commit/f06f7896516a158726fd5a3c9ce8ddf90f574154))
+* **deps:** update to kotlin 2.0.0 ([#174](https://github.com/bucketeer-io/android-client-sdk/issues/174)) ([e957644](https://github.com/bucketeer-io/android-client-sdk/commit/e957644ed2c9d75b09780099f7e81fd525ac2f80))
+
 ## [2.1.6](https://github.com/bucketeer-io/android-client-sdk/compare/v2.1.5...v2.1.6) (2024-04-23)
 
 
