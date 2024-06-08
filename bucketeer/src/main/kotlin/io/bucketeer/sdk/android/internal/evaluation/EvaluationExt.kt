@@ -4,11 +4,10 @@ import io.bucketeer.sdk.android.internal.logd
 import io.bucketeer.sdk.android.internal.model.Evaluation
 import org.json.JSONObject
 import java.util.Locale
-import kotlin.text.isEmpty
 
-internal inline fun <reified T : Any> Evaluation?.getVariationValue(defaultValue: T): T {
+internal inline fun <reified T : Any> Evaluation?.getVariationValue(): T? {
   val value = this?.variationValue
-  val typedValue: T =
+  val typedValue: T? =
     if (value != null) {
       @Suppress("IMPLICIT_CAST_TO_ANY")
       val anyValue =
@@ -40,7 +39,7 @@ internal inline fun <reified T : Any> Evaluation?.getVariationValue(defaultValue
           null
         }
       }
-      anyValue as? T ?: defaultValue
+      anyValue as? T
     } else {
       logd {
         "getVariation returns null reason: " +
@@ -56,7 +55,12 @@ internal inline fun <reified T : Any> Evaluation?.getVariationValue(defaultValue
             }
           }
       }
-      defaultValue
+      null
     }
+  return typedValue
+}
+
+internal inline fun <reified T : Any> Evaluation?.getVariationValue(defaultValue: T): T {
+  val typedValue: T = getVariationValue() ?: defaultValue
   return typedValue
 }

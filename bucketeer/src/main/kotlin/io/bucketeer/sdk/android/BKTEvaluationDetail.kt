@@ -1,13 +1,13 @@
 package io.bucketeer.sdk.android
 
 data class BKTEvaluationDetail<T>(
-  var id: T,
+  var id: String,
   val featureId: String,
   val featureVersion: Int,
   val userId: String,
   val variationId: String,
   val variationName: String,
-  val variationValue: String,
+  val variationValue: T,
   val reason: Reason,
 ) {
   enum class Reason {
