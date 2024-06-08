@@ -457,7 +457,7 @@ class BKTClientImplTest {
   }
 
   @Test
-  fun evaluationDetails() {
+  fun stringEvaluationDetails() {
     server.enqueue(
       MockResponse()
         .setResponseCode(200)
@@ -538,14 +538,31 @@ class BKTClientImplTest {
       )
     initializeFuture.get()
 
+    val unknownFeature = "unknown_feature_id"
     @Suppress("DEPRECATION")
-    val actual = BKTClient.getInstance().evaluationDetails("unknown_feature_id")
+    assertThat(
+      BKTClient.getInstance().evaluationDetails(unknownFeature)
+    ).isNull()
 
-    assertThat(actual).isNull()
+    assertThat(
+      BKTClient.getInstance().stringEvaluationDetails(unknownFeature)
+    ).isNull()
 
-    val actualEvaluationDetails = BKTClient.getInstance().intEvaluationDetails("unknown_feature_id")
+    assertThat(
+      BKTClient.getInstance().intEvaluationDetails(unknownFeature)
+    ).isNull()
 
-    assertThat(actualEvaluationDetails).isNull()
+    assertThat(
+      BKTClient.getInstance().doubleEvaluationDetails(unknownFeature)
+    ).isNull()
+
+    assertThat(
+      BKTClient.getInstance().boolEvaluationDetails(unknownFeature)
+    ).isNull()
+
+    assertThat(
+      BKTClient.getInstance().jsonEvaluationDetails(unknownFeature)
+    ).isNull()
   }
 
   @Test

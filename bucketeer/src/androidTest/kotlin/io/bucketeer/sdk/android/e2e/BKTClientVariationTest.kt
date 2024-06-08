@@ -101,6 +101,8 @@ class BKTClientVariationTest {
         reason = BKTEvaluationDetail.Reason.DEFAULT,
       ),
     )
+
+    assertThat(BKTClient.getInstance().stringEvaluationDetails(FEATURE_ID_UNKNOWN)).isNull()
   }
 
   @Test
@@ -143,6 +145,9 @@ class BKTClientVariationTest {
         reason = BKTEvaluationDetail.Reason.DEFAULT,
       ),
     )
+
+
+    assertThat(BKTClient.getInstance().intEvaluationDetails(FEATURE_ID_UNKNOWN)).isNull()
   }
 
   @Test
@@ -185,6 +190,9 @@ class BKTClientVariationTest {
         reason = BKTEvaluationDetail.Reason.DEFAULT,
       ),
     )
+
+
+    assertThat(BKTClient.getInstance().doubleEvaluationDetails(FEATURE_ID_UNKNOWN)).isNull()
   }
 
   @Test
@@ -227,6 +235,8 @@ class BKTClientVariationTest {
         reason = BKTEvaluationDetail.Reason.DEFAULT,
       ),
     )
+
+    assertThat(BKTClient.getInstance().boolEvaluationDetails(FEATURE_ID_UNKNOWN)).isNull()
   }
 
   @Test
@@ -285,5 +295,7 @@ class BKTClientVariationTest {
     ).isEqualTo(
       expectEvaluationDetails,
     )
+
+    assertThat(BKTClient.getInstance().jsonEvaluationDetails(FEATURE_ID_UNKNOWN)).isNull()
   }
 }
