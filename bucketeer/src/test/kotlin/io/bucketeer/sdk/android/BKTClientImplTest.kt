@@ -541,27 +541,27 @@ class BKTClientImplTest {
     val unknownFeature = "unknown_feature_id"
     @Suppress("DEPRECATION")
     assertThat(
-      BKTClient.getInstance().evaluationDetails(unknownFeature)
+      BKTClient.getInstance().evaluationDetails(unknownFeature),
     ).isNull()
 
     assertThat(
-      BKTClient.getInstance().stringEvaluationDetails(unknownFeature)
+      BKTClient.getInstance().stringEvaluationDetails(unknownFeature),
     ).isNull()
 
     assertThat(
-      BKTClient.getInstance().intEvaluationDetails(unknownFeature)
+      BKTClient.getInstance().intEvaluationDetails(unknownFeature),
     ).isNull()
 
     assertThat(
-      BKTClient.getInstance().doubleEvaluationDetails(unknownFeature)
+      BKTClient.getInstance().doubleEvaluationDetails(unknownFeature),
     ).isNull()
 
     assertThat(
-      BKTClient.getInstance().boolEvaluationDetails(unknownFeature)
+      BKTClient.getInstance().boolEvaluationDetails(unknownFeature),
     ).isNull()
 
     assertThat(
-      BKTClient.getInstance().jsonEvaluationDetails(unknownFeature)
+      BKTClient.getInstance().jsonEvaluationDetails(unknownFeature),
     ).isNull()
   }
 

@@ -146,7 +146,6 @@ class BKTClientVariationTest {
       ),
     )
 
-
     assertThat(BKTClient.getInstance().intEvaluationDetails(FEATURE_ID_UNKNOWN)).isNull()
   }
 
@@ -190,7 +189,6 @@ class BKTClientVariationTest {
         reason = BKTEvaluationDetail.Reason.DEFAULT,
       ),
     )
-
 
     assertThat(BKTClient.getInstance().doubleEvaluationDetails(FEATURE_ID_UNKNOWN)).isNull()
   }
