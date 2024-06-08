@@ -1,8 +1,8 @@
 package io.bucketeer.sdk.android
 
 @Deprecated(
-  message = "BKTEvaluation is deprecated in favor of BKTEvaluationDetails<T>",
-  replaceWith = ReplaceWith("BKTEvaluationDetails<T>"),
+  message = "BKTEvaluation is deprecated in favor of BKTEvaluationDetail<T>",
+  replaceWith = ReplaceWith("BKTEvaluationDetail<T>"),
 )
 data class BKTEvaluation(
   var id: String,
@@ -16,8 +16,8 @@ data class BKTEvaluation(
   val reason: Reason,
 ) {
   @Deprecated(
-    "BKTEvaluation.Reason is deprecated in favor of BKTEvaluationDetails.Reason",
-    replaceWith = ReplaceWith("BKTEvaluationDetails.Reason"),
+    "BKTEvaluation.Reason is deprecated in favor of BKTEvaluationDetail.Reason",
+    replaceWith = ReplaceWith("BKTEvaluationDetail.Reason"),
   )
   enum class Reason {
     TARGET,
