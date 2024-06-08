@@ -106,6 +106,7 @@ dependencies {
   testImplementation libs.robolectric
   testImplementation libs.androidx.test.core
   testImplementation libs.testParameterInjector
+  testImplementation libs.json
 
   androidTestImplementation libs.androidx.test.rules
   androidTestImplementation libs.androidx.test.ext
