@@ -22,6 +22,7 @@ import io.bucketeer.sdk.android.internal.model.response.ErrorResponse
 import io.bucketeer.sdk.android.internal.model.response.GetEvaluationsResponse
 import io.bucketeer.sdk.android.internal.model.response.RegisterEventsResponse
 import io.bucketeer.sdk.android.internal.user.toBKTUser
+import io.bucketeer.sdk.android.internal.util.contains
 import io.bucketeer.sdk.android.mocks.booleanEvaluation
 import io.bucketeer.sdk.android.mocks.doubleEvaluation
 import io.bucketeer.sdk.android.mocks.evaluation1
@@ -492,7 +493,7 @@ class BKTClientImplTest {
     val expectedEvaluation = stringEvaluation
     val featureId = expectedEvaluation.featureId
     val expectedBKTEvaluationDetailStringValue: String? = expectedEvaluation.getVariationValue()
-    assertThat(expectedBKTEvaluationDetailStringValue).isNotEmpty()
+    assertThat(expectedBKTEvaluationDetailStringValue).isEqualTo("test variation value1")
 
     @Suppress("DEPRECATION")
     val actual = BKTClient.getInstance().evaluationDetails(featureId)
@@ -570,13 +571,13 @@ class BKTClientImplTest {
     val expectedEvaluation = intValueEvaluation
     val featureId = expectedEvaluation.featureId
     val expectedBKTEvaluationDetailStringValue: String? = expectedEvaluation.getVariationValue()
-    assertThat(expectedBKTEvaluationDetailStringValue).isNotEmpty()
+    assertThat(expectedBKTEvaluationDetailStringValue).isEqualTo("1")
 
     val expectedBKTEvaluationDetailIntValue: Int? = expectedEvaluation.getVariationValue()
-    assertThat(expectedBKTEvaluationDetailIntValue).isGreaterThan(0)
+    assertThat(expectedBKTEvaluationDetailIntValue).isEqualTo(1)
 
     val expectedBKTEvaluationDetailDoubleValue: Double? = expectedEvaluation.getVariationValue()
-    assertThat(expectedBKTEvaluationDetailDoubleValue).isGreaterThan(0.0)
+    assertThat(expectedBKTEvaluationDetailDoubleValue).isEqualTo(1.0)
 
     val actualEvaluationDetails = BKTClient.getInstance().stringEvaluationDetails(featureId)
     assertThat(actualEvaluationDetails).isEqualTo(
@@ -659,10 +660,10 @@ class BKTClientImplTest {
     val expectedEvaluation = doubleEvaluation
     val featureId = expectedEvaluation.featureId
     val expectedBKTEvaluationDetailStringValue: String? = expectedEvaluation.getVariationValue()
-    assertThat(expectedBKTEvaluationDetailStringValue).isNotEmpty()
+    assertThat(expectedBKTEvaluationDetailStringValue).isEqualTo("2.0")
 
     val expectedBKTEvaluationDetailDoubleValue: Double? = expectedEvaluation.getVariationValue()
-    assertThat(expectedBKTEvaluationDetailDoubleValue).isGreaterThan(0.0)
+    assertThat(expectedBKTEvaluationDetailDoubleValue).isEqualTo(2.0)
 
     val actualEvaluationDetails = BKTClient.getInstance().stringEvaluationDetails(featureId)
     assertThat(actualEvaluationDetails).isEqualTo(
@@ -734,10 +735,10 @@ class BKTClientImplTest {
     val expectedEvaluation = booleanEvaluation
     val featureId = expectedEvaluation.featureId
     val expectedBKTEvaluationDetailStringValue: String? = expectedEvaluation.getVariationValue()
-    assertThat(expectedBKTEvaluationDetailStringValue).isNotEmpty()
+    assertThat(expectedBKTEvaluationDetailStringValue).isEqualTo("true")
 
     val expectedBKTEvaluationDetailBooleanValue: Boolean? = expectedEvaluation.getVariationValue()
-    assertThat(expectedBKTEvaluationDetailBooleanValue).isEqualTo(true)
+    assertThat(expectedBKTEvaluationDetailBooleanValue).isTrue()
 
     val actualEvaluationDetails = BKTClient.getInstance().stringEvaluationDetails(featureId)
     assertThat(actualEvaluationDetails).isEqualTo(
@@ -809,18 +810,31 @@ class BKTClientImplTest {
     val expectedEvaluation = jsonEvaluation
     val featureId = expectedEvaluation.featureId
     val expectedBKTEvaluationDetailStringValue: String? = expectedEvaluation.getVariationValue()
-    assertThat(expectedBKTEvaluationDetailStringValue).isNotEmpty()
+    assertThat(expectedBKTEvaluationDetailStringValue).isEqualTo("""{ "key": "value-1" }""")
 
     val expectedBKTEvaluationDetailJsonValue: JSONObject? = expectedEvaluation.getVariationValue()
-    assertThat(expectedBKTEvaluationDetailJsonValue).isNotNull()
+    assertThat(expectedBKTEvaluationDetailJsonValue!!.contains(JSONObject("""{ "key": "value-1" }"""))).isTrue()
 
-//    val expectedJSONValue = JSONObject(expectedBKTEvaluationDetailStringValue!!)
-//    val values = keys?.map { expectedJSONValue.get(it) }
-//    assertThat(keys).isEqualTo(listOf("key"))
-//    assertThat(values).isEqualTo(listOf("value-1"))
-
-    val actualEvaluationDetails = BKTClient.getInstance().stringEvaluationDetails(featureId)
+    val actualEvaluationDetails = BKTClient.getInstance().jsonEvaluationDetails(featureId)
+    // 1- Verify the variationValue(JSONObject) here
+    assertThat(expectedBKTEvaluationDetailJsonValue.contains(actualEvaluationDetails!!.variationValue)).isTrue()
     assertThat(actualEvaluationDetails).isEqualTo(
+      BKTEvaluationDetail(
+        id = expectedEvaluation.id,
+        featureId = expectedEvaluation.featureId,
+        featureVersion = expectedEvaluation.featureVersion,
+        userId = expectedEvaluation.userId,
+        variationId = expectedEvaluation.variationId,
+        variationName = expectedEvaluation.variationName,
+        // 2- Ignore variationValue
+        variationValue = actualEvaluationDetails.variationValue,
+        reason = BKTEvaluationDetail.Reason.DEFAULT,
+      ),
+    )
+
+    assertThat(
+      BKTClient.getInstance().stringEvaluationDetails(featureId),
+    ).isEqualTo(
       BKTEvaluationDetail(
         id = expectedEvaluation.id,
         featureId = expectedEvaluation.featureId,
@@ -844,21 +858,6 @@ class BKTClientImplTest {
     assertThat(
       BKTClient.getInstance().doubleEvaluationDetails(featureId),
     ).isNull()
-
-//    assertThat(
-//      BKTClient.getInstance().jsonEvaluationDetails(featureId),
-//    ).isEqualTo(
-//      BKTEvaluationDetail(
-//        id = expectedEvaluation.id,
-//        featureId = expectedEvaluation.featureId,
-//        featureVersion = expectedEvaluation.featureVersion,
-//        userId = expectedEvaluation.userId,
-//        variationId = expectedEvaluation.variationId,
-//        variationName = expectedEvaluation.variationName,
-//        variationValue = expectedBKTEvaluationDetailStringValue,
-//        reason = BKTEvaluationDetail.Reason.DEFAULT,
-//      ),
-//    )
   }
 
   @Test

@@ -15,6 +15,7 @@ import io.bucketeer.sdk.android.BKTUser
 import io.bucketeer.sdk.android.BuildConfig
 import io.bucketeer.sdk.android.internal.Constants
 import io.bucketeer.sdk.android.internal.database.OpenHelperCallback
+import io.bucketeer.sdk.android.internal.util.contains
 import org.json.JSONObject
 import org.junit.After
 import org.junit.Before
@@ -268,13 +269,9 @@ class BKTClientVariationTest {
 
     val actualEvaluationDetails = BKTClient.getInstance().jsonEvaluationDetails(FEATURE_ID_JSON)
 
-    val keys = actualEvaluationDetails?.variationValue?.keys()?.asSequence()?.toList()
-
-    // Verify the variationValue(JSONObject) here
+    // 1- Verify the variationValue(JSONObject) here
     val expectedJSONValue = JSONObject("""{ "key": "value-1" }""")
-    val values = keys?.map { expectedJSONValue.get(it) }
-    assertThat(keys).isEqualTo(listOf("key"))
-    assertThat(values).isEqualTo(listOf("value-1"))
+    assertThat(actualEvaluationDetails?.variationValue?.contains(expectedJSONValue)).isTrue()
 
     val expectEvaluationDetails =
       BKTEvaluationDetail(
@@ -284,7 +281,7 @@ class BKTClientVariationTest {
         userId = USER_ID,
         variationId = "4499d1ca-411d-4ec6-9ae8-df51087e72bb",
         variationName = "variation 1",
-        // Ignore the variationValue
+        // 2- Ignore the variationValue
         variationValue = actualEvaluationDetails?.variationValue,
         reason = BKTEvaluationDetail.Reason.DEFAULT,
       )
