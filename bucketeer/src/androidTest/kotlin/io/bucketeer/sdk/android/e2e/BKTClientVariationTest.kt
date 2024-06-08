@@ -1,3 +1,4 @@
+@file:Suppress("DEPRECATION")
 package io.bucketeer.sdk.android.e2e
 
 import android.content.Context
@@ -8,6 +9,7 @@ import com.google.common.truth.Truth.assertThat
 import io.bucketeer.sdk.android.BKTClient
 import io.bucketeer.sdk.android.BKTConfig
 import io.bucketeer.sdk.android.BKTEvaluation
+import io.bucketeer.sdk.android.BKTEvaluationDetail
 import io.bucketeer.sdk.android.BKTUser
 import io.bucketeer.sdk.android.BuildConfig
 import io.bucketeer.sdk.android.internal.Constants
@@ -82,6 +84,22 @@ class BKTClientVariationTest {
         reason = BKTEvaluation.Reason.DEFAULT,
       ),
     )
+
+    val actualEvaluationDetails = BKTClient.getInstance().stringEvaluationDetails(FEATURE_ID_STRING)
+    assertThat(
+      actualEvaluationDetails,
+    ).isEqualTo(
+      BKTEvaluationDetail(
+        id = "feature-android-e2e-string:4:bucketeer-android-user-id-1",
+        featureId = FEATURE_ID_STRING,
+        featureVersion = 4,
+        userId = USER_ID,
+        variationId = "36a53a17-60b4-4a99-a54a-7fcbf21f7c8c",
+        variationName = "variation 1",
+        variationValue = "value-1",
+        reason = BKTEvaluationDetail.Reason.DEFAULT,
+      ),
+    )
   }
 
   @Test
@@ -106,6 +124,22 @@ class BKTClientVariationTest {
         variationName = "variation 10",
         variationValue = "10",
         reason = BKTEvaluation.Reason.DEFAULT,
+      ),
+    )
+
+    val actualEvaluationDetails = BKTClient.getInstance().intEvaluationDetails(FEATURE_ID_INT)
+    assertThat(
+      actualEvaluationDetails,
+    ).isEqualTo(
+      BKTEvaluationDetail(
+        id = "feature-android-e2e-int:3:bucketeer-android-user-id-1",
+        featureId = FEATURE_ID_INT,
+        featureVersion = 3,
+        userId = USER_ID,
+        variationId = "9b9a4396-d2ec-4eaf-aee6-ca0276881120",
+        variationName = "variation 10",
+        variationValue = 10,
+        reason = BKTEvaluationDetail.Reason.DEFAULT,
       ),
     )
   }
@@ -134,6 +168,22 @@ class BKTClientVariationTest {
         reason = BKTEvaluation.Reason.DEFAULT,
       ),
     )
+
+    val actualEvaluationDetails = BKTClient.getInstance().doubleEvaluationDetails(FEATURE_ID_DOUBLE)
+    assertThat(
+      actualEvaluationDetails,
+    ).isEqualTo(
+      BKTEvaluationDetail(
+        id = "feature-android-e2e-double:3:bucketeer-android-user-id-1",
+        featureId = FEATURE_ID_DOUBLE,
+        featureVersion = 3,
+        userId = USER_ID,
+        variationId = "384bbcf0-0d1d-4e7a-b589-850f16f833b4",
+        variationName = "variation 2.1",
+        variationValue = 2.1,
+        reason = BKTEvaluationDetail.Reason.DEFAULT,
+      ),
+    )
   }
 
   @Test
@@ -158,6 +208,22 @@ class BKTClientVariationTest {
         variationName = "variation true",
         variationValue = "true",
         reason = BKTEvaluation.Reason.DEFAULT,
+      ),
+    )
+
+    val actualEvaluationDetails = BKTClient.getInstance().boolEvaluationDetails(FEATURE_ID_BOOLEAN)
+    assertThat(
+      actualEvaluationDetails,
+    ).isEqualTo(
+      BKTEvaluationDetail(
+        id = "feature-android-e2e-boolean:3:bucketeer-android-user-id-1",
+        featureId = FEATURE_ID_BOOLEAN,
+        featureVersion = 3,
+        userId = USER_ID,
+        variationId = "774fb34d-5b08-4305-9995-08cdac47aa0f",
+        variationName = "variation true",
+        variationValue = true,
+        reason = BKTEvaluationDetail.Reason.DEFAULT,
       ),
     )
   }
@@ -189,6 +255,34 @@ class BKTClientVariationTest {
         variationValue = """{ "key": "value-1" }""",
         reason = BKTEvaluation.Reason.DEFAULT,
       ),
+    )
+
+    val actualEvaluationDetails = BKTClient.getInstance().jsonEvaluationDetails(FEATURE_ID_JSON)
+
+    val keys = actualEvaluationDetails?.variationValue?.keys()?.asSequence()?.toList()
+
+    // Verify the variationValue(JSONObject) here
+    val expectedJSONValue = JSONObject("""{ "key": "value-1" }""")
+    val values = keys?.map { expectedJSONValue.get(it) }
+    assertThat(keys).isEqualTo(listOf("key"))
+    assertThat(values).isEqualTo(listOf("value-1"))
+
+    val expectEvaluationDetails =
+      BKTEvaluationDetail(
+        id = "feature-android-e2e-json:3:bucketeer-android-user-id-1",
+        featureId = FEATURE_ID_JSON,
+        featureVersion = 3,
+        userId = USER_ID,
+        variationId = "4499d1ca-411d-4ec6-9ae8-df51087e72bb",
+        variationName = "variation 1",
+        // Ignore the variationValue
+        variationValue = actualEvaluationDetails?.variationValue,
+        reason = BKTEvaluationDetail.Reason.DEFAULT,
+      )
+    assertThat(
+      actualEvaluationDetails,
+    ).isEqualTo(
+      expectEvaluationDetails,
     )
   }
 }

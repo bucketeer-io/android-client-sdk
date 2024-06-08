@@ -12,8 +12,13 @@ data class BKTEvaluation(
   val variationId: String,
   val variationName: String,
   val variationValue: String,
+  @Suppress("DEPRECATION")
   val reason: Reason,
 ) {
+  @Deprecated(
+    "BKTEvaluation.Reason is deprecated in favor of BKTEvaluationDetails.Reason",
+    replaceWith = ReplaceWith("BKTEvaluationDetails.Reason"),
+  )
   enum class Reason {
     TARGET,
     RULE,
@@ -25,6 +30,7 @@ data class BKTEvaluation(
     ;
 
     companion object {
+      @Suppress("DEPRECATION")
       fun from(value: String): Reason = entries.firstOrNull { it.name == value } ?: DEFAULT
     }
   }

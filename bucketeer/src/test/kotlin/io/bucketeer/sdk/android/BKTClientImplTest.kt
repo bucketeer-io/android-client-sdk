@@ -481,9 +481,11 @@ class BKTClientImplTest {
       )
     initializeFuture.get()
 
+    @Suppress("DEPRECATION")
     val actual = BKTClient.getInstance().evaluationDetails(evaluation1.featureId)
 
     assertThat(actual).isEqualTo(
+      @Suppress("DEPRECATION")
       BKTEvaluation(
         id = evaluation1.id,
         featureId = evaluation1.featureId,
@@ -493,6 +495,20 @@ class BKTClientImplTest {
         variationName = evaluation1.variationName,
         variationValue = evaluation1.variationValue,
         reason = BKTEvaluation.Reason.DEFAULT,
+      ),
+    )
+
+    val actualEvaluationDetails = BKTClient.getInstance().stringEvaluationDetails(evaluation1.featureId)
+    assertThat(actualEvaluationDetails).isEqualTo(
+      BKTEvaluationDetail(
+        id = evaluation1.id,
+        featureId = evaluation1.featureId,
+        featureVersion = evaluation1.featureVersion,
+        userId = evaluation1.userId,
+        variationId = evaluation1.variationId,
+        variationName = evaluation1.variationName,
+        variationValue = evaluation1.variationValue,
+        reason = BKTEvaluationDetail.Reason.DEFAULT,
       ),
     )
   }
@@ -522,9 +538,14 @@ class BKTClientImplTest {
       )
     initializeFuture.get()
 
+    @Suppress("DEPRECATION")
     val actual = BKTClient.getInstance().evaluationDetails("unknown_feature_id")
 
     assertThat(actual).isNull()
+
+    val actualEvaluationDetails = BKTClient.getInstance().intEvaluationDetails("unknown_feature_id")
+
+    assertThat(actualEvaluationDetails).isNull()
   }
 
   @Test
@@ -743,8 +764,12 @@ class BKTClientImplTest {
       user1.toBKTUser(),
       1000,
     )
+
+    @Suppress("DEPRECATION")
     val actual = BKTClient.getInstance().evaluationDetails(evaluation1.featureId)
     assertThat(actual).isNotInstanceOf(BKTException::class.java)
+    val actualEvaluationDetails = BKTClient.getInstance().stringEvaluationDetails(evaluation1.featureId)
+    assertThat(actualEvaluationDetails).isNotInstanceOf(BKTException::class.java)
   }
 }
 
