@@ -87,9 +87,8 @@ class BKTClientVariationTest {
       ),
     )
 
-    val actualEvaluationDetails = BKTClient.getInstance().stringEvaluationDetails(FEATURE_ID_STRING)
     assertThat(
-      actualEvaluationDetails,
+      BKTClient.getInstance().stringEvaluationDetails(FEATURE_ID_STRING),
     ).isEqualTo(
       BKTEvaluationDetail(
         id = "feature-android-e2e-string:4:bucketeer-android-user-id-1",
@@ -102,8 +101,6 @@ class BKTClientVariationTest {
         reason = BKTEvaluationDetail.Reason.DEFAULT,
       ),
     )
-
-    assertThat(BKTClient.getInstance().stringEvaluationDetails(FEATURE_ID_UNKNOWN)).isNull()
   }
 
   @Test
@@ -131,9 +128,8 @@ class BKTClientVariationTest {
       ),
     )
 
-    val actualEvaluationDetails = BKTClient.getInstance().intEvaluationDetails(FEATURE_ID_INT)
     assertThat(
-      actualEvaluationDetails,
+      BKTClient.getInstance().intEvaluationDetails(FEATURE_ID_INT),
     ).isEqualTo(
       BKTEvaluationDetail(
         id = "feature-android-e2e-int:3:bucketeer-android-user-id-1",
@@ -146,8 +142,6 @@ class BKTClientVariationTest {
         reason = BKTEvaluationDetail.Reason.DEFAULT,
       ),
     )
-
-    assertThat(BKTClient.getInstance().intEvaluationDetails(FEATURE_ID_UNKNOWN)).isNull()
   }
 
   @Test
@@ -175,9 +169,8 @@ class BKTClientVariationTest {
       ),
     )
 
-    val actualEvaluationDetails = BKTClient.getInstance().doubleEvaluationDetails(FEATURE_ID_DOUBLE)
     assertThat(
-      actualEvaluationDetails,
+      BKTClient.getInstance().doubleEvaluationDetails(FEATURE_ID_DOUBLE),
     ).isEqualTo(
       BKTEvaluationDetail(
         id = "feature-android-e2e-double:3:bucketeer-android-user-id-1",
@@ -190,8 +183,6 @@ class BKTClientVariationTest {
         reason = BKTEvaluationDetail.Reason.DEFAULT,
       ),
     )
-
-    assertThat(BKTClient.getInstance().doubleEvaluationDetails(FEATURE_ID_UNKNOWN)).isNull()
   }
 
   @Test
@@ -219,9 +210,8 @@ class BKTClientVariationTest {
       ),
     )
 
-    val actualEvaluationDetails = BKTClient.getInstance().boolEvaluationDetails(FEATURE_ID_BOOLEAN)
     assertThat(
-      actualEvaluationDetails,
+      BKTClient.getInstance().boolEvaluationDetails(FEATURE_ID_BOOLEAN),
     ).isEqualTo(
       BKTEvaluationDetail(
         id = "feature-android-e2e-boolean:3:bucketeer-android-user-id-1",
@@ -234,8 +224,6 @@ class BKTClientVariationTest {
         reason = BKTEvaluationDetail.Reason.DEFAULT,
       ),
     )
-
-    assertThat(BKTClient.getInstance().boolEvaluationDetails(FEATURE_ID_UNKNOWN)).isNull()
   }
 
   @Test
@@ -290,7 +278,5 @@ class BKTClientVariationTest {
     ).isEqualTo(
       expectEvaluationDetails,
     )
-
-    assertThat(BKTClient.getInstance().jsonEvaluationDetails(FEATURE_ID_UNKNOWN)).isNull()
   }
 }

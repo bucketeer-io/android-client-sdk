@@ -49,8 +49,7 @@ interface BKTClient {
 
   @Deprecated(
     message =
-      "evaluationDetails is deprecated. Use intEvaluationDetails, doubleEvaluationDetails," +
-        " boolEvaluationDetails, stringEvaluationDetails, or jsonEvaluationDetails instead.",
+      "evaluationDetails() is deprecated. Use stringEvaluationDetails() instead.",
   )
   fun evaluationDetails(featureId: String): BKTEvaluation?
 
