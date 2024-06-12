@@ -535,13 +535,13 @@ class BKTClientImplTest {
     assertThat(
       BKTClient.getInstance().boolEvaluationDetails(featureId, defaultValue = false),
     ).isEqualTo(
-      BKTEvaluationDetail.newDefaultInstance(userId = user1.id, defaultValue = false)
+      BKTEvaluationDetail.newDefaultInstance(userId = user1.id, defaultValue = false),
     )
 
     assertThat(
       BKTClient.getInstance().doubleEvaluationDetails(featureId, defaultValue = 1.0),
     ).isEqualTo(
-      BKTEvaluationDetail.newDefaultInstance(userId = user1.id, defaultValue = 1.0)
+      BKTEvaluationDetail.newDefaultInstance(userId = user1.id, defaultValue = 1.0),
     )
 
     assertThat(
@@ -617,7 +617,7 @@ class BKTClientImplTest {
     assertThat(
       BKTClient.getInstance().boolEvaluationDetails(featureId, defaultValue = true),
     ).isEqualTo(
-      BKTEvaluationDetail.newDefaultInstance(userId = user1.id, defaultValue = true)
+      BKTEvaluationDetail.newDefaultInstance(userId = user1.id, defaultValue = true),
     )
 
     assertThat(
@@ -696,7 +696,7 @@ class BKTClientImplTest {
     assertThat(
       BKTClient.getInstance().boolEvaluationDetails(featureId, defaultValue = false),
     ).isEqualTo(
-      BKTEvaluationDetail.newDefaultInstance(userId = user1.id, defaultValue = false)
+      BKTEvaluationDetail.newDefaultInstance(userId = user1.id, defaultValue = false),
     )
 
     assertThat(
@@ -790,7 +790,7 @@ class BKTClientImplTest {
     assertThat(
       BKTClient.getInstance().doubleEvaluationDetails(featureId, defaultValue = 2.0),
     ).isEqualTo(
-      BKTEvaluationDetail.newDefaultInstance(userId = user1.id, defaultValue = 2.0)
+      BKTEvaluationDetail.newDefaultInstance(userId = user1.id, defaultValue = 2.0),
     )
 
     assertThat(
@@ -872,13 +872,13 @@ class BKTClientImplTest {
     assertThat(
       BKTClient.getInstance().boolEvaluationDetails(featureId, defaultValue = false),
     ).isEqualTo(
-      BKTEvaluationDetail.newDefaultInstance(userId = user1.id, defaultValue = false)
+      BKTEvaluationDetail.newDefaultInstance(userId = user1.id, defaultValue = false),
     )
 
     assertThat(
       BKTClient.getInstance().doubleEvaluationDetails(featureId, defaultValue = 5.5),
     ).isEqualTo(
-      BKTEvaluationDetail.newDefaultInstance(userId = user1.id, defaultValue = 5.5)
+      BKTEvaluationDetail.newDefaultInstance(userId = user1.id, defaultValue = 5.5),
     )
   }
 
@@ -916,7 +916,7 @@ class BKTClientImplTest {
     assertThat(
       BKTClient.getInstance().stringEvaluationDetails(unknownFeature, "33"),
     ).isEqualTo(
-      BKTEvaluationDetail.newDefaultInstance(userId = user1.id, defaultValue = "33")
+      BKTEvaluationDetail.newDefaultInstance(userId = user1.id, defaultValue = "33"),
     )
 
     assertThat(
@@ -928,13 +928,13 @@ class BKTClientImplTest {
     assertThat(
       BKTClient.getInstance().doubleEvaluationDetails(unknownFeature, defaultValue = 10.2),
     ).isEqualTo(
-      BKTEvaluationDetail.newDefaultInstance(userId = user1.id, defaultValue = 10.2)
+      BKTEvaluationDetail.newDefaultInstance(userId = user1.id, defaultValue = 10.2),
     )
 
     assertThat(
       BKTClient.getInstance().boolEvaluationDetails(unknownFeature, defaultValue = true),
     ).isEqualTo(
-      BKTEvaluationDetail.newDefaultInstance(userId = user1.id, defaultValue = true)
+      BKTEvaluationDetail.newDefaultInstance(userId = user1.id, defaultValue = true),
     )
 
     assertThat(

@@ -255,8 +255,9 @@ class BKTClientVariationTest {
       ),
     )
 
-    val actualEvaluationDetails = BKTClient.getInstance()
-      .jsonEvaluationDetails(FEATURE_ID_JSON, defaultValue = JSONObject("""{ "key1": "value-2" }"""))
+    val actualEvaluationDetails =
+      BKTClient.getInstance()
+        .jsonEvaluationDetails(FEATURE_ID_JSON, defaultValue = JSONObject("""{ "key1": "value-2" }"""))
 
     // 1- Verify the variationValue(JSONObject) here
     val expectedJSONValue = JSONObject("""{ "key": "value-1" }""")

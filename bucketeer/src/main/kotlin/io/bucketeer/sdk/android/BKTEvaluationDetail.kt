@@ -29,7 +29,7 @@ data class BKTEvaluationDetail<T>(
     fun <T> newDefaultInstance(
       userId: String,
       defaultValue: T,
-    ): BKTEvaluationDetail<T>  {
+    ): BKTEvaluationDetail<T> {
       return BKTEvaluationDetail(
         id = "",
         featureId = "",
@@ -43,4 +43,3 @@ data class BKTEvaluationDetail<T>(
     }
   }
 }
-
