@@ -142,20 +142,55 @@ internal class BKTClientImpl(
     return getVariationDetail(featureId)
   }
 
+  override fun intEvaluationDetails(
+    featureId: String,
+    defaultValue: Int,
+  ): BKTEvaluationDetail<Int> {
+    TODO("Not yet implemented")
+  }
+
   override fun doubleEvaluationDetails(featureId: String): BKTEvaluationDetail<Double>? {
     return getVariationDetail(featureId)
+  }
+
+  override fun doubleEvaluationDetails(
+    featureId: String,
+    defaultValue: Double,
+  ): BKTEvaluationDetail<Double> {
+    TODO("Not yet implemented")
   }
 
   override fun boolEvaluationDetails(featureId: String): BKTEvaluationDetail<Boolean>? {
     return getVariationDetail(featureId)
   }
 
+  override fun boolEvaluationDetails(
+    featureId: String,
+    defaultValue: Boolean,
+  ): BKTEvaluationDetail<Boolean> {
+    TODO("Not yet implemented")
+  }
+
   override fun stringEvaluationDetails(featureId: String): BKTEvaluationDetail<String>? {
     return getVariationDetail(featureId)
   }
 
+  override fun stringEvaluationDetails(
+    featureId: String,
+    defaultValue: String,
+  ): BKTEvaluationDetail<String> {
+    TODO("Not yet implemented")
+  }
+
   override fun jsonEvaluationDetails(featureId: String): BKTEvaluationDetail<JSONObject>? {
     return getVariationDetail(featureId)
+  }
+
+  override fun jsonEvaluationDetails(
+    featureId: String,
+    defaultValue: JSONObject,
+  ): BKTEvaluationDetail<JSONObject> {
+    TODO("Not yet implemented")
   }
 
   override fun addEvaluationUpdateListener(listener: BKTClient.EvaluationUpdateListener): String {
@@ -218,25 +253,25 @@ internal class BKTClientImpl(
 
     val raw = component.evaluationInteractor.getLatest(featureId)
 
-//    val user = component.userHolder.get()
-//    val featureTag = config.featureTag
-//    if (raw != null) {
-//      executor.execute {
-//        component.eventInteractor.trackEvaluationEvent(
-//          featureTag = featureTag,
-//          user = user,
-//          evaluation = raw,
-//        )
-//      }
-//    } else {
-//      executor.execute {
-//        component.eventInteractor.trackDefaultEvaluationEvent(
-//          featureTag = featureTag,
-//          user = user,
-//          featureId = featureId,
-//        )
-//      }
-//    }
+    val user = component.userHolder.get()
+    val featureTag = config.featureTag
+    if (raw != null) {
+      executor.execute {
+        component.eventInteractor.trackEvaluationEvent(
+          featureTag = featureTag,
+          user = user,
+          evaluation = raw,
+        )
+      }
+    } else {
+      executor.execute {
+        component.eventInteractor.trackDefaultEvaluationEvent(
+          featureTag = featureTag,
+          user = user,
+          featureId = featureId,
+        )
+      }
+    }
 
     val value: T? = raw.getVariationValue()
     if (raw != null && value != null) {
