@@ -53,8 +53,6 @@ interface BKTClient {
   )
   fun evaluationDetails(featureId: String): BKTEvaluation?
 
-  fun intEvaluationDetails(featureId: String): BKTEvaluationDetail<Int>?
-
   fun doubleEvaluationDetails(featureId: String): BKTEvaluationDetail<Double>?
 
   fun boolEvaluationDetails(featureId: String): BKTEvaluationDetail<Boolean>?

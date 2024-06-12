@@ -527,8 +527,10 @@ class BKTClientImplTest {
     )
 
     assertThat(
-      BKTClient.getInstance().intEvaluationDetails(featureId),
-    ).isNull()
+      BKTClient.getInstance().intEvaluationDetails(featureId, defaultValue = 1),
+    ).isEqualTo(
+      BKTEvaluationDetail.newDefaultInstance(userId = user1.id, defaultValue = 1),
+    )
 
     assertThat(
       BKTClient.getInstance().boolEvaluationDetails(featureId),
@@ -594,7 +596,7 @@ class BKTClientImplTest {
     )
 
     assertThat(
-      BKTClient.getInstance().intEvaluationDetails(featureId),
+      BKTClient.getInstance().intEvaluationDetails(featureId, defaultValue = 1),
     ).isEqualTo(
       BKTEvaluationDetail(
         id = expectedEvaluation.id,
@@ -680,8 +682,10 @@ class BKTClientImplTest {
     )
 
     assertThat(
-      BKTClient.getInstance().intEvaluationDetails(featureId),
-    ).isNull()
+      BKTClient.getInstance().intEvaluationDetails(featureId, defaultValue = 2),
+    ).isEqualTo(
+      BKTEvaluationDetail.newDefaultInstance(userId = user1.id, 2),
+    )
 
     assertThat(
       BKTClient.getInstance().boolEvaluationDetails(featureId),
@@ -755,8 +759,10 @@ class BKTClientImplTest {
     )
 
     assertThat(
-      BKTClient.getInstance().intEvaluationDetails(featureId),
-    ).isNull()
+      BKTClient.getInstance().intEvaluationDetails(featureId, defaultValue = 3),
+    ).isEqualTo(
+      BKTEvaluationDetail.newDefaultInstance(userId = user1.id, defaultValue = 3),
+    )
 
     assertThat(
       BKTClient.getInstance().boolEvaluationDetails(featureId),
@@ -848,8 +854,10 @@ class BKTClientImplTest {
     )
 
     assertThat(
-      BKTClient.getInstance().intEvaluationDetails(featureId),
-    ).isNull()
+      BKTClient.getInstance().intEvaluationDetails(featureId, defaultValue = 10),
+    ).isEqualTo(
+      BKTEvaluationDetail.newDefaultInstance(userId = user1.id, defaultValue = 10),
+    )
 
     assertThat(
       BKTClient.getInstance().boolEvaluationDetails(featureId),
@@ -896,8 +904,10 @@ class BKTClientImplTest {
     ).isNull()
 
     assertThat(
-      BKTClient.getInstance().intEvaluationDetails(unknownFeature),
-    ).isNull()
+      BKTClient.getInstance().intEvaluationDetails(unknownFeature, defaultValue = 9),
+    ).isEqualTo(
+      BKTEvaluationDetail.newDefaultInstance(userId = user1.id, defaultValue = 9),
+    )
 
     assertThat(
       BKTClient.getInstance().doubleEvaluationDetails(unknownFeature),

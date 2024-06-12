@@ -31,15 +31,15 @@ internal class BKTClientImpl(
   internal val component: Component =
     ComponentImpl(
       dataModule =
-      DataModule(
-        application = context.applicationContext as Application,
-        user = user.toUser(),
-        config = config,
-      ),
+        DataModule(
+          application = context.applicationContext as Application,
+          user = user.toUser(),
+          config = config,
+        ),
       interactorModule =
-      InteractorModule(
-        mainHandler = mainHandler,
-      ),
+        InteractorModule(
+          mainHandler = mainHandler,
+        ),
     ),
 ) : BKTClient {
   private var taskScheduler: TaskScheduler? = null
@@ -263,7 +263,7 @@ internal class BKTClientImpl(
           featureId = featureId,
         )
       }
-      return BKTEvaluationDetail.defaultInstance(userId = user.id, defaultValue = defaultValue)
+      return BKTEvaluationDetail.newDefaultInstance(userId = user.id, defaultValue = defaultValue)
     }
   }
 
