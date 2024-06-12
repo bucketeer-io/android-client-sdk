@@ -129,7 +129,7 @@ class BKTClientVariationTest {
     )
 
     assertThat(
-      BKTClient.getInstance().intEvaluationDetails(FEATURE_ID_INT),
+      BKTClient.getInstance().intEvaluationDetails(FEATURE_ID_INT, defaultValue = 1),
     ).isEqualTo(
       BKTEvaluationDetail(
         id = "feature-android-e2e-int:3:bucketeer-android-user-id-1",

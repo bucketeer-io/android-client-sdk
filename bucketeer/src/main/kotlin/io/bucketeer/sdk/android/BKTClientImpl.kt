@@ -31,15 +31,15 @@ internal class BKTClientImpl(
   internal val component: Component =
     ComponentImpl(
       dataModule =
-        DataModule(
-          application = context.applicationContext as Application,
-          user = user.toUser(),
-          config = config,
-        ),
+      DataModule(
+        application = context.applicationContext as Application,
+        user = user.toUser(),
+        config = config,
+      ),
       interactorModule =
-        InteractorModule(
-          mainHandler = mainHandler,
-        ),
+      InteractorModule(
+        mainHandler = mainHandler,
+      ),
     ),
 ) : BKTClient {
   private var taskScheduler: TaskScheduler? = null
@@ -146,7 +146,7 @@ internal class BKTClientImpl(
     featureId: String,
     defaultValue: Int,
   ): BKTEvaluationDetail<Int> {
-    TODO("Not yet implemented")
+    return getVariationDetail(featureId, defaultValue)
   }
 
   override fun doubleEvaluationDetails(featureId: String): BKTEvaluationDetail<Double>? {
@@ -157,7 +157,7 @@ internal class BKTClientImpl(
     featureId: String,
     defaultValue: Double,
   ): BKTEvaluationDetail<Double> {
-    TODO("Not yet implemented")
+    return getVariationDetail(featureId, defaultValue)
   }
 
   override fun boolEvaluationDetails(featureId: String): BKTEvaluationDetail<Boolean>? {
@@ -168,7 +168,7 @@ internal class BKTClientImpl(
     featureId: String,
     defaultValue: Boolean,
   ): BKTEvaluationDetail<Boolean> {
-    TODO("Not yet implemented")
+    return getVariationDetail(featureId, defaultValue)
   }
 
   override fun stringEvaluationDetails(featureId: String): BKTEvaluationDetail<String>? {
@@ -179,7 +179,7 @@ internal class BKTClientImpl(
     featureId: String,
     defaultValue: String,
   ): BKTEvaluationDetail<String> {
-    TODO("Not yet implemented")
+    return getVariationDetail(featureId, defaultValue)
   }
 
   override fun jsonEvaluationDetails(featureId: String): BKTEvaluationDetail<JSONObject>? {
@@ -190,7 +190,7 @@ internal class BKTClientImpl(
     featureId: String,
     defaultValue: JSONObject,
   ): BKTEvaluationDetail<JSONObject> {
-    TODO("Not yet implemented")
+    return getVariationDetail(featureId, defaultValue)
   }
 
   override fun addEvaluationUpdateListener(listener: BKTClient.EvaluationUpdateListener): String {
@@ -223,11 +223,21 @@ internal class BKTClientImpl(
   ): T {
     logd { "BKTClient.getVariation(featureId = $featureId, defaultValue = $defaultValue) called" }
 
+    return getVariationDetail(featureId, defaultValue).variationValue
+  }
+
+  private inline fun <reified T : Any> getVariationDetail(
+    featureId: String,
+    defaultValue: T,
+  ): BKTEvaluationDetail<T> {
+    logd { "BKTClient.getVariation(featureId = $featureId) called" }
+
     val raw = component.evaluationInteractor.getLatest(featureId)
+    val value: T? = raw.getVariationValue()
 
     val user = component.userHolder.get()
     val featureTag = config.featureTag
-    if (raw != null) {
+    if (raw != null && value != null) {
       executor.execute {
         component.eventInteractor.trackEvaluationEvent(
           featureTag = featureTag,
@@ -235,6 +245,16 @@ internal class BKTClientImpl(
           evaluation = raw,
         )
       }
+      return BKTEvaluationDetail(
+        id = raw.id,
+        featureId = raw.featureId,
+        featureVersion = raw.featureVersion,
+        userId = raw.userId,
+        variationId = raw.variationId,
+        variationName = raw.variationName,
+        variationValue = value,
+        reason = BKTEvaluationDetail.Reason.from(raw.reason.type.name),
+      )
     } else {
       executor.execute {
         component.eventInteractor.trackDefaultEvaluationEvent(
@@ -243,9 +263,8 @@ internal class BKTClientImpl(
           featureId = featureId,
         )
       }
+      return BKTEvaluationDetail.defaultInstance(userId = user.id, defaultValue = defaultValue)
     }
-
-    return raw.getVariationValue(defaultValue)
   }
 
   private inline fun <reified T : Any> getVariationDetail(featureId: String): BKTEvaluationDetail<T>? {
@@ -345,6 +364,7 @@ internal class BKTClientImpl(
               sizeByte = result.sizeByte,
             )
           }
+
           is GetEvaluationsResult.Failure -> {
             interactor.trackFetchEvaluationsFailure(
               featureTag = result.featureTag,

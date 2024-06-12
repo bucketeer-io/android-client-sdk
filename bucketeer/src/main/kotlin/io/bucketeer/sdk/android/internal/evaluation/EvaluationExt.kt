@@ -4,7 +4,6 @@ import io.bucketeer.sdk.android.internal.logd
 import io.bucketeer.sdk.android.internal.model.Evaluation
 import org.json.JSONObject
 import java.util.Locale
-import kotlin.text.isEmpty
 
 internal inline fun <reified T : Any> Evaluation?.getVariationValue(): T? {
   val value = this?.variationValue
@@ -48,7 +47,7 @@ internal inline fun <reified T : Any> Evaluation?.getVariationValue(): T? {
             this == null -> {
               "Evaluation is null"
             }
-            this.variationValue.isEmpty() -> {
+            (this.variationValue as CharSequence).isEmpty() -> {
               "Variation value is null or empty"
             }
             else -> {

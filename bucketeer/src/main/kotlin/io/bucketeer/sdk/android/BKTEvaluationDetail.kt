@@ -24,4 +24,19 @@ data class BKTEvaluationDetail<T>(
       fun from(value: String): Reason = entries.firstOrNull { it.name == value } ?: DEFAULT
     }
   }
+
+  companion object {
+    fun <T>defaultInstance(userId: String, defaultValue: T): BKTEvaluationDetail<T>{
+      return BKTEvaluationDetail(
+        id = "",
+        featureId = "",
+        featureVersion = 0,
+        userId = userId,
+        variationId = "",
+        variationName = "",
+        variationValue = defaultValue,
+        reason = BKTEvaluationDetail.Reason.DEFAULT,
+      )
+    }
+  }
 }
