@@ -53,8 +53,6 @@ interface BKTClient {
   )
   fun evaluationDetails(featureId: String): BKTEvaluation?
 
-  fun jsonEvaluationDetails(featureId: String): BKTEvaluationDetail<JSONObject>?
-
   fun intEvaluationDetails(
     featureId: String,
     defaultValue: Int,

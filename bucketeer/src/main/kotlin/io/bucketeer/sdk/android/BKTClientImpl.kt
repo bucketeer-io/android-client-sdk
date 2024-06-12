@@ -166,10 +166,6 @@ internal class BKTClientImpl(
     return getVariationDetail(featureId, defaultValue)
   }
 
-  override fun jsonEvaluationDetails(featureId: String): BKTEvaluationDetail<JSONObject>? {
-    return getVariationDetail(featureId)
-  }
-
   override fun jsonEvaluationDetails(
     featureId: String,
     defaultValue: JSONObject,
@@ -249,48 +245,6 @@ internal class BKTClientImpl(
       }
       return BKTEvaluationDetail.newDefaultInstance(userId = user.id, defaultValue = defaultValue)
     }
-  }
-
-  private inline fun <reified T : Any> getVariationDetail(featureId: String): BKTEvaluationDetail<T>? {
-    logd { "BKTClient.getVariation(featureId = $featureId) called" }
-
-    val raw = component.evaluationInteractor.getLatest(featureId)
-
-    val user = component.userHolder.get()
-    val featureTag = config.featureTag
-    if (raw != null) {
-      executor.execute {
-        component.eventInteractor.trackEvaluationEvent(
-          featureTag = featureTag,
-          user = user,
-          evaluation = raw,
-        )
-      }
-    } else {
-      executor.execute {
-        component.eventInteractor.trackDefaultEvaluationEvent(
-          featureTag = featureTag,
-          user = user,
-          featureId = featureId,
-        )
-      }
-    }
-
-    val value: T? = raw.getVariationValue()
-    if (raw != null && value != null) {
-      return BKTEvaluationDetail(
-        id = raw.id,
-        featureId = raw.featureId,
-        featureVersion = raw.featureVersion,
-        userId = raw.userId,
-        variationId = raw.variationId,
-        variationName = raw.variationName,
-        variationValue = value,
-        reason = BKTEvaluationDetail.Reason.from(raw.reason.type.name),
-      )
-    }
-
-    return null
   }
 
   private fun scheduleTasks() {

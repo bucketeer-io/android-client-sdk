@@ -545,8 +545,10 @@ class BKTClientImplTest {
     )
 
     assertThat(
-      BKTClient.getInstance().jsonEvaluationDetails(featureId),
-    ).isNull()
+      BKTClient.getInstance().jsonEvaluationDetails(featureId, defaultValue = JSONObject("""{ "key1": "value-2" }""")),
+    ).isEqualTo(
+      BKTEvaluationDetail.newDefaultInstance(userId = user1.id, defaultValue = JSONObject("""{ "key1": "value-2" }""")),
+    )
   }
 
   @Test
@@ -636,8 +638,10 @@ class BKTClientImplTest {
     )
 
     assertThat(
-      BKTClient.getInstance().jsonEvaluationDetails(featureId),
-    ).isNull()
+      BKTClient.getInstance().jsonEvaluationDetails(featureId, defaultValue = JSONObject("""{ "key1": "value-2" }""")),
+    ).isEqualTo(
+      BKTEvaluationDetail.newDefaultInstance(userId = user1.id, defaultValue = JSONObject("""{ "key1": "value-2" }""")),
+    )
   }
 
   @Test
@@ -715,8 +719,10 @@ class BKTClientImplTest {
     )
 
     assertThat(
-      BKTClient.getInstance().jsonEvaluationDetails(featureId),
-    ).isNull()
+      BKTClient.getInstance().jsonEvaluationDetails(featureId, defaultValue = JSONObject("""{ "key1": "value-2" }""")),
+    ).isEqualTo(
+      BKTEvaluationDetail.newDefaultInstance(userId = user1.id, defaultValue = JSONObject("""{ "key1": "value-2" }""")),
+    )
   }
 
   @Test
@@ -794,8 +800,10 @@ class BKTClientImplTest {
     )
 
     assertThat(
-      BKTClient.getInstance().jsonEvaluationDetails(featureId),
-    ).isNull()
+      BKTClient.getInstance().jsonEvaluationDetails(featureId, defaultValue = JSONObject("""{ "key1": "value-2" }""")),
+    ).isEqualTo(
+      BKTEvaluationDetail.newDefaultInstance(userId = user1.id, defaultValue = JSONObject("""{ "key1": "value-2" }""")),
+    )
   }
 
   @Test
@@ -831,9 +839,12 @@ class BKTClientImplTest {
     val expectedBKTEvaluationDetailJsonValue: JSONObject? = expectedEvaluation.getVariationValue()
     assertThat(expectedBKTEvaluationDetailJsonValue!!.contains(JSONObject("""{ "key": "value-1" }"""))).isTrue()
 
-    val actualEvaluationDetails = BKTClient.getInstance().jsonEvaluationDetails(featureId)
-    // 1- Verify the variationValue(JSONObject) here
-    assertThat(expectedBKTEvaluationDetailJsonValue.contains(actualEvaluationDetails!!.variationValue)).isTrue()
+    val actualEvaluationDetails =
+      BKTClient.getInstance().jsonEvaluationDetails(
+        featureId,
+        defaultValue = JSONObject("""{ "key": "value-2" }"""),
+      )
+
     assertThat(actualEvaluationDetails).isEqualTo(
       BKTEvaluationDetail(
         id = expectedEvaluation.id,
@@ -842,8 +853,7 @@ class BKTClientImplTest {
         userId = expectedEvaluation.userId,
         variationId = expectedEvaluation.variationId,
         variationName = expectedEvaluation.variationName,
-        // 2- Ignore variationValue
-        variationValue = actualEvaluationDetails.variationValue,
+        variationValue = JSONObject("""{ "key": "value-1" }"""),
         reason = BKTEvaluationDetail.Reason.DEFAULT,
       ),
     )
@@ -938,8 +948,10 @@ class BKTClientImplTest {
     )
 
     assertThat(
-      BKTClient.getInstance().jsonEvaluationDetails(unknownFeature),
-    ).isNull()
+      BKTClient.getInstance().jsonEvaluationDetails(unknownFeature, defaultValue = JSONObject("""{ "key": "value-1" }""")),
+    ).isEqualTo(
+      BKTEvaluationDetail.newDefaultInstance(userId = user1.id, defaultValue = JSONObject("""{ "key": "value-1" }""")),
+    )
   }
 
   @Test

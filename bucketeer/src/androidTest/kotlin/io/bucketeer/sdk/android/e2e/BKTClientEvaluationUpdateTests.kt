@@ -210,12 +210,15 @@ class BKTClientEvaluationUpdateTests {
     assertThat(javascript).isNotNull()
 
     val androidStringEvaluationDetail = client.stringEvaluationDetails("feature-android-e2e-string", defaultValue = "")
-    assertThat(androidStringEvaluationDetail).isEqualTo("")
+    assertThat(androidStringEvaluationDetail.id).isNotEmpty()
+    assertThat(androidStringEvaluationDetail.variationValue).isNotEmpty()
 
     val golangStringEvaluationDetail = client.stringEvaluationDetails("feature-go-server-e2e-1", defaultValue = "")
-    assertThat(golangStringEvaluationDetail).isEqualTo("")
+    assertThat(golangStringEvaluationDetail.id).isNotEmpty()
+    assertThat(golangStringEvaluationDetail.variationValue).isNotEmpty()
 
     val javascriptStringEvaluationDetail = client.stringEvaluationDetails("feature-js-e2e-string", defaultValue = "")
-    assertThat(javascriptStringEvaluationDetail).isEqualTo("")
+    assertThat(javascriptStringEvaluationDetail.id).isNotEmpty()
+    assertThat(javascriptStringEvaluationDetail.variationValue).isNotEmpty()
   }
 }
