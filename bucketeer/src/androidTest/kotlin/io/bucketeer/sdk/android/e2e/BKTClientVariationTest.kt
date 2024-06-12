@@ -88,7 +88,7 @@ class BKTClientVariationTest {
     )
 
     assertThat(
-      BKTClient.getInstance().stringEvaluationDetails(FEATURE_ID_STRING),
+      BKTClient.getInstance().stringEvaluationDetails(FEATURE_ID_STRING, defaultValue = "1"),
     ).isEqualTo(
       BKTEvaluationDetail(
         id = "feature-android-e2e-string:4:bucketeer-android-user-id-1",
@@ -170,7 +170,7 @@ class BKTClientVariationTest {
     )
 
     assertThat(
-      BKTClient.getInstance().doubleEvaluationDetails(FEATURE_ID_DOUBLE),
+      BKTClient.getInstance().doubleEvaluationDetails(FEATURE_ID_DOUBLE, defaultValue = 3.4),
     ).isEqualTo(
       BKTEvaluationDetail(
         id = "feature-android-e2e-double:3:bucketeer-android-user-id-1",
@@ -211,7 +211,7 @@ class BKTClientVariationTest {
     )
 
     assertThat(
-      BKTClient.getInstance().boolEvaluationDetails(FEATURE_ID_BOOLEAN),
+      BKTClient.getInstance().boolEvaluationDetails(FEATURE_ID_BOOLEAN, defaultValue = true),
     ).isEqualTo(
       BKTEvaluationDetail(
         id = "feature-android-e2e-boolean:3:bucketeer-android-user-id-1",
@@ -255,11 +255,12 @@ class BKTClientVariationTest {
       ),
     )
 
-    val actualEvaluationDetails = BKTClient.getInstance().jsonEvaluationDetails(FEATURE_ID_JSON)
+    val actualEvaluationDetails = BKTClient.getInstance()
+      .jsonEvaluationDetails(FEATURE_ID_JSON, defaultValue = JSONObject("""{ "key1": "value-2" }"""))
 
     // 1- Verify the variationValue(JSONObject) here
     val expectedJSONValue = JSONObject("""{ "key": "value-1" }""")
-    assertThat(actualEvaluationDetails?.variationValue?.contains(expectedJSONValue)).isTrue()
+    assertThat(actualEvaluationDetails.variationValue.contains(expectedJSONValue)).isTrue()
 
     val expectEvaluationDetails =
       BKTEvaluationDetail(
@@ -270,7 +271,7 @@ class BKTClientVariationTest {
         variationId = "4499d1ca-411d-4ec6-9ae8-df51087e72bb",
         variationName = "variation 1",
         // 2- Ignore the variationValue
-        variationValue = actualEvaluationDetails?.variationValue,
+        variationValue = actualEvaluationDetails.variationValue,
         reason = BKTEvaluationDetail.Reason.DEFAULT,
       )
     assertThat(

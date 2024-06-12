@@ -89,7 +89,7 @@ class BKTClientTest {
       ),
     )
 
-    val detailStringEvaluationDetails = client.stringEvaluationDetails(FEATURE_ID_STRING)
+    val detailStringEvaluationDetails = client.stringEvaluationDetails(FEATURE_ID_STRING, defaultValue = "")
     assert(
       detailStringEvaluationDetails ==
         BKTEvaluationDetail(

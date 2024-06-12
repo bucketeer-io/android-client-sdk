@@ -138,19 +138,11 @@ internal class BKTClientImpl(
     )
   }
 
-  override fun intEvaluationDetails(featureId: String): BKTEvaluationDetail<Int>? {
-    return getVariationDetail(featureId)
-  }
-
   override fun intEvaluationDetails(
     featureId: String,
     defaultValue: Int,
   ): BKTEvaluationDetail<Int> {
     return getVariationDetail(featureId, defaultValue)
-  }
-
-  override fun doubleEvaluationDetails(featureId: String): BKTEvaluationDetail<Double>? {
-    return getVariationDetail(featureId)
   }
 
   override fun doubleEvaluationDetails(
@@ -160,19 +152,11 @@ internal class BKTClientImpl(
     return getVariationDetail(featureId, defaultValue)
   }
 
-  override fun boolEvaluationDetails(featureId: String): BKTEvaluationDetail<Boolean>? {
-    return getVariationDetail(featureId)
-  }
-
   override fun boolEvaluationDetails(
     featureId: String,
     defaultValue: Boolean,
   ): BKTEvaluationDetail<Boolean> {
     return getVariationDetail(featureId, defaultValue)
-  }
-
-  override fun stringEvaluationDetails(featureId: String): BKTEvaluationDetail<String>? {
-    return getVariationDetail(featureId)
   }
 
   override fun stringEvaluationDetails(
