@@ -63,15 +63,30 @@ interface BKTClient {
 
   fun jsonEvaluationDetails(featureId: String): BKTEvaluationDetail<JSONObject>?
 
-  fun intEvaluationDetails(featureId: String, defaultValue: Int): BKTEvaluationDetail<Int>
+  fun intEvaluationDetails(
+    featureId: String,
+    defaultValue: Int,
+  ): BKTEvaluationDetail<Int>
 
-  fun doubleEvaluationDetails(featureId: String, defaultValue: Double): BKTEvaluationDetail<Double>
+  fun doubleEvaluationDetails(
+    featureId: String,
+    defaultValue: Double,
+  ): BKTEvaluationDetail<Double>
 
-  fun boolEvaluationDetails(featureId: String, defaultValue: Boolean): BKTEvaluationDetail<Boolean>
+  fun boolEvaluationDetails(
+    featureId: String,
+    defaultValue: Boolean,
+  ): BKTEvaluationDetail<Boolean>
 
-  fun stringEvaluationDetails(featureId: String, defaultValue: String): BKTEvaluationDetail<String>
+  fun stringEvaluationDetails(
+    featureId: String,
+    defaultValue: String,
+  ): BKTEvaluationDetail<String>
 
-  fun jsonEvaluationDetails(featureId: String, defaultValue: JSONObject): BKTEvaluationDetail<JSONObject>
+  fun jsonEvaluationDetails(
+    featureId: String,
+    defaultValue: JSONObject,
+  ): BKTEvaluationDetail<JSONObject>
 
   fun addEvaluationUpdateListener(listener: EvaluationUpdateListener): String
 
