@@ -36,6 +36,7 @@ import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.json.JSONObject
 import org.junit.After
+import org.junit.Assert
 import org.junit.Assert.assertThrows
 import org.junit.Before
 import org.junit.Test
@@ -548,6 +549,70 @@ class BKTClientImplTest {
       BKTClient.getInstance().jsonEvaluationDetails(featureId, defaultValue = JSONObject("""{ "key1": "value-2" }""")),
     ).isEqualTo(
       BKTEvaluationDetail.newDefaultInstance(userId = user1.id, defaultValue = JSONObject("""{ "key1": "value-2" }""")),
+    )
+  }
+
+  @Test
+  fun testDefaultEvaluationDetail() {
+    server.enqueue(
+      MockResponse()
+        .setResponseCode(200)
+        .setBody(
+          moshi.adapter(GetEvaluationsResponse::class.java)
+            .toJson(
+              GetEvaluationsResponse(
+                evaluations = userEvaluationsForTestGetDetailsByVariationType,
+                userEvaluationsId = "user_evaluations_id_value",
+              ),
+            ),
+        ),
+    )
+
+    val initializeFuture =
+      BKTClient.initialize(
+        ApplicationProvider.getApplicationContext(),
+        config,
+        user1.toBKTUser(),
+        1000,
+      )
+    initializeFuture.get()
+
+    val userId = "user id 1"
+    val unknownFeatureId = "unknownFeatureId"
+    val intDefaultInstance: BKTEvaluationDetail<Int> =
+      BKTEvaluationDetail.newDefaultInstance(userId = userId, 1)
+    Assert.assertEquals(
+      intDefaultInstance,
+      BKTClient.getInstance().intEvaluationDetails(unknownFeatureId, 1),
+    )
+
+    val doubleDefaultInstance: BKTEvaluationDetail<Double> =
+      BKTEvaluationDetail.newDefaultInstance(userId = userId, 1.0)
+    Assert.assertEquals(
+      doubleDefaultInstance,
+      BKTClient.getInstance().doubleEvaluationDetails(unknownFeatureId, 1.0),
+    )
+
+    val booleanDefaultInstance: BKTEvaluationDetail<Boolean> =
+      BKTEvaluationDetail.newDefaultInstance(userId = userId, true)
+    Assert.assertEquals(
+      booleanDefaultInstance,
+      BKTClient.getInstance().boolEvaluationDetails(unknownFeatureId, true),
+    )
+
+    val stringDefaultInstance: BKTEvaluationDetail<String> =
+      BKTEvaluationDetail.newDefaultInstance(userId = userId, "1")
+    Assert.assertEquals(
+      stringDefaultInstance,
+      BKTClient.getInstance().stringEvaluationDetails(unknownFeatureId, "1"),
+    )
+
+    val json1 = JSONObject("{\"key1\": \"value1\", \"key\": \"value\"}")
+    val jsonDefaultInstance: BKTEvaluationDetail<JSONObject> =
+      BKTEvaluationDetail.newDefaultInstance(userId = userId, json1)
+    Assert.assertEquals(
+      jsonDefaultInstance,
+      BKTClient.getInstance().jsonEvaluationDetails(unknownFeatureId, json1),
     )
   }
 

@@ -21,7 +21,7 @@ class BKTEvaluationDetailTest {
         variationId = "",
         variationName = "",
         variationValue = 1,
-        reason = BKTEvaluationDetail.Reason.DEFAULT,
+        reason = BKTEvaluationDetail.Reason.CLIENT,
       ),
     )
 
@@ -37,7 +37,7 @@ class BKTEvaluationDetailTest {
         variationId = "",
         variationName = "",
         variationValue = 1.0,
-        reason = BKTEvaluationDetail.Reason.DEFAULT,
+        reason = BKTEvaluationDetail.Reason.CLIENT,
       ),
     )
 
@@ -53,7 +53,7 @@ class BKTEvaluationDetailTest {
         variationId = "",
         variationName = "",
         variationValue = true,
-        reason = BKTEvaluationDetail.Reason.DEFAULT,
+        reason = BKTEvaluationDetail.Reason.CLIENT,
       ),
     )
 
@@ -69,7 +69,7 @@ class BKTEvaluationDetailTest {
         variationId = "",
         variationName = "",
         variationValue = "1",
-        reason = BKTEvaluationDetail.Reason.DEFAULT,
+        reason = BKTEvaluationDetail.Reason.CLIENT,
       ),
     )
 
@@ -86,7 +86,7 @@ class BKTEvaluationDetailTest {
         variationId = "",
         variationName = "",
         variationValue = json1,
-        reason = BKTEvaluationDetail.Reason.DEFAULT,
+        reason = BKTEvaluationDetail.Reason.CLIENT,
       ),
     )
   }

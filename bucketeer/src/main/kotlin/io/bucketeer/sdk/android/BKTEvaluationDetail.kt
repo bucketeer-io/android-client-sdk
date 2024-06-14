@@ -24,7 +24,7 @@ data class BKTEvaluationDetail<T>(
     ;
 
     companion object {
-      fun from(value: String): Reason = entries.firstOrNull { it.name == value } ?: DEFAULT
+      fun from(value: String): Reason = entries.firstOrNull { it.name == value } ?: CLIENT
     }
   }
 
@@ -77,7 +77,7 @@ data class BKTEvaluationDetail<T>(
         variationId = "",
         variationName = "",
         variationValue = defaultValue,
-        reason = BKTEvaluationDetail.Reason.DEFAULT,
+        reason = BKTEvaluationDetail.Reason.CLIENT,
       )
     }
   }
