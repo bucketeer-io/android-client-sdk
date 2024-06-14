@@ -243,7 +243,11 @@ internal class BKTClientImpl(
           featureId = featureId,
         )
       }
-      return BKTEvaluationDetail.newDefaultInstance(userId = user.id, defaultValue = defaultValue)
+      return BKTEvaluationDetail.newDefaultInstance(
+        featureId = featureId,
+        userId = user.id,
+        defaultValue = defaultValue,
+      )
     }
   }
 

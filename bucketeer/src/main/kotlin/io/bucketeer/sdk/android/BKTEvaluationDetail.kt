@@ -66,12 +66,13 @@ data class BKTEvaluationDetail<T>(
 
   companion object {
     fun <T> newDefaultInstance(
+      featureId: String,
       userId: String,
       defaultValue: T,
     ): BKTEvaluationDetail<T> {
       return BKTEvaluationDetail(
         id = "",
-        featureId = "",
+        featureId = featureId,
         featureVersion = 0,
         userId = userId,
         variationId = "",

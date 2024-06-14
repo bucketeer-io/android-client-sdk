@@ -9,13 +9,14 @@ class BKTEvaluationDetailTest {
   @Test
   fun testDefaultInstance() {
     val userId = "1"
+    val featureId = "1001"
     val intDefaultInstance: BKTEvaluationDetail<Int> =
-      BKTEvaluationDetail.newDefaultInstance(userId = userId, 1)
+      BKTEvaluationDetail.newDefaultInstance(featureId = featureId, userId = userId, 1)
     assertEquals(
       intDefaultInstance,
       BKTEvaluationDetail(
         id = "",
-        featureId = "",
+        featureId = featureId,
         featureVersion = 0,
         userId = userId,
         variationId = "",
@@ -26,12 +27,12 @@ class BKTEvaluationDetailTest {
     )
 
     val doubleDefaultInstance: BKTEvaluationDetail<Double> =
-      BKTEvaluationDetail.newDefaultInstance(userId = userId, 1.0)
+      BKTEvaluationDetail.newDefaultInstance(featureId = featureId, userId = userId, 1.0)
     assertEquals(
       doubleDefaultInstance,
       BKTEvaluationDetail(
         id = "",
-        featureId = "",
+        featureId = featureId,
         featureVersion = 0,
         userId = userId,
         variationId = "",
@@ -42,12 +43,12 @@ class BKTEvaluationDetailTest {
     )
 
     val booleanDefaultInstance: BKTEvaluationDetail<Boolean> =
-      BKTEvaluationDetail.newDefaultInstance(userId = userId, true)
+      BKTEvaluationDetail.newDefaultInstance(featureId = featureId, userId = userId, true)
     assertEquals(
       booleanDefaultInstance,
       BKTEvaluationDetail(
         id = "",
-        featureId = "",
+        featureId = featureId,
         featureVersion = 0,
         userId = userId,
         variationId = "",
@@ -58,12 +59,12 @@ class BKTEvaluationDetailTest {
     )
 
     val stringDefaultInstance: BKTEvaluationDetail<String> =
-      BKTEvaluationDetail.newDefaultInstance(userId = userId, "1")
+      BKTEvaluationDetail.newDefaultInstance(featureId = featureId, userId = userId, "1")
     assertEquals(
       stringDefaultInstance,
       BKTEvaluationDetail(
         id = "",
-        featureId = "",
+        featureId = featureId,
         featureVersion = 0,
         userId = userId,
         variationId = "",
@@ -75,12 +76,12 @@ class BKTEvaluationDetailTest {
 
     val json1 = JSONObject("{\"key1\": \"value1\", \"key\": \"value\"}")
     val jsonDefaultInstance: BKTEvaluationDetail<JSONObject> =
-      BKTEvaluationDetail.newDefaultInstance(userId = userId, json1)
+      BKTEvaluationDetail.newDefaultInstance(featureId = featureId, userId = userId, json1)
     assertEquals(
       jsonDefaultInstance,
       BKTEvaluationDetail(
         id = "",
-        featureId = "",
+        featureId = featureId,
         featureVersion = 0,
         userId = userId,
         variationId = "",
