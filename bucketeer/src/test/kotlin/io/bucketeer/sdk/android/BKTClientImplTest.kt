@@ -516,7 +516,6 @@ class BKTClientImplTest {
     val actualEvaluationDetails = BKTClient.getInstance().stringEvaluationDetails(featureId, defaultValue = "1")
     assertThat(actualEvaluationDetails).isEqualTo(
       BKTEvaluationDetail(
-        id = expectedEvaluation.id,
         featureId = expectedEvaluation.featureId,
         featureVersion = expectedEvaluation.featureVersion,
         userId = expectedEvaluation.userId,
@@ -659,7 +658,6 @@ class BKTClientImplTest {
     val actualEvaluationDetails = BKTClient.getInstance().stringEvaluationDetails(featureId, defaultValue = "")
     assertThat(actualEvaluationDetails).isEqualTo(
       BKTEvaluationDetail(
-        id = expectedEvaluation.id,
         featureId = expectedEvaluation.featureId,
         featureVersion = expectedEvaluation.featureVersion,
         userId = expectedEvaluation.userId,
@@ -674,7 +672,6 @@ class BKTClientImplTest {
       BKTClient.getInstance().intEvaluationDetails(featureId, defaultValue = 1),
     ).isEqualTo(
       BKTEvaluationDetail(
-        id = expectedEvaluation.id,
         featureId = expectedEvaluation.featureId,
         featureVersion = expectedEvaluation.featureVersion,
         userId = expectedEvaluation.userId,
@@ -695,7 +692,6 @@ class BKTClientImplTest {
       BKTClient.getInstance().doubleEvaluationDetails(featureId, defaultValue = 4.1),
     ).isEqualTo(
       BKTEvaluationDetail(
-        id = expectedEvaluation.id,
         featureId = expectedEvaluation.featureId,
         featureVersion = expectedEvaluation.featureVersion,
         userId = expectedEvaluation.userId,
@@ -753,7 +749,6 @@ class BKTClientImplTest {
     val actualEvaluationDetails = BKTClient.getInstance().stringEvaluationDetails(featureId, defaultValue = "2")
     assertThat(actualEvaluationDetails).isEqualTo(
       BKTEvaluationDetail(
-        id = expectedEvaluation.id,
         featureId = expectedEvaluation.featureId,
         featureVersion = expectedEvaluation.featureVersion,
         userId = expectedEvaluation.userId,
@@ -780,7 +775,6 @@ class BKTClientImplTest {
       BKTClient.getInstance().doubleEvaluationDetails(featureId, defaultValue = 4.2),
     ).isEqualTo(
       BKTEvaluationDetail(
-        id = expectedEvaluation.id,
         featureId = expectedEvaluation.featureId,
         featureVersion = expectedEvaluation.featureVersion,
         userId = expectedEvaluation.userId,
@@ -838,7 +832,6 @@ class BKTClientImplTest {
     val actualEvaluationDetails = BKTClient.getInstance().stringEvaluationDetails(featureId, defaultValue = "3")
     assertThat(actualEvaluationDetails).isEqualTo(
       BKTEvaluationDetail(
-        id = expectedEvaluation.id,
         featureId = expectedEvaluation.featureId,
         featureVersion = expectedEvaluation.featureVersion,
         userId = expectedEvaluation.userId,
@@ -859,7 +852,6 @@ class BKTClientImplTest {
       BKTClient.getInstance().boolEvaluationDetails(featureId, defaultValue = false),
     ).isEqualTo(
       BKTEvaluationDetail(
-        id = expectedEvaluation.id,
         featureId = expectedEvaluation.featureId,
         featureVersion = expectedEvaluation.featureVersion,
         userId = expectedEvaluation.userId,
@@ -928,7 +920,6 @@ class BKTClientImplTest {
 
     assertThat(actualEvaluationDetails).isEqualTo(
       BKTEvaluationDetail(
-        id = expectedEvaluation.id,
         featureId = expectedEvaluation.featureId,
         featureVersion = expectedEvaluation.featureVersion,
         userId = expectedEvaluation.userId,
@@ -943,7 +934,6 @@ class BKTClientImplTest {
       BKTClient.getInstance().stringEvaluationDetails(featureId, defaultValue = ""),
     ).isEqualTo(
       BKTEvaluationDetail(
-        id = expectedEvaluation.id,
         featureId = expectedEvaluation.featureId,
         featureVersion = expectedEvaluation.featureVersion,
         userId = expectedEvaluation.userId,

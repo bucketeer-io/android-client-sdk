@@ -90,7 +90,6 @@ class BKTClientVariationTest {
       BKTClient.getInstance().stringEvaluationDetails(FEATURE_ID_STRING, defaultValue = "1"),
     ).isEqualTo(
       BKTEvaluationDetail(
-        id = "feature-android-e2e-string:4:bucketeer-android-user-id-1",
         featureId = FEATURE_ID_STRING,
         featureVersion = 4,
         userId = USER_ID,
@@ -131,7 +130,6 @@ class BKTClientVariationTest {
       BKTClient.getInstance().intEvaluationDetails(FEATURE_ID_INT, defaultValue = 1),
     ).isEqualTo(
       BKTEvaluationDetail(
-        id = "feature-android-e2e-int:3:bucketeer-android-user-id-1",
         featureId = FEATURE_ID_INT,
         featureVersion = 3,
         userId = USER_ID,
@@ -172,7 +170,6 @@ class BKTClientVariationTest {
       BKTClient.getInstance().doubleEvaluationDetails(FEATURE_ID_DOUBLE, defaultValue = 3.4),
     ).isEqualTo(
       BKTEvaluationDetail(
-        id = "feature-android-e2e-double:3:bucketeer-android-user-id-1",
         featureId = FEATURE_ID_DOUBLE,
         featureVersion = 3,
         userId = USER_ID,
@@ -213,7 +210,6 @@ class BKTClientVariationTest {
       BKTClient.getInstance().boolEvaluationDetails(FEATURE_ID_BOOLEAN, defaultValue = true),
     ).isEqualTo(
       BKTEvaluationDetail(
-        id = "feature-android-e2e-boolean:3:bucketeer-android-user-id-1",
         featureId = FEATURE_ID_BOOLEAN,
         featureVersion = 3,
         userId = USER_ID,
@@ -262,7 +258,6 @@ class BKTClientVariationTest {
       actualEvaluationDetails,
     ).isEqualTo(
       BKTEvaluationDetail(
-        id = "feature-android-e2e-json:3:bucketeer-android-user-id-1",
         featureId = FEATURE_ID_JSON,
         featureVersion = 3,
         userId = USER_ID,

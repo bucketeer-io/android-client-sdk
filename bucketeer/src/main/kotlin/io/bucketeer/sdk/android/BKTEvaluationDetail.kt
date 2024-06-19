@@ -4,7 +4,6 @@ import io.bucketeer.sdk.android.internal.util.contains
 import org.json.JSONObject
 
 data class BKTEvaluationDetail<T>(
-  var id: String,
   val featureId: String,
   val featureVersion: Int,
   val userId: String,
@@ -31,8 +30,6 @@ data class BKTEvaluationDetail<T>(
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other !is BKTEvaluationDetail<*>) return false
-
-    if (id != other.id) return false
     if (featureId != other.featureId) return false
     if (featureVersion != other.featureVersion) return false
     if (userId != other.userId) return false
@@ -48,13 +45,12 @@ data class BKTEvaluationDetail<T>(
   }
 
   override fun hashCode(): Int {
-    var result = id.hashCode()
-    result += featureId.hashCode()
-    result += featureVersion
-    result += userId.hashCode()
-    result += variationId.hashCode()
-    result += variationName.hashCode()
-    result += reason.hashCode()
+    var result = 31 * featureId.hashCode()
+    result += 31 * featureVersion
+    result += 31 * userId.hashCode()
+    result += 31 * variationId.hashCode()
+    result += 31 * variationName.hashCode()
+    result += 31 * reason.hashCode()
     result +=
       when (variationValue) {
         // Ignore JSONObject
@@ -71,7 +67,6 @@ data class BKTEvaluationDetail<T>(
       defaultValue: T,
     ): BKTEvaluationDetail<T> {
       return BKTEvaluationDetail(
-        id = "",
         featureId = featureId,
         featureVersion = 0,
         userId = userId,

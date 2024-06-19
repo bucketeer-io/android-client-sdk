@@ -15,7 +15,6 @@ class BKTEvaluationDetailTest {
     assertEquals(
       intDefaultInstance,
       BKTEvaluationDetail(
-        id = "",
         featureId = featureId,
         featureVersion = 0,
         userId = userId,
@@ -31,7 +30,6 @@ class BKTEvaluationDetailTest {
     assertEquals(
       doubleDefaultInstance,
       BKTEvaluationDetail(
-        id = "",
         featureId = featureId,
         featureVersion = 0,
         userId = userId,
@@ -47,7 +45,6 @@ class BKTEvaluationDetailTest {
     assertEquals(
       booleanDefaultInstance,
       BKTEvaluationDetail(
-        id = "",
         featureId = featureId,
         featureVersion = 0,
         userId = userId,
@@ -63,7 +60,6 @@ class BKTEvaluationDetailTest {
     assertEquals(
       stringDefaultInstance,
       BKTEvaluationDetail(
-        id = "",
         featureId = featureId,
         featureVersion = 0,
         userId = userId,
@@ -80,7 +76,6 @@ class BKTEvaluationDetailTest {
     assertEquals(
       jsonDefaultInstance,
       BKTEvaluationDetail(
-        id = "",
         featureId = featureId,
         featureVersion = 0,
         userId = userId,
@@ -96,7 +91,6 @@ class BKTEvaluationDetailTest {
   fun testEqualsWithInt() {
     val detail1 =
       BKTEvaluationDetail(
-        "1",
         "feature1",
         1,
         "user1",
@@ -107,7 +101,6 @@ class BKTEvaluationDetailTest {
       )
     val detail2 =
       BKTEvaluationDetail(
-        "1",
         "feature1",
         1,
         "user1",
@@ -125,7 +118,6 @@ class BKTEvaluationDetailTest {
   fun testEqualsWithString() {
     val detail1 =
       BKTEvaluationDetail(
-        "2",
         "feature2",
         2,
         "user2",
@@ -136,7 +128,6 @@ class BKTEvaluationDetailTest {
       )
     val detail2 =
       BKTEvaluationDetail(
-        "2",
         "feature2",
         2,
         "user2",
@@ -154,7 +145,6 @@ class BKTEvaluationDetailTest {
   fun testEqualsWithDouble() {
     val detail1 =
       BKTEvaluationDetail(
-        "3",
         "feature3",
         3,
         "user3",
@@ -165,7 +155,6 @@ class BKTEvaluationDetailTest {
       )
     val detail2 =
       BKTEvaluationDetail(
-        "3",
         "feature3",
         3,
         "user3",
@@ -183,7 +172,6 @@ class BKTEvaluationDetailTest {
   fun testEqualsWithBoolean() {
     val detail1 =
       BKTEvaluationDetail(
-        "4",
         "feature4",
         4,
         "user4",
@@ -194,7 +182,6 @@ class BKTEvaluationDetailTest {
       )
     val detail2 =
       BKTEvaluationDetail(
-        "4",
         "feature4",
         4,
         "user4",
@@ -219,7 +206,6 @@ class BKTEvaluationDetailTest {
     val json5 = JSONObject("{\"key5\": \"value\", \"key1\": \"value1\"}, \"key3\": \"value3\"}")
     val detail1 =
       BKTEvaluationDetail(
-        "5",
         "feature5",
         5,
         "user5",
@@ -230,7 +216,6 @@ class BKTEvaluationDetailTest {
       )
     val detail2 =
       BKTEvaluationDetail(
-        "5",
         "feature5",
         5,
         "user5",

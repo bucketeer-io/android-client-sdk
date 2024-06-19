@@ -94,7 +94,6 @@ class BKTClientTest {
       detailStringEvaluationDetails,
     ).isEqualTo(
       BKTEvaluationDetail(
-        id = "feature-android-e2e-string:4:bucketeer-android-user-id-1",
         featureId = FEATURE_ID_STRING,
         featureVersion = 4,
         userId = USER_ID,

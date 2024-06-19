@@ -226,7 +226,6 @@ internal class BKTClientImpl(
         )
       }
       return BKTEvaluationDetail(
-        id = raw.id,
         featureId = raw.featureId,
         featureVersion = raw.featureVersion,
         userId = raw.userId,
