@@ -263,7 +263,6 @@ class BKTClientVariationTest {
         userId = USER_ID,
         variationId = "4499d1ca-411d-4ec6-9ae8-df51087e72bb",
         variationName = "variation 1",
-        // 2- Ignore the variationValue
         variationValue = JSONObject("""{ "key": "value-1" }"""),
         reason = BKTEvaluationDetail.Reason.DEFAULT,
       ),
