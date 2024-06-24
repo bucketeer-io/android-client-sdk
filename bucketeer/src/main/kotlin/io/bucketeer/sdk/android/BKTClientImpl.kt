@@ -141,35 +141,35 @@ internal class BKTClientImpl(
   override fun intEvaluationDetails(
     featureId: String,
     defaultValue: Int,
-  ): BKTEvaluationDetail<Int> {
+  ): BKTEvaluationDetails<Int> {
     return getVariationDetail(featureId, defaultValue)
   }
 
   override fun doubleEvaluationDetails(
     featureId: String,
     defaultValue: Double,
-  ): BKTEvaluationDetail<Double> {
+  ): BKTEvaluationDetails<Double> {
     return getVariationDetail(featureId, defaultValue)
   }
 
   override fun boolEvaluationDetails(
     featureId: String,
     defaultValue: Boolean,
-  ): BKTEvaluationDetail<Boolean> {
+  ): BKTEvaluationDetails<Boolean> {
     return getVariationDetail(featureId, defaultValue)
   }
 
   override fun stringEvaluationDetails(
     featureId: String,
     defaultValue: String,
-  ): BKTEvaluationDetail<String> {
+  ): BKTEvaluationDetails<String> {
     return getVariationDetail(featureId, defaultValue)
   }
 
   override fun jsonEvaluationDetails(
     featureId: String,
     defaultValue: JSONObject,
-  ): BKTEvaluationDetail<JSONObject> {
+  ): BKTEvaluationDetails<JSONObject> {
     return getVariationDetail(featureId, defaultValue)
   }
 
@@ -209,7 +209,7 @@ internal class BKTClientImpl(
   private inline fun <reified T : Any> getVariationDetail(
     featureId: String,
     defaultValue: T,
-  ): BKTEvaluationDetail<T> {
+  ): BKTEvaluationDetails<T> {
     logd { "BKTClient.getVariation(featureId = $featureId) called" }
 
     val raw = component.evaluationInteractor.getLatest(featureId)
@@ -225,14 +225,14 @@ internal class BKTClientImpl(
           evaluation = raw,
         )
       }
-      return BKTEvaluationDetail(
+      return BKTEvaluationDetails(
         featureId = raw.featureId,
         featureVersion = raw.featureVersion,
         userId = raw.userId,
         variationId = raw.variationId,
         variationName = raw.variationName,
         variationValue = value,
-        reason = BKTEvaluationDetail.Reason.from(raw.reason.type.name),
+        reason = BKTEvaluationDetails.Reason.from(raw.reason.type.name),
       )
     } else {
       executor.execute {
@@ -242,7 +242,7 @@ internal class BKTClientImpl(
           featureId = featureId,
         )
       }
-      return BKTEvaluationDetail.newDefaultInstance(
+      return BKTEvaluationDetails.newDefaultInstance(
         featureId = featureId,
         userId = user.id,
         defaultValue = defaultValue,

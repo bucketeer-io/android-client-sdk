@@ -3,7 +3,7 @@ package io.bucketeer.sdk.android
 import io.bucketeer.sdk.android.internal.util.contains
 import org.json.JSONObject
 
-data class BKTEvaluationDetail<T>(
+data class BKTEvaluationDetails<T>(
   val featureId: String,
   val featureVersion: Int,
   val userId: String,
@@ -29,7 +29,7 @@ data class BKTEvaluationDetail<T>(
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
-    if (other !is BKTEvaluationDetail<*>) return false
+    if (other !is BKTEvaluationDetails<*>) return false
     if (featureId != other.featureId) return false
     if (featureVersion != other.featureVersion) return false
     if (userId != other.userId) return false
@@ -65,15 +65,15 @@ data class BKTEvaluationDetail<T>(
       featureId: String,
       userId: String,
       defaultValue: T,
-    ): BKTEvaluationDetail<T> {
-      return BKTEvaluationDetail(
+    ): BKTEvaluationDetails<T> {
+      return BKTEvaluationDetails(
         featureId = featureId,
         featureVersion = 0,
         userId = userId,
         variationId = "",
         variationName = "",
         variationValue = defaultValue,
-        reason = BKTEvaluationDetail.Reason.CLIENT,
+        reason = BKTEvaluationDetails.Reason.CLIENT,
       )
     }
   }

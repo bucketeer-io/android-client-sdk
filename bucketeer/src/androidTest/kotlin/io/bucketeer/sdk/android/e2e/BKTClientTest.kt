@@ -10,7 +10,7 @@ import com.google.common.truth.Truth.assertThat
 import io.bucketeer.sdk.android.BKTClient
 import io.bucketeer.sdk.android.BKTConfig
 import io.bucketeer.sdk.android.BKTEvaluation
-import io.bucketeer.sdk.android.BKTEvaluationDetail
+import io.bucketeer.sdk.android.BKTEvaluationDetails
 import io.bucketeer.sdk.android.BKTUser
 import io.bucketeer.sdk.android.BuildConfig
 import io.bucketeer.sdk.android.internal.Constants
@@ -93,14 +93,14 @@ class BKTClientTest {
     assertThat(
       detailStringEvaluationDetails,
     ).isEqualTo(
-      BKTEvaluationDetail(
+      BKTEvaluationDetails(
         featureId = FEATURE_ID_STRING,
         featureVersion = 4,
         userId = USER_ID,
         variationId = "b59a19d5-f4b1-47f8-a46e-6d9ca14740c1",
         variationName = "variation 2",
         variationValue = "value-2",
-        reason = BKTEvaluationDetail.Reason.RULE,
+        reason = BKTEvaluationDetails.Reason.RULE,
       ),
     )
   }

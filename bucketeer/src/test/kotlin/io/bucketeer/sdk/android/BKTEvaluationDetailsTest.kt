@@ -5,84 +5,84 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Test
 
-class BKTEvaluationDetailTest {
+class BKTEvaluationDetailsTest {
   @Test
   fun testDefaultInstance() {
     val userId = "1"
     val featureId = "1001"
-    val intDefaultInstance: BKTEvaluationDetail<Int> =
-      BKTEvaluationDetail.newDefaultInstance(featureId = featureId, userId = userId, 1)
+    val intDefaultInstance: BKTEvaluationDetails<Int> =
+      BKTEvaluationDetails.newDefaultInstance(featureId = featureId, userId = userId, 1)
     assertEquals(
       intDefaultInstance,
-      BKTEvaluationDetail(
+      BKTEvaluationDetails(
         featureId = featureId,
         featureVersion = 0,
         userId = userId,
         variationId = "",
         variationName = "",
         variationValue = 1,
-        reason = BKTEvaluationDetail.Reason.CLIENT,
+        reason = BKTEvaluationDetails.Reason.CLIENT,
       ),
     )
 
-    val doubleDefaultInstance: BKTEvaluationDetail<Double> =
-      BKTEvaluationDetail.newDefaultInstance(featureId = featureId, userId = userId, 1.0)
+    val doubleDefaultInstance: BKTEvaluationDetails<Double> =
+      BKTEvaluationDetails.newDefaultInstance(featureId = featureId, userId = userId, 1.0)
     assertEquals(
       doubleDefaultInstance,
-      BKTEvaluationDetail(
+      BKTEvaluationDetails(
         featureId = featureId,
         featureVersion = 0,
         userId = userId,
         variationId = "",
         variationName = "",
         variationValue = 1.0,
-        reason = BKTEvaluationDetail.Reason.CLIENT,
+        reason = BKTEvaluationDetails.Reason.CLIENT,
       ),
     )
 
-    val booleanDefaultInstance: BKTEvaluationDetail<Boolean> =
-      BKTEvaluationDetail.newDefaultInstance(featureId = featureId, userId = userId, true)
+    val booleanDefaultInstance: BKTEvaluationDetails<Boolean> =
+      BKTEvaluationDetails.newDefaultInstance(featureId = featureId, userId = userId, true)
     assertEquals(
       booleanDefaultInstance,
-      BKTEvaluationDetail(
+      BKTEvaluationDetails(
         featureId = featureId,
         featureVersion = 0,
         userId = userId,
         variationId = "",
         variationName = "",
         variationValue = true,
-        reason = BKTEvaluationDetail.Reason.CLIENT,
+        reason = BKTEvaluationDetails.Reason.CLIENT,
       ),
     )
 
-    val stringDefaultInstance: BKTEvaluationDetail<String> =
-      BKTEvaluationDetail.newDefaultInstance(featureId = featureId, userId = userId, "1")
+    val stringDefaultInstance: BKTEvaluationDetails<String> =
+      BKTEvaluationDetails.newDefaultInstance(featureId = featureId, userId = userId, "1")
     assertEquals(
       stringDefaultInstance,
-      BKTEvaluationDetail(
+      BKTEvaluationDetails(
         featureId = featureId,
         featureVersion = 0,
         userId = userId,
         variationId = "",
         variationName = "",
         variationValue = "1",
-        reason = BKTEvaluationDetail.Reason.CLIENT,
+        reason = BKTEvaluationDetails.Reason.CLIENT,
       ),
     )
 
     val json1 = JSONObject("{\"key1\": \"value1\", \"key\": \"value\"}")
-    val jsonDefaultInstance: BKTEvaluationDetail<JSONObject> =
-      BKTEvaluationDetail.newDefaultInstance(featureId = featureId, userId = userId, json1)
+    val jsonDefaultInstance: BKTEvaluationDetails<JSONObject> =
+      BKTEvaluationDetails.newDefaultInstance(featureId = featureId, userId = userId, json1)
     assertEquals(
       jsonDefaultInstance,
-      BKTEvaluationDetail(
+      BKTEvaluationDetails(
         featureId = featureId,
         featureVersion = 0,
         userId = userId,
         variationId = "",
         variationName = "",
         variationValue = json1,
-        reason = BKTEvaluationDetail.Reason.CLIENT,
+        reason = BKTEvaluationDetails.Reason.CLIENT,
       ),
     )
   }
@@ -90,24 +90,24 @@ class BKTEvaluationDetailTest {
   @Test
   fun testEqualsWithInt() {
     val detail1 =
-      BKTEvaluationDetail(
+      BKTEvaluationDetails(
         "feature1",
         1,
         "user1",
         "var1",
         "name1",
         10,
-        BKTEvaluationDetail.Reason.TARGET,
+        BKTEvaluationDetails.Reason.TARGET,
       )
     val detail2 =
-      BKTEvaluationDetail(
+      BKTEvaluationDetails(
         "feature1",
         1,
         "user1",
         "var1",
         "name1",
         10,
-        BKTEvaluationDetail.Reason.TARGET,
+        BKTEvaluationDetails.Reason.TARGET,
       )
     assertEquals(detail1, detail2)
     assertNotEquals(detail1.copy(variationValue = 11), detail2)
@@ -117,24 +117,24 @@ class BKTEvaluationDetailTest {
   @Test
   fun testEqualsWithString() {
     val detail1 =
-      BKTEvaluationDetail(
+      BKTEvaluationDetails(
         "feature2",
         2,
         "user2",
         "var2",
         "name2",
         "value",
-        BKTEvaluationDetail.Reason.RULE,
+        BKTEvaluationDetails.Reason.RULE,
       )
     val detail2 =
-      BKTEvaluationDetail(
+      BKTEvaluationDetails(
         "feature2",
         2,
         "user2",
         "var2",
         "name2",
         "value",
-        BKTEvaluationDetail.Reason.RULE,
+        BKTEvaluationDetails.Reason.RULE,
       )
     assertEquals(detail1, detail2)
     assertNotEquals(detail1.copy(variationValue = "12"), detail2)
@@ -144,24 +144,24 @@ class BKTEvaluationDetailTest {
   @Test
   fun testEqualsWithDouble() {
     val detail1 =
-      BKTEvaluationDetail(
+      BKTEvaluationDetails(
         "feature3",
         3,
         "user3",
         "var3",
         "name3",
         10.0,
-        BKTEvaluationDetail.Reason.DEFAULT,
+        BKTEvaluationDetails.Reason.DEFAULT,
       )
     val detail2 =
-      BKTEvaluationDetail(
+      BKTEvaluationDetails(
         "feature3",
         3,
         "user3",
         "var3",
         "name3",
         10.0,
-        BKTEvaluationDetail.Reason.DEFAULT,
+        BKTEvaluationDetails.Reason.DEFAULT,
       )
     assertEquals(detail1, detail2)
     assertNotEquals(detail1.copy(variationValue = 33.0), detail2)
@@ -171,24 +171,24 @@ class BKTEvaluationDetailTest {
   @Test
   fun testEqualsWithBoolean() {
     val detail1 =
-      BKTEvaluationDetail(
+      BKTEvaluationDetails(
         "feature4",
         4,
         "user4",
         "var4",
         "name4",
         true,
-        BKTEvaluationDetail.Reason.CLIENT,
+        BKTEvaluationDetails.Reason.CLIENT,
       )
     val detail2 =
-      BKTEvaluationDetail(
+      BKTEvaluationDetails(
         "feature4",
         4,
         "user4",
         "var4",
         "name4",
         true,
-        BKTEvaluationDetail.Reason.CLIENT,
+        BKTEvaluationDetails.Reason.CLIENT,
       )
     assertEquals(detail1, detail2)
     assertNotEquals(detail1.copy(variationValue = false), detail2)
@@ -205,24 +205,24 @@ class BKTEvaluationDetailTest {
     val json4 = JSONObject("{\"key\": \"value1\"}")
     val json5 = JSONObject("{\"key5\": \"value\", \"key1\": \"value1\"}, \"key3\": \"value3\"}")
     val detail1 =
-      BKTEvaluationDetail(
+      BKTEvaluationDetails(
         "feature5",
         5,
         "user5",
         "var5",
         "name5",
         json1,
-        BKTEvaluationDetail.Reason.OFF_VARIATION,
+        BKTEvaluationDetails.Reason.OFF_VARIATION,
       )
     val detail2 =
-      BKTEvaluationDetail(
+      BKTEvaluationDetails(
         "feature5",
         5,
         "user5",
         "var5",
         "name5",
         json2,
-        BKTEvaluationDetail.Reason.OFF_VARIATION,
+        BKTEvaluationDetails.Reason.OFF_VARIATION,
       )
 
     assertEquals(detail1, detail2)
