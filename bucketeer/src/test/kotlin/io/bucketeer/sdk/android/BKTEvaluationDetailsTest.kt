@@ -234,4 +234,18 @@ class BKTEvaluationDetailsTest {
     assertNotEquals(detail1.copy(variationValue = json4), detail2)
     assertNotEquals(detail1.copy(variationValue = json5), detail2)
   }
+
+  @Test
+  fun testReasonFrom() {
+    // Test cases for each valid Reason
+    assertEquals(BKTEvaluationDetails.Reason.TARGET, BKTEvaluationDetails.Reason.from("TARGET"))
+    assertEquals(BKTEvaluationDetails.Reason.RULE, BKTEvaluationDetails.Reason.from("RULE"))
+    assertEquals(BKTEvaluationDetails.Reason.DEFAULT, BKTEvaluationDetails.Reason.from("DEFAULT"))
+    assertEquals(BKTEvaluationDetails.Reason.CLIENT, BKTEvaluationDetails.Reason.from("CLIENT"))
+    assertEquals(BKTEvaluationDetails.Reason.OFF_VARIATION, BKTEvaluationDetails.Reason.from("OFF_VARIATION"))
+    assertEquals(BKTEvaluationDetails.Reason.PREREQUISITE, BKTEvaluationDetails.Reason.from("PREREQUISITE"))
+
+    // Test case for an invalid Reason which should return CLIENT as default
+    assertEquals(BKTEvaluationDetails.Reason.CLIENT, BKTEvaluationDetails.Reason.from("INVALID_REASON"))
+  }
 }
