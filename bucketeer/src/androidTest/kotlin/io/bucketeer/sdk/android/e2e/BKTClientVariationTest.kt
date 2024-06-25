@@ -87,7 +87,7 @@ class BKTClientVariationTest {
     )
 
     assertThat(
-      BKTClient.getInstance().stringEvaluationDetails(FEATURE_ID_STRING, defaultValue = "1"),
+      BKTClient.getInstance().stringVariationDetails(FEATURE_ID_STRING, defaultValue = "1"),
     ).isEqualTo(
       BKTEvaluationDetails(
         featureId = FEATURE_ID_STRING,
@@ -127,7 +127,7 @@ class BKTClientVariationTest {
     )
 
     assertThat(
-      BKTClient.getInstance().intEvaluationDetails(FEATURE_ID_INT, defaultValue = 1),
+      BKTClient.getInstance().intVariationDetails(FEATURE_ID_INT, defaultValue = 1),
     ).isEqualTo(
       BKTEvaluationDetails(
         featureId = FEATURE_ID_INT,
@@ -167,7 +167,7 @@ class BKTClientVariationTest {
     )
 
     assertThat(
-      BKTClient.getInstance().doubleEvaluationDetails(FEATURE_ID_DOUBLE, defaultValue = 3.4),
+      BKTClient.getInstance().doubleVariationDetails(FEATURE_ID_DOUBLE, defaultValue = 3.4),
     ).isEqualTo(
       BKTEvaluationDetails(
         featureId = FEATURE_ID_DOUBLE,
@@ -207,7 +207,7 @@ class BKTClientVariationTest {
     )
 
     assertThat(
-      BKTClient.getInstance().boolEvaluationDetails(FEATURE_ID_BOOLEAN, defaultValue = true),
+      BKTClient.getInstance().boolVariationDetails(FEATURE_ID_BOOLEAN, defaultValue = true),
     ).isEqualTo(
       BKTEvaluationDetails(
         featureId = FEATURE_ID_BOOLEAN,
@@ -252,7 +252,7 @@ class BKTClientVariationTest {
 
     val actualEvaluationDetails =
       BKTClient.getInstance()
-        .jsonEvaluationDetails(FEATURE_ID_JSON, defaultValue = JSONObject("""{ "key1": "value-2" }"""))
+        .jsonVariationDetails(FEATURE_ID_JSON, defaultValue = JSONObject("""{ "key1": "value-2" }"""))
 
     assertThat(
       actualEvaluationDetails,

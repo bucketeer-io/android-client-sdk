@@ -467,7 +467,7 @@ class BKTClientImplTest {
   }
 
   @Test
-  fun stringEvaluationDetails() {
+  fun stringVariationDetails() {
     server.enqueue(
       MockResponse()
         .setResponseCode(200)
@@ -513,7 +513,7 @@ class BKTClientImplTest {
       ),
     )
 
-    val actualEvaluationDetails = BKTClient.getInstance().stringEvaluationDetails(featureId, defaultValue = "1")
+    val actualEvaluationDetails = BKTClient.getInstance().stringVariationDetails(featureId, defaultValue = "1")
     assertThat(actualEvaluationDetails).isEqualTo(
       BKTEvaluationDetails(
         featureId = expectedEvaluation.featureId,
@@ -527,25 +527,25 @@ class BKTClientImplTest {
     )
 
     assertThat(
-      BKTClient.getInstance().intEvaluationDetails(featureId, defaultValue = 1),
+      BKTClient.getInstance().intVariationDetails(featureId, defaultValue = 1),
     ).isEqualTo(
       BKTEvaluationDetails.newDefaultInstance(featureId = featureId, userId = user1.id, defaultValue = 1),
     )
 
     assertThat(
-      BKTClient.getInstance().boolEvaluationDetails(featureId, defaultValue = false),
+      BKTClient.getInstance().boolVariationDetails(featureId, defaultValue = false),
     ).isEqualTo(
       BKTEvaluationDetails.newDefaultInstance(featureId = featureId, userId = user1.id, defaultValue = false),
     )
 
     assertThat(
-      BKTClient.getInstance().doubleEvaluationDetails(featureId, defaultValue = 1.0),
+      BKTClient.getInstance().doubleVariationDetails(featureId, defaultValue = 1.0),
     ).isEqualTo(
       BKTEvaluationDetails.newDefaultInstance(featureId = featureId, userId = user1.id, defaultValue = 1.0),
     )
 
     assertThat(
-      BKTClient.getInstance().jsonEvaluationDetails(featureId, defaultValue = JSONObject("""{ "key1": "value-2" }""")),
+      BKTClient.getInstance().jsonVariationDetails(featureId, defaultValue = JSONObject("""{ "key1": "value-2" }""")),
     ).isEqualTo(
       BKTEvaluationDetails.newDefaultInstance(
         featureId = featureId,
@@ -586,28 +586,28 @@ class BKTClientImplTest {
       BKTEvaluationDetails.newDefaultInstance(featureId = unknownFeatureId, userId = userId, 1)
     Assert.assertEquals(
       intDefaultInstance,
-      BKTClient.getInstance().intEvaluationDetails(unknownFeatureId, 1),
+      BKTClient.getInstance().intVariationDetails(unknownFeatureId, 1),
     )
 
     val doubleDefaultInstance: BKTEvaluationDetails<Double> =
       BKTEvaluationDetails.newDefaultInstance(featureId = unknownFeatureId, userId = userId, 1.0)
     Assert.assertEquals(
       doubleDefaultInstance,
-      BKTClient.getInstance().doubleEvaluationDetails(unknownFeatureId, 1.0),
+      BKTClient.getInstance().doubleVariationDetails(unknownFeatureId, 1.0),
     )
 
     val booleanDefaultInstance: BKTEvaluationDetails<Boolean> =
       BKTEvaluationDetails.newDefaultInstance(featureId = unknownFeatureId, userId = userId, true)
     Assert.assertEquals(
       booleanDefaultInstance,
-      BKTClient.getInstance().boolEvaluationDetails(unknownFeatureId, true),
+      BKTClient.getInstance().boolVariationDetails(unknownFeatureId, true),
     )
 
     val stringDefaultInstance: BKTEvaluationDetails<String> =
       BKTEvaluationDetails.newDefaultInstance(featureId = unknownFeatureId, userId = userId, "1")
     Assert.assertEquals(
       stringDefaultInstance,
-      BKTClient.getInstance().stringEvaluationDetails(unknownFeatureId, "1"),
+      BKTClient.getInstance().stringVariationDetails(unknownFeatureId, "1"),
     )
 
     val json1 = JSONObject("{\"key1\": \"value1\", \"key\": \"value\"}")
@@ -615,12 +615,12 @@ class BKTClientImplTest {
       BKTEvaluationDetails.newDefaultInstance(featureId = unknownFeatureId, userId = userId, json1)
     Assert.assertEquals(
       jsonDefaultInstance,
-      BKTClient.getInstance().jsonEvaluationDetails(unknownFeatureId, json1),
+      BKTClient.getInstance().jsonVariationDetails(unknownFeatureId, json1),
     )
   }
 
   @Test
-  fun intEvaluationDetails() {
+  fun intVariationDetails() {
     server.enqueue(
       MockResponse()
         .setResponseCode(200)
@@ -655,7 +655,7 @@ class BKTClientImplTest {
     val expectedBKTEvaluationDetailDoubleValue: Double? = expectedEvaluation.getVariationValue()
     assertThat(expectedBKTEvaluationDetailDoubleValue).isEqualTo(1.0)
 
-    val actualEvaluationDetails = BKTClient.getInstance().stringEvaluationDetails(featureId, defaultValue = "")
+    val actualEvaluationDetails = BKTClient.getInstance().stringVariationDetails(featureId, defaultValue = "")
     assertThat(actualEvaluationDetails).isEqualTo(
       BKTEvaluationDetails(
         featureId = expectedEvaluation.featureId,
@@ -669,7 +669,7 @@ class BKTClientImplTest {
     )
 
     assertThat(
-      BKTClient.getInstance().intEvaluationDetails(featureId, defaultValue = 1),
+      BKTClient.getInstance().intVariationDetails(featureId, defaultValue = 1),
     ).isEqualTo(
       BKTEvaluationDetails(
         featureId = expectedEvaluation.featureId,
@@ -683,13 +683,13 @@ class BKTClientImplTest {
     )
 
     assertThat(
-      BKTClient.getInstance().boolEvaluationDetails(featureId, defaultValue = true),
+      BKTClient.getInstance().boolVariationDetails(featureId, defaultValue = true),
     ).isEqualTo(
       BKTEvaluationDetails.newDefaultInstance(featureId = featureId, userId = user1.id, defaultValue = true),
     )
 
     assertThat(
-      BKTClient.getInstance().doubleEvaluationDetails(featureId, defaultValue = 4.1),
+      BKTClient.getInstance().doubleVariationDetails(featureId, defaultValue = 4.1),
     ).isEqualTo(
       BKTEvaluationDetails(
         featureId = expectedEvaluation.featureId,
@@ -703,7 +703,7 @@ class BKTClientImplTest {
     )
 
     assertThat(
-      BKTClient.getInstance().jsonEvaluationDetails(featureId, defaultValue = JSONObject("""{ "key1": "value-2" }""")),
+      BKTClient.getInstance().jsonVariationDetails(featureId, defaultValue = JSONObject("""{ "key1": "value-2" }""")),
     ).isEqualTo(
       BKTEvaluationDetails.newDefaultInstance(
         featureId = featureId,
@@ -714,7 +714,7 @@ class BKTClientImplTest {
   }
 
   @Test
-  fun doubleEvaluationDetails() {
+  fun doubleVariationDetails() {
     server.enqueue(
       MockResponse()
         .setResponseCode(200)
@@ -746,7 +746,7 @@ class BKTClientImplTest {
     val expectedBKTEvaluationDetailDoubleValue: Double? = expectedEvaluation.getVariationValue()
     assertThat(expectedBKTEvaluationDetailDoubleValue).isEqualTo(2.0)
 
-    val actualEvaluationDetails = BKTClient.getInstance().stringEvaluationDetails(featureId, defaultValue = "2")
+    val actualEvaluationDetails = BKTClient.getInstance().stringVariationDetails(featureId, defaultValue = "2")
     assertThat(actualEvaluationDetails).isEqualTo(
       BKTEvaluationDetails(
         featureId = expectedEvaluation.featureId,
@@ -760,19 +760,19 @@ class BKTClientImplTest {
     )
 
     assertThat(
-      BKTClient.getInstance().intEvaluationDetails(featureId, defaultValue = 2),
+      BKTClient.getInstance().intVariationDetails(featureId, defaultValue = 2),
     ).isEqualTo(
       BKTEvaluationDetails.newDefaultInstance(featureId = featureId, userId = user1.id, 2),
     )
 
     assertThat(
-      BKTClient.getInstance().boolEvaluationDetails(featureId, defaultValue = false),
+      BKTClient.getInstance().boolVariationDetails(featureId, defaultValue = false),
     ).isEqualTo(
       BKTEvaluationDetails.newDefaultInstance(featureId = featureId, userId = user1.id, defaultValue = false),
     )
 
     assertThat(
-      BKTClient.getInstance().doubleEvaluationDetails(featureId, defaultValue = 4.2),
+      BKTClient.getInstance().doubleVariationDetails(featureId, defaultValue = 4.2),
     ).isEqualTo(
       BKTEvaluationDetails(
         featureId = expectedEvaluation.featureId,
@@ -786,7 +786,7 @@ class BKTClientImplTest {
     )
 
     assertThat(
-      BKTClient.getInstance().jsonEvaluationDetails(featureId, defaultValue = JSONObject("""{ "key1": "value-2" }""")),
+      BKTClient.getInstance().jsonVariationDetails(featureId, defaultValue = JSONObject("""{ "key1": "value-2" }""")),
     ).isEqualTo(
       BKTEvaluationDetails.newDefaultInstance(
         featureId = featureId,
@@ -829,7 +829,7 @@ class BKTClientImplTest {
     val expectedBKTEvaluationDetailBooleanValue: Boolean? = expectedEvaluation.getVariationValue()
     assertThat(expectedBKTEvaluationDetailBooleanValue).isTrue()
 
-    val actualEvaluationDetails = BKTClient.getInstance().stringEvaluationDetails(featureId, defaultValue = "3")
+    val actualEvaluationDetails = BKTClient.getInstance().stringVariationDetails(featureId, defaultValue = "3")
     assertThat(actualEvaluationDetails).isEqualTo(
       BKTEvaluationDetails(
         featureId = expectedEvaluation.featureId,
@@ -843,13 +843,13 @@ class BKTClientImplTest {
     )
 
     assertThat(
-      BKTClient.getInstance().intEvaluationDetails(featureId, defaultValue = 3),
+      BKTClient.getInstance().intVariationDetails(featureId, defaultValue = 3),
     ).isEqualTo(
       BKTEvaluationDetails.newDefaultInstance(featureId = featureId, userId = user1.id, defaultValue = 3),
     )
 
     assertThat(
-      BKTClient.getInstance().boolEvaluationDetails(featureId, defaultValue = false),
+      BKTClient.getInstance().boolVariationDetails(featureId, defaultValue = false),
     ).isEqualTo(
       BKTEvaluationDetails(
         featureId = expectedEvaluation.featureId,
@@ -863,13 +863,13 @@ class BKTClientImplTest {
     )
 
     assertThat(
-      BKTClient.getInstance().doubleEvaluationDetails(featureId, defaultValue = 2.0),
+      BKTClient.getInstance().doubleVariationDetails(featureId, defaultValue = 2.0),
     ).isEqualTo(
       BKTEvaluationDetails.newDefaultInstance(featureId = featureId, userId = user1.id, defaultValue = 2.0),
     )
 
     assertThat(
-      BKTClient.getInstance().jsonEvaluationDetails(featureId, defaultValue = JSONObject("""{ "key1": "value-2" }""")),
+      BKTClient.getInstance().jsonVariationDetails(featureId, defaultValue = JSONObject("""{ "key1": "value-2" }""")),
     ).isEqualTo(
       BKTEvaluationDetails.newDefaultInstance(
         featureId = featureId,
@@ -880,7 +880,7 @@ class BKTClientImplTest {
   }
 
   @Test
-  fun jsonEvaluationDetails() {
+  fun jsonVariationDetails() {
     server.enqueue(
       MockResponse()
         .setResponseCode(200)
@@ -913,7 +913,7 @@ class BKTClientImplTest {
     assertThat(expectedBKTEvaluationDetailJsonValue!!.contains(JSONObject("""{ "key": "value-1" }"""))).isTrue()
 
     val actualEvaluationDetails =
-      BKTClient.getInstance().jsonEvaluationDetails(
+      BKTClient.getInstance().jsonVariationDetails(
         featureId,
         defaultValue = JSONObject("""{ "key": "value-2" }"""),
       )
@@ -931,7 +931,7 @@ class BKTClientImplTest {
     )
 
     assertThat(
-      BKTClient.getInstance().stringEvaluationDetails(featureId, defaultValue = ""),
+      BKTClient.getInstance().stringVariationDetails(featureId, defaultValue = ""),
     ).isEqualTo(
       BKTEvaluationDetails(
         featureId = expectedEvaluation.featureId,
@@ -945,19 +945,19 @@ class BKTClientImplTest {
     )
 
     assertThat(
-      BKTClient.getInstance().intEvaluationDetails(featureId, defaultValue = 10),
+      BKTClient.getInstance().intVariationDetails(featureId, defaultValue = 10),
     ).isEqualTo(
       BKTEvaluationDetails.newDefaultInstance(featureId = featureId, userId = user1.id, defaultValue = 10),
     )
 
     assertThat(
-      BKTClient.getInstance().boolEvaluationDetails(featureId, defaultValue = false),
+      BKTClient.getInstance().boolVariationDetails(featureId, defaultValue = false),
     ).isEqualTo(
       BKTEvaluationDetails.newDefaultInstance(featureId = featureId, userId = user1.id, defaultValue = false),
     )
 
     assertThat(
-      BKTClient.getInstance().doubleEvaluationDetails(featureId, defaultValue = 5.5),
+      BKTClient.getInstance().doubleVariationDetails(featureId, defaultValue = 5.5),
     ).isEqualTo(
       BKTEvaluationDetails.newDefaultInstance(featureId = featureId, userId = user1.id, defaultValue = 5.5),
     )
@@ -995,31 +995,31 @@ class BKTClientImplTest {
     ).isNull()
 
     assertThat(
-      BKTClient.getInstance().stringEvaluationDetails(unknownFeature, "33"),
+      BKTClient.getInstance().stringVariationDetails(unknownFeature, "33"),
     ).isEqualTo(
       BKTEvaluationDetails.newDefaultInstance(featureId = unknownFeature, userId = user1.id, defaultValue = "33"),
     )
 
     assertThat(
-      BKTClient.getInstance().intEvaluationDetails(unknownFeature, defaultValue = 9),
+      BKTClient.getInstance().intVariationDetails(unknownFeature, defaultValue = 9),
     ).isEqualTo(
       BKTEvaluationDetails.newDefaultInstance(featureId = unknownFeature, userId = user1.id, defaultValue = 9),
     )
 
     assertThat(
-      BKTClient.getInstance().doubleEvaluationDetails(unknownFeature, defaultValue = 10.2),
+      BKTClient.getInstance().doubleVariationDetails(unknownFeature, defaultValue = 10.2),
     ).isEqualTo(
       BKTEvaluationDetails.newDefaultInstance(featureId = unknownFeature, userId = user1.id, defaultValue = 10.2),
     )
 
     assertThat(
-      BKTClient.getInstance().boolEvaluationDetails(unknownFeature, defaultValue = true),
+      BKTClient.getInstance().boolVariationDetails(unknownFeature, defaultValue = true),
     ).isEqualTo(
       BKTEvaluationDetails.newDefaultInstance(featureId = unknownFeature, userId = user1.id, defaultValue = true),
     )
 
     assertThat(
-      BKTClient.getInstance().jsonEvaluationDetails(unknownFeature, defaultValue = JSONObject("""{ "key": "value-1" }""")),
+      BKTClient.getInstance().jsonVariationDetails(unknownFeature, defaultValue = JSONObject("""{ "key": "value-1" }""")),
     ).isEqualTo(
       BKTEvaluationDetails.newDefaultInstance(
         featureId = unknownFeature,
@@ -1250,7 +1250,7 @@ class BKTClientImplTest {
     val actual = BKTClient.getInstance().evaluationDetails(evaluation1.featureId)
     assertThat(actual).isNotInstanceOf(BKTException::class.java)
 
-    val actualEvaluationDetails = BKTClient.getInstance().stringEvaluationDetails(evaluation1.featureId, defaultValue = "")
+    val actualEvaluationDetails = BKTClient.getInstance().stringVariationDetails(evaluation1.featureId, defaultValue = "")
     assertThat(actualEvaluationDetails).isNotInstanceOf(BKTException::class.java)
   }
 }

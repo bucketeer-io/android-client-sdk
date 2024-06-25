@@ -53,27 +53,27 @@ interface BKTClient {
   )
   fun evaluationDetails(featureId: String): BKTEvaluation?
 
-  fun intEvaluationDetails(
+  fun intVariationDetails(
     featureId: String,
     defaultValue: Int,
   ): BKTEvaluationDetails<Int>
 
-  fun doubleEvaluationDetails(
+  fun doubleVariationDetails(
     featureId: String,
     defaultValue: Double,
   ): BKTEvaluationDetails<Double>
 
-  fun boolEvaluationDetails(
+  fun boolVariationDetails(
     featureId: String,
     defaultValue: Boolean,
   ): BKTEvaluationDetails<Boolean>
 
-  fun stringEvaluationDetails(
+  fun stringVariationDetails(
     featureId: String,
     defaultValue: String,
   ): BKTEvaluationDetails<String>
 
-  fun jsonEvaluationDetails(
+  fun jsonVariationDetails(
     featureId: String,
     defaultValue: JSONObject,
   ): BKTEvaluationDetails<JSONObject>
