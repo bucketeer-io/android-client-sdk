@@ -2,7 +2,7 @@
 agp = "8.5.0"
 kotlin = "2.0.0"
 androidxLifecycle = "2.8.2"
-androidxTest = "1.6.0"
+androidxTest = "1.6.1"
 moshi = "1.15.1"
 okhttp = "4.12.0"
 coroutines = "1.8.1"
@@ -21,12 +21,12 @@ moshi-adapters = { module = "com.squareup.moshi:moshi-adapters", version.ref = "
 
 junit = { module = "junit:junit", version = "4.13.2" }
 robolectric = { module = "org.robolectric:robolectric", version = "4.12.2" }
-truth = { module = "com.google.truth:truth", version = "1.4.2" }
+truth = { module = "com.google.truth:truth", version = "1.4.3" }
 testParameterInjector = { module = "com.google.testparameterinjector:test-parameter-injector", version = "1.16" }
 
 androidx-test-core = { module = "androidx.test:core", version.ref = "androidxTest" }
 androidx-test-rules = { module = "androidx.test:rules", version.ref = "androidxTest" }
-androidx-test-ext = { module = "androidx.test.ext:junit", version = "1.2.0" }
+androidx-test-ext = { module = "androidx.test.ext:junit", version = "1.2.1" }
 androidx-test-orchestrator = { module = "androidx.test:orchestrator", version = "1.5.0" }
 
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version = "1.7.0" }
