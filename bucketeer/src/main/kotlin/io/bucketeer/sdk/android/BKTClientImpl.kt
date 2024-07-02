@@ -119,6 +119,8 @@ internal class BKTClientImpl(
     }
   }
 
+  @Deprecated("evaluationDetails is deprecated")
+  @Suppress("DEPRECATION")
   override fun evaluationDetails(featureId: String): BKTEvaluation? {
     val raw =
       component.evaluationInteractor
@@ -134,6 +136,41 @@ internal class BKTClientImpl(
       variationValue = raw.variationValue,
       reason = BKTEvaluation.Reason.from(raw.reason.type.name),
     )
+  }
+
+  override fun intVariationDetails(
+    featureId: String,
+    defaultValue: Int,
+  ): BKTEvaluationDetails<Int> {
+    return getVariationDetail(featureId, defaultValue)
+  }
+
+  override fun doubleVariationDetails(
+    featureId: String,
+    defaultValue: Double,
+  ): BKTEvaluationDetails<Double> {
+    return getVariationDetail(featureId, defaultValue)
+  }
+
+  override fun boolVariationDetails(
+    featureId: String,
+    defaultValue: Boolean,
+  ): BKTEvaluationDetails<Boolean> {
+    return getVariationDetail(featureId, defaultValue)
+  }
+
+  override fun stringVariationDetails(
+    featureId: String,
+    defaultValue: String,
+  ): BKTEvaluationDetails<String> {
+    return getVariationDetail(featureId, defaultValue)
+  }
+
+  override fun jsonVariationDetails(
+    featureId: String,
+    defaultValue: JSONObject,
+  ): BKTEvaluationDetails<JSONObject> {
+    return getVariationDetail(featureId, defaultValue)
   }
 
   override fun addEvaluationUpdateListener(listener: BKTClient.EvaluationUpdateListener): String {
@@ -166,11 +203,21 @@ internal class BKTClientImpl(
   ): T {
     logd { "BKTClient.getVariation(featureId = $featureId, defaultValue = $defaultValue) called" }
 
+    return getVariationDetail(featureId, defaultValue).variationValue
+  }
+
+  private inline fun <reified T : Any> getVariationDetail(
+    featureId: String,
+    defaultValue: T,
+  ): BKTEvaluationDetails<T> {
+    logd { "BKTClient.getVariation(featureId = $featureId) called" }
+
     val raw = component.evaluationInteractor.getLatest(featureId)
+    val value: T? = raw.getVariationValue()
 
     val user = component.userHolder.get()
     val featureTag = config.featureTag
-    if (raw != null) {
+    if (raw != null && value != null) {
       executor.execute {
         component.eventInteractor.trackEvaluationEvent(
           featureTag = featureTag,
@@ -178,6 +225,15 @@ internal class BKTClientImpl(
           evaluation = raw,
         )
       }
+      return BKTEvaluationDetails(
+        featureId = raw.featureId,
+        featureVersion = raw.featureVersion,
+        userId = raw.userId,
+        variationId = raw.variationId,
+        variationName = raw.variationName,
+        variationValue = value,
+        reason = BKTEvaluationDetails.Reason.from(raw.reason.type.name),
+      )
     } else {
       executor.execute {
         component.eventInteractor.trackDefaultEvaluationEvent(
@@ -186,9 +242,12 @@ internal class BKTClientImpl(
           featureId = featureId,
         )
       }
+      return BKTEvaluationDetails.newDefaultInstance(
+        featureId = featureId,
+        userId = user.id,
+        defaultValue = defaultValue,
+      )
     }
-
-    return raw.getVariationValue(defaultValue)
   }
 
   private fun scheduleTasks() {
@@ -246,6 +305,7 @@ internal class BKTClientImpl(
               sizeByte = result.sizeByte,
             )
           }
+
           is GetEvaluationsResult.Failure -> {
             interactor.trackFetchEvaluationsFailure(
               featureTag = result.featureTag,

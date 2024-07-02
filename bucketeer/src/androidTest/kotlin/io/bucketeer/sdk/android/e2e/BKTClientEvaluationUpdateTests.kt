@@ -182,6 +182,7 @@ class BKTClientEvaluationUpdateTests {
 
   @Test
   @UiThreadTest
+  @Suppress("DEPRECATION")
   fun testInitWithoutFeatureTagShouldRetrievesAllFeatures() {
     config =
       BKTConfig.builder()
@@ -201,9 +202,23 @@ class BKTClientEvaluationUpdateTests {
     val client = BKTClient.getInstance()
     val android = client.evaluationDetails("feature-android-e2e-string")
     assertThat(android).isNotNull()
+
     val golang = client.evaluationDetails("feature-go-server-e2e-1")
     assertThat(golang).isNotNull()
+
     val javascript = client.evaluationDetails("feature-js-e2e-string")
     assertThat(javascript).isNotNull()
+
+    val androidStringEvaluationDetail = client.stringVariationDetails("feature-android-e2e-string", defaultValue = "")
+    assertThat(androidStringEvaluationDetail.featureId).isEqualTo("feature-android-e2e-string")
+    assertThat(androidStringEvaluationDetail.variationValue).isNotEmpty()
+
+    val golangStringEvaluationDetail = client.stringVariationDetails("feature-go-server-e2e-1", defaultValue = "")
+    assertThat(golangStringEvaluationDetail.featureId).isEqualTo("feature-go-server-e2e-1")
+    assertThat(golangStringEvaluationDetail.variationValue).isNotEmpty()
+
+    val javascriptStringEvaluationDetail = client.stringVariationDetails("feature-js-e2e-string", defaultValue = "")
+    assertThat(javascriptStringEvaluationDetail.featureId).isEqualTo("feature-js-e2e-string")
+    assertThat(javascriptStringEvaluationDetail.variationValue).isNotEmpty()
   }
 }

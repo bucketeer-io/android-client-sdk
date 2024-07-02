@@ -7,6 +7,7 @@ import com.squareup.moshi.Moshi
 import io.bucketeer.sdk.android.internal.di.ComponentImpl
 import io.bucketeer.sdk.android.internal.di.DataModule
 import io.bucketeer.sdk.android.internal.evaluation.db.EvaluationSQLDaoImpl
+import io.bucketeer.sdk.android.internal.evaluation.getVariationValue
 import io.bucketeer.sdk.android.internal.model.ApiId
 import io.bucketeer.sdk.android.internal.model.Event
 import io.bucketeer.sdk.android.internal.model.EventData
@@ -21,12 +22,21 @@ import io.bucketeer.sdk.android.internal.model.response.ErrorResponse
 import io.bucketeer.sdk.android.internal.model.response.GetEvaluationsResponse
 import io.bucketeer.sdk.android.internal.model.response.RegisterEventsResponse
 import io.bucketeer.sdk.android.internal.user.toBKTUser
+import io.bucketeer.sdk.android.internal.util.contains
+import io.bucketeer.sdk.android.mocks.booleanEvaluation
+import io.bucketeer.sdk.android.mocks.doubleEvaluation
 import io.bucketeer.sdk.android.mocks.evaluation1
+import io.bucketeer.sdk.android.mocks.intValueEvaluation
+import io.bucketeer.sdk.android.mocks.jsonEvaluation
+import io.bucketeer.sdk.android.mocks.stringEvaluation
 import io.bucketeer.sdk.android.mocks.user1
 import io.bucketeer.sdk.android.mocks.user1Evaluations
+import io.bucketeer.sdk.android.mocks.userEvaluationsForTestGetDetailsByVariationType
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
+import org.json.JSONObject
 import org.junit.After
+import org.junit.Assert
 import org.junit.Assert.assertThrows
 import org.junit.Before
 import org.junit.Test
@@ -457,7 +467,7 @@ class BKTClientImplTest {
   }
 
   @Test
-  fun evaluationDetails() {
+  fun stringVariationDetails() {
     server.enqueue(
       MockResponse()
         .setResponseCode(200)
@@ -465,7 +475,7 @@ class BKTClientImplTest {
           moshi.adapter(GetEvaluationsResponse::class.java)
             .toJson(
               GetEvaluationsResponse(
-                evaluations = user1Evaluations,
+                evaluations = userEvaluationsForTestGetDetailsByVariationType,
                 userEvaluationsId = "user_evaluations_id_value",
               ),
             ),
@@ -481,19 +491,475 @@ class BKTClientImplTest {
       )
     initializeFuture.get()
 
-    val actual = BKTClient.getInstance().evaluationDetails(evaluation1.featureId)
+    val expectedEvaluation = stringEvaluation
+    val featureId = expectedEvaluation.featureId
+    val expectedBKTEvaluationDetailStringValue: String? = expectedEvaluation.getVariationValue()
+    assertThat(expectedBKTEvaluationDetailStringValue).isEqualTo("test variation value1")
+
+    @Suppress("DEPRECATION")
+    val actual = BKTClient.getInstance().evaluationDetails(featureId)
 
     assertThat(actual).isEqualTo(
+      @Suppress("DEPRECATION")
       BKTEvaluation(
-        id = evaluation1.id,
-        featureId = evaluation1.featureId,
-        featureVersion = evaluation1.featureVersion,
-        userId = evaluation1.userId,
-        variationId = evaluation1.variationId,
-        variationName = evaluation1.variationName,
-        variationValue = evaluation1.variationValue,
+        id = expectedEvaluation.id,
+        featureId = expectedEvaluation.featureId,
+        featureVersion = expectedEvaluation.featureVersion,
+        userId = expectedEvaluation.userId,
+        variationId = expectedEvaluation.variationId,
+        variationName = expectedEvaluation.variationName,
+        variationValue = expectedBKTEvaluationDetailStringValue!!,
         reason = BKTEvaluation.Reason.DEFAULT,
       ),
+    )
+
+    val actualEvaluationDetails = BKTClient.getInstance().stringVariationDetails(featureId, defaultValue = "1")
+    assertThat(actualEvaluationDetails).isEqualTo(
+      BKTEvaluationDetails(
+        featureId = expectedEvaluation.featureId,
+        featureVersion = expectedEvaluation.featureVersion,
+        userId = expectedEvaluation.userId,
+        variationId = expectedEvaluation.variationId,
+        variationName = expectedEvaluation.variationName,
+        variationValue = expectedBKTEvaluationDetailStringValue,
+        reason = BKTEvaluationDetails.Reason.DEFAULT,
+      ),
+    )
+
+    assertThat(
+      BKTClient.getInstance().intVariationDetails(featureId, defaultValue = 1),
+    ).isEqualTo(
+      BKTEvaluationDetails.newDefaultInstance(featureId = featureId, userId = user1.id, defaultValue = 1),
+    )
+
+    assertThat(
+      BKTClient.getInstance().boolVariationDetails(featureId, defaultValue = false),
+    ).isEqualTo(
+      BKTEvaluationDetails.newDefaultInstance(featureId = featureId, userId = user1.id, defaultValue = false),
+    )
+
+    assertThat(
+      BKTClient.getInstance().doubleVariationDetails(featureId, defaultValue = 1.0),
+    ).isEqualTo(
+      BKTEvaluationDetails.newDefaultInstance(featureId = featureId, userId = user1.id, defaultValue = 1.0),
+    )
+
+    assertThat(
+      BKTClient.getInstance().jsonVariationDetails(featureId, defaultValue = JSONObject("""{ "key1": "value-2" }""")),
+    ).isEqualTo(
+      BKTEvaluationDetails.newDefaultInstance(
+        featureId = featureId,
+        userId = user1.id,
+        defaultValue = JSONObject("""{ "key1": "value-2" }"""),
+      ),
+    )
+  }
+
+  @Test
+  fun testDefaultEvaluationDetail() {
+    server.enqueue(
+      MockResponse()
+        .setResponseCode(200)
+        .setBody(
+          moshi.adapter(GetEvaluationsResponse::class.java)
+            .toJson(
+              GetEvaluationsResponse(
+                evaluations = userEvaluationsForTestGetDetailsByVariationType,
+                userEvaluationsId = "user_evaluations_id_value",
+              ),
+            ),
+        ),
+    )
+
+    val initializeFuture =
+      BKTClient.initialize(
+        ApplicationProvider.getApplicationContext(),
+        config,
+        user1.toBKTUser(),
+        1000,
+      )
+    initializeFuture.get()
+
+    val userId = "user id 1"
+    val unknownFeatureId = "unknownFeatureId"
+    val intDefaultInstance: BKTEvaluationDetails<Int> =
+      BKTEvaluationDetails.newDefaultInstance(featureId = unknownFeatureId, userId = userId, 1)
+    Assert.assertEquals(
+      intDefaultInstance,
+      BKTClient.getInstance().intVariationDetails(unknownFeatureId, 1),
+    )
+
+    val doubleDefaultInstance: BKTEvaluationDetails<Double> =
+      BKTEvaluationDetails.newDefaultInstance(featureId = unknownFeatureId, userId = userId, 1.0)
+    Assert.assertEquals(
+      doubleDefaultInstance,
+      BKTClient.getInstance().doubleVariationDetails(unknownFeatureId, 1.0),
+    )
+
+    val booleanDefaultInstance: BKTEvaluationDetails<Boolean> =
+      BKTEvaluationDetails.newDefaultInstance(featureId = unknownFeatureId, userId = userId, true)
+    Assert.assertEquals(
+      booleanDefaultInstance,
+      BKTClient.getInstance().boolVariationDetails(unknownFeatureId, true),
+    )
+
+    val stringDefaultInstance: BKTEvaluationDetails<String> =
+      BKTEvaluationDetails.newDefaultInstance(featureId = unknownFeatureId, userId = userId, "1")
+    Assert.assertEquals(
+      stringDefaultInstance,
+      BKTClient.getInstance().stringVariationDetails(unknownFeatureId, "1"),
+    )
+
+    val json1 = JSONObject("{\"key1\": \"value1\", \"key\": \"value\"}")
+    val jsonDefaultInstance: BKTEvaluationDetails<JSONObject> =
+      BKTEvaluationDetails.newDefaultInstance(featureId = unknownFeatureId, userId = userId, json1)
+    Assert.assertEquals(
+      jsonDefaultInstance,
+      BKTClient.getInstance().jsonVariationDetails(unknownFeatureId, json1),
+    )
+  }
+
+  @Test
+  fun intVariationDetails() {
+    server.enqueue(
+      MockResponse()
+        .setResponseCode(200)
+        .setBody(
+          moshi.adapter(GetEvaluationsResponse::class.java)
+            .toJson(
+              GetEvaluationsResponse(
+                evaluations = userEvaluationsForTestGetDetailsByVariationType,
+                userEvaluationsId = "user_evaluations_id_value",
+              ),
+            ),
+        ),
+    )
+
+    val initializeFuture =
+      BKTClient.initialize(
+        ApplicationProvider.getApplicationContext(),
+        config,
+        user1.toBKTUser(),
+        1000,
+      )
+    initializeFuture.get()
+
+    val expectedEvaluation = intValueEvaluation
+    val featureId = expectedEvaluation.featureId
+    val expectedBKTEvaluationDetailStringValue: String? = expectedEvaluation.getVariationValue()
+    assertThat(expectedBKTEvaluationDetailStringValue).isEqualTo("1")
+
+    val expectedBKTEvaluationDetailIntValue: Int? = expectedEvaluation.getVariationValue()
+    assertThat(expectedBKTEvaluationDetailIntValue).isEqualTo(1)
+
+    val expectedBKTEvaluationDetailDoubleValue: Double? = expectedEvaluation.getVariationValue()
+    assertThat(expectedBKTEvaluationDetailDoubleValue).isEqualTo(1.0)
+
+    val actualEvaluationDetails = BKTClient.getInstance().stringVariationDetails(featureId, defaultValue = "")
+    assertThat(actualEvaluationDetails).isEqualTo(
+      BKTEvaluationDetails(
+        featureId = expectedEvaluation.featureId,
+        featureVersion = expectedEvaluation.featureVersion,
+        userId = expectedEvaluation.userId,
+        variationId = expectedEvaluation.variationId,
+        variationName = expectedEvaluation.variationName,
+        variationValue = expectedBKTEvaluationDetailStringValue,
+        reason = BKTEvaluationDetails.Reason.DEFAULT,
+      ),
+    )
+
+    assertThat(
+      BKTClient.getInstance().intVariationDetails(featureId, defaultValue = 1),
+    ).isEqualTo(
+      BKTEvaluationDetails(
+        featureId = expectedEvaluation.featureId,
+        featureVersion = expectedEvaluation.featureVersion,
+        userId = expectedEvaluation.userId,
+        variationId = expectedEvaluation.variationId,
+        variationName = expectedEvaluation.variationName,
+        variationValue = expectedBKTEvaluationDetailIntValue,
+        reason = BKTEvaluationDetails.Reason.DEFAULT,
+      ),
+    )
+
+    assertThat(
+      BKTClient.getInstance().boolVariationDetails(featureId, defaultValue = true),
+    ).isEqualTo(
+      BKTEvaluationDetails.newDefaultInstance(featureId = featureId, userId = user1.id, defaultValue = true),
+    )
+
+    assertThat(
+      BKTClient.getInstance().doubleVariationDetails(featureId, defaultValue = 4.1),
+    ).isEqualTo(
+      BKTEvaluationDetails(
+        featureId = expectedEvaluation.featureId,
+        featureVersion = expectedEvaluation.featureVersion,
+        userId = expectedEvaluation.userId,
+        variationId = expectedEvaluation.variationId,
+        variationName = expectedEvaluation.variationName,
+        variationValue = expectedBKTEvaluationDetailDoubleValue,
+        reason = BKTEvaluationDetails.Reason.DEFAULT,
+      ),
+    )
+
+    assertThat(
+      BKTClient.getInstance().jsonVariationDetails(featureId, defaultValue = JSONObject("""{ "key1": "value-2" }""")),
+    ).isEqualTo(
+      BKTEvaluationDetails.newDefaultInstance(
+        featureId = featureId,
+        userId = user1.id,
+        defaultValue = JSONObject("""{ "key1": "value-2" }"""),
+      ),
+    )
+  }
+
+  @Test
+  fun doubleVariationDetails() {
+    server.enqueue(
+      MockResponse()
+        .setResponseCode(200)
+        .setBody(
+          moshi.adapter(GetEvaluationsResponse::class.java)
+            .toJson(
+              GetEvaluationsResponse(
+                evaluations = userEvaluationsForTestGetDetailsByVariationType,
+                userEvaluationsId = "user_evaluations_id_value",
+              ),
+            ),
+        ),
+    )
+
+    val initializeFuture =
+      BKTClient.initialize(
+        ApplicationProvider.getApplicationContext(),
+        config,
+        user1.toBKTUser(),
+        1000,
+      )
+    initializeFuture.get()
+
+    val expectedEvaluation = doubleEvaluation
+    val featureId = expectedEvaluation.featureId
+    val expectedBKTEvaluationDetailStringValue: String? = expectedEvaluation.getVariationValue()
+    assertThat(expectedBKTEvaluationDetailStringValue).isEqualTo("2.0")
+
+    val expectedBKTEvaluationDetailDoubleValue: Double? = expectedEvaluation.getVariationValue()
+    assertThat(expectedBKTEvaluationDetailDoubleValue).isEqualTo(2.0)
+
+    val actualEvaluationDetails = BKTClient.getInstance().stringVariationDetails(featureId, defaultValue = "2")
+    assertThat(actualEvaluationDetails).isEqualTo(
+      BKTEvaluationDetails(
+        featureId = expectedEvaluation.featureId,
+        featureVersion = expectedEvaluation.featureVersion,
+        userId = expectedEvaluation.userId,
+        variationId = expectedEvaluation.variationId,
+        variationName = expectedEvaluation.variationName,
+        variationValue = expectedBKTEvaluationDetailStringValue,
+        reason = BKTEvaluationDetails.Reason.DEFAULT,
+      ),
+    )
+
+    assertThat(
+      BKTClient.getInstance().intVariationDetails(featureId, defaultValue = 2),
+    ).isEqualTo(
+      BKTEvaluationDetails.newDefaultInstance(featureId = featureId, userId = user1.id, 2),
+    )
+
+    assertThat(
+      BKTClient.getInstance().boolVariationDetails(featureId, defaultValue = false),
+    ).isEqualTo(
+      BKTEvaluationDetails.newDefaultInstance(featureId = featureId, userId = user1.id, defaultValue = false),
+    )
+
+    assertThat(
+      BKTClient.getInstance().doubleVariationDetails(featureId, defaultValue = 4.2),
+    ).isEqualTo(
+      BKTEvaluationDetails(
+        featureId = expectedEvaluation.featureId,
+        featureVersion = expectedEvaluation.featureVersion,
+        userId = expectedEvaluation.userId,
+        variationId = expectedEvaluation.variationId,
+        variationName = expectedEvaluation.variationName,
+        variationValue = expectedBKTEvaluationDetailDoubleValue,
+        reason = BKTEvaluationDetails.Reason.DEFAULT,
+      ),
+    )
+
+    assertThat(
+      BKTClient.getInstance().jsonVariationDetails(featureId, defaultValue = JSONObject("""{ "key1": "value-2" }""")),
+    ).isEqualTo(
+      BKTEvaluationDetails.newDefaultInstance(
+        featureId = featureId,
+        userId = user1.id,
+        defaultValue = JSONObject("""{ "key1": "value-2" }"""),
+      ),
+    )
+  }
+
+  @Test
+  fun booleanEvaluationDetails() {
+    server.enqueue(
+      MockResponse()
+        .setResponseCode(200)
+        .setBody(
+          moshi.adapter(GetEvaluationsResponse::class.java)
+            .toJson(
+              GetEvaluationsResponse(
+                evaluations = userEvaluationsForTestGetDetailsByVariationType,
+                userEvaluationsId = "user_evaluations_id_value",
+              ),
+            ),
+        ),
+    )
+
+    val initializeFuture =
+      BKTClient.initialize(
+        ApplicationProvider.getApplicationContext(),
+        config,
+        user1.toBKTUser(),
+        1000,
+      )
+    initializeFuture.get()
+
+    val expectedEvaluation = booleanEvaluation
+    val featureId = expectedEvaluation.featureId
+    val expectedBKTEvaluationDetailStringValue: String? = expectedEvaluation.getVariationValue()
+    assertThat(expectedBKTEvaluationDetailStringValue).isEqualTo("true")
+
+    val expectedBKTEvaluationDetailBooleanValue: Boolean? = expectedEvaluation.getVariationValue()
+    assertThat(expectedBKTEvaluationDetailBooleanValue).isTrue()
+
+    val actualEvaluationDetails = BKTClient.getInstance().stringVariationDetails(featureId, defaultValue = "3")
+    assertThat(actualEvaluationDetails).isEqualTo(
+      BKTEvaluationDetails(
+        featureId = expectedEvaluation.featureId,
+        featureVersion = expectedEvaluation.featureVersion,
+        userId = expectedEvaluation.userId,
+        variationId = expectedEvaluation.variationId,
+        variationName = expectedEvaluation.variationName,
+        variationValue = expectedBKTEvaluationDetailStringValue,
+        reason = BKTEvaluationDetails.Reason.DEFAULT,
+      ),
+    )
+
+    assertThat(
+      BKTClient.getInstance().intVariationDetails(featureId, defaultValue = 3),
+    ).isEqualTo(
+      BKTEvaluationDetails.newDefaultInstance(featureId = featureId, userId = user1.id, defaultValue = 3),
+    )
+
+    assertThat(
+      BKTClient.getInstance().boolVariationDetails(featureId, defaultValue = false),
+    ).isEqualTo(
+      BKTEvaluationDetails(
+        featureId = expectedEvaluation.featureId,
+        featureVersion = expectedEvaluation.featureVersion,
+        userId = expectedEvaluation.userId,
+        variationId = expectedEvaluation.variationId,
+        variationName = expectedEvaluation.variationName,
+        variationValue = expectedBKTEvaluationDetailBooleanValue,
+        reason = BKTEvaluationDetails.Reason.DEFAULT,
+      ),
+    )
+
+    assertThat(
+      BKTClient.getInstance().doubleVariationDetails(featureId, defaultValue = 2.0),
+    ).isEqualTo(
+      BKTEvaluationDetails.newDefaultInstance(featureId = featureId, userId = user1.id, defaultValue = 2.0),
+    )
+
+    assertThat(
+      BKTClient.getInstance().jsonVariationDetails(featureId, defaultValue = JSONObject("""{ "key1": "value-2" }""")),
+    ).isEqualTo(
+      BKTEvaluationDetails.newDefaultInstance(
+        featureId = featureId,
+        userId = user1.id,
+        defaultValue = JSONObject("""{ "key1": "value-2" }"""),
+      ),
+    )
+  }
+
+  @Test
+  fun jsonVariationDetails() {
+    server.enqueue(
+      MockResponse()
+        .setResponseCode(200)
+        .setBody(
+          moshi.adapter(GetEvaluationsResponse::class.java)
+            .toJson(
+              GetEvaluationsResponse(
+                evaluations = userEvaluationsForTestGetDetailsByVariationType,
+                userEvaluationsId = "user_evaluations_id_value",
+              ),
+            ),
+        ),
+    )
+
+    val initializeFuture =
+      BKTClient.initialize(
+        ApplicationProvider.getApplicationContext(),
+        config,
+        user1.toBKTUser(),
+        1000,
+      )
+    initializeFuture.get()
+
+    val expectedEvaluation = jsonEvaluation
+    val featureId = expectedEvaluation.featureId
+    val expectedBKTEvaluationDetailStringValue: String? = expectedEvaluation.getVariationValue()
+    assertThat(expectedBKTEvaluationDetailStringValue).isEqualTo("""{ "key": "value-1" }""")
+
+    val expectedBKTEvaluationDetailJsonValue: JSONObject? = expectedEvaluation.getVariationValue()
+    assertThat(expectedBKTEvaluationDetailJsonValue!!.contains(JSONObject("""{ "key": "value-1" }"""))).isTrue()
+
+    val actualEvaluationDetails =
+      BKTClient.getInstance().jsonVariationDetails(
+        featureId,
+        defaultValue = JSONObject("""{ "key": "value-2" }"""),
+      )
+
+    assertThat(actualEvaluationDetails).isEqualTo(
+      BKTEvaluationDetails(
+        featureId = expectedEvaluation.featureId,
+        featureVersion = expectedEvaluation.featureVersion,
+        userId = expectedEvaluation.userId,
+        variationId = expectedEvaluation.variationId,
+        variationName = expectedEvaluation.variationName,
+        variationValue = JSONObject("""{ "key": "value-1" }"""),
+        reason = BKTEvaluationDetails.Reason.DEFAULT,
+      ),
+    )
+
+    assertThat(
+      BKTClient.getInstance().stringVariationDetails(featureId, defaultValue = ""),
+    ).isEqualTo(
+      BKTEvaluationDetails(
+        featureId = expectedEvaluation.featureId,
+        featureVersion = expectedEvaluation.featureVersion,
+        userId = expectedEvaluation.userId,
+        variationId = expectedEvaluation.variationId,
+        variationName = expectedEvaluation.variationName,
+        variationValue = expectedBKTEvaluationDetailStringValue,
+        reason = BKTEvaluationDetails.Reason.DEFAULT,
+      ),
+    )
+
+    assertThat(
+      BKTClient.getInstance().intVariationDetails(featureId, defaultValue = 10),
+    ).isEqualTo(
+      BKTEvaluationDetails.newDefaultInstance(featureId = featureId, userId = user1.id, defaultValue = 10),
+    )
+
+    assertThat(
+      BKTClient.getInstance().boolVariationDetails(featureId, defaultValue = false),
+    ).isEqualTo(
+      BKTEvaluationDetails.newDefaultInstance(featureId = featureId, userId = user1.id, defaultValue = false),
+    )
+
+    assertThat(
+      BKTClient.getInstance().doubleVariationDetails(featureId, defaultValue = 5.5),
+    ).isEqualTo(
+      BKTEvaluationDetails.newDefaultInstance(featureId = featureId, userId = user1.id, defaultValue = 5.5),
     )
   }
 
@@ -522,9 +988,45 @@ class BKTClientImplTest {
       )
     initializeFuture.get()
 
-    val actual = BKTClient.getInstance().evaluationDetails("unknown_feature_id")
+    val unknownFeature = "unknown_feature_id"
+    @Suppress("DEPRECATION")
+    assertThat(
+      BKTClient.getInstance().evaluationDetails(unknownFeature),
+    ).isNull()
 
-    assertThat(actual).isNull()
+    assertThat(
+      BKTClient.getInstance().stringVariationDetails(unknownFeature, "33"),
+    ).isEqualTo(
+      BKTEvaluationDetails.newDefaultInstance(featureId = unknownFeature, userId = user1.id, defaultValue = "33"),
+    )
+
+    assertThat(
+      BKTClient.getInstance().intVariationDetails(unknownFeature, defaultValue = 9),
+    ).isEqualTo(
+      BKTEvaluationDetails.newDefaultInstance(featureId = unknownFeature, userId = user1.id, defaultValue = 9),
+    )
+
+    assertThat(
+      BKTClient.getInstance().doubleVariationDetails(unknownFeature, defaultValue = 10.2),
+    ).isEqualTo(
+      BKTEvaluationDetails.newDefaultInstance(featureId = unknownFeature, userId = user1.id, defaultValue = 10.2),
+    )
+
+    assertThat(
+      BKTClient.getInstance().boolVariationDetails(unknownFeature, defaultValue = true),
+    ).isEqualTo(
+      BKTEvaluationDetails.newDefaultInstance(featureId = unknownFeature, userId = user1.id, defaultValue = true),
+    )
+
+    assertThat(
+      BKTClient.getInstance().jsonVariationDetails(unknownFeature, defaultValue = JSONObject("""{ "key": "value-1" }""")),
+    ).isEqualTo(
+      BKTEvaluationDetails.newDefaultInstance(
+        featureId = unknownFeature,
+        userId = user1.id,
+        defaultValue = JSONObject("""{ "key": "value-1" }"""),
+      ),
+    )
   }
 
   @Test
@@ -743,8 +1245,13 @@ class BKTClientImplTest {
       user1.toBKTUser(),
       1000,
     )
+
+    @Suppress("DEPRECATION")
     val actual = BKTClient.getInstance().evaluationDetails(evaluation1.featureId)
     assertThat(actual).isNotInstanceOf(BKTException::class.java)
+
+    val actualEvaluationDetails = BKTClient.getInstance().stringVariationDetails(evaluation1.featureId, defaultValue = "")
+    assertThat(actualEvaluationDetails).isNotInstanceOf(BKTException::class.java)
   }
 }
 
