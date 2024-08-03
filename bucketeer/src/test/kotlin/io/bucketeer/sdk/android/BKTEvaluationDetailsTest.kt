@@ -252,6 +252,180 @@ class BKTEvaluationDetailsTest {
   }
 
   @Test
+  fun testEqualsWithBKTValueString() {
+    val detail1 =
+      BKTEvaluationDetails(
+        featureId = "feature2",
+        featureVersion = 2,
+        userId = "user2",
+        variationId = "var2",
+        variationName = "name2",
+        variationValue = BKTValue.String("value"),
+        reason = BKTEvaluationDetails.Reason.RULE,
+      )
+
+    val detail2 =
+      BKTEvaluationDetails(
+        featureId = "feature2",
+        featureVersion = 2,
+        userId = "user2",
+        variationId = "var2",
+        variationName = "name2",
+        variationValue = BKTValue.String("value"),
+        reason = BKTEvaluationDetails.Reason.RULE,
+      )
+
+    assertEquals(detail1, detail2)
+    assertNotEquals(detail1.copy(variationValue = BKTValue.String("12")), detail2)
+    assertNotEquals(detail1.copy(featureId = "2", featureVersion = 2), detail2)
+  }
+
+  @Test
+  fun testEqualsWithBKTValueInt() {
+    val detail1 =
+      BKTEvaluationDetails(
+        featureId = "feature2",
+        featureVersion = 2,
+        userId = "user2",
+        variationId = "var2",
+        variationName = "name2",
+        variationValue = BKTValue.Integer(1),
+        reason = BKTEvaluationDetails.Reason.RULE,
+      )
+
+    val detail2 =
+      BKTEvaluationDetails(
+        featureId = "feature2",
+        featureVersion = 2,
+        userId = "user2",
+        variationId = "var2",
+        variationName = "name2",
+        variationValue = BKTValue.Integer(1),
+        reason = BKTEvaluationDetails.Reason.RULE,
+      )
+
+    assertEquals(detail1, detail2)
+    assertNotEquals(detail1.copy(variationValue = BKTValue.Integer(2)), detail2)
+    assertNotEquals(detail1.copy(featureId = "2", featureVersion = 2), detail2)
+  }
+
+  @Test
+  fun testEqualsWithBKTValueBoolean() {
+    val detail1 =
+      BKTEvaluationDetails(
+        featureId = "feature2",
+        featureVersion = 2,
+        userId = "user2",
+        variationId = "var2",
+        variationName = "name2",
+        variationValue = BKTValue.Boolean(true),
+        reason = BKTEvaluationDetails.Reason.RULE,
+      )
+
+    val detail2 =
+      BKTEvaluationDetails(
+        featureId = "feature2",
+        featureVersion = 2,
+        userId = "user2",
+        variationId = "var2",
+        variationName = "name2",
+        variationValue = BKTValue.Boolean(true),
+        reason = BKTEvaluationDetails.Reason.RULE,
+      )
+
+    assertEquals(detail1, detail2)
+    assertNotEquals(detail1.copy(variationValue = BKTValue.Boolean(false)), detail2)
+    assertNotEquals(detail1.copy(featureId = "2", featureVersion = 2), detail2)
+  }
+
+  @Test
+  fun testEqualsWithBKTValueList() {
+    val detail1 =
+      BKTEvaluationDetails(
+        featureId = "feature2",
+        featureVersion = 2,
+        userId = "user2",
+        variationId = "var2",
+        variationName = "name2",
+        variationValue = BKTValue.List(listOf(BKTValue.String("value1"), BKTValue.String("value2"))),
+        reason = BKTEvaluationDetails.Reason.RULE,
+      )
+
+    val detail2 =
+      BKTEvaluationDetails(
+        featureId = "feature2",
+        featureVersion = 2,
+        userId = "user2",
+        variationId = "var2",
+        variationName = "name2",
+        variationValue = BKTValue.List(listOf(BKTValue.String("value1"), BKTValue.String("value2"))),
+        reason = BKTEvaluationDetails.Reason.RULE,
+      )
+
+    assertEquals(detail1, detail2)
+    assertNotEquals(detail1.copy(variationValue = BKTValue.List(listOf(BKTValue.String("value3")))), detail2)
+    assertNotEquals(detail1.copy(featureId = "2", featureVersion = 2), detail2)
+  }
+
+  @Test
+  fun testEqualsWithBKTValueStruct() {
+    val detail1 =
+      BKTEvaluationDetails(
+        featureId = "feature2",
+        featureVersion = 2,
+        userId = "user2",
+        variationId = "var2",
+        variationName = "name2",
+        variationValue = BKTValue.Structure(mapOf("key1" to BKTValue.String("value1"), "key2" to BKTValue.String("value2"))),
+        reason = BKTEvaluationDetails.Reason.RULE,
+      )
+
+    val detail2 =
+      BKTEvaluationDetails(
+        featureId = "feature2",
+        featureVersion = 2,
+        userId = "user2",
+        variationId = "var2",
+        variationName = "name2",
+        variationValue = BKTValue.Structure(mapOf("key1" to BKTValue.String("value1"), "key2" to BKTValue.String("value2"))),
+        reason = BKTEvaluationDetails.Reason.RULE,
+      )
+
+    assertEquals(detail1, detail2)
+    assertNotEquals(detail1.copy(variationValue = BKTValue.Structure(mapOf("key3" to BKTValue.String("value3")))), detail2)
+    assertNotEquals(detail1.copy(featureId = "2", featureVersion = 2), detail2)
+  }
+
+  @Test
+  fun testEqualsWithBKTValueDouble() {
+    val detail1 =
+      BKTEvaluationDetails(
+        featureId = "feature2",
+        featureVersion = 2,
+        userId = "user2",
+        variationId = "var2",
+        variationName = "name2",
+        variationValue = BKTValue.Double(1.0),
+        reason = BKTEvaluationDetails.Reason.RULE,
+      )
+
+    val detail2 =
+      BKTEvaluationDetails(
+        featureId = "feature2",
+        featureVersion = 2,
+        userId = "user2",
+        variationId = "var2",
+        variationName = "name2",
+        variationValue = BKTValue.Double(1.0),
+        reason = BKTEvaluationDetails.Reason.RULE,
+      )
+
+    assertEquals(detail1, detail2)
+    assertNotEquals(detail1.copy(variationValue = BKTValue.Double(2.0)), detail2)
+    assertNotEquals(detail1.copy(featureId = "2", featureVersion = 2), detail2)
+  }
+
+  @Test
   fun testReasonFrom() {
     // Test cases for each valid Reason
     assertEquals(BKTEvaluationDetails.Reason.TARGET, BKTEvaluationDetails.Reason.from("TARGET"))
