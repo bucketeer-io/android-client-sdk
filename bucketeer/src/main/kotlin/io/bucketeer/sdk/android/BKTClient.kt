@@ -29,10 +29,19 @@ interface BKTClient {
     defaultValue: Boolean,
   ): Boolean
 
+  @Deprecated(
+    message =
+      "jsonVariation() is deprecated. Use objectVariation() instead.",
+  )
   fun jsonVariation(
     featureId: String,
     defaultValue: JSONObject,
   ): JSONObject
+
+  fun objectVariation(
+    featureId: String,
+    defaultValue: BKTValue,
+  ): BKTValue
 
   fun track(
     goalId: String,
@@ -47,7 +56,36 @@ interface BKTClient {
 
   fun flush(): Future<BKTException?>
 
+  @Deprecated(
+    message =
+      "evaluationDetails() is deprecated. Use stringEvaluationDetails() instead.",
+  )
   fun evaluationDetails(featureId: String): BKTEvaluation?
+
+  fun intVariationDetails(
+    featureId: String,
+    defaultValue: Int,
+  ): BKTEvaluationDetails<Int>
+
+  fun doubleVariationDetails(
+    featureId: String,
+    defaultValue: Double,
+  ): BKTEvaluationDetails<Double>
+
+  fun boolVariationDetails(
+    featureId: String,
+    defaultValue: Boolean,
+  ): BKTEvaluationDetails<Boolean>
+
+  fun stringVariationDetails(
+    featureId: String,
+    defaultValue: String,
+  ): BKTEvaluationDetails<String>
+
+  fun objectVariationDetails(
+    featureId: String,
+    defaultValue: BKTValue,
+  ): BKTEvaluationDetails<BKTValue>
 
   fun addEvaluationUpdateListener(listener: EvaluationUpdateListener): String
 
