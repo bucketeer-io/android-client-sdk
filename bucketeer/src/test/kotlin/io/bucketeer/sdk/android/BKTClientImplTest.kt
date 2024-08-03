@@ -596,9 +596,10 @@ class BKTClientImplTest {
     assertThat(
       BKTClient.getInstance().objectVariationDetails(
         featureId,
-        defaultValue = BKTValue.Structure(
-          mapOf("key1" to BKTValue.String("value-2")),
-        ),
+        defaultValue =
+          BKTValue.Structure(
+            mapOf("key1" to BKTValue.String("value-2")),
+          ),
       ),
     ).isEqualTo(
       BKTEvaluationDetails(
@@ -613,9 +614,12 @@ class BKTClientImplTest {
     )
 
     assertThat(
-      BKTClient.getInstance().jsonVariation(
-        featureId, defaultValue = JSONObject("""{ "key1": "value-2" }"""),
-      ).contains(JSONObject("""{ "key1": "value-2" }""")),
+      BKTClient
+        .getInstance()
+        .jsonVariation(
+          featureId,
+          defaultValue = JSONObject("""{ "key1": "value-2" }"""),
+        ).contains(JSONObject("""{ "key1": "value-2" }""")),
     ).isTrue()
   }
 
@@ -675,12 +679,13 @@ class BKTClientImplTest {
       BKTClient.getInstance().stringVariationDetails(unknownFeatureId, "1"),
     )
 
-    val object1 = BKTValue.Structure(
-      mapOf(
-        "key1" to BKTValue.String("value1"),
-        "key" to BKTValue.String("value"),
-      ),
-    )
+    val object1 =
+      BKTValue.Structure(
+        mapOf(
+          "key1" to BKTValue.String("value1"),
+          "key" to BKTValue.String("value"),
+        ),
+      )
     val objectDefaultInstance: BKTEvaluationDetails<BKTValue> =
       BKTEvaluationDetails.newDefaultInstance(
         featureId = unknownFeatureId,
@@ -783,7 +788,8 @@ class BKTClientImplTest {
     )
 
     assertThat(
-      BKTClient.getInstance()
+      BKTClient
+        .getInstance()
         .objectVariationDetails(featureId, defaultValue = BKTValue.Integer(100)),
     ).isEqualTo(
       BKTEvaluationDetails(
@@ -798,9 +804,12 @@ class BKTClientImplTest {
     )
 
     assertThat(
-      BKTClient.getInstance().jsonVariation(
-        featureId, defaultValue = JSONObject("""{ "key1": "value-2" }"""),
-      ).contains(JSONObject("""{ "key1": "value-2" }""")),
+      BKTClient
+        .getInstance()
+        .jsonVariation(
+          featureId,
+          defaultValue = JSONObject("""{ "key1": "value-2" }"""),
+        ).contains(JSONObject("""{ "key1": "value-2" }""")),
     ).isTrue()
   }
 
@@ -886,7 +895,8 @@ class BKTClientImplTest {
     )
 
     assertThat(
-      BKTClient.getInstance()
+      BKTClient
+        .getInstance()
         .objectVariationDetails(featureId, defaultValue = BKTValue.Double(100.1)),
     ).isEqualTo(
       BKTEvaluationDetails(
@@ -901,9 +911,12 @@ class BKTClientImplTest {
     )
 
     assertThat(
-      BKTClient.getInstance().jsonVariation(
-        featureId, defaultValue = JSONObject("""{ "key1": "value-2" }"""),
-      ).contains(JSONObject("""{ "key1": "value-2" }""")),
+      BKTClient
+        .getInstance()
+        .jsonVariation(
+          featureId,
+          defaultValue = JSONObject("""{ "key1": "value-2" }"""),
+        ).contains(JSONObject("""{ "key1": "value-2" }""")),
     ).isTrue()
   }
 
@@ -990,7 +1003,8 @@ class BKTClientImplTest {
     )
 
     assertThat(
-      BKTClient.getInstance()
+      BKTClient
+        .getInstance()
         .objectVariationDetails(featureId, defaultValue = BKTValue.Double(100.1)),
     ).isEqualTo(
       BKTEvaluationDetails(
@@ -1005,9 +1019,12 @@ class BKTClientImplTest {
     )
 
     assertThat(
-      BKTClient.getInstance().jsonVariation(
-        featureId, defaultValue = JSONObject("""{ "key1": "value-2" }"""),
-      ).contains(JSONObject("""{ "key1": "value-2" }""")),
+      BKTClient
+        .getInstance()
+        .jsonVariation(
+          featureId,
+          defaultValue = JSONObject("""{ "key1": "value-2" }"""),
+        ).contains(JSONObject("""{ "key1": "value-2" }""")),
     ).isTrue()
   }
 
@@ -1046,9 +1063,10 @@ class BKTClientImplTest {
     assertThat(expectedBKTEvaluationDetailBKTValue).isEqualTo(
       BKTValue.Structure(
         mapOf(
-          "key" to BKTValue.String(
-            "value-1",
-          ),
+          "key" to
+            BKTValue.String(
+              "value-1",
+            ),
         ),
       ),
     )
@@ -1056,13 +1074,15 @@ class BKTClientImplTest {
     val actualEvaluationObjectDetails =
       BKTClient.getInstance().objectVariationDetails(
         featureId,
-        defaultValue = BKTValue.Structure(
-          mapOf(
-            "key" to BKTValue.String(
-              "value-2",
+        defaultValue =
+          BKTValue.Structure(
+            mapOf(
+              "key" to
+                BKTValue.String(
+                  "value-2",
+                ),
             ),
           ),
-        ),
       )
 
     assertThat(actualEvaluationObjectDetails).isEqualTo(
@@ -1072,13 +1092,15 @@ class BKTClientImplTest {
         userId = expectedEvaluation.userId,
         variationId = expectedEvaluation.variationId,
         variationName = expectedEvaluation.variationName,
-        variationValue = BKTValue.Structure(
-          mapOf(
-            "key" to BKTValue.String(
-              "value-1",
+        variationValue =
+          BKTValue.Structure(
+            mapOf(
+              "key" to
+                BKTValue.String(
+                  "value-1",
+                ),
             ),
           ),
-        ),
         reason = BKTEvaluationDetails.Reason.DEFAULT,
       ),
     )
@@ -1128,9 +1150,12 @@ class BKTClientImplTest {
     )
 
     assertThat(
-      BKTClient.getInstance().jsonVariation(
-        featureId, defaultValue = JSONObject("""{ "key1": "value-2" }"""),
-      ).contains(JSONObject("""{ "key": "value-1" }""")),
+      BKTClient
+        .getInstance()
+        .jsonVariation(
+          featureId,
+          defaultValue = JSONObject("""{ "key1": "value-2" }"""),
+        ).contains(JSONObject("""{ "key": "value-1" }""")),
     ).isTrue()
   }
 
@@ -1231,12 +1256,12 @@ class BKTClientImplTest {
             .toJson(
               GetEvaluationsResponse(
                 evaluations =
-                UserEvaluations(
-                  id = "id_value",
-                  evaluations = listOf(evaluation1),
-                  createdAt = "1690798021",
-                  forceUpdate = true,
-                ),
+                  UserEvaluations(
+                    id = "id_value",
+                    evaluations = listOf(evaluation1),
+                    createdAt = "1690798021",
+                    forceUpdate = true,
+                  ),
                 userEvaluationsId = "user_evaluations_id_value",
               ),
             ),
@@ -1255,9 +1280,9 @@ class BKTClientImplTest {
             .toJson(
               GetEvaluationsResponse(
                 evaluations =
-                user1Evaluations.copy(
-                  evaluations = listOf(updatedEvaluation1),
-                ),
+                  user1Evaluations.copy(
+                    evaluations = listOf(updatedEvaluation1),
+                  ),
                 userEvaluationsId = "user_evaluations_id_value_updated",
               ),
             ),

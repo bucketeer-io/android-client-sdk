@@ -80,8 +80,8 @@ internal class BKTValueAdapter : JsonAdapter<BKTValue>() {
   }
 
   @FromJson
-  override fun fromJson(reader: JsonReader): BKTValue {
-    return when (reader.peek()) {
+  override fun fromJson(reader: JsonReader): BKTValue =
+    when (reader.peek()) {
       JsonReader.Token.STRING -> BKTValue.String(reader.nextString())
       JsonReader.Token.BOOLEAN -> BKTValue.Boolean(reader.nextBoolean())
       JsonReader.Token.NUMBER -> {
@@ -123,5 +123,4 @@ internal class BKTValueAdapter : JsonAdapter<BKTValue>() {
 
       else -> throw JsonDataException("Unknown token: ${reader.peek()}")
     }
-  }
 }

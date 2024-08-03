@@ -173,16 +173,16 @@ class BKTValueFromRawStringTest {
           "boolean" to BKTValue.Boolean(true),
           "double" to BKTValue.Double(42.5),
           "nestedList" to
-              BKTValue.List(
-                listOf(
-                  BKTValue.String("nestedValue"),
-                  BKTValue.Integer(100),
-                ),
+            BKTValue.List(
+              listOf(
+                BKTValue.String("nestedValue"),
+                BKTValue.Integer(100),
               ),
+            ),
           "nestedStructure" to
-              BKTValue.Structure(
-                mapOf("nestedKey" to BKTValue.String("nestedValue")),
-              ),
+            BKTValue.Structure(
+              mapOf("nestedKey" to BKTValue.String("nestedValue")),
+            ),
         ),
       ),
       """
