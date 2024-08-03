@@ -31,7 +31,7 @@ interface BKTClient {
 
   @Deprecated(
     message =
-    "jsonVariation() is deprecated. Use objectVariation() instead.",
+      "jsonVariation() is deprecated. Use objectVariation() instead.",
   )
   fun jsonVariation(
     featureId: String,
