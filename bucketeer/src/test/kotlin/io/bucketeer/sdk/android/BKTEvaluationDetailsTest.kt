@@ -85,6 +85,22 @@ class BKTEvaluationDetailsTest {
         reason = BKTEvaluationDetails.Reason.CLIENT,
       ),
     )
+
+    val object1 = BKTValue.Structure(mapOf("key1" to BKTValue.String("value1"), "key" to BKTValue.String("value")))
+    val object1DefaultInstance: BKTEvaluationDetails<BKTValue> =
+      BKTEvaluationDetails.newDefaultInstance(featureId = featureId, userId = userId, object1)
+    assertEquals(
+      object1DefaultInstance,
+      BKTEvaluationDetails(
+        featureId = featureId,
+        featureVersion = 0,
+        userId = userId,
+        variationId = "",
+        variationName = "",
+        variationValue = object1,
+        reason = BKTEvaluationDetails.Reason.CLIENT,
+      ),
+    )
   }
 
   @Test

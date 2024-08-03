@@ -65,8 +65,8 @@ data class BKTEvaluationDetails<T>(
       featureId: String,
       userId: String,
       defaultValue: T,
-    ): BKTEvaluationDetails<T> {
-      return BKTEvaluationDetails(
+    ): BKTEvaluationDetails<T> =
+      BKTEvaluationDetails(
         featureId = featureId,
         featureVersion = 0,
         userId = userId,
@@ -75,6 +75,5 @@ data class BKTEvaluationDetails<T>(
         variationValue = defaultValue,
         reason = BKTEvaluationDetails.Reason.CLIENT,
       )
-    }
   }
 }

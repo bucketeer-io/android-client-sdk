@@ -9,6 +9,7 @@ import io.bucketeer.sdk.android.BKTClient
 import io.bucketeer.sdk.android.BKTClientImpl
 import io.bucketeer.sdk.android.BKTConfig
 import io.bucketeer.sdk.android.BKTUser
+import io.bucketeer.sdk.android.BKTValue
 import io.bucketeer.sdk.android.BuildConfig
 import io.bucketeer.sdk.android.internal.Constants
 import io.bucketeer.sdk.android.internal.database.OpenHelperCallback
@@ -34,7 +35,8 @@ class BKTClientEventTest {
     context = ApplicationProvider.getApplicationContext()
 
     config =
-      BKTConfig.builder()
+      BKTConfig
+        .builder()
         .apiKey(BuildConfig.API_KEY)
         .apiEndpoint(BuildConfig.API_ENDPOINT)
         .featureTag(FEATURE_TAG)
@@ -42,7 +44,8 @@ class BKTClientEventTest {
         .build()
 
     user =
-      BKTUser.builder()
+      BKTUser
+        .builder()
         .id(USER_ID)
         .build()
 
@@ -55,7 +58,8 @@ class BKTClientEventTest {
   fun tearDown() {
     BKTClient.destroy()
     context.deleteDatabase(OpenHelperCallback.FILE_NAME)
-    context.getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE)
+    context
+      .getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE)
       .edit()
       .clear()
       .commit()
@@ -96,12 +100,15 @@ class BKTClientEventTest {
       assertThat(keys).isEqualTo(listOf("key"))
       assertThat(values).isEqualTo(listOf("value-1"))
     }
+    client.objectVariation(FEATURE_ID_JSON, BKTValue.Structure(mapOf())).let { obj ->
+      assertThat(obj).isEqualTo(BKTValue.Structure(mapOf("key" to BKTValue.String("value-1"))))
+    }
 
     val eventDao = (client.component as ComponentImpl).dataModule.eventSQLDao
 
     Thread.sleep(2000)
     val events = eventDao.getEvents()
-    assertThat(events).hasSize(7)
+    assertThat(events).hasSize(8)
     assertThat(
       events.any {
         val type = it.type
@@ -133,12 +140,15 @@ class BKTClientEventTest {
       assertThat(keys).isEqualTo(listOf<String>())
       assertThat(values).isEqualTo(listOf<String>())
     }
+    client.objectVariation(FEATURE_ID_JSON, BKTValue.Structure(mapOf())).let { obj ->
+      assertThat(obj).isEqualTo(BKTValue.Structure(mapOf()))
+    }
 
     val eventDao = client.component.dataModule.eventSQLDao
 
     Thread.sleep(2000)
     val events = eventDao.getEvents()
-    assertThat(events).hasSize(7)
+    assertThat(events).hasSize(8)
     assertThat(
       events.any {
         val type = it.type

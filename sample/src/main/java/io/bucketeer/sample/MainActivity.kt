@@ -14,6 +14,7 @@ import io.bucketeer.sdk.android.BKTClient
 import io.bucketeer.sdk.android.BKTConfig
 import io.bucketeer.sdk.android.BKTException
 import io.bucketeer.sdk.android.BKTUser
+import io.bucketeer.sdk.android.BKTValue
 import io.bucketeer.sdk.android.sample.BuildConfig
 import io.bucketeer.sdk.android.sample.R
 import kotlinx.coroutines.Dispatchers
@@ -22,12 +23,15 @@ import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.util.concurrent.TimeUnit
 
-enum class VariantType(val type: String) {
+enum class VariantType(
+  val type: String,
+) {
   INT(type = "INT"),
   STRING(type = "STRING"),
   BOOLEAN(type = "BOOLEAN"),
   DOUBLE(type = "DOUBLE"),
   JSON(type = "JSON"),
+  OBJECT(type = "OBJECT"),
 }
 
 class MainActivity : FragmentActivity() {
@@ -56,13 +60,15 @@ class MainActivity : FragmentActivity() {
     lifecycleScope.launch {
       val rs = initBucketeer()
       if (rs == null || rs is BKTException.TimeoutException) {
-        Toast.makeText(
-          this@MainActivity,
-          "The BKTClient SDK has been initialized",
-          Toast.LENGTH_LONG,
-        ).show()
+        Toast
+          .makeText(
+            this@MainActivity,
+            "The BKTClient SDK has been initialized",
+            Toast.LENGTH_LONG,
+          ).show()
       } else {
-        Toast.makeText(this@MainActivity, "Failed with error ${rs.message}", Toast.LENGTH_LONG)
+        Toast
+          .makeText(this@MainActivity, "Failed with error ${rs.message}", Toast.LENGTH_LONG)
           .show()
       }
     }
@@ -87,7 +93,11 @@ class MainActivity : FragmentActivity() {
 
   private fun handleGetVariant() {
     val inputGetVariation = findViewById<TextInputLayout>(R.id.get_variation)
-    val featureId = inputGetVariation.editText?.text.toString().trim()
+    val featureId =
+      inputGetVariation.editText
+        ?.text
+        .toString()
+        .trim()
     if (featureId.isEmpty()) {
       inputGetVariation.error = getString(R.string.error_feature_flag_id_required)
       return
@@ -102,6 +112,7 @@ class MainActivity : FragmentActivity() {
         VariantType.BOOLEAN -> client.booleanVariation(featureId, false)
         VariantType.DOUBLE -> client.doubleVariation(featureId, 0.0)
         VariantType.JSON -> client.jsonVariation(featureId, JSONObject())
+        VariantType.OBJECT -> client.objectVariation(featureId, BKTValue.Structure(mapOf()))
       }
     with(sharedPref.edit()) {
       putString(Constants.PREFERENCE_KEY_FEATURE_FLAG_ID, featureId)
@@ -117,7 +128,11 @@ class MainActivity : FragmentActivity() {
       sharedPref.getString(Constants.PREFERENCE_KEY_GOAL_ID, Constants.DEFAULT_GOAL_ID),
     )
     findViewById<View>(R.id.btn_send_goal).setOnClickListener {
-      val goalId = inputGoalId.editText?.text.toString().trim()
+      val goalId =
+        inputGoalId.editText
+          ?.text
+          .toString()
+          .trim()
       if (goalId.isEmpty()) {
         inputGoalId.error = getString(R.string.error_goal_id_required)
         return@setOnClickListener
@@ -138,7 +153,11 @@ class MainActivity : FragmentActivity() {
       sharedPref.getString(Constants.PREFERENCE_KEY_USER_ID, Constants.DEFAULT_USER_ID),
     )
     findViewById<View>(R.id.btn_switch_user).setOnClickListener {
-      val userId = inputSwitchUserId.editText?.text.toString().trim()
+      val userId =
+        inputSwitchUserId.editText
+          ?.text
+          .toString()
+          .trim()
       if (userId.isEmpty()) {
         inputSwitchUserId.error = getString(R.string.error_user_id_required)
         return@setOnClickListener
@@ -154,7 +173,8 @@ class MainActivity : FragmentActivity() {
         if (rs == null) {
           Toast.makeText(this@MainActivity, "Successful switch the user.", Toast.LENGTH_LONG).show()
         } else {
-          Toast.makeText(this@MainActivity, "Failed with error ${rs.message}", Toast.LENGTH_LONG)
+          Toast
+            .makeText(this@MainActivity, "Failed with error ${rs.message}", Toast.LENGTH_LONG)
             .show()
         }
       }
@@ -167,7 +187,11 @@ class MainActivity : FragmentActivity() {
       sharedPref.getString(Constants.PREFERENCE_KEY_TAG, Constants.DEFAULT_TAG),
     )
     findViewById<View>(R.id.btn_switch_tag).setOnClickListener {
-      val tag = inputTag.editText?.text.toString().trim()
+      val tag =
+        inputTag.editText
+          ?.text
+          .toString()
+          .trim()
       if (tag.isEmpty()) {
         inputTag.error = getString(R.string.error_tag_id_required)
         return@setOnClickListener
@@ -183,7 +207,8 @@ class MainActivity : FragmentActivity() {
         if (rs == null) {
           Toast.makeText(this@MainActivity, "Successful change the tag.", Toast.LENGTH_LONG).show()
         } else {
-          Toast.makeText(this@MainActivity, "Failed with error ${rs.message}", Toast.LENGTH_LONG)
+          Toast
+            .makeText(this@MainActivity, "Failed with error ${rs.message}", Toast.LENGTH_LONG)
             .show()
         }
       }
@@ -206,7 +231,8 @@ class MainActivity : FragmentActivity() {
 
   private suspend fun initBucketeer(): BKTException? {
     val config =
-      BKTConfig.builder()
+      BKTConfig
+        .builder()
         .apiKey(BuildConfig.API_KEY)
         .apiEndpoint(BuildConfig.API_ENDPOINT)
         .featureTag(getTag())
@@ -218,7 +244,8 @@ class MainActivity : FragmentActivity() {
         .build()
 
     val user =
-      BKTUser.builder()
+      BKTUser
+        .builder()
         .id(getUserId())
         .build()
 
@@ -232,17 +259,15 @@ class MainActivity : FragmentActivity() {
     return result
   }
 
-  private fun getTag(): String {
-    return sharedPref.getString(
+  private fun getTag(): String =
+    sharedPref.getString(
       Constants.PREFERENCE_KEY_TAG,
       Constants.DEFAULT_TAG,
     ) ?: Constants.DEFAULT_TAG
-  }
 
-  private fun getUserId(): String {
-    return sharedPref.getString(
+  private fun getUserId(): String =
+    sharedPref.getString(
       Constants.PREFERENCE_KEY_USER_ID,
       Constants.DEFAULT_USER_ID,
     ) ?: Constants.DEFAULT_USER_ID
-  }
 }

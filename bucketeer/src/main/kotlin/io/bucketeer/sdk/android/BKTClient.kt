@@ -34,6 +34,11 @@ interface BKTClient {
     defaultValue: JSONObject,
   ): JSONObject
 
+  fun objectVariation(
+    featureId: String,
+    defaultValue: BKTValue,
+  ): BKTValue
+
   fun track(
     goalId: String,
     value: Double = 0.0,
@@ -73,10 +78,10 @@ interface BKTClient {
     defaultValue: String,
   ): BKTEvaluationDetails<String>
 
-  fun jsonVariationDetails(
+  fun objectVariationDetails(
     featureId: String,
-    defaultValue: JSONObject,
-  ): BKTEvaluationDetails<JSONObject>
+    defaultValue: BKTValue,
+  ): BKTEvaluationDetails<BKTValue>
 
   fun addEvaluationUpdateListener(listener: EvaluationUpdateListener): String
 

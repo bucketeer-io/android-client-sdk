@@ -12,6 +12,7 @@ import io.bucketeer.sdk.android.BKTConfig
 import io.bucketeer.sdk.android.BKTEvaluation
 import io.bucketeer.sdk.android.BKTEvaluationDetails
 import io.bucketeer.sdk.android.BKTUser
+import io.bucketeer.sdk.android.BKTValue
 import io.bucketeer.sdk.android.BuildConfig
 import io.bucketeer.sdk.android.internal.Constants
 import io.bucketeer.sdk.android.internal.database.OpenHelperCallback
@@ -33,7 +34,8 @@ class BKTClientVariationTest {
     context = ApplicationProvider.getApplicationContext()
 
     config =
-      BKTConfig.builder()
+      BKTConfig
+        .builder()
         .apiKey(BuildConfig.API_KEY)
         .apiEndpoint(BuildConfig.API_ENDPOINT)
         .featureTag(FEATURE_TAG)
@@ -41,7 +43,8 @@ class BKTClientVariationTest {
         .build()
 
     user =
-      BKTUser.builder()
+      BKTUser
+        .builder()
         .id(USER_ID)
         .build()
 
@@ -55,7 +58,8 @@ class BKTClientVariationTest {
   fun tearDown() {
     BKTClient.destroy()
     context.deleteDatabase(OpenHelperCallback.FILE_NAME)
-    context.getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE)
+    context
+      .getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE)
       .edit()
       .clear()
       .commit()
@@ -64,7 +68,8 @@ class BKTClientVariationTest {
   @Test
   fun stringVariation() {
     val result =
-      BKTClient.getInstance()
+      BKTClient
+        .getInstance()
         .stringVariation(FEATURE_ID_STRING, "test")
     assertThat(result).isEqualTo("value-1")
   }
@@ -99,12 +104,27 @@ class BKTClientVariationTest {
         reason = BKTEvaluationDetails.Reason.DEFAULT,
       ),
     )
+
+    assertThat(
+      BKTClient.getInstance().objectVariationDetails(FEATURE_ID_STRING, defaultValue = BKTValue.String("1")),
+    ).isEqualTo(
+      BKTEvaluationDetails(
+        featureId = FEATURE_ID_STRING,
+        featureVersion = 4,
+        userId = USER_ID,
+        variationId = "36a53a17-60b4-4a99-a54a-7fcbf21f7c8c",
+        variationName = "variation 1",
+        variationValue = BKTValue.String("value-1"),
+        reason = BKTEvaluationDetails.Reason.DEFAULT,
+      ),
+    )
   }
 
   @Test
   fun intVariation() {
     val result =
-      BKTClient.getInstance()
+      BKTClient
+        .getInstance()
         .intVariation(FEATURE_ID_INT, 0)
     assertThat(result).isEqualTo(10)
   }
@@ -139,12 +159,27 @@ class BKTClientVariationTest {
         reason = BKTEvaluationDetails.Reason.DEFAULT,
       ),
     )
+
+    assertThat(
+      BKTClient.getInstance().objectVariationDetails(FEATURE_ID_INT, defaultValue = BKTValue.Integer(1)),
+    ).isEqualTo(
+      BKTEvaluationDetails(
+        featureId = FEATURE_ID_INT,
+        featureVersion = 3,
+        userId = USER_ID,
+        variationId = "9b9a4396-d2ec-4eaf-aee6-ca0276881120",
+        variationName = "variation 10",
+        variationValue = BKTValue.Integer(10),
+        reason = BKTEvaluationDetails.Reason.DEFAULT,
+      ),
+    )
   }
 
   @Test
   fun doubleVariation() {
     val result =
-      BKTClient.getInstance()
+      BKTClient
+        .getInstance()
         .doubleVariation(FEATURE_ID_DOUBLE, 0.1)
     assertThat(result).isEqualTo(2.1)
   }
@@ -179,12 +214,27 @@ class BKTClientVariationTest {
         reason = BKTEvaluationDetails.Reason.DEFAULT,
       ),
     )
+
+    assertThat(
+      BKTClient.getInstance().objectVariationDetails(FEATURE_ID_DOUBLE, defaultValue = BKTValue.Integer(1)),
+    ).isEqualTo(
+      BKTEvaluationDetails(
+        featureId = FEATURE_ID_DOUBLE,
+        featureVersion = 3,
+        userId = USER_ID,
+        variationId = "384bbcf0-0d1d-4e7a-b589-850f16f833b4",
+        variationName = "variation 2.1",
+        variationValue = BKTValue.Double(2.1),
+        reason = BKTEvaluationDetails.Reason.DEFAULT,
+      ),
+    )
   }
 
   @Test
   fun booleanVariation() {
     val result =
-      BKTClient.getInstance()
+      BKTClient
+        .getInstance()
         .booleanVariation(FEATURE_ID_BOOLEAN, false)
     assertThat(result).isTrue()
   }
@@ -219,12 +269,27 @@ class BKTClientVariationTest {
         reason = BKTEvaluationDetails.Reason.DEFAULT,
       ),
     )
+
+    assertThat(
+      BKTClient.getInstance().objectVariationDetails(FEATURE_ID_BOOLEAN, defaultValue = BKTValue.Integer(1)),
+    ).isEqualTo(
+      BKTEvaluationDetails(
+        featureId = FEATURE_ID_BOOLEAN,
+        featureVersion = 3,
+        userId = USER_ID,
+        variationId = "774fb34d-5b08-4305-9995-08cdac47aa0f",
+        variationName = "variation true",
+        variationValue = BKTValue.Boolean(true),
+        reason = BKTEvaluationDetails.Reason.DEFAULT,
+      ),
+    )
   }
 
   @Test
   fun jsonVariation() {
     val result =
-      BKTClient.getInstance()
+      BKTClient
+        .getInstance()
         .jsonVariation(FEATURE_ID_JSON, JSONObject())
 
     val keys = result.keys().asSequence().toList()
@@ -234,7 +299,19 @@ class BKTClientVariationTest {
   }
 
   @Test
-  fun jsonVariation_detail() {
+  fun objectVariation() {
+    val result =
+      BKTClient
+        .getInstance()
+        .objectVariation(
+          FEATURE_ID_JSON,
+          BKTValue.Structure(mapOf("key" to BKTValue.Boolean(true))),
+        )
+    assertThat(result).isEqualTo(BKTValue.Structure(mapOf("key" to BKTValue.String("value-1"))))
+  }
+
+  @Test
+  fun objectVariation_detail() {
     val actual = BKTClient.getInstance().evaluationDetails(FEATURE_ID_JSON)
     assertEvaluation(
       actual,
@@ -251,8 +328,17 @@ class BKTClientVariationTest {
     )
 
     val actualEvaluationDetails =
-      BKTClient.getInstance()
-        .jsonVariationDetails(FEATURE_ID_JSON, defaultValue = JSONObject("""{ "key1": "value-2" }"""))
+      BKTClient
+        .getInstance()
+        .objectVariationDetails(
+          FEATURE_ID_JSON,
+          defaultValue =
+            BKTValue.Structure(
+              mapOf(
+                "key" to BKTValue.String("value-2"),
+              ),
+            ),
+        )
 
     assertThat(
       actualEvaluationDetails,
@@ -263,7 +349,12 @@ class BKTClientVariationTest {
         userId = USER_ID,
         variationId = "4499d1ca-411d-4ec6-9ae8-df51087e72bb",
         variationName = "variation 1",
-        variationValue = JSONObject("""{ "key": "value-1" }"""),
+        variationValue =
+          BKTValue.Structure(
+            mapOf(
+              "key" to BKTValue.String("value-1"),
+            ),
+          ),
         reason = BKTEvaluationDetails.Reason.DEFAULT,
       ),
     )
