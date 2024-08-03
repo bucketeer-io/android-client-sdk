@@ -613,6 +613,7 @@ class BKTClientImplTest {
       ),
     )
 
+    @Suppress("DEPRECATION")
     assertThat(
       BKTClient
         .getInstance()
@@ -803,6 +804,7 @@ class BKTClientImplTest {
       ),
     )
 
+    @Suppress("DEPRECATION")
     assertThat(
       BKTClient
         .getInstance()
@@ -910,6 +912,7 @@ class BKTClientImplTest {
       ),
     )
 
+    @Suppress("DEPRECATION")
     assertThat(
       BKTClient
         .getInstance()
@@ -1018,6 +1021,7 @@ class BKTClientImplTest {
       ),
     )
 
+    @Suppress("DEPRECATION")
     assertThat(
       BKTClient
         .getInstance()
@@ -1149,6 +1153,7 @@ class BKTClientImplTest {
       ),
     )
 
+    @Suppress("DEPRECATION")
     assertThat(
       BKTClient
         .getInstance()
