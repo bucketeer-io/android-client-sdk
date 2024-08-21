@@ -161,7 +161,7 @@ class BKTClientVariationTest {
     )
 
     assertThat(
-      BKTClient.getInstance().objectVariationDetails(FEATURE_ID_INT, defaultValue = BKTValue.Integer(1)),
+      BKTClient.getInstance().objectVariationDetails(FEATURE_ID_INT, defaultValue = BKTValue.Number(1.0)),
     ).isEqualTo(
       BKTEvaluationDetails(
         featureId = FEATURE_ID_INT,
@@ -169,7 +169,7 @@ class BKTClientVariationTest {
         userId = USER_ID,
         variationId = "9b9a4396-d2ec-4eaf-aee6-ca0276881120",
         variationName = "variation 10",
-        variationValue = BKTValue.Integer(10),
+        variationValue = BKTValue.Number(10.0),
         reason = BKTEvaluationDetails.Reason.DEFAULT,
       ),
     )
@@ -235,7 +235,7 @@ class BKTClientVariationTest {
     )
 
     assertThat(
-      BKTClient.getInstance().objectVariationDetails(FEATURE_ID_DOUBLE, defaultValue = BKTValue.Integer(1)),
+      BKTClient.getInstance().objectVariationDetails(FEATURE_ID_DOUBLE, defaultValue = BKTValue.Number(1.0)),
     ).isEqualTo(
       BKTEvaluationDetails(
         featureId = FEATURE_ID_DOUBLE,
@@ -243,7 +243,7 @@ class BKTClientVariationTest {
         userId = USER_ID,
         variationId = "384bbcf0-0d1d-4e7a-b589-850f16f833b4",
         variationName = "variation 2.1",
-        variationValue = BKTValue.Double(2.1),
+        variationValue = BKTValue.Number(2.1),
         reason = BKTEvaluationDetails.Reason.DEFAULT,
       ),
     )
@@ -290,7 +290,7 @@ class BKTClientVariationTest {
     )
 
     assertThat(
-      BKTClient.getInstance().objectVariationDetails(FEATURE_ID_BOOLEAN, defaultValue = BKTValue.Integer(1)),
+      BKTClient.getInstance().objectVariationDetails(FEATURE_ID_BOOLEAN, defaultValue = BKTValue.Number(1.0)),
     ).isEqualTo(
       BKTEvaluationDetails(
         featureId = FEATURE_ID_BOOLEAN,

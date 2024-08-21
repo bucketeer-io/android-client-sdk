@@ -67,7 +67,7 @@ class GetVariationValueTest_Int(
 }
 
 @RunWith(ParameterizedRobolectricTestRunner::class)
-class GetVariationValueTest_Float_Double(
+class GetVariationValueTest_Float_Number(
   private val variationValue: String,
   private val defaultValue: Float,
   private val expectedValue: Float,
@@ -200,8 +200,8 @@ class GetVariationValueTest_BKTValue(
         arrayOf("not bool", BKTValue.String("{}"), BKTValue.String("not bool")),
         arrayOf("", BKTValue.String("{}"), BKTValue.String("")),
         arrayOf("null", BKTValue.String("{}"), BKTValue.String("null")),
-        arrayOf("1", BKTValue.Integer(0), BKTValue.Integer(1)),
-        arrayOf("1.0", BKTValue.Double(200.01), BKTValue.Double(1.0)),
+        arrayOf("1", BKTValue.Number(0.0), BKTValue.Number(1.0)),
+        arrayOf("1.0", BKTValue.Number(200.01), BKTValue.Number(1.0)),
         arrayOf("{}", BKTValue.Structure(mapOf("key" to BKTValue.String("value"))), BKTValue.Structure(mapOf())),
       ).toList()
   }

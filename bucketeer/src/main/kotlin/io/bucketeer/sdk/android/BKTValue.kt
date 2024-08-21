@@ -12,9 +12,9 @@ sealed class BKTValue {
 
   fun asBoolean(): kotlin.Boolean? = if (this is Boolean) boolean else null
 
-  fun asInteger(): Int? = if (this is Integer) integer else null
+  fun asInteger(): Int? = if (this is Number) number.toInt() else null
 
-  fun asDouble(): kotlin.Double? = if (this is Double) double else null
+  fun asDouble(): Double? = if (this is Number) number else null
 
   fun asList(): kotlin.collections.List<BKTValue>? = if (this is List) list else null
 
@@ -30,12 +30,8 @@ sealed class BKTValue {
     val boolean: kotlin.Boolean,
   ) : BKTValue()
 
-  data class Integer(
-    val integer: Int,
-  ) : BKTValue()
-
-  data class Double(
-    val double: kotlin.Double,
+  data class Number(
+    val number: Double,
   ) : BKTValue()
 
   data class Structure(
@@ -58,8 +54,7 @@ internal class BKTValueAdapter : JsonAdapter<BKTValue>() {
     when (value) {
       is BKTValue.String -> writer.value(value.string)
       is BKTValue.Boolean -> writer.value(value.boolean)
-      is BKTValue.Integer -> writer.value(value.integer)
-      is BKTValue.Double -> writer.value(value.double)
+      is BKTValue.Number -> writer.value(value.number)
       is BKTValue.Structure -> {
         writer.beginObject()
         value.structure.forEach { (k, v) ->
@@ -85,16 +80,7 @@ internal class BKTValueAdapter : JsonAdapter<BKTValue>() {
       JsonReader.Token.STRING -> BKTValue.String(reader.nextString())
       JsonReader.Token.BOOLEAN -> BKTValue.Boolean(reader.nextBoolean())
       JsonReader.Token.NUMBER -> {
-        val numberStr = reader.nextString()
-        try {
-          if (numberStr.contains('.')) {
-            BKTValue.Double(numberStr.toDouble())
-          } else {
-            BKTValue.Integer(numberStr.toInt())
-          }
-        } catch (ex: Exception) {
-          BKTValue.String(numberStr)
-        }
+        BKTValue.Number(reader.nextDouble())
       }
       JsonReader.Token.BEGIN_OBJECT -> {
         val structure = mutableMapOf<String, BKTValue>()

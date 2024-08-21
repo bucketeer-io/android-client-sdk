@@ -791,7 +791,7 @@ class BKTClientImplTest {
     assertThat(
       BKTClient
         .getInstance()
-        .objectVariationDetails(featureId, defaultValue = BKTValue.Integer(100)),
+        .objectVariationDetails(featureId, defaultValue = BKTValue.Number(100.0)),
     ).isEqualTo(
       BKTEvaluationDetails(
         featureId = expectedEvaluation.featureId,
@@ -799,7 +799,7 @@ class BKTClientImplTest {
         userId = expectedEvaluation.userId,
         variationId = expectedEvaluation.variationId,
         variationName = expectedEvaluation.variationName,
-        variationValue = BKTValue.Integer(expectedBKTEvaluationDetailIntValue as Int),
+        variationValue = BKTValue.Number(1.0),
         reason = BKTEvaluationDetails.Reason.DEFAULT,
       ),
     )
@@ -850,7 +850,7 @@ class BKTClientImplTest {
     assertThat(expectedBKTEvaluationDetailDoubleValue).isEqualTo(2.0)
 
     val expectedBKTEvaluationDetailObjectValue: BKTValue? = expectedEvaluation.getVariationValue()
-    assertThat(expectedBKTEvaluationDetailObjectValue).isEqualTo(BKTValue.Double(2.0))
+    assertThat(expectedBKTEvaluationDetailObjectValue).isEqualTo(BKTValue.Number(2.0))
 
     val actualEvaluationDetails =
       BKTClient.getInstance().stringVariationDetails(featureId, defaultValue = "22")
@@ -907,7 +907,7 @@ class BKTClientImplTest {
     assertThat(
       BKTClient
         .getInstance()
-        .objectVariationDetails(featureId, defaultValue = BKTValue.Double(100.1)),
+        .objectVariationDetails(featureId, defaultValue = BKTValue.Number(100.1)),
     ).isEqualTo(
       BKTEvaluationDetails(
         featureId = expectedEvaluation.featureId,
@@ -915,7 +915,7 @@ class BKTClientImplTest {
         userId = expectedEvaluation.userId,
         variationId = expectedEvaluation.variationId,
         variationName = expectedEvaluation.variationName,
-        variationValue = BKTValue.Double(expectedBKTEvaluationDetailDoubleValue as Double),
+        variationValue = BKTValue.Number(expectedBKTEvaluationDetailDoubleValue as Double),
         reason = BKTEvaluationDetails.Reason.DEFAULT,
       ),
     )
@@ -1016,7 +1016,7 @@ class BKTClientImplTest {
     assertThat(
       BKTClient
         .getInstance()
-        .objectVariationDetails(featureId, defaultValue = BKTValue.Double(100.1)),
+        .objectVariationDetails(featureId, defaultValue = BKTValue.Number(100.1)),
     ).isEqualTo(
       BKTEvaluationDetails(
         featureId = expectedEvaluation.featureId,

@@ -47,9 +47,9 @@ class BKTValueAdapterTest {
     // fromJsonShouldThrowError to mark the case which the value is not valid JSON
     val fromJsonShouldThrowError: Boolean,
   ) {
-    DOUBLE1(BKTValue.Double(42.0), "42.00", false),
-    DOUBLE2(BKTValue.Double(42.0), "42.0", false),
-    DOUBLE3(BKTValue.Double(42.55), "42.55", false),
+    DOUBLE1(BKTValue.Number(42.0), "42.00", false),
+    DOUBLE2(BKTValue.Number(42.0), "42.0", false),
+    DOUBLE3(BKTValue.Number(42.55), "42.55", false),
     STRING1(BKTValue.String("hello"), "\"hello\"", false),
     STRING2(BKTValue.String("test default"), "test default", true),
     STRING3(BKTValue.String("42,0"), "42,0", true),
@@ -57,7 +57,6 @@ class BKTValueAdapterTest {
     STRING5(BKTValue.String(""), "\"\"", false),
     STRING6(BKTValue.String("null"), "\"null\"", false),
     BOOLEAN(BKTValue.Boolean(true), "true", false),
-    INTEGER(BKTValue.Integer(42), "42", false),
     STRUCTURE_STRING(
       BKTValue.Structure(mapOf("key" to BKTValue.String("value"))),
       "{\"key\":\"value\"}",
@@ -67,14 +66,14 @@ class BKTValueAdapterTest {
       BKTValue.Structure(
         mapOf(
           "string" to BKTValue.String("value"),
-          "integer" to BKTValue.Integer(42),
+          "integer" to BKTValue.Number(42.0),
           "boolean" to BKTValue.Boolean(true),
-          "double" to BKTValue.Double(42.5),
+          "double" to BKTValue.Number(42.5),
           "nestedList" to
             BKTValue.List(
               listOf(
                 BKTValue.String("nestedValue"),
-                BKTValue.Integer(100),
+                BKTValue.Number(100.0),
               ),
             ),
           "nestedStructure" to
@@ -104,9 +103,9 @@ class BKTValueAdapterTest {
       BKTValue.List(
         listOf(
           BKTValue.String("value"),
-          BKTValue.Integer(42),
+          BKTValue.Number(42.0),
           BKTValue.Boolean(true),
-          BKTValue.Double(42.5),
+          BKTValue.Number(42.5),
           BKTValue.List(listOf(BKTValue.String("nestedValue"))),
           BKTValue.Structure(mapOf("key" to BKTValue.String("value"))),
         ),
@@ -150,9 +149,9 @@ class BKTValueFromRawStringTest {
     val value: BKTValue,
     val json: String,
   ) {
-    DOUBLE1(BKTValue.Double(42.0), "42.00"),
-    DOUBLE2(BKTValue.Double(42.0), "42.0"),
-    DOUBLE3(BKTValue.Double(42.55), "42.55"),
+    DOUBLE1(BKTValue.Number(42.0), "42.00"),
+    DOUBLE2(BKTValue.Number(42.0), "42.0"),
+    DOUBLE3(BKTValue.Number(42.55), "42.55"),
     STRING1(BKTValue.String("hello"), "\"hello\""),
     STRING2(BKTValue.String("test default"), "test default"),
     STRING3(BKTValue.String("42,0"), "42,0"),
@@ -160,7 +159,6 @@ class BKTValueFromRawStringTest {
     STRING5(BKTValue.String(""), "\"\""),
     STRING6(BKTValue.String("null"), "\"null\""),
     BOOLEAN(BKTValue.Boolean(true), "true"),
-    INTEGER(BKTValue.Integer(42), "42"),
     STRUCTURE_STRING(
       BKTValue.Structure(mapOf("key" to BKTValue.String("value"))),
       "{\"key\":\"value\"}",
@@ -169,14 +167,14 @@ class BKTValueFromRawStringTest {
       BKTValue.Structure(
         mapOf(
           "string" to BKTValue.String("value"),
-          "integer" to BKTValue.Integer(42),
+          "integer" to BKTValue.Number(42.0),
           "boolean" to BKTValue.Boolean(true),
-          "double" to BKTValue.Double(42.5),
+          "double" to BKTValue.Number(42.5),
           "nestedList" to
             BKTValue.List(
               listOf(
                 BKTValue.String("nestedValue"),
-                BKTValue.Integer(100),
+                BKTValue.Number(100.0),
               ),
             ),
           "nestedStructure" to
@@ -204,9 +202,9 @@ class BKTValueFromRawStringTest {
       BKTValue.List(
         listOf(
           BKTValue.String("value"),
-          BKTValue.Integer(42),
+          BKTValue.Number(42.0),
           BKTValue.Boolean(true),
-          BKTValue.Double(42.5),
+          BKTValue.Number(42.5),
           BKTValue.List(listOf(BKTValue.String("nestedValue"))),
           BKTValue.Structure(mapOf("key" to BKTValue.String("value"))),
         ),

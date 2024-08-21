@@ -289,7 +289,7 @@ class BKTEvaluationDetailsTest {
         userId = "user2",
         variationId = "var2",
         variationName = "name2",
-        variationValue = BKTValue.Integer(1),
+        variationValue = BKTValue.Number(1.0),
         reason = BKTEvaluationDetails.Reason.RULE,
       )
 
@@ -300,12 +300,12 @@ class BKTEvaluationDetailsTest {
         userId = "user2",
         variationId = "var2",
         variationName = "name2",
-        variationValue = BKTValue.Integer(1),
+        variationValue = BKTValue.Number(1.0),
         reason = BKTEvaluationDetails.Reason.RULE,
       )
 
     assertEquals(detail1, detail2)
-    assertNotEquals(detail1.copy(variationValue = BKTValue.Integer(2)), detail2)
+    assertNotEquals(detail1.copy(variationValue = BKTValue.Number(2.0)), detail2)
     assertNotEquals(detail1.copy(featureId = "2", featureVersion = 2), detail2)
   }
 
@@ -405,7 +405,7 @@ class BKTEvaluationDetailsTest {
         userId = "user2",
         variationId = "var2",
         variationName = "name2",
-        variationValue = BKTValue.Double(1.0),
+        variationValue = BKTValue.Number(1.0),
         reason = BKTEvaluationDetails.Reason.RULE,
       )
 
@@ -416,12 +416,12 @@ class BKTEvaluationDetailsTest {
         userId = "user2",
         variationId = "var2",
         variationName = "name2",
-        variationValue = BKTValue.Double(1.0),
+        variationValue = BKTValue.Number(1.0),
         reason = BKTEvaluationDetails.Reason.RULE,
       )
 
     assertEquals(detail1, detail2)
-    assertNotEquals(detail1.copy(variationValue = BKTValue.Double(2.0)), detail2)
+    assertNotEquals(detail1.copy(variationValue = BKTValue.Number(2.0)), detail2)
     assertNotEquals(detail1.copy(featureId = "2", featureVersion = 2), detail2)
   }
 
