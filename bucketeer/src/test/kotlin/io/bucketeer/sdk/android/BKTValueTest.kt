@@ -16,7 +16,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 class BKTValueTest {
-
   @Test
   fun testAsBoolean() {
     assertEquals(true, BKTValue.Boolean(true).asBoolean())
@@ -65,14 +64,14 @@ class BKTValueTest {
   fun testAsList() {
     assertEquals(
       listOf(BKTValue.String("value")),
-      BKTValue.List(listOf(BKTValue.String("value"))).asList()
+      BKTValue.List(listOf(BKTValue.String("value"))).asList(),
     )
     assertNull(BKTValue.Boolean(true).asList())
     assertNull(BKTValue.String("string").asList())
     assertNull(BKTValue.Number(123.0).asList())
     assertNull(BKTValue.Number(123.456).asList())
     assertNull(
-      BKTValue.Structure(mapOf("key" to BKTValue.List(listOf(BKTValue.String("value"))))).asList()
+      BKTValue.Structure(mapOf("key" to BKTValue.List(listOf(BKTValue.String("value"))))).asList(),
     )
     assertNull(BKTValue.Null.asList())
   }
@@ -81,15 +80,16 @@ class BKTValueTest {
   fun testAsStructure() {
     assertEquals(
       mapOf("key" to BKTValue.String("value")),
-      BKTValue.Structure(mapOf("key" to BKTValue.String("value"))).asStructure()
+      BKTValue.Structure(mapOf("key" to BKTValue.String("value"))).asStructure(),
     )
     assertNull(BKTValue.Boolean(true).asStructure())
     assertNull(BKTValue.String("string").asStructure())
     assertNull(BKTValue.Number(123.0).asStructure())
     assertNull(BKTValue.Number(123.456).asStructure())
     assertNull(
-      BKTValue.List(listOf(BKTValue.Structure(mapOf("key" to BKTValue.String("value")))))
-        .asStructure()
+      BKTValue
+        .List(listOf(BKTValue.Structure(mapOf("key" to BKTValue.String("value")))))
+        .asStructure(),
     )
     assertNull(BKTValue.Null.asStructure())
   }
@@ -132,29 +132,32 @@ class BKTValueTest {
   "valueList2": [1,2.2,true]
 }
 """
-    val expectedDictionaryValue = BKTValue.Structure(
-      mapOf(
-        "value" to BKTValue.String("body"),
-        "value1" to BKTValue.String("body1"),
-        "valueInt" to BKTValue.Number(1.0),
-        "valueBool" to BKTValue.Boolean(true),
-        "valueDouble" to BKTValue.Number(1.2),
-        "valueDictionary" to BKTValue.Structure(mapOf("key" to BKTValue.String("value"))),
-        "valueList1" to BKTValue.List(
-          listOf(
-            BKTValue.Structure(mapOf("key" to BKTValue.String("value"))),
-            BKTValue.Structure(mapOf("key" to BKTValue.Number(10.0)))
-          )
+    val expectedDictionaryValue =
+      BKTValue.Structure(
+        mapOf(
+          "value" to BKTValue.String("body"),
+          "value1" to BKTValue.String("body1"),
+          "valueInt" to BKTValue.Number(1.0),
+          "valueBool" to BKTValue.Boolean(true),
+          "valueDouble" to BKTValue.Number(1.2),
+          "valueDictionary" to BKTValue.Structure(mapOf("key" to BKTValue.String("value"))),
+          "valueList1" to
+            BKTValue.List(
+              listOf(
+                BKTValue.Structure(mapOf("key" to BKTValue.String("value"))),
+                BKTValue.Structure(mapOf("key" to BKTValue.Number(10.0))),
+              ),
+            ),
+          "valueList2" to
+            BKTValue.List(
+              listOf(
+                BKTValue.Number(1.0),
+                BKTValue.Number(2.2),
+                BKTValue.Boolean(true),
+              ),
+            ),
         ),
-        "valueList2" to BKTValue.List(
-          listOf(
-            BKTValue.Number(1.0),
-            BKTValue.Number(2.2),
-            BKTValue.Boolean(true)
-          )
-        )
       )
-    )
     assertEquals(expectedDictionaryValue, dictionaryJSONText.getBKTValue())
 
     // JSON string as a list (first example)
@@ -164,25 +167,27 @@ class BKTValueTest {
     {"key" : 10}
 ]
 """
-    val expectedListValue1 = BKTValue.List(
-      listOf(
-        BKTValue.Structure(mapOf("key" to BKTValue.String("value"))),
-        BKTValue.Structure(mapOf("key" to BKTValue.Number(10.0)))
+    val expectedListValue1 =
+      BKTValue.List(
+        listOf(
+          BKTValue.Structure(mapOf("key" to BKTValue.String("value"))),
+          BKTValue.Structure(mapOf("key" to BKTValue.Number(10.0))),
+        ),
       )
-    )
     assertEquals(expectedListValue1, listJSON1Text.getBKTValue())
 
     // JSON string as a list (second example)
     val listJSON2Text = """
   [1,2.2,true]
 """
-    val expectedListValue2 = BKTValue.List(
-      listOf(
-        BKTValue.Number(1.0),
-        BKTValue.Number(2.2),
-        BKTValue.Boolean(true)
+    val expectedListValue2 =
+      BKTValue.List(
+        listOf(
+          BKTValue.Number(1.0),
+          BKTValue.Number(2.2),
+          BKTValue.Boolean(true),
+        ),
       )
-    )
     assertEquals(expectedListValue2, listJSON2Text.getBKTValue())
   }
 }
