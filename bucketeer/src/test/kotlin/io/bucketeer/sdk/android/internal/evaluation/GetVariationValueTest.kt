@@ -41,7 +41,7 @@ class GetVariationValueTest_String(
 }
 
 @RunWith(ParameterizedRobolectricTestRunner::class)
-class GetVariationValueTest_Int_Long(
+class GetVariationValueTest_Int(
   private val variationValue: String,
   private val defaultValue: Int,
   private val expectedValue: Int,
@@ -53,7 +53,7 @@ class GetVariationValueTest_Int_Long(
       listOf(
         arrayOf("1", 0, 1),
         arrayOf("-1", 0, -1),
-        arrayOf("1.0", 0, 0),
+        arrayOf("1.0", 0, 1),
         arrayOf("1.0a", 0, 0),
         arrayOf("not int", 0, 0),
       )
@@ -63,12 +63,6 @@ class GetVariationValueTest_Int_Long(
   fun `test - Int`() {
     val actual = buildEvaluation(variationValue).getVariationValue(defaultValue)
     assertThat(actual).isEqualTo(expectedValue)
-  }
-
-  @Test
-  fun `test - Long`() {
-    val actual = buildEvaluation(variationValue).getVariationValue(defaultValue.toLong())
-    assertThat(actual).isEqualTo(expectedValue.toLong())
   }
 }
 

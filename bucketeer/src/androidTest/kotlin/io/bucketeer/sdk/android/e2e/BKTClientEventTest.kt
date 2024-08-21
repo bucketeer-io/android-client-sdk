@@ -93,6 +93,7 @@ class BKTClientEventTest {
     assertThat(client.stringVariation(FEATURE_ID_STRING, "test")).isEqualTo("value-1")
     assertThat(client.intVariation(FEATURE_ID_INT, 0)).isEqualTo(10)
     assertThat(client.doubleVariation(FEATURE_ID_DOUBLE, 0.1)).isEqualTo(2.1)
+    assertThat(client.intVariation(FEATURE_ID_DOUBLE, 20)).isEqualTo(2)
     assertThat(client.booleanVariation(FEATURE_ID_BOOLEAN, false)).isEqualTo(true)
     client.jsonVariation(FEATURE_ID_JSON, JSONObject()).let { json ->
       val keys = json.keys().asSequence().toList()
@@ -108,7 +109,7 @@ class BKTClientEventTest {
 
     Thread.sleep(2000)
     val events = eventDao.getEvents()
-    assertThat(events).hasSize(8)
+    assertThat(events).hasSize(9)
     assertThat(
       events.any {
         val type = it.type

@@ -56,7 +56,7 @@ internal inline fun <reified T : Any> String.getVariationValue(): T? {
     when (T::class) {
       String::class ->
         value
-      Int::class -> value.toIntOrNull()
+      Int::class -> value.toDoubleOrNull()?.toInt()
       Long::class -> value.toLongOrNull()
       Float::class -> value.toFloatOrNull()
       Double::class -> value.toDoubleOrNull()

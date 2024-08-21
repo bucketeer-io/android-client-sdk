@@ -177,11 +177,16 @@ class BKTClientVariationTest {
 
   @Test
   fun doubleVariation() {
-    val result =
+    val doubleResult =
       BKTClient
         .getInstance()
         .doubleVariation(FEATURE_ID_DOUBLE, 0.1)
-    assertThat(result).isEqualTo(2.1)
+    assertThat(doubleResult).isEqualTo(2.1)
+    val intResult =
+      BKTClient
+        .getInstance()
+        .intVariation(FEATURE_ID_DOUBLE, 0)
+    assertThat(intResult).isEqualTo(2)
   }
 
   @Test
@@ -211,6 +216,20 @@ class BKTClientVariationTest {
         variationId = "384bbcf0-0d1d-4e7a-b589-850f16f833b4",
         variationName = "variation 2.1",
         variationValue = 2.1,
+        reason = BKTEvaluationDetails.Reason.DEFAULT,
+      ),
+    )
+
+    assertThat(
+      BKTClient.getInstance().intVariationDetails(FEATURE_ID_DOUBLE, defaultValue = 44),
+    ).isEqualTo(
+      BKTEvaluationDetails(
+        featureId = FEATURE_ID_DOUBLE,
+        featureVersion = 3,
+        userId = USER_ID,
+        variationId = "384bbcf0-0d1d-4e7a-b589-850f16f833b4",
+        variationName = "variation 2.1",
+        variationValue = 2,
         reason = BKTEvaluationDetails.Reason.DEFAULT,
       ),
     )

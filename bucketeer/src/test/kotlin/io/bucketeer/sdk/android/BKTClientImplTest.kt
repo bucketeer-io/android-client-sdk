@@ -853,7 +853,7 @@ class BKTClientImplTest {
     assertThat(expectedBKTEvaluationDetailObjectValue).isEqualTo(BKTValue.Double(2.0))
 
     val actualEvaluationDetails =
-      BKTClient.getInstance().stringVariationDetails(featureId, defaultValue = "2")
+      BKTClient.getInstance().stringVariationDetails(featureId, defaultValue = "22")
     assertThat(actualEvaluationDetails).isEqualTo(
       BKTEvaluationDetails(
         featureId = expectedEvaluation.featureId,
@@ -867,9 +867,17 @@ class BKTClientImplTest {
     )
 
     assertThat(
-      BKTClient.getInstance().intVariationDetails(featureId, defaultValue = 2),
+      BKTClient.getInstance().intVariationDetails(featureId, defaultValue = 12),
     ).isEqualTo(
-      BKTEvaluationDetails.newDefaultInstance(featureId = featureId, userId = user1.id, 2),
+      BKTEvaluationDetails(
+        featureId = expectedEvaluation.featureId,
+        featureVersion = expectedEvaluation.featureVersion,
+        userId = expectedEvaluation.userId,
+        variationId = expectedEvaluation.variationId,
+        variationName = expectedEvaluation.variationName,
+        variationValue = 2,
+        reason = BKTEvaluationDetails.Reason.DEFAULT,
+      ),
     )
 
     assertThat(
@@ -1033,7 +1041,7 @@ class BKTClientImplTest {
   }
 
   @Test
-  fun jsonVariationDetails() {
+  fun jsonObjectVariationDetails() {
     server.enqueue(
       MockResponse()
         .setResponseCode(200)
