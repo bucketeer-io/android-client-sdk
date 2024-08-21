@@ -1,4 +1,5 @@
 
+
 import com.google.common.truth.Truth.assertThat
 import com.google.testing.junit.testparameterinjector.TestParameter
 import com.google.testing.junit.testparameterinjector.TestParameterInjector
@@ -6,9 +7,185 @@ import com.squareup.moshi.JsonAdapter
 import io.bucketeer.sdk.android.BKTValue
 import io.bucketeer.sdk.android.BKTValueAdapter
 import io.bucketeer.sdk.android.internal.evaluation.getBKTValue
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+
+class BKTValueTest {
+
+  @Test
+  fun testAsBoolean() {
+    assertEquals(true, BKTValue.Boolean(true).asBoolean())
+    assertNull(BKTValue.String("string").asBoolean())
+    assertNull(BKTValue.Number(123.0).asBoolean())
+    assertNull(BKTValue.Number(123.456).asBoolean())
+    assertNull(BKTValue.List(listOf(BKTValue.Boolean(true))).asBoolean())
+    assertNull(BKTValue.Structure(mapOf("key" to BKTValue.Boolean(true))).asBoolean())
+    assertNull(BKTValue.Null.asBoolean())
+  }
+
+  @Test
+  fun testAsString() {
+    assertEquals("test", BKTValue.String("test").asString())
+    assertNull(BKTValue.Boolean(true).asString())
+    assertNull(BKTValue.Number(123.0).asString())
+    assertNull(BKTValue.Number(123.456).asString())
+    assertNull(BKTValue.List(listOf(BKTValue.String("value"))).asString())
+    assertNull(BKTValue.Structure(mapOf("key" to BKTValue.String("value"))).asString())
+    assertNull(BKTValue.Null.asString())
+  }
+
+  @Test
+  fun testAsInteger() {
+    assertEquals(123, BKTValue.Number(123.0).asInteger())
+    assertNull(BKTValue.Boolean(true).asInteger())
+    assertNull(BKTValue.String("string").asInteger())
+    assertEquals(123, BKTValue.Number(123.456).asInteger())
+    assertNull(BKTValue.List(listOf(BKTValue.Number(123.0))).asInteger())
+    assertNull(BKTValue.Structure(mapOf("key" to BKTValue.Number(123.0))).asInteger())
+    assertNull(BKTValue.Null.asInteger())
+  }
+
+  @Test
+  fun testAsDouble() {
+    assertEquals(123.456, BKTValue.Number(123.456).asDouble())
+    assertNull(BKTValue.Boolean(true).asDouble())
+    assertNull(BKTValue.String("string").asDouble())
+    assertEquals(123.0, BKTValue.Number(123.0).asDouble())
+    assertNull(BKTValue.List(listOf(BKTValue.Number(123.456))).asDouble())
+    assertNull(BKTValue.Structure(mapOf("key" to BKTValue.Number(123.456))).asDouble())
+    assertNull(BKTValue.Null.asDouble())
+  }
+
+  @Test
+  fun testAsList() {
+    assertEquals(
+      listOf(BKTValue.String("value")),
+      BKTValue.List(listOf(BKTValue.String("value"))).asList()
+    )
+    assertNull(BKTValue.Boolean(true).asList())
+    assertNull(BKTValue.String("string").asList())
+    assertNull(BKTValue.Number(123.0).asList())
+    assertNull(BKTValue.Number(123.456).asList())
+    assertNull(
+      BKTValue.Structure(mapOf("key" to BKTValue.List(listOf(BKTValue.String("value"))))).asList()
+    )
+    assertNull(BKTValue.Null.asList())
+  }
+
+  @Test
+  fun testAsStructure() {
+    assertEquals(
+      mapOf("key" to BKTValue.String("value")),
+      BKTValue.Structure(mapOf("key" to BKTValue.String("value"))).asStructure()
+    )
+    assertNull(BKTValue.Boolean(true).asStructure())
+    assertNull(BKTValue.String("string").asStructure())
+    assertNull(BKTValue.Number(123.0).asStructure())
+    assertNull(BKTValue.Number(123.456).asStructure())
+    assertNull(
+      BKTValue.List(listOf(BKTValue.Structure(mapOf("key" to BKTValue.String("value")))))
+        .asStructure()
+    )
+    assertNull(BKTValue.Null.asStructure())
+  }
+
+  @Test
+  fun testIsNull() {
+    assertTrue(BKTValue.Null.isNull())
+    assertFalse(BKTValue.String("string").isNull())
+  }
+
+  @Test
+  fun testGetVariationBKTValue() {
+    // Simple string values
+    assertEquals(BKTValue.String(""), "".getBKTValue())
+    assertEquals(BKTValue.String("null"), "null".getBKTValue())
+    assertEquals(BKTValue.String("test"), "test".getBKTValue())
+    assertEquals(BKTValue.String("test value"), "test value".getBKTValue())
+    assertEquals(BKTValue.String("test value"), "\"test value\"".getBKTValue())
+
+    // Boolean values
+    assertEquals(BKTValue.Boolean(true), "true".getBKTValue())
+    assertEquals(BKTValue.Boolean(false), "false".getBKTValue())
+
+    // Numeric values
+    assertEquals(BKTValue.Number(1.0), "1".getBKTValue())
+    assertEquals(BKTValue.Number(1.0), "1.0".getBKTValue())
+    assertEquals(BKTValue.Number(1.2), "1.2".getBKTValue())
+    assertEquals(BKTValue.Number(1.234), "1.234".getBKTValue())
+
+    // JSON string as a dictionary
+    val dictionaryJSONText = """
+{
+  "value" : "body",
+  "value1" : "body1",
+  "valueInt" : 1,
+  "valueBool" : true,
+  "valueDouble" : 1.2,
+  "valueDictionary": {"key" : "value"},
+  "valueList1": [{"key" : "value"},{"key" : 10}],
+  "valueList2": [1,2.2,true]
+}
+"""
+    val expectedDictionaryValue = BKTValue.Structure(
+      mapOf(
+        "value" to BKTValue.String("body"),
+        "value1" to BKTValue.String("body1"),
+        "valueInt" to BKTValue.Number(1.0),
+        "valueBool" to BKTValue.Boolean(true),
+        "valueDouble" to BKTValue.Number(1.2),
+        "valueDictionary" to BKTValue.Structure(mapOf("key" to BKTValue.String("value"))),
+        "valueList1" to BKTValue.List(
+          listOf(
+            BKTValue.Structure(mapOf("key" to BKTValue.String("value"))),
+            BKTValue.Structure(mapOf("key" to BKTValue.Number(10.0)))
+          )
+        ),
+        "valueList2" to BKTValue.List(
+          listOf(
+            BKTValue.Number(1.0),
+            BKTValue.Number(2.2),
+            BKTValue.Boolean(true)
+          )
+        )
+      )
+    )
+    assertEquals(expectedDictionaryValue, dictionaryJSONText.getBKTValue())
+
+    // JSON string as a list (first example)
+    val listJSON1Text = """
+[
+    {"key" : "value"},
+    {"key" : 10}
+]
+"""
+    val expectedListValue1 = BKTValue.List(
+      listOf(
+        BKTValue.Structure(mapOf("key" to BKTValue.String("value"))),
+        BKTValue.Structure(mapOf("key" to BKTValue.Number(10.0)))
+      )
+    )
+    assertEquals(expectedListValue1, listJSON1Text.getBKTValue())
+
+    // JSON string as a list (second example)
+    val listJSON2Text = """
+  [1,2.2,true]
+"""
+    val expectedListValue2 = BKTValue.List(
+      listOf(
+        BKTValue.Number(1.0),
+        BKTValue.Number(2.2),
+        BKTValue.Boolean(true)
+      )
+    )
+    assertEquals(expectedListValue2, listJSON2Text.getBKTValue())
+  }
+}
 
 @RunWith(TestParameterInjector::class)
 class BKTValueAdapterTest {
