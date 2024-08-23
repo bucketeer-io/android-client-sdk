@@ -302,6 +302,7 @@ class MainActivity : ComponentActivity() {
 
   // In order to receive the update notification when the flag value changed
   // We need subscribe to topic, with the topic name is in this format bucketeer-<YOUR_FEATURE_TAG>
+  // Please put your Firebase project's google-services.json under the folder `sample/src` before test this.
   private fun subscribeToTopic() {
     val tag = getTag()
     Firebase.messaging.subscribeToTopic("bucketeer-$tag")
