@@ -6,7 +6,6 @@ import com.google.firebase.messaging.RemoteMessage
 import io.bucketeer.sdk.android.BKTClient
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
-
   // [START receive_message]
   override fun onMessageReceived(remoteMessage: RemoteMessage) {
     Log.d(TAG, "From: ${remoteMessage.from}")

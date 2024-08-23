@@ -31,7 +31,9 @@ import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.util.concurrent.TimeUnit
 
-enum class VariantType(val type: String) {
+enum class VariantType(
+  val type: String,
+) {
   INT(type = "INT"),
   STRING(type = "STRING"),
   BOOLEAN(type = "BOOLEAN"),
@@ -65,13 +67,15 @@ class MainActivity : ComponentActivity() {
     lifecycleScope.launch {
       val rs = initBucketeer()
       if (rs == null || rs is BKTException.TimeoutException) {
-        Toast.makeText(
-          this@MainActivity,
-          "The BKTClient SDK has been initialized",
-          Toast.LENGTH_LONG,
-        ).show()
+        Toast
+          .makeText(
+            this@MainActivity,
+            "The BKTClient SDK has been initialized",
+            Toast.LENGTH_LONG,
+          ).show()
       } else {
-        Toast.makeText(this@MainActivity, "Failed with error ${rs.message}", Toast.LENGTH_LONG)
+        Toast
+          .makeText(this@MainActivity, "Failed with error ${rs.message}", Toast.LENGTH_LONG)
           .show()
       }
     }
@@ -98,7 +102,11 @@ class MainActivity : ComponentActivity() {
 
   private fun handleGetVariant() {
     val inputGetVariation = findViewById<TextInputLayout>(R.id.get_variation)
-    val featureId = inputGetVariation.editText?.text.toString().trim()
+    val featureId =
+      inputGetVariation.editText
+        ?.text
+        .toString()
+        .trim()
     if (featureId.isEmpty()) {
       inputGetVariation.error = getString(R.string.error_feature_flag_id_required)
       return
@@ -128,7 +136,11 @@ class MainActivity : ComponentActivity() {
       sharedPref.getString(Constants.PREFERENCE_KEY_GOAL_ID, Constants.DEFAULT_GOAL_ID),
     )
     findViewById<View>(R.id.btn_send_goal).setOnClickListener {
-      val goalId = inputGoalId.editText?.text.toString().trim()
+      val goalId =
+        inputGoalId.editText
+          ?.text
+          .toString()
+          .trim()
       if (goalId.isEmpty()) {
         inputGoalId.error = getString(R.string.error_goal_id_required)
         return@setOnClickListener
@@ -149,7 +161,11 @@ class MainActivity : ComponentActivity() {
       sharedPref.getString(Constants.PREFERENCE_KEY_USER_ID, Constants.DEFAULT_USER_ID),
     )
     findViewById<View>(R.id.btn_switch_user).setOnClickListener {
-      val userId = inputSwitchUserId.editText?.text.toString().trim()
+      val userId =
+        inputSwitchUserId.editText
+          ?.text
+          .toString()
+          .trim()
       if (userId.isEmpty()) {
         inputSwitchUserId.error = getString(R.string.error_user_id_required)
         return@setOnClickListener
@@ -165,7 +181,8 @@ class MainActivity : ComponentActivity() {
         if (rs == null) {
           Toast.makeText(this@MainActivity, "Successful switch the user.", Toast.LENGTH_LONG).show()
         } else {
-          Toast.makeText(this@MainActivity, "Failed with error ${rs.message}", Toast.LENGTH_LONG)
+          Toast
+            .makeText(this@MainActivity, "Failed with error ${rs.message}", Toast.LENGTH_LONG)
             .show()
         }
       }
@@ -178,7 +195,11 @@ class MainActivity : ComponentActivity() {
       sharedPref.getString(Constants.PREFERENCE_KEY_TAG, Constants.DEFAULT_TAG),
     )
     findViewById<View>(R.id.btn_switch_tag).setOnClickListener {
-      val tag = inputTag.editText?.text.toString().trim()
+      val tag =
+        inputTag.editText
+          ?.text
+          .toString()
+          .trim()
       if (tag.isEmpty()) {
         inputTag.error = getString(R.string.error_tag_id_required)
         return@setOnClickListener
@@ -194,7 +215,8 @@ class MainActivity : ComponentActivity() {
         if (rs == null) {
           Toast.makeText(this@MainActivity, "Successful change the tag.", Toast.LENGTH_LONG).show()
         } else {
-          Toast.makeText(this@MainActivity, "Failed with error ${rs.message}", Toast.LENGTH_LONG)
+          Toast
+            .makeText(this@MainActivity, "Failed with error ${rs.message}", Toast.LENGTH_LONG)
             .show()
         }
       }
@@ -217,7 +239,8 @@ class MainActivity : ComponentActivity() {
 
   private suspend fun initBucketeer(): BKTException? {
     val config =
-      BKTConfig.builder()
+      BKTConfig
+        .builder()
         .apiKey(BuildConfig.API_KEY)
         .apiEndpoint(BuildConfig.API_ENDPOINT)
         .featureTag(getTag())
@@ -229,7 +252,8 @@ class MainActivity : ComponentActivity() {
         .build()
 
     val user =
-      BKTUser.builder()
+      BKTUser
+        .builder()
         .id(getUserId())
         .build()
 
@@ -243,33 +267,32 @@ class MainActivity : ComponentActivity() {
     return result
   }
 
-  private fun getTag(): String {
-    return sharedPref.getString(
+  private fun getTag(): String =
+    sharedPref.getString(
       Constants.PREFERENCE_KEY_TAG,
       Constants.DEFAULT_TAG,
     ) ?: Constants.DEFAULT_TAG
-  }
 
-  private fun getUserId(): String {
-    return sharedPref.getString(
+  private fun getUserId(): String =
+    sharedPref.getString(
       Constants.PREFERENCE_KEY_USER_ID,
       Constants.DEFAULT_USER_ID,
     ) ?: Constants.DEFAULT_USER_ID
-  }
 
   // Declare the launcher at the top of your Activity/Fragment:
-  private val requestPermissionLauncher = registerForActivityResult(
-    ActivityResultContracts.RequestPermission(),
-  ) { isGranted: Boolean ->
-    if (isGranted) {
-      // FCM SDK (and your app) can post notifications.
-      lifecycleScope.launch {
-        onGrantedNotificationPermission()
+  private val requestPermissionLauncher =
+    registerForActivityResult(
+      ActivityResultContracts.RequestPermission(),
+    ) { isGranted: Boolean ->
+      if (isGranted) {
+        // FCM SDK (and your app) can post notifications.
+        lifecycleScope.launch {
+          onGrantedNotificationPermission()
+        }
+      } else {
+        // TODO: Inform user that that your app will not show notifications.
       }
-    } else {
-      // TODO: Inform user that that your app will not show notifications.
     }
-  }
 
   private fun askNotificationPermission() {
     // This is only necessary for API level >= 33 (TIRAMISU)
@@ -305,7 +328,8 @@ class MainActivity : ComponentActivity() {
   // Please put your Firebase project's google-services.json under the folder `sample/src` before test this.
   private fun subscribeToTopic() {
     val tag = getTag()
-    Firebase.messaging.subscribeToTopic("bucketeer-$tag")
+    Firebase.messaging
+      .subscribeToTopic("bucketeer-$tag")
       .addOnCompleteListener { task ->
         var msg = "Real time update enabled"
         if (!task.isSuccessful) {
