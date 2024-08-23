@@ -42,6 +42,21 @@ enum class VariantType(
 }
 
 class MainActivity : ComponentActivity() {
+  // Declare the launcher at the top of your Activity/Fragment:
+  private val requestPermissionLauncher =
+    registerForActivityResult(
+      ActivityResultContracts.RequestPermission(),
+    ) { isGranted: Boolean ->
+      if (isGranted) {
+        // FCM SDK (and your app) can post notifications.
+        lifecycleScope.launch {
+          onGrantedNotificationPermission()
+        }
+      } else {
+        // TODO: Inform user that that your app will not show notifications.
+      }
+    }
+
   private val sharedPref by lazy {
     getSharedPreferences(
       Constants.PREFERENCE_FILE_KEY,
@@ -278,21 +293,6 @@ class MainActivity : ComponentActivity() {
       Constants.PREFERENCE_KEY_USER_ID,
       Constants.DEFAULT_USER_ID,
     ) ?: Constants.DEFAULT_USER_ID
-
-  // Declare the launcher at the top of your Activity/Fragment:
-  private val requestPermissionLauncher =
-    registerForActivityResult(
-      ActivityResultContracts.RequestPermission(),
-    ) { isGranted: Boolean ->
-      if (isGranted) {
-        // FCM SDK (and your app) can post notifications.
-        lifecycleScope.launch {
-          onGrantedNotificationPermission()
-        }
-      } else {
-        // TODO: Inform user that that your app will not show notifications.
-      }
-    }
 
   private fun askNotificationPermission() {
     // This is only necessary for API level >= 33 (TIRAMISU)
