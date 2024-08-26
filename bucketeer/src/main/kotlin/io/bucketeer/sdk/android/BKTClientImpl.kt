@@ -44,35 +44,64 @@ internal class BKTClientImpl(
 ) : BKTClient {
   private var taskScheduler: TaskScheduler? = null
 
-  override fun stringVariation(
+  override fun booleanVariation(
     featureId: String,
-    defaultValue: String,
-  ): String = stringVariationDetails(featureId, defaultValue).variationValue
+    defaultValue: Boolean,
+  ): Boolean = boolVariationDetails(featureId, defaultValue).variationValue
+
+  override fun boolVariationDetails(
+    featureId: String,
+    defaultValue: Boolean,
+  ): BKTEvaluationDetails<Boolean> = getVariationDetail(featureId, defaultValue)
 
   override fun intVariation(
     featureId: String,
     defaultValue: Int,
   ): Int = intVariationDetails(featureId, defaultValue).variationValue
 
+  override fun intVariationDetails(
+    featureId: String,
+    defaultValue: Int,
+  ): BKTEvaluationDetails<Int> = getVariationDetail(featureId, defaultValue)
+
   override fun doubleVariation(
     featureId: String,
     defaultValue: Double,
   ): Double = doubleVariationDetails(featureId, defaultValue).variationValue
 
-  override fun booleanVariation(
+  override fun doubleVariationDetails(
     featureId: String,
-    defaultValue: Boolean,
-  ): Boolean = boolVariationDetails(featureId, defaultValue).variationValue
+    defaultValue: Double,
+  ): BKTEvaluationDetails<Double> = getVariationDetail(featureId, defaultValue)
 
-  override fun jsonVariation(
+  override fun stringVariation(
     featureId: String,
-    defaultValue: JSONObject,
-  ): JSONObject = getVariationDetail(featureId, defaultValue).variationValue
+    defaultValue: String,
+  ): String = stringVariationDetails(featureId, defaultValue).variationValue
+
+  override fun stringVariationDetails(
+    featureId: String,
+    defaultValue: String,
+  ): BKTEvaluationDetails<String> = getVariationDetail(featureId, defaultValue)
 
   override fun objectVariation(
     featureId: String,
     defaultValue: BKTValue,
   ): BKTValue = objectVariationDetails(featureId, defaultValue).variationValue
+
+  override fun objectVariationDetails(
+    featureId: String,
+    defaultValue: BKTValue,
+  ): BKTEvaluationDetails<BKTValue> = getVariationDetail(featureId, defaultValue)
+
+  @Deprecated(
+    message =
+      "jsonVariation() is deprecated. Use objectVariation() instead.",
+  )
+  override fun jsonVariation(
+    featureId: String,
+    defaultValue: JSONObject,
+  ): JSONObject = getVariationDetail(featureId, defaultValue).variationValue
 
   override fun track(
     goalId: String,
@@ -128,31 +157,6 @@ internal class BKTClientImpl(
       reason = BKTEvaluation.Reason.from(raw.reason.type.name),
     )
   }
-
-  override fun intVariationDetails(
-    featureId: String,
-    defaultValue: Int,
-  ): BKTEvaluationDetails<Int> = getVariationDetail(featureId, defaultValue)
-
-  override fun doubleVariationDetails(
-    featureId: String,
-    defaultValue: Double,
-  ): BKTEvaluationDetails<Double> = getVariationDetail(featureId, defaultValue)
-
-  override fun boolVariationDetails(
-    featureId: String,
-    defaultValue: Boolean,
-  ): BKTEvaluationDetails<Boolean> = getVariationDetail(featureId, defaultValue)
-
-  override fun stringVariationDetails(
-    featureId: String,
-    defaultValue: String,
-  ): BKTEvaluationDetails<String> = getVariationDetail(featureId, defaultValue)
-
-  override fun objectVariationDetails(
-    featureId: String,
-    defaultValue: BKTValue,
-  ): BKTEvaluationDetails<BKTValue> = getVariationDetail(featureId, defaultValue)
 
   override fun addEvaluationUpdateListener(listener: BKTClient.EvaluationUpdateListener): String =
     component.evaluationInteractor.addUpdateListener(listener)
