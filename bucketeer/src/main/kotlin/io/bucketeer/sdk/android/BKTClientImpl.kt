@@ -94,10 +94,7 @@ internal class BKTClientImpl(
     defaultValue: BKTValue,
   ): BKTEvaluationDetails<BKTValue> = getVariationDetail(featureId, defaultValue)
 
-  @Deprecated(
-    message =
-      "jsonVariation() is deprecated. Use objectVariation() instead.",
-  )
+  @Deprecated(message = "evaluationDetails() is deprecated. Use stringEvaluationDetails() instead.")
   override fun jsonVariation(
     featureId: String,
     defaultValue: JSONObject,

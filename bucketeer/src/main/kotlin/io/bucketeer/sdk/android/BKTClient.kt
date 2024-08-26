@@ -81,10 +81,7 @@ interface BKTClient {
 
   fun flush(): Future<BKTException?>
 
-  @Deprecated(
-    message =
-      "evaluationDetails() is deprecated. Use stringEvaluationDetails() instead.",
-  )
+  @Deprecated(message = "evaluationDetails() is deprecated. Use stringEvaluationDetails() instead.")
   fun evaluationDetails(featureId: String): BKTEvaluation?
 
   fun addEvaluationUpdateListener(listener: EvaluationUpdateListener): String
