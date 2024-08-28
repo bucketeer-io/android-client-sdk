@@ -5,6 +5,7 @@ plugins {
   alias(libs.plugins.android.application)
   alias(libs.plugins.kotlin.android)
   alias(libs.plugins.kotlinter)
+  alias(libs.plugins.google.services)
 }
 
 def properties = new Properties()
@@ -70,6 +71,8 @@ dependencies {
   implementation libs.androidx.lifecycle.process
 
   implementation libs.kotlin.coroutines.android
+  implementation(platform(libs.firebase))
+  implementation libs.firebase.messaging.ktx
 }
 repositories {
   mavenCentral()

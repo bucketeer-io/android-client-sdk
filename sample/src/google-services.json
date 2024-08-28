@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1",
+    "project_id": "bucketeer-dev",
+    "storage_bucket": "bucketeer-dev.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:733448580849:android:3c",
+        "android_client_info": {
+          "package_name": "io.bucketeer.sample"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDLZ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
