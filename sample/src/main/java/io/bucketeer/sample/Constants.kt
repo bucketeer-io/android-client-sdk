@@ -11,5 +11,7 @@ class Constants {
     const val PREFERENCE_KEY_GOAL_ID = "goal_id"
     const val PREFERENCE_KEY_USER_ID = "user_id"
     const val PREFERENCE_KEY_TAG = "tag"
+
+    const val FCM_FEATURE_FLAG_ID = "fcm-feature"
   }
 }

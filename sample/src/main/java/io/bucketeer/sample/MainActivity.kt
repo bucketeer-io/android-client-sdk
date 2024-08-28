@@ -1,15 +1,23 @@
 package io.bucketeer.sample
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.Toast
+import androidx.activity.ComponentActivity
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
-import androidx.fragment.app.FragmentActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.textfield.TextInputLayout
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.ktx.messaging
 import io.bucketeer.sdk.android.BKTClient
 import io.bucketeer.sdk.android.BKTConfig
 import io.bucketeer.sdk.android.BKTException
@@ -18,11 +26,14 @@ import io.bucketeer.sdk.android.sample.BuildConfig
 import io.bucketeer.sdk.android.sample.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.util.concurrent.TimeUnit
 
-enum class VariantType(val type: String) {
+enum class VariantType(
+  val type: String,
+) {
   INT(type = "INT"),
   STRING(type = "STRING"),
   BOOLEAN(type = "BOOLEAN"),
@@ -30,7 +41,22 @@ enum class VariantType(val type: String) {
   JSON(type = "JSON"),
 }
 
-class MainActivity : FragmentActivity() {
+class MainActivity : ComponentActivity() {
+  // Declare the launcher at the top of your Activity/Fragment:
+  private val requestPermissionLauncher =
+    registerForActivityResult(
+      ActivityResultContracts.RequestPermission(),
+    ) { isGranted: Boolean ->
+      if (isGranted) {
+        // FCM SDK (and your app) can post notifications.
+        lifecycleScope.launch {
+          onGrantedNotificationPermission()
+        }
+      } else {
+        // TODO: Inform user that that your app will not show notifications.
+      }
+    }
+
   private val sharedPref by lazy {
     getSharedPreferences(
       Constants.PREFERENCE_FILE_KEY,
@@ -56,13 +82,15 @@ class MainActivity : FragmentActivity() {
     lifecycleScope.launch {
       val rs = initBucketeer()
       if (rs == null || rs is BKTException.TimeoutException) {
-        Toast.makeText(
-          this@MainActivity,
-          "The BKTClient SDK has been initialized",
-          Toast.LENGTH_LONG,
-        ).show()
+        Toast
+          .makeText(
+            this@MainActivity,
+            "The BKTClient SDK has been initialized",
+            Toast.LENGTH_LONG,
+          ).show()
       } else {
-        Toast.makeText(this@MainActivity, "Failed with error ${rs.message}", Toast.LENGTH_LONG)
+        Toast
+          .makeText(this@MainActivity, "Failed with error ${rs.message}", Toast.LENGTH_LONG)
           .show()
       }
     }
@@ -70,6 +98,8 @@ class MainActivity : FragmentActivity() {
     setGoalId()
     setSwitchUser()
     setTag()
+
+    askNotificationPermission()
   }
 
   private fun setDefaultVariation() {
@@ -87,7 +117,11 @@ class MainActivity : FragmentActivity() {
 
   private fun handleGetVariant() {
     val inputGetVariation = findViewById<TextInputLayout>(R.id.get_variation)
-    val featureId = inputGetVariation.editText?.text.toString().trim()
+    val featureId =
+      inputGetVariation.editText
+        ?.text
+        .toString()
+        .trim()
     if (featureId.isEmpty()) {
       inputGetVariation.error = getString(R.string.error_feature_flag_id_required)
       return
@@ -117,7 +151,11 @@ class MainActivity : FragmentActivity() {
       sharedPref.getString(Constants.PREFERENCE_KEY_GOAL_ID, Constants.DEFAULT_GOAL_ID),
     )
     findViewById<View>(R.id.btn_send_goal).setOnClickListener {
-      val goalId = inputGoalId.editText?.text.toString().trim()
+      val goalId =
+        inputGoalId.editText
+          ?.text
+          .toString()
+          .trim()
       if (goalId.isEmpty()) {
         inputGoalId.error = getString(R.string.error_goal_id_required)
         return@setOnClickListener
@@ -138,7 +176,11 @@ class MainActivity : FragmentActivity() {
       sharedPref.getString(Constants.PREFERENCE_KEY_USER_ID, Constants.DEFAULT_USER_ID),
     )
     findViewById<View>(R.id.btn_switch_user).setOnClickListener {
-      val userId = inputSwitchUserId.editText?.text.toString().trim()
+      val userId =
+        inputSwitchUserId.editText
+          ?.text
+          .toString()
+          .trim()
       if (userId.isEmpty()) {
         inputSwitchUserId.error = getString(R.string.error_user_id_required)
         return@setOnClickListener
@@ -154,7 +196,8 @@ class MainActivity : FragmentActivity() {
         if (rs == null) {
           Toast.makeText(this@MainActivity, "Successful switch the user.", Toast.LENGTH_LONG).show()
         } else {
-          Toast.makeText(this@MainActivity, "Failed with error ${rs.message}", Toast.LENGTH_LONG)
+          Toast
+            .makeText(this@MainActivity, "Failed with error ${rs.message}", Toast.LENGTH_LONG)
             .show()
         }
       }
@@ -167,7 +210,11 @@ class MainActivity : FragmentActivity() {
       sharedPref.getString(Constants.PREFERENCE_KEY_TAG, Constants.DEFAULT_TAG),
     )
     findViewById<View>(R.id.btn_switch_tag).setOnClickListener {
-      val tag = inputTag.editText?.text.toString().trim()
+      val tag =
+        inputTag.editText
+          ?.text
+          .toString()
+          .trim()
       if (tag.isEmpty()) {
         inputTag.error = getString(R.string.error_tag_id_required)
         return@setOnClickListener
@@ -183,7 +230,8 @@ class MainActivity : FragmentActivity() {
         if (rs == null) {
           Toast.makeText(this@MainActivity, "Successful change the tag.", Toast.LENGTH_LONG).show()
         } else {
-          Toast.makeText(this@MainActivity, "Failed with error ${rs.message}", Toast.LENGTH_LONG)
+          Toast
+            .makeText(this@MainActivity, "Failed with error ${rs.message}", Toast.LENGTH_LONG)
             .show()
         }
       }
@@ -206,7 +254,8 @@ class MainActivity : FragmentActivity() {
 
   private suspend fun initBucketeer(): BKTException? {
     val config =
-      BKTConfig.builder()
+      BKTConfig
+        .builder()
         .apiKey(BuildConfig.API_KEY)
         .apiEndpoint(BuildConfig.API_ENDPOINT)
         .featureTag(getTag())
@@ -218,7 +267,8 @@ class MainActivity : FragmentActivity() {
         .build()
 
     val user =
-      BKTUser.builder()
+      BKTUser
+        .builder()
         .id(getUserId())
         .build()
 
@@ -232,17 +282,65 @@ class MainActivity : FragmentActivity() {
     return result
   }
 
-  private fun getTag(): String {
-    return sharedPref.getString(
+  private fun getTag(): String =
+    sharedPref.getString(
       Constants.PREFERENCE_KEY_TAG,
       Constants.DEFAULT_TAG,
     ) ?: Constants.DEFAULT_TAG
-  }
 
-  private fun getUserId(): String {
-    return sharedPref.getString(
+  private fun getUserId(): String =
+    sharedPref.getString(
       Constants.PREFERENCE_KEY_USER_ID,
       Constants.DEFAULT_USER_ID,
     ) ?: Constants.DEFAULT_USER_ID
+
+  private fun askNotificationPermission() {
+    // This is only necessary for API level >= 33 (TIRAMISU)
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+      if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
+        PackageManager.PERMISSION_GRANTED
+      ) {
+        // FCM SDK (and your app) can post notifications.
+        lifecycleScope.launch {
+          onGrantedNotificationPermission()
+        }
+      } else if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
+        // TODO: display an educational UI explaining to the user the features that will be enabled
+        //       by them granting the POST_NOTIFICATION permission. This UI should provide the user
+        //       "OK" and "No thanks" buttons. If the user selects "OK," directly request the permission.
+        //       If the user selects "No thanks," allow the user to continue without notifications.
+      } else {
+        // Directly ask for the permission
+        requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+      }
+    }
+  }
+
+  private suspend fun onGrantedNotificationPermission() {
+    val token = Firebase.messaging.token.await()
+    println("FCM Token $token")
+
+    subscribeToTopic()
+  }
+
+  // In order to receive the update notification when the flag value changed
+  // We need subscribe to topic, with the topic name is in this format bucketeer-<YOUR_FEATURE_TAG>
+  // Please put your Firebase project's google-services.json under the folder `sample/src` before test this.
+  private fun subscribeToTopic() {
+    val tag = getTag()
+    Firebase.messaging
+      .subscribeToTopic("bucketeer-$tag")
+      .addOnCompleteListener { task ->
+        var msg = "Real time update enabled"
+        if (!task.isSuccessful) {
+          msg = "Subscribe to real time update failed"
+        }
+        Log.d(TAG, msg)
+        Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
+      }
+  }
+
+  companion object {
+    const val TAG = "MainActivity"
   }
 }
