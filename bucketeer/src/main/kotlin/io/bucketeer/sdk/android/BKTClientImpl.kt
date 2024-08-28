@@ -52,7 +52,7 @@ internal class BKTClientImpl(
   override fun boolVariationDetails(
     featureId: String,
     defaultValue: Boolean,
-  ): BKTEvaluationDetails<Boolean> = getVariationDetail(featureId, defaultValue)
+  ): BKTEvaluationDetails<Boolean> = getBKTEvaluationDetails(featureId, defaultValue)
 
   override fun intVariation(
     featureId: String,
@@ -62,7 +62,7 @@ internal class BKTClientImpl(
   override fun intVariationDetails(
     featureId: String,
     defaultValue: Int,
-  ): BKTEvaluationDetails<Int> = getVariationDetail(featureId, defaultValue)
+  ): BKTEvaluationDetails<Int> = getBKTEvaluationDetails(featureId, defaultValue)
 
   override fun doubleVariation(
     featureId: String,
@@ -72,7 +72,7 @@ internal class BKTClientImpl(
   override fun doubleVariationDetails(
     featureId: String,
     defaultValue: Double,
-  ): BKTEvaluationDetails<Double> = getVariationDetail(featureId, defaultValue)
+  ): BKTEvaluationDetails<Double> = getBKTEvaluationDetails(featureId, defaultValue)
 
   override fun stringVariation(
     featureId: String,
@@ -82,7 +82,7 @@ internal class BKTClientImpl(
   override fun stringVariationDetails(
     featureId: String,
     defaultValue: String,
-  ): BKTEvaluationDetails<String> = getVariationDetail(featureId, defaultValue)
+  ): BKTEvaluationDetails<String> = getBKTEvaluationDetails(featureId, defaultValue)
 
   override fun objectVariation(
     featureId: String,
@@ -92,13 +92,13 @@ internal class BKTClientImpl(
   override fun objectVariationDetails(
     featureId: String,
     defaultValue: BKTValue,
-  ): BKTEvaluationDetails<BKTValue> = getVariationDetail(featureId, defaultValue)
+  ): BKTEvaluationDetails<BKTValue> = getBKTEvaluationDetails(featureId, defaultValue)
 
   @Deprecated(message = "evaluationDetails() is deprecated. Use stringEvaluationDetails() instead.")
   override fun jsonVariation(
     featureId: String,
     defaultValue: JSONObject,
-  ): JSONObject = getVariationDetail(featureId, defaultValue).variationValue
+  ): JSONObject = getBKTEvaluationDetails(featureId, defaultValue).variationValue
 
   override fun track(
     goalId: String,
@@ -178,16 +178,7 @@ internal class BKTClientImpl(
     }
   }
 
-  private inline fun <reified T : Any> getVariationValue(
-    featureId: String,
-    defaultValue: T,
-  ): T {
-    logd { "BKTClient.getVariation(featureId = $featureId, defaultValue = $defaultValue) called" }
-
-    return getVariationDetail(featureId, defaultValue).variationValue
-  }
-
-  private inline fun <reified T : Any> getVariationDetail(
+  private inline fun <reified T : Any> getBKTEvaluationDetails(
     featureId: String,
     defaultValue: T,
   ): BKTEvaluationDetails<T> {
