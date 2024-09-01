@@ -35,7 +35,7 @@ internal inline fun <reified T : Any> Evaluation?.getVariationValue(): T? {
   return typedValue
 }
 
-internal fun String.getBKTValue(): BKTValue {
+fun String.getBKTValue(): BKTValue {
   val value = this
   try {
     val bktValue = BKTValueAdapter().fromJson(value)
