@@ -110,3 +110,8 @@ internal class BKTValueAdapter : JsonAdapter<BKTValue>() {
       else -> throw JsonDataException("Unknown token: ${reader.peek()}")
     }
 }
+
+fun BKTValue.toJSONString(): String {
+  val result = BKTValueAdapter().toJson(this)
+  return result
+}
