@@ -52,6 +52,22 @@ val user1EvaluationsUpsert: UserEvaluations by lazy {
   )
 }
 
+val userEvaluationsForTestGetDetailsByVariationType: UserEvaluations by lazy {
+  UserEvaluations(
+    id = "17388826713971171773",
+    evaluations =
+      listOf(
+        stringEvaluation,
+        doubleEvaluation,
+        booleanEvaluation,
+        intValueEvaluation,
+        jsonEvaluation,
+      ),
+    createdAt = "1690798021",
+    forceUpdate = true,
+  )
+}
+
 val user2Evaluations: UserEvaluations by lazy {
   UserEvaluations(
     id = "17388826713971171774",
@@ -86,6 +102,86 @@ val evaluation2: Evaluation by lazy {
     variationId = "test-feature-2-variation-A",
     variationName = "test variation name2",
     variationValue = "test variation value2",
+    reason =
+      Reason(
+        type = ReasonType.DEFAULT,
+      ),
+  )
+}
+
+val stringEvaluation: Evaluation by lazy {
+  Evaluation(
+    id = "test-feature-1:9:stringEvaluation",
+    featureId = "stringEvaluation",
+    featureVersion = 9,
+    userId = "user id 1",
+    variationId = "test-feature-1-variation-A",
+    variationName = "test variation name1",
+    variationValue = "test variation value1",
+    reason =
+      Reason(
+        type = ReasonType.DEFAULT,
+      ),
+  )
+}
+
+val intValueEvaluation: Evaluation by lazy {
+  Evaluation(
+    id = "test-feature-1:9:intValueEvaluation",
+    featureId = "intValueEvaluation",
+    featureVersion = 9,
+    userId = "user id 1",
+    variationId = "test-feature-1-variation-A",
+    variationName = "test variation name1",
+    variationValue = "1",
+    reason =
+      Reason(
+        type = ReasonType.DEFAULT,
+      ),
+  )
+}
+
+val booleanEvaluation: Evaluation by lazy {
+  Evaluation(
+    id = "test-feature-1:9:booleanEvaluation",
+    featureId = "booleanEvaluation",
+    featureVersion = 9,
+    userId = "user id 1",
+    variationId = "test-feature-1-variation-A",
+    variationName = "test variation name1",
+    variationValue = "true",
+    reason =
+      Reason(
+        type = ReasonType.DEFAULT,
+      ),
+  )
+}
+
+val doubleEvaluation: Evaluation by lazy {
+  Evaluation(
+    id = "test-feature-1:9:doubleEvaluation",
+    featureId = "doubleEvaluation",
+    featureVersion = 9,
+    userId = "user id 1",
+    variationId = "test-feature-1-variation-A",
+    variationName = "test variation name1",
+    variationValue = "2.0",
+    reason =
+      Reason(
+        type = ReasonType.DEFAULT,
+      ),
+  )
+}
+
+val jsonEvaluation: Evaluation by lazy {
+  Evaluation(
+    id = "test-feature-1:9:jsonEvaluation",
+    featureId = "jsonEvaluation",
+    featureVersion = 9,
+    userId = "user id 1",
+    variationId = "test-feature-1-variation-A",
+    variationName = "test variation name1",
+    variationValue = """{ "key": "value-1" }""",
     reason =
       Reason(
         type = ReasonType.DEFAULT,

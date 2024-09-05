@@ -3,6 +3,7 @@
 package io.bucketeer.sdk.android.internal.evaluation
 
 import com.google.common.truth.Truth.assertThat
+import io.bucketeer.sdk.android.BKTValue
 import io.bucketeer.sdk.android.internal.model.Evaluation
 import io.bucketeer.sdk.android.internal.model.Reason
 import io.bucketeer.sdk.android.internal.model.ReasonType
@@ -20,8 +21,8 @@ class GetVariationValueTest_String(
   companion object {
     @ParameterizedRobolectricTestRunner.Parameters(name = "getVariation String: {0} -> {1}")
     @JvmStatic
-    fun testData(): List<*> {
-      return listOf(
+    fun testData(): List<*> =
+      listOf(
         arrayOf("1", "", "1"),
         arrayOf("-1", "", "-1"),
         arrayOf("1.0", "", "1.0"),
@@ -30,7 +31,6 @@ class GetVariationValueTest_String(
         arrayOf("false", "", "false"),
         arrayOf("""{}""", "", "{}"),
       )
-    }
   }
 
   @Test
@@ -41,7 +41,7 @@ class GetVariationValueTest_String(
 }
 
 @RunWith(ParameterizedRobolectricTestRunner::class)
-class GetVariationValueTest_Int_Long(
+class GetVariationValueTest_Int(
   private val variationValue: String,
   private val defaultValue: Int,
   private val expectedValue: Int,
@@ -49,15 +49,14 @@ class GetVariationValueTest_Int_Long(
   companion object {
     @ParameterizedRobolectricTestRunner.Parameters(name = "getVariation Int/Long: {0} -> {1}")
     @JvmStatic
-    fun testData(): List<*> {
-      return listOf(
+    fun testData(): List<*> =
+      listOf(
         arrayOf("1", 0, 1),
         arrayOf("-1", 0, -1),
-        arrayOf("1.0", 0, 0),
+        arrayOf("1.0", 0, 1),
         arrayOf("1.0a", 0, 0),
         arrayOf("not int", 0, 0),
       )
-    }
   }
 
   @Test
@@ -65,16 +64,10 @@ class GetVariationValueTest_Int_Long(
     val actual = buildEvaluation(variationValue).getVariationValue(defaultValue)
     assertThat(actual).isEqualTo(expectedValue)
   }
-
-  @Test
-  fun `test - Long`() {
-    val actual = buildEvaluation(variationValue).getVariationValue(defaultValue.toLong())
-    assertThat(actual).isEqualTo(expectedValue.toLong())
-  }
 }
 
 @RunWith(ParameterizedRobolectricTestRunner::class)
-class GetVariationValueTest_Float_Double(
+class GetVariationValueTest_Float_Number(
   private val variationValue: String,
   private val defaultValue: Float,
   private val expectedValue: Float,
@@ -82,14 +75,13 @@ class GetVariationValueTest_Float_Double(
   companion object {
     @ParameterizedRobolectricTestRunner.Parameters(name = "getVariation Float/Long: {0} -> {1}")
     @JvmStatic
-    fun testData(): Collection<*> {
-      return listOf(
+    fun testData(): Collection<*> =
+      listOf(
         arrayOf("1", 0f, 1f),
         arrayOf("-1", 0f, -1f),
         arrayOf("1.0", 0f, 1.0f),
         arrayOf("not float", 0f, 0f),
       )
-    }
   }
 
   @Test
@@ -116,8 +108,8 @@ class GetVariationValueTest_Boolean(
       name = """getVariation Boolean: ("{0}", {1}) -> {2}""",
     )
     @JvmStatic
-    fun testData(): Collection<*> {
-      return listOf(
+    fun testData(): Collection<*> =
+      listOf(
         arrayOf("true", false, true),
         arrayOf("false", true, false),
         arrayOf("true", true, true),
@@ -129,7 +121,6 @@ class GetVariationValueTest_Boolean(
         arrayOf("1.0", false, false),
         arrayOf("{}", false, false),
       )
-    }
   }
 
   @Test
@@ -152,8 +143,8 @@ class GetVariationValueTest_Json(
       name = """getVariation Json: ("{0}", {1}) -> {2}""",
     )
     @JvmStatic
-    fun testData(): Collection<*> {
-      return arrayOf(
+    fun testData(): Collection<*> =
+      arrayOf(
         arrayOf(JSON1, "{}", JSON1),
         arrayOf("true", JSON1, JSON1),
         arrayOf("true", "{}", "{}"),
@@ -162,7 +153,6 @@ class GetVariationValueTest_Json(
         arrayOf("1.0", "{}", "{}"),
         arrayOf("{}", "{}", "{}"),
       ).toList()
-    }
   }
 
   @Test
@@ -173,13 +163,58 @@ class GetVariationValueTest_Json(
     assertThat(actual.keys().asSequence().toList())
       .isEqualTo(expected.keys().asSequence().toList())
 
-    assertThat(actual.keys().asSequence().toList().map { actual[it] })
-      .isEqualTo(expected.keys().asSequence().toList().map { expected[it] })
+    assertThat(
+      actual
+        .keys()
+        .asSequence()
+        .toList()
+        .map { actual[it] },
+    ).isEqualTo(
+      expected
+        .keys()
+        .asSequence()
+        .toList()
+        .map { expected[it] },
+    )
   }
 }
 
-private fun buildEvaluation(value: String): Evaluation {
-  return Evaluation(
+@RunWith(ParameterizedRobolectricTestRunner::class)
+class GetVariationValueTest_BKTValue(
+  private val variationValue: String,
+  private val defaultValue: BKTValue,
+  private val expectedValue: BKTValue,
+) {
+  companion object {
+    private const val JSON1 = """{ "key": "value"}"""
+
+    @ParameterizedRobolectricTestRunner.Parameters(
+      name = """getVariation Json: ("{0}", {1}) -> {2}""",
+    )
+    @JvmStatic
+    fun testData(): Collection<*> =
+      arrayOf(
+        arrayOf(JSON1, BKTValue.Structure(mapOf()), BKTValue.Structure(mapOf("key" to BKTValue.String("value")))),
+        arrayOf("true", BKTValue.Boolean(false), BKTValue.Boolean(true)),
+        arrayOf("false", BKTValue.Boolean(true), BKTValue.Boolean(false)),
+        arrayOf("not bool", BKTValue.String("{}"), BKTValue.String("not bool")),
+        arrayOf("", BKTValue.String("{}"), BKTValue.String("")),
+        arrayOf("null", BKTValue.String("{}"), BKTValue.String("null")),
+        arrayOf("1", BKTValue.Number(0.0), BKTValue.Number(1.0)),
+        arrayOf("1.0", BKTValue.Number(200.01), BKTValue.Number(1.0)),
+        arrayOf("{}", BKTValue.Structure(mapOf("key" to BKTValue.String("value"))), BKTValue.Structure(mapOf())),
+      ).toList()
+  }
+
+  @Test
+  fun test() {
+    val actual = buildEvaluation(variationValue).getVariationValue(defaultValue)
+    assertThat(actual).isEqualTo(expectedValue)
+  }
+}
+
+private fun buildEvaluation(value: String): Evaluation =
+  Evaluation(
     id = "evaluation_id_value",
     featureId = "feature_id_value",
     featureVersion = 1,
@@ -189,4 +224,3 @@ private fun buildEvaluation(value: String): Evaluation {
     variationValue = value,
     reason = Reason(ReasonType.DEFAULT),
   )
-}

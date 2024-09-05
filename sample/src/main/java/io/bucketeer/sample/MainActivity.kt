@@ -22,6 +22,7 @@ import io.bucketeer.sdk.android.BKTClient
 import io.bucketeer.sdk.android.BKTConfig
 import io.bucketeer.sdk.android.BKTException
 import io.bucketeer.sdk.android.BKTUser
+import io.bucketeer.sdk.android.BKTValue
 import io.bucketeer.sdk.android.sample.BuildConfig
 import io.bucketeer.sdk.android.sample.R
 import kotlinx.coroutines.Dispatchers
@@ -39,6 +40,7 @@ enum class VariantType(
   BOOLEAN(type = "BOOLEAN"),
   DOUBLE(type = "DOUBLE"),
   JSON(type = "JSON"),
+  OBJECT(type = "OBJECT"),
 }
 
 class MainActivity : ComponentActivity() {
@@ -136,6 +138,7 @@ class MainActivity : ComponentActivity() {
         VariantType.BOOLEAN -> client.booleanVariation(featureId, false)
         VariantType.DOUBLE -> client.doubleVariation(featureId, 0.0)
         VariantType.JSON -> client.jsonVariation(featureId, JSONObject())
+        VariantType.OBJECT -> client.objectVariation(featureId, BKTValue.Structure(mapOf()))
       }
     with(sharedPref.edit()) {
       putString(Constants.PREFERENCE_KEY_FEATURE_FLAG_ID, featureId)

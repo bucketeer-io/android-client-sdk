@@ -9,26 +9,60 @@ import org.json.JSONObject
 import java.util.concurrent.Future
 
 interface BKTClient {
-  fun stringVariation(
+  fun booleanVariation(
     featureId: String,
-    defaultValue: String,
-  ): String
+    defaultValue: Boolean,
+  ): Boolean
+
+  fun boolVariationDetails(
+    featureId: String,
+    defaultValue: Boolean,
+  ): BKTEvaluationDetails<Boolean>
 
   fun intVariation(
     featureId: String,
     defaultValue: Int,
   ): Int
 
+  fun intVariationDetails(
+    featureId: String,
+    defaultValue: Int,
+  ): BKTEvaluationDetails<Int>
+
   fun doubleVariation(
     featureId: String,
     defaultValue: Double,
   ): Double
 
-  fun booleanVariation(
+  fun doubleVariationDetails(
     featureId: String,
-    defaultValue: Boolean,
-  ): Boolean
+    defaultValue: Double,
+  ): BKTEvaluationDetails<Double>
 
+  fun stringVariation(
+    featureId: String,
+    defaultValue: String,
+  ): String
+
+  fun stringVariationDetails(
+    featureId: String,
+    defaultValue: String,
+  ): BKTEvaluationDetails<String>
+
+  fun objectVariation(
+    featureId: String,
+    defaultValue: BKTValue,
+  ): BKTValue
+
+  fun objectVariationDetails(
+    featureId: String,
+    defaultValue: BKTValue,
+  ): BKTEvaluationDetails<BKTValue>
+
+  @Deprecated(
+    message =
+      "jsonVariation() is deprecated. Use objectVariation() instead.",
+  )
   fun jsonVariation(
     featureId: String,
     defaultValue: JSONObject,
@@ -47,6 +81,7 @@ interface BKTClient {
 
   fun flush(): Future<BKTException?>
 
+  @Deprecated(message = "evaluationDetails() is deprecated. Use stringEvaluationDetails() instead.")
   fun evaluationDetails(featureId: String): BKTEvaluation?
 
   fun addEvaluationUpdateListener(listener: EvaluationUpdateListener): String
