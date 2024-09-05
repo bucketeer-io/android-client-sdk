@@ -136,7 +136,7 @@ internal class BKTClientImpl(
       flushSync(component)
     }
 
-  @Deprecated("evaluationDetails is deprecated")
+  @Deprecated(message = "evaluationDetails() is deprecated. Use stringEvaluationDetails() instead.")
   @Suppress("DEPRECATION")
   override fun evaluationDetails(featureId: String): BKTEvaluation? {
     val raw =
