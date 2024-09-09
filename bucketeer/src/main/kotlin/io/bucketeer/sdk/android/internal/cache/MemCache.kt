@@ -9,9 +9,7 @@ internal interface MemCache<in Key : Any, Value : Any> {
   fun get(key: Key): Value?
 
   class Builder<K : Any, V : Any> {
-    fun build(): MemCache<K, V> {
-      return MemCacheImpl()
-    }
+    fun build(): MemCache<K, V> = MemCacheImpl()
   }
 }
 
@@ -25,7 +23,5 @@ private class MemCacheImpl<in Key : Any, Value : Any> : MemCache<Key, Value> {
     map[key] = value
   }
 
-  override fun get(key: Key): Value? {
-    return map[key]
-  }
+  override fun get(key: Key): Value? = map[key]
 }

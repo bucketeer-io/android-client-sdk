@@ -51,8 +51,6 @@ sealed class EventData {
     val protobufType: String? = "type.googleapis.com/bucketeer.event.client.MetricsEvent",
   ) : EventData() {
     // https://github.com/bucketeer-io/android-client-sdk/pull/68#discussion_r1222401661
-    fun uniqueKey(): String {
-      return "${event.apiId}::${event.protobufType}"
-    }
+    fun uniqueKey(): String = "${event.apiId}::${event.protobufType}"
   }
 }

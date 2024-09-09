@@ -31,11 +31,7 @@ internal class DefaultLogger(
     Log.println(priority, tag, message)
   }
 
-  override fun equals(other: Any?): Boolean {
-    return other is DefaultLogger && this.tag == other.tag
-  }
+  override fun equals(other: Any?): Boolean = other is DefaultLogger && this.tag == other.tag
 
-  override fun hashCode(): Int {
-    return tag.hashCode()
-  }
+  override fun hashCode(): Int = tag.hashCode()
 }

@@ -8,7 +8,8 @@ class BKTConfigTest {
   @Test
   fun build() {
     val actual =
-      BKTConfig.builder()
+      BKTConfig
+        .builder()
         .apiKey("api-key")
         .apiEndpoint("https://example.com")
         .featureTag("feature-tag")
@@ -34,7 +35,8 @@ class BKTConfigTest {
   fun `apiKey - unset`() {
     val error =
       assertThrows(BKTException.IllegalArgumentException::class.java) {
-        BKTConfig.builder()
+        BKTConfig
+          .builder()
           .apiEndpoint("https://example.com")
           .featureTag("feature-tag")
           .appVersion("1.2.3")
@@ -48,7 +50,8 @@ class BKTConfigTest {
   fun `apiKey - empty`() {
     val error =
       assertThrows(BKTException.IllegalArgumentException::class.java) {
-        BKTConfig.builder()
+        BKTConfig
+          .builder()
           .apiKey("")
           .apiEndpoint("https://example.com")
           .featureTag("feature-tag")
@@ -63,7 +66,8 @@ class BKTConfigTest {
   fun `apiEndpoint - unset`() {
     val error =
       assertThrows(BKTException.IllegalArgumentException::class.java) {
-        BKTConfig.builder()
+        BKTConfig
+          .builder()
           .apiKey("api-key")
           .featureTag("feature-tag")
           .appVersion("1.2.3")
@@ -77,7 +81,8 @@ class BKTConfigTest {
   fun `apiEndpoint - invalid`() {
     val error =
       assertThrows(BKTException.IllegalArgumentException::class.java) {
-        BKTConfig.builder()
+        BKTConfig
+          .builder()
           .apiKey("api-key")
           .apiEndpoint("some invalid value")
           .featureTag("feature-tag")
@@ -92,7 +97,8 @@ class BKTConfigTest {
   fun `featureTag - optional`() {
     assertThat(
       runCatching {
-        BKTConfig.builder()
+        BKTConfig
+          .builder()
           .apiKey("api-key")
           .apiEndpoint("https://example.com")
           .appVersion("1.2.3")
@@ -102,7 +108,8 @@ class BKTConfigTest {
 
     assertThat(
       runCatching {
-        BKTConfig.builder()
+        BKTConfig
+          .builder()
           .apiKey("api-key")
           .apiEndpoint("https://example.com")
           .featureTag("")
@@ -115,7 +122,8 @@ class BKTConfigTest {
   @Test
   fun eventsFlushInterval() {
     val actual =
-      BKTConfig.builder()
+      BKTConfig
+        .builder()
         .apiKey("api-key")
         .apiEndpoint("https://example.com")
         .featureTag("feature-tag")
@@ -129,7 +137,8 @@ class BKTConfigTest {
   @Test
   fun `eventsFlushInterval - sooner than min value`() {
     val actual =
-      BKTConfig.builder()
+      BKTConfig
+        .builder()
         .apiKey("api-key")
         .apiEndpoint("https://example.com")
         .featureTag("feature-tag")
@@ -143,7 +152,8 @@ class BKTConfigTest {
   @Test
   fun pollingInterval() {
     val actual =
-      BKTConfig.builder()
+      BKTConfig
+        .builder()
         .apiKey("api-key")
         .apiEndpoint("https://example.com")
         .featureTag("feature-tag")
@@ -157,7 +167,8 @@ class BKTConfigTest {
   @Test
   fun `pollingInterval - sooner than min value`() {
     val actual =
-      BKTConfig.builder()
+      BKTConfig
+        .builder()
         .apiKey("api-key")
         .apiEndpoint("https://example.com")
         .featureTag("feature-tag")
@@ -171,7 +182,8 @@ class BKTConfigTest {
   @Test
   fun backgroundPollingInterval() {
     val actual =
-      BKTConfig.builder()
+      BKTConfig
+        .builder()
         .apiKey("api-key")
         .apiEndpoint("https://example.com")
         .featureTag("feature-tag")
@@ -186,7 +198,8 @@ class BKTConfigTest {
   @Test
   fun `backgroundPollingInterval - sooner than min value`() {
     val actual =
-      BKTConfig.builder()
+      BKTConfig
+        .builder()
         .apiKey("api-key")
         .apiEndpoint("https://example.com")
         .featureTag("feature-tag")
@@ -201,7 +214,8 @@ class BKTConfigTest {
   @Test
   fun `logger - can be null`() {
     val actual =
-      BKTConfig.builder()
+      BKTConfig
+        .builder()
         .apiKey("api-key")
         .apiEndpoint("https://example.com")
         .featureTag("feature-tag")
@@ -228,7 +242,8 @@ class BKTConfigTest {
   fun `appVersion - unset`() {
     val error =
       assertThrows(BKTException.IllegalArgumentException::class.java) {
-        BKTConfig.builder()
+        BKTConfig
+          .builder()
           .apiKey("api-key")
           .apiEndpoint("https://example.com")
           .featureTag("feature-tag")
@@ -242,7 +257,8 @@ class BKTConfigTest {
   fun `appVersion - empty`() {
     val error =
       assertThrows(BKTException.IllegalArgumentException::class.java) {
-        BKTConfig.builder()
+        BKTConfig
+          .builder()
           .apiKey("api-key")
           .apiEndpoint("https://example.com")
           .featureTag("feature-tag")

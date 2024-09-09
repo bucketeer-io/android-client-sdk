@@ -63,7 +63,8 @@ class EventInteractorTest {
     server = MockWebServer()
 
     val config =
-      BKTConfig.builder()
+      BKTConfig
+        .builder()
         .apiEndpoint(server.url("").toString())
         .apiKey("api_key_value")
         .featureTag("feature_tag_value")
@@ -419,7 +420,8 @@ class EventInteractorTest {
 
     val request = server.takeRequest()
     val requestBody =
-      moshi.adapter(RegisterEventsRequest::class.java)
+      moshi
+        .adapter(RegisterEventsRequest::class.java)
         .fromJson(request.body.readString(Charsets.UTF_8))
 
     // eventsMaxBatchQueueCount is 3, so should send 3 events
@@ -725,7 +727,8 @@ class EventInteractorTest {
 
     val request = server.takeRequest()
     val requestBody =
-      moshi.adapter(RegisterEventsRequest::class.java)
+      moshi
+        .adapter(RegisterEventsRequest::class.java)
         .fromJson(request.body.readString(Charsets.UTF_8))
 
     assertThat(requestBody).isEqualTo(
@@ -822,7 +825,8 @@ class EventInteractorTest {
 
     val request = server.takeRequest()
     val requestBody =
-      moshi.adapter(RegisterEventsRequest::class.java)
+      moshi
+        .adapter(RegisterEventsRequest::class.java)
         .fromJson(request.body.readString(Charsets.UTF_8))
 
     // eventsMaxBatchQueueCount is 3, so should send 3 events
@@ -1015,7 +1019,7 @@ class EventInteractorTest {
   }
 }
 
-private class FakeEventUpdateListener() : EventInteractor.EventUpdateListener {
+private class FakeEventUpdateListener : EventInteractor.EventUpdateListener {
   val calls = mutableListOf<List<Event>>()
 
   override fun onUpdate(events: List<Event>) {
@@ -1028,10 +1032,10 @@ private class FakeIdGenerator : IdGenerator {
 
   private val impl = IdGeneratorImpl()
 
-  override fun newId(): String {
-    return impl.newId()
+  override fun newId(): String =
+    impl
+      .newId()
       .also { calls.add(it) }
-  }
 }
 
 private class FakeClock : Clock {
@@ -1041,15 +1045,15 @@ private class FakeClock : Clock {
 
   private val impl = ClockImpl()
 
-  override fun currentTimeMillis(): Long {
-    return impl.currentTimeMillis()
+  override fun currentTimeMillis(): Long =
+    impl
+      .currentTimeMillis()
       .also { currentTimeMillisCalls.add(it) }
-  }
 
-  override fun currentTimeSeconds(): Long {
-    return impl.currentTimeSeconds()
+  override fun currentTimeSeconds(): Long =
+    impl
+      .currentTimeSeconds()
       .also { currentTimeSecondsCalls.add(it) }
-  }
 }
 
 private class TestDataModule(

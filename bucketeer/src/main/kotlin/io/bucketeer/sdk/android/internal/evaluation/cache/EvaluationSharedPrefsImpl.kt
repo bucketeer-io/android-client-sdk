@@ -12,7 +12,8 @@ internal class EvaluationSharedPrefsImpl(
 
     @SuppressLint("ApplySharedPref")
     set(value) {
-      sharedPrefs.edit()
+      sharedPrefs
+        .edit()
         .putString(Constants.PREFERENCE_KEY_USER_EVALUATION_ID, value)
         .commit()
     }
@@ -22,7 +23,8 @@ internal class EvaluationSharedPrefsImpl(
 
     @SuppressLint("ApplySharedPref")
     set(value) {
-      sharedPrefs.edit()
+      sharedPrefs
+        .edit()
         .putString(Constants.PREFERENCE_KEY_FEATURE_TAG, value)
         .commit()
     }
@@ -36,7 +38,8 @@ internal class EvaluationSharedPrefsImpl(
 
     @SuppressLint("ApplySharedPref")
     set(value) {
-      sharedPrefs.edit()
+      sharedPrefs
+        .edit()
         .putString(Constants.PREFERENCE_KEY_EVALUATED_AT, value)
         .commit()
     }
@@ -45,7 +48,8 @@ internal class EvaluationSharedPrefsImpl(
 
     @SuppressLint("ApplySharedPref")
     set(value) {
-      sharedPrefs.edit()
+      sharedPrefs
+        .edit()
         .putBoolean(Constants.PREFERENCE_KEY_USER_ATTRIBUTES_UPDATED, value)
         .commit()
     }

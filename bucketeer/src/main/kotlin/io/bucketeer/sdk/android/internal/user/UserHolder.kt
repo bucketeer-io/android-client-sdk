@@ -18,16 +18,14 @@ internal class UserHolder(
   }
 }
 
-internal fun BKTUser.toUser(): User {
-  return User(
+internal fun BKTUser.toUser(): User =
+  User(
     id = this.id,
     data = this.attributes,
   )
-}
 
-internal fun User.toBKTUser(): BKTUser {
-  return BKTUser(
+internal fun User.toBKTUser(): BKTUser =
+  BKTUser(
     id = this.id,
     attributes = this.data,
   )
-}

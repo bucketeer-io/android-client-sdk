@@ -33,7 +33,8 @@ internal class ApiClientImpl(
   private val apiEndpoint = apiEndpoint.toHttpUrl()
 
   private val client: OkHttpClient =
-    OkHttpClient.Builder()
+    OkHttpClient
+      .Builder()
       .addNetworkInterceptor(FixJsonContentTypeInterceptor())
       .callTimeout(defaultRequestTimeoutMillis, TimeUnit.MILLISECONDS)
       .build()
@@ -57,13 +58,14 @@ internal class ApiClientImpl(
       )
 
     val request =
-      Request.Builder()
+      Request
+        .Builder()
         .url(
-          apiEndpoint.newBuilder()
+          apiEndpoint
+            .newBuilder()
             .addPathSegments("get_evaluations")
             .build(),
-        )
-        .applyHeaders()
+        ).applyHeaders()
         .post(body = body.toJsonRequestBody())
         .build()
 
@@ -71,7 +73,8 @@ internal class ApiClientImpl(
       if (timeoutMillis == null) {
         client
       } else {
-        client.newBuilder()
+        client
+          .newBuilder()
           .callTimeout(timeoutMillis, TimeUnit.MILLISECONDS)
           .build()
       }
@@ -127,13 +130,14 @@ internal class ApiClientImpl(
     val body = RegisterEventsRequest(events = events)
 
     val request =
-      Request.Builder()
+      Request
+        .Builder()
         .url(
-          apiEndpoint.newBuilder()
+          apiEndpoint
+            .newBuilder()
             .addPathSegments("register_events")
             .build(),
-        )
-        .applyHeaders()
+        ).applyHeaders()
         .post(body = body.toJsonRequestBody())
         .build()
 
@@ -172,23 +176,19 @@ internal class ApiClientImpl(
     )
   }
 
-  private inline fun <reified T> T.toJson(): String {
-    return moshi.adapter(T::class.java).toJson(this)
-  }
+  private inline fun <reified T> T.toJson(): String = moshi.adapter(T::class.java).toJson(this)
 
   private inline fun <reified T> Response.fromJson(): T? {
     val adapter = moshi.adapter(T::class.java)
     return adapter.fromJson(this.body!!.source())
   }
 
-  private inline fun <reified T> T.toJsonRequestBody(): RequestBody {
-    return this.toJson()
+  private inline fun <reified T> T.toJsonRequestBody(): RequestBody =
+    this
+      .toJson()
       .toRequestBody("application/json".toMediaType())
-  }
 
-  private fun Request.Builder.applyHeaders(): Request.Builder {
-    return this.header("Authorization", apiKey)
-  }
+  private fun Request.Builder.applyHeaders(): Request.Builder = this.header("Authorization", apiKey)
 }
 
 /**
@@ -203,7 +203,8 @@ private class FixJsonContentTypeInterceptor : Interceptor {
     val original = chain.request()
 
     val fixed =
-      original.newBuilder()
+      original
+        .newBuilder()
         .header("Content-Type", "application/json")
         .build()
 

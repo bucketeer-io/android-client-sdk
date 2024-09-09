@@ -46,7 +46,8 @@ internal class EventSQLDaoImpl(
       )
 
     return c.use {
-      c.asSequence()
+      c
+        .asSequence()
         .mapNotNull { eventAdapter.fromJson(it.getString(COLUMN_EVENT)) }
         .toList()
     }

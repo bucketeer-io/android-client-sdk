@@ -12,7 +12,8 @@ internal fun deleteDatabase(context: Context) {
 }
 
 internal fun deleteSharedPreferences(context: Context) {
-  context.getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE)
+  context
+    .getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE)
     .edit()
     .clear()
     .commit()
@@ -46,8 +47,8 @@ internal fun createTestBKTConfig(
   backgroundPollingInterval: Long = DEFAULT_BACKGROUND_POLLING_INTERVAL_MILLIS,
   appVersion: String = "1.2.3",
   logger: BKTLogger? = null,
-): BKTConfig {
-  return BKTConfig(
+): BKTConfig =
+  BKTConfig(
     apiKey = apiKey,
     apiEndpoint = apiEndpoint,
     featureTag = featureTag,
@@ -58,4 +59,3 @@ internal fun createTestBKTConfig(
     appVersion = appVersion,
     logger = logger,
   )
-}

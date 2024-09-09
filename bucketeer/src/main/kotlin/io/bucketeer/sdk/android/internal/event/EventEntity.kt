@@ -18,7 +18,5 @@ internal data class EventEntity(
     return true
   }
 
-  override fun hashCode(): Int {
-    return event.contentHashCode()
-  }
+  override fun hashCode(): Int = event.contentHashCode()
 }

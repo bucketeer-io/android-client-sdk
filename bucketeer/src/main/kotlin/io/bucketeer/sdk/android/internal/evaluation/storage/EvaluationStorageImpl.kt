@@ -11,9 +11,7 @@ internal class EvaluationStorageImpl(
   private val evaluationSharedPrefs: EvaluationSharedPrefs,
   private val memCache: MemCache<String, List<Evaluation>>,
 ) : EvaluationStorage {
-  override fun getCurrentEvaluationId(): String {
-    return evaluationSharedPrefs.currentEvaluationsId
-  }
+  override fun getCurrentEvaluationId(): String = evaluationSharedPrefs.currentEvaluationsId
 
   override fun clearCurrentEvaluationId() {
     evaluationSharedPrefs.currentEvaluationsId = ""
@@ -23,17 +21,11 @@ internal class EvaluationStorageImpl(
     evaluationSharedPrefs.featureTag = tag
   }
 
-  override fun getFeatureTag(): String {
-    return evaluationSharedPrefs.featureTag
-  }
+  override fun getFeatureTag(): String = evaluationSharedPrefs.featureTag
 
-  override fun getEvaluatedAt(): String {
-    return evaluationSharedPrefs.evaluatedAt
-  }
+  override fun getEvaluatedAt(): String = evaluationSharedPrefs.evaluatedAt
 
-  override fun getUserAttributesUpdated(): Boolean {
-    return evaluationSharedPrefs.userAttributesUpdated
-  }
+  override fun getUserAttributesUpdated(): Boolean = evaluationSharedPrefs.userAttributesUpdated
 
   override fun setUserAttributesUpdated() {
     evaluationSharedPrefs.userAttributesUpdated = true
@@ -43,15 +35,12 @@ internal class EvaluationStorageImpl(
     evaluationSharedPrefs.userAttributesUpdated = false
   }
 
-  override fun getBy(featureId: String): Evaluation? {
-    return get().firstOrNull {
+  override fun getBy(featureId: String): Evaluation? =
+    get().firstOrNull {
       it.featureId == featureId
     }
-  }
 
-  override fun get(): List<Evaluation> {
-    return memCache.get(userId) ?: emptyList()
-  }
+  override fun get(): List<Evaluation> = memCache.get(userId) ?: emptyList()
 
   override fun deleteAllAndInsert(
     evaluationsId: String,

@@ -17,13 +17,12 @@ import io.bucketeer.sdk.android.internal.model.ReasonType
 import io.bucketeer.sdk.android.internal.model.SourceID
 import io.bucketeer.sdk.android.internal.model.User
 
-internal fun newMetadata(appVersion: String): Map<String, String> {
-  return mapOf(
+internal fun newMetadata(appVersion: String): Map<String, String> =
+  mapOf(
     "app_version" to appVersion,
     "os_version" to Build.VERSION.SDK_INT.toString(),
     "device_model" to Build.DEVICE,
   )
-}
 
 internal fun newEvaluationEvent(
   clock: Clock,
@@ -32,8 +31,8 @@ internal fun newEvaluationEvent(
   user: User,
   evaluation: Evaluation,
   appVersion: String,
-): Event {
-  return Event(
+): Event =
+  Event(
     id = idGenerator.newId(),
     type = EventType.EVALUATION,
     event =
@@ -51,7 +50,6 @@ internal fun newEvaluationEvent(
         metadata = newMetadata(appVersion),
       ),
   )
-}
 
 internal fun newDefaultEvaluationEvent(
   clock: Clock,
@@ -60,8 +58,8 @@ internal fun newDefaultEvaluationEvent(
   user: User,
   featureId: String,
   appVersion: String,
-): Event {
-  return Event(
+): Event =
+  Event(
     id = idGenerator.newId(),
     type = EventType.EVALUATION,
     event =
@@ -80,7 +78,6 @@ internal fun newDefaultEvaluationEvent(
         metadata = newMetadata(appVersion),
       ),
   )
-}
 
 internal fun newGoalEvent(
   clock: Clock,
@@ -90,8 +87,8 @@ internal fun newGoalEvent(
   featureTag: String,
   user: User,
   appVersion: String,
-): Event {
-  return Event(
+): Event =
+  Event(
     id = idGenerator.newId(),
     type = EventType.GOAL,
     event =
@@ -107,7 +104,6 @@ internal fun newGoalEvent(
         metadata = newMetadata(appVersion),
       ),
   )
-}
 
 internal fun newSuccessMetricsEvents(
   clock: Clock,
@@ -166,8 +162,8 @@ internal fun newErrorMetricsEvent(
   appVersion: String,
   error: BKTException,
   apiId: ApiId,
-): Event {
-  return Event(
+): Event =
+  Event(
     id = idGenerator.newId(),
     type = EventType.METRICS,
     event =
@@ -179,7 +175,6 @@ internal fun newErrorMetricsEvent(
         apiId,
       ),
   )
-}
 
 internal fun newEventDataMetricEvent(
   error: BKTException,
@@ -341,6 +336,4 @@ internal fun newEventDataMetricEvent(
   )
 }
 
-internal fun Long.toStringInDoubleFormat(): String {
-  return (this / 1000.0).toString()
-}
+internal fun Long.toStringInDoubleFormat(): String = (this / 1000.0).toString()

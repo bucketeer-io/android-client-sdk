@@ -52,7 +52,8 @@ class EvaluationInteractorTest {
     server = MockWebServer()
 
     val config =
-      BKTConfig.builder()
+      BKTConfig
+        .builder()
         .apiEndpoint(server.url("").toString())
         .apiKey("api_key_value")
         .featureTag("feature_tag_value")
@@ -82,7 +83,8 @@ class EvaluationInteractorTest {
   @After
   fun tearDown() {
     server.shutdown()
-    component.dataModule.sharedPreferences.edit()
+    component.dataModule.sharedPreferences
+      .edit()
       .clear()
       .commit()
     component.dataModule.destroy()
@@ -111,7 +113,8 @@ class EvaluationInteractorTest {
     assertThat(storage.getCurrentEvaluationId()).isEqualTo("should_be_clear")
     // config feature_tag with empty string
     val configEmptyFeatureTag =
-      BKTConfig.builder()
+      BKTConfig
+        .builder()
         .apiEndpoint(server.url("").toString())
         .apiKey("api_key_value")
         .appVersion("1.2.3")
@@ -141,7 +144,8 @@ class EvaluationInteractorTest {
     }
 
     val config =
-      BKTConfig.builder()
+      BKTConfig
+        .builder()
         .apiEndpoint(server.url("").toString())
         .featureTag("test")
         .apiKey("api_key_value")
@@ -173,7 +177,8 @@ class EvaluationInteractorTest {
     prefs.currentEvaluationsId = "should_not_change"
     assertThat(storage.getCurrentEvaluationId()).isEqualTo("should_not_change")
     val config =
-      BKTConfig.builder()
+      BKTConfig
+        .builder()
         .apiEndpoint(server.url("").toString())
         .featureTag("feature_tag_value")
         .apiKey("api_key_value")
@@ -206,7 +211,8 @@ class EvaluationInteractorTest {
       MockResponse()
         .setResponseCode(200)
         .setBody(
-          moshi.adapter(GetEvaluationsResponse::class.java)
+          moshi
+            .adapter(GetEvaluationsResponse::class.java)
             .toJson(
               GetEvaluationsResponse(
                 evaluations = user1Evaluations,
@@ -221,7 +227,8 @@ class EvaluationInteractorTest {
     // assert request
     val firstRequest = server.takeRequest()
     val firstRequestBody =
-      moshi.adapter(GetEvaluationsRequest::class.java)
+      moshi
+        .adapter(GetEvaluationsRequest::class.java)
         .fromJson(firstRequest.body.readString(Charsets.UTF_8))
     assertThat(firstRequestBody).isNotNull()
     assertThat(firstRequestBody!!.userEvaluationCondition).isEqualTo(
@@ -236,7 +243,8 @@ class EvaluationInteractorTest {
     interactor.fetch(user1, null)
     val secondRequest = server.takeRequest()
     val secondRequestBody =
-      moshi.adapter(GetEvaluationsRequest::class.java)
+      moshi
+        .adapter(GetEvaluationsRequest::class.java)
         .fromJson(secondRequest.body.readString(Charsets.UTF_8))
     assertThat(secondRequestBody).isNotNull()
     assertThat(secondRequestBody!!.userEvaluationCondition).isEqualTo(
@@ -256,7 +264,8 @@ class EvaluationInteractorTest {
       MockResponse()
         .setResponseCode(200)
         .setBody(
-          moshi.adapter(GetEvaluationsResponse::class.java)
+          moshi
+            .adapter(GetEvaluationsResponse::class.java)
             .toJson(
               GetEvaluationsResponse(
                 evaluations = user1Evaluations,
@@ -282,7 +291,8 @@ class EvaluationInteractorTest {
     assertThat(server.requestCount).isEqualTo(1)
     val request = server.takeRequest()
     val requestBody =
-      moshi.adapter(GetEvaluationsRequest::class.java)
+      moshi
+        .adapter(GetEvaluationsRequest::class.java)
         .fromJson(request.body.readString(Charsets.UTF_8))
 
     assertThat(requestBody!!.userEvaluationsId).isEmpty()
@@ -336,7 +346,8 @@ class EvaluationInteractorTest {
       MockResponse()
         .setResponseCode(200)
         .setBody(
-          moshi.adapter(GetEvaluationsResponse::class.java)
+          moshi
+            .adapter(GetEvaluationsResponse::class.java)
             .toJson(
               expectResponse,
             ),
@@ -394,7 +405,8 @@ class EvaluationInteractorTest {
       MockResponse()
         .setResponseCode(200)
         .setBody(
-          moshi.adapter(GetEvaluationsResponse::class.java)
+          moshi
+            .adapter(GetEvaluationsResponse::class.java)
             .toJson(
               expectResponse,
             ),
@@ -455,7 +467,8 @@ class EvaluationInteractorTest {
       MockResponse()
         .setResponseCode(200)
         .setBody(
-          moshi.adapter(GetEvaluationsResponse::class.java)
+          moshi
+            .adapter(GetEvaluationsResponse::class.java)
             .toJson(
               GetEvaluationsResponse(
                 evaluations = user1Evaluations,
@@ -473,7 +486,8 @@ class EvaluationInteractorTest {
       MockResponse()
         .setResponseCode(200)
         .setBody(
-          moshi.adapter(GetEvaluationsResponse::class.java)
+          moshi
+            .adapter(GetEvaluationsResponse::class.java)
             .toJson(
               GetEvaluationsResponse(
                 evaluations = user1Evaluations,

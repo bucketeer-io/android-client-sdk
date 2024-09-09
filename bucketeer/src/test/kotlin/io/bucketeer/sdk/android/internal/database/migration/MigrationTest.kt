@@ -102,7 +102,8 @@ class MigrationTest {
     // Put some data before migrating
     eventDao.addEvent(evaluationEvent)
     evaluationDao.put(user1.id, listOf(evaluation1))
-    sharedPreferences.edit()
+    sharedPreferences
+      .edit()
       .putString(Constants.PREFERENCE_KEY_USER_EVALUATION_ID, "user-evaluation-id")
       .commit()
 
@@ -149,7 +150,8 @@ private fun createOpenHelper(version: Int): SupportSQLiteOpenHelper {
       }
     }
   val config =
-    SupportSQLiteOpenHelper.Configuration.builder(ApplicationProvider.getApplicationContext())
+    SupportSQLiteOpenHelper.Configuration
+      .builder(ApplicationProvider.getApplicationContext())
       .callback(callback)
       .name(null)
       .build()

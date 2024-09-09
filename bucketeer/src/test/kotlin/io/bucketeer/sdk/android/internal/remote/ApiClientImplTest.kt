@@ -121,8 +121,7 @@ internal class ApiClientImplTest {
         .setBodyDelay(1, TimeUnit.SECONDS)
         .setBody(
           moshi.adapter(GetEvaluationsResponse::class.java).toJson(expected),
-        )
-        .setResponseCode(200),
+        ).setResponseCode(200),
     )
 
     client =
@@ -150,7 +149,8 @@ internal class ApiClientImplTest {
     assertThat(request.method).isEqualTo("POST")
     assertThat(request.path).isEqualTo("/get_evaluations")
     assertThat(
-      moshi.adapter(GetEvaluationsRequest::class.java)
+      moshi
+        .adapter(GetEvaluationsRequest::class.java)
         .fromJson(request.body.readString(Charsets.UTF_8)),
     ).isEqualTo(
       GetEvaluationsRequest(
@@ -283,7 +283,8 @@ internal class ApiClientImplTest {
       MockResponse()
         .setResponseCode(case.code)
         .setBody(
-          moshi.adapter(ErrorResponse::class.java)
+          moshi
+            .adapter(ErrorResponse::class.java)
             .toJson(
               ErrorResponse(
                 ErrorResponse.ErrorDetail(
@@ -369,7 +370,8 @@ internal class ApiClientImplTest {
       MockResponse()
         .setResponseCode(200)
         .setBody(
-          moshi.adapter(RegisterEventsResponse::class.java)
+          moshi
+            .adapter(RegisterEventsResponse::class.java)
             .toJson(
               RegisterEventsResponse(
                 errors =
@@ -400,7 +402,8 @@ internal class ApiClientImplTest {
     assertThat(request.method).isEqualTo("POST")
     assertThat(request.path).isEqualTo("/register_events")
     assertThat(
-      moshi.adapter(RegisterEventsRequest::class.java)
+      moshi
+        .adapter(RegisterEventsRequest::class.java)
         .fromJson(request.body.readString(Charsets.UTF_8)),
     ).isEqualTo(
       RegisterEventsRequest(
@@ -478,7 +481,8 @@ internal class ApiClientImplTest {
       MockResponse()
         .setResponseCode(case.code)
         .setBody(
-          moshi.adapter(ErrorResponse::class.java)
+          moshi
+            .adapter(ErrorResponse::class.java)
             .toJson(
               ErrorResponse(
                 ErrorResponse.ErrorDetail(
@@ -555,8 +559,7 @@ internal class ApiClientImplTest {
           } else if (case.expectedTextResponse != null) {
             this.setBody(case.expectedTextResponse)
           }
-        }
-        .setResponseCode(200),
+        }.setResponseCode(200),
     )
 
     client =
