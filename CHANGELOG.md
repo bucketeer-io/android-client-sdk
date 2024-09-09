@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.2.0](https://github.com/bucketeer-io/android-client-sdk/compare/v2.1.7...v2.2.0) (2024-09-09)
+
+
+### Features
+
+* get variation details by variation type ([#180](https://github.com/bucketeer-io/android-client-sdk/issues/180)) ([890cad7](https://github.com/bucketeer-io/android-client-sdk/commit/890cad7a5968da25042dac2f252af40fa2909110))
+
+
+### Build System
+
+* **deps:** update all non-major dependencies ([#181](https://github.com/bucketeer-io/android-client-sdk/issues/181)) ([bf23632](https://github.com/bucketeer-io/android-client-sdk/commit/bf23632df3fc566df5393dc2b4a597c3c559cabd))
+* **deps:** update all non-major dependencies ([#183](https://github.com/bucketeer-io/android-client-sdk/issues/183)) ([01c08dc](https://github.com/bucketeer-io/android-client-sdk/commit/01c08dc8fd330aa94c3a374d088059d8a8a7797e))
+* **deps:** update dependency org.json:json to v20240303 ([#190](https://github.com/bucketeer-io/android-client-sdk/issues/190)) ([3d5fb01](https://github.com/bucketeer-io/android-client-sdk/commit/3d5fb0103ba45d7f34c5a1c2e7f8c2a74a5e4239))
+
 ## [2.1.7](https://github.com/bucketeer-io/android-client-sdk/compare/v2.1.6...v2.1.7) (2024-06-06)
 
 
