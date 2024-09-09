@@ -1,6 +1,6 @@
 [versions]
 agp = "8.6.0"
-json = "20240205"
+json = "20240303"
 kotlin = "2.0.20"
 androidxLifecycle = "2.8.5"
 androidxTest = "1.6.1"
