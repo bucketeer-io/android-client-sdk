@@ -96,7 +96,8 @@ internal class EvaluationSQLDaoImpl(
       )
 
     return c.use {
-      c.asSequence()
+      c
+        .asSequence()
         .mapNotNull { adapter.fromJson(it.getString(COLUMN_EVALUATION)) }
         .toList()
     }

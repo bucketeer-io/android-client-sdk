@@ -17,15 +17,14 @@ internal class InteractorModule(
     evaluationStorage: EvaluationStorage,
     idGenerator: IdGenerator,
     featureTag: String,
-  ): EvaluationInteractor {
-    return EvaluationInteractor(
+  ): EvaluationInteractor =
+    EvaluationInteractor(
       apiClient = apiClient,
       evaluationStorage = evaluationStorage,
       idGenerator = idGenerator,
       mainHandler = mainHandler,
       featureTag = featureTag,
     )
-  }
 
   fun eventInteractor(
     eventsMaxBatchQueueCount: Int,
@@ -35,8 +34,8 @@ internal class InteractorModule(
     idGenerator: IdGenerator,
     appVersion: String,
     featureTag: String,
-  ): EventInteractor {
-    return EventInteractor(
+  ): EventInteractor =
+    EventInteractor(
       eventsMaxBatchQueueCount = eventsMaxBatchQueueCount,
       apiClient = apiClient,
       eventSQLDao = eventSQLDao,
@@ -45,5 +44,4 @@ internal class InteractorModule(
       appVersion = appVersion,
       featureTag = featureTag,
     )
-  }
 }

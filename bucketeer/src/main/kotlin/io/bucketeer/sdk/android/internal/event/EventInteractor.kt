@@ -162,7 +162,8 @@ internal class EventInteractor(
       is RegisterEventsResult.Success -> {
         val errors = result.value.errors
         val deleteIds =
-          sendingEvents.map { it.id }
+          sendingEvents
+            .map { it.id }
             .filter { eventId ->
               // if the event does not contain in error, delete it
               val error = errors[eventId] ?: return@filter true

@@ -1,6 +1,8 @@
 package io.bucketeer.sdk.android.internal.model
 
-enum class SourceID(val value: Int) {
+enum class SourceID(
+  val value: Int,
+) {
   UNKNOWN(0),
   ANDROID(1),
   IOS(2),

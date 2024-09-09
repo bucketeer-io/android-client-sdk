@@ -126,7 +126,8 @@ class EventForegroundTaskTest {
     requireNotNull(request)
     val requestBody =
       requireNotNull(
-        moshi.adapter(RegisterEventsRequest::class.java)
+        moshi
+          .adapter(RegisterEventsRequest::class.java)
           .fromJson(request.body.readString(Charsets.UTF_8)),
       )
 
@@ -142,7 +143,8 @@ class EventForegroundTaskTest {
     requireNotNull(request2)
     val requestBody2 =
       requireNotNull(
-        moshi.adapter(RegisterEventsRequest::class.java)
+        moshi
+          .adapter(RegisterEventsRequest::class.java)
           .fromJson(request2.body.readString(Charsets.UTF_8)),
       )
     assertThat(requestBody2.events).hasSize(1)

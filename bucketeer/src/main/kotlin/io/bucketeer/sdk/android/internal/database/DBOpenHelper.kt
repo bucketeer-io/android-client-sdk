@@ -69,7 +69,8 @@ fun createDatabase(
   sharedPreferences: SharedPreferences,
 ): SupportSQLiteOpenHelper {
   val config =
-    SupportSQLiteOpenHelper.Configuration.builder(context)
+    SupportSQLiteOpenHelper.Configuration
+      .builder(context)
       .name(fileName)
       .callback(OpenHelperCallback(sharedPreferences))
       .build()

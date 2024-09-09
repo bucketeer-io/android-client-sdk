@@ -1,6 +1,8 @@
 package io.bucketeer.sdk.android.internal.model
 
-enum class MetricsEventType(val value: Int) {
+enum class MetricsEventType(
+  val value: Int,
+) {
   UNKNOWN(0),
   RESPONSE_LATENCY(1),
   RESPONSE_SIZE(2),
@@ -20,8 +22,6 @@ enum class MetricsEventType(val value: Int) {
   ;
 
   companion object {
-    fun from(value: Int): MetricsEventType {
-      return values().firstOrNull { it.value == value } ?: UNKNOWN
-    }
+    fun from(value: Int): MetricsEventType = values().firstOrNull { it.value == value } ?: UNKNOWN
   }
 }

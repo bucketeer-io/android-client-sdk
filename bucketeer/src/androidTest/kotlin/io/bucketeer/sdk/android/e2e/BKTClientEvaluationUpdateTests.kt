@@ -38,7 +38,8 @@ class BKTClientEvaluationUpdateTests {
   fun tearDown() {
     BKTClient.destroy()
     context.deleteDatabase(OpenHelperCallback.FILE_NAME)
-    context.getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE)
+    context
+      .getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE)
       .edit()
       .clear()
       .commit()
@@ -49,7 +50,8 @@ class BKTClientEvaluationUpdateTests {
   fun testUserEvaluationsIdMismatchAndEvaluatedAtTooOld() {
     // "userEvaluationsId is different and evaluatedAt is too old"
     config =
-      BKTConfig.builder()
+      BKTConfig
+        .builder()
         .apiKey(BuildConfig.API_KEY)
         .apiEndpoint(BuildConfig.API_ENDPOINT)
         .featureTag("Android")
@@ -57,7 +59,8 @@ class BKTClientEvaluationUpdateTests {
         .build()
 
     user =
-      BKTUser.builder()
+      BKTUser
+        .builder()
         .id(USER_ID)
         .build()
 
@@ -93,7 +96,8 @@ class BKTClientEvaluationUpdateTests {
     BKTClient.destroy()
 
     val configWithNewTag =
-      BKTConfig.builder()
+      BKTConfig
+        .builder()
         .apiKey(BuildConfig.API_KEY)
         .apiEndpoint(BuildConfig.API_ENDPOINT)
         .featureTag(FEATURE_TAG)
@@ -117,7 +121,8 @@ class BKTClientEvaluationUpdateTests {
   fun testInitializeWithNewFeatureTag() {
     // userEvaluationId is empty after feature_tag changed
     config =
-      BKTConfig.builder()
+      BKTConfig
+        .builder()
         .apiKey(BuildConfig.API_KEY)
         .apiEndpoint(BuildConfig.API_ENDPOINT)
         .featureTag("Android_E2E_TEST_2023")
@@ -125,7 +130,8 @@ class BKTClientEvaluationUpdateTests {
         .build()
 
     user =
-      BKTUser.builder()
+      BKTUser
+        .builder()
         .id(USER_ID)
         .build()
 
@@ -155,7 +161,8 @@ class BKTClientEvaluationUpdateTests {
     // Prepare for switch tag
     BKTClient.destroy()
     val configWithNewTag =
-      BKTConfig.builder()
+      BKTConfig
+        .builder()
         .apiKey(BuildConfig.API_KEY)
         .apiEndpoint(BuildConfig.API_ENDPOINT)
         .featureTag(FEATURE_TAG)
@@ -185,14 +192,16 @@ class BKTClientEvaluationUpdateTests {
   @Suppress("DEPRECATION")
   fun testInitWithoutFeatureTagShouldRetrievesAllFeatures() {
     config =
-      BKTConfig.builder()
+      BKTConfig
+        .builder()
         .apiKey(BuildConfig.API_KEY)
         .apiEndpoint(BuildConfig.API_ENDPOINT)
         .appVersion("1.2.3")
         .build()
 
     user =
-      BKTUser.builder()
+      BKTUser
+        .builder()
         .id(USER_ID)
         .build()
 

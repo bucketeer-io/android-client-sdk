@@ -103,8 +103,9 @@ internal open class DataModule(
 
   companion object {
     @VisibleForTesting
-    internal fun createMoshi(): Moshi {
-      return Moshi.Builder()
+    internal fun createMoshi(): Moshi =
+      Moshi
+        .Builder()
         .add(EventTypeAdapter())
         .add(MetricsEventTypeAdapter())
         .add(SourceIDAdapter())
@@ -115,9 +116,7 @@ internal open class DataModule(
           EnumJsonAdapter.create(ReasonType::class.java).withUnknownFallback(
             ReasonType.DEFAULT,
           ),
-        )
-        .add(ApiIdAdapter())
+        ).add(ApiIdAdapter())
         .build()
-    }
   }
 }

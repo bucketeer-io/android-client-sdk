@@ -33,7 +33,8 @@ class BKTClientDestroyTests {
     context = ApplicationProvider.getApplicationContext()
 
     config =
-      BKTConfig.builder()
+      BKTConfig
+        .builder()
         .apiKey(BuildConfig.API_KEY)
         .apiEndpoint(BuildConfig.API_ENDPOINT)
         .featureTag(FEATURE_TAG)
@@ -41,7 +42,8 @@ class BKTClientDestroyTests {
         .build()
 
     user =
-      BKTUser.builder()
+      BKTUser
+        .builder()
         .id(USER_ID)
         .build()
 
@@ -54,7 +56,8 @@ class BKTClientDestroyTests {
   @UiThreadTest
   fun tearDown() {
     context.deleteDatabase(OpenHelperCallback.FILE_NAME)
-    context.getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE)
+    context
+      .getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE)
       .edit()
       .clear()
       .commit()

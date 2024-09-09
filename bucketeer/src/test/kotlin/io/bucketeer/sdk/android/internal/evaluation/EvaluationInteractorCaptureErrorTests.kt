@@ -89,8 +89,8 @@ private class MockReturnSuccessAPIClient : ApiClient {
     userEvaluationsId: String,
     timeoutMillis: Long?,
     condition: UserEvaluationCondition,
-  ): GetEvaluationsResult {
-    return GetEvaluationsResult.Success(
+  ): GetEvaluationsResult =
+    GetEvaluationsResult.Success(
       value =
         GetEvaluationsResponse(
           evaluations = user1Evaluations,
@@ -100,10 +100,9 @@ private class MockReturnSuccessAPIClient : ApiClient {
       seconds = 1.0,
       featureTag = "feature_tag_value",
     )
-  }
 
-  override fun registerEvents(events: List<Event>): RegisterEventsResult {
-    return RegisterEventsResult.Success(
+  override fun registerEvents(events: List<Event>): RegisterEventsResult =
+    RegisterEventsResult.Success(
       RegisterEventsResponse(
         errors =
           mapOf(
@@ -115,7 +114,6 @@ private class MockReturnSuccessAPIClient : ApiClient {
           ),
       ),
     )
-  }
 }
 
 private class MockErrorAPIClient : ApiClient {
@@ -124,8 +122,8 @@ private class MockErrorAPIClient : ApiClient {
     userEvaluationsId: String,
     timeoutMillis: Long?,
     condition: UserEvaluationCondition,
-  ): GetEvaluationsResult {
-    return GetEvaluationsResult.Failure(
+  ): GetEvaluationsResult =
+    GetEvaluationsResult.Failure(
       error =
         BKTException.TimeoutException(
           message = "timeout",
@@ -134,10 +132,9 @@ private class MockErrorAPIClient : ApiClient {
         ),
       featureTag = "feature_tag_value",
     )
-  }
 
-  override fun registerEvents(events: List<Event>): RegisterEventsResult {
-    return RegisterEventsResult.Failure(
+  override fun registerEvents(events: List<Event>): RegisterEventsResult =
+    RegisterEventsResult.Failure(
       error =
         BKTException.TimeoutException(
           message = "timeout",
@@ -145,15 +142,14 @@ private class MockErrorAPIClient : ApiClient {
           timeoutMillis = 3000L,
         ),
     )
-  }
 }
 
-private class MockEvaluationStorage(override val userId: String) : EvaluationStorage {
+private class MockEvaluationStorage(
+  override val userId: String,
+) : EvaluationStorage {
   private var featureTag = ""
 
-  override fun getCurrentEvaluationId(): String {
-    return ""
-  }
+  override fun getCurrentEvaluationId(): String = ""
 
   override fun clearCurrentEvaluationId() {}
 
@@ -161,46 +157,32 @@ private class MockEvaluationStorage(override val userId: String) : EvaluationSto
 
   override fun clearUserAttributesUpdated() {}
 
-  override fun getUserAttributesUpdated(): Boolean {
-    return false
-  }
+  override fun getUserAttributesUpdated(): Boolean = false
 
-  override fun getEvaluatedAt(): String {
-    return "0"
-  }
+  override fun getEvaluatedAt(): String = "0"
 
-  override fun getFeatureTag(): String {
-    return featureTag
-  }
+  override fun getFeatureTag(): String = featureTag
 
   override fun setFeatureTag(tag: String) {
     featureTag = tag
   }
 
-  override fun getBy(featureId: String): Evaluation? {
-    return null
-  }
+  override fun getBy(featureId: String): Evaluation? = null
 
-  override fun get(): List<Evaluation> {
-    return emptyList()
-  }
+  override fun get(): List<Evaluation> = emptyList()
 
   override fun deleteAllAndInsert(
     evaluationsId: String,
     evaluations: List<Evaluation>,
     evaluatedAt: String,
-  ) {
-    throw Exception("runtime exception")
-  }
+  ): Unit = throw Exception("runtime exception")
 
   override fun update(
     evaluationsId: String,
     evaluations: List<Evaluation>,
     archivedFeatureIds: List<String>,
     evaluatedAt: String,
-  ): Boolean {
-    throw Exception("runtime exception")
-  }
+  ): Boolean = throw Exception("runtime exception")
 
   override fun refreshCache() {}
 }

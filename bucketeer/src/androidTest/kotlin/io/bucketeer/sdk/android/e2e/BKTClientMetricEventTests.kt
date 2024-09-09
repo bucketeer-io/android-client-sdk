@@ -34,7 +34,8 @@ class BKTClientMetricEventTests {
   fun setup() {
     context = ApplicationProvider.getApplicationContext()
     user =
-      BKTUser.builder()
+      BKTUser
+        .builder()
         .id(USER_ID)
         .build()
   }
@@ -44,7 +45,8 @@ class BKTClientMetricEventTests {
   fun tearDown() {
     BKTClient.destroy()
     context.deleteDatabase(OpenHelperCallback.FILE_NAME)
-    context.getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE)
+    context
+      .getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE)
       .edit()
       .clear()
       .commit()
@@ -56,7 +58,8 @@ class BKTClientMetricEventTests {
   @UiThreadTest
   fun testUsingRandomStringInTheAPIKeyShouldThrowForbidden() {
     config =
-      BKTConfig.builder()
+      BKTConfig
+        .builder()
         .apiKey("random_key")
         .apiEndpoint(BuildConfig.API_ENDPOINT)
         .featureTag(FEATURE_TAG)
@@ -93,7 +96,8 @@ class BKTClientMetricEventTests {
   @UiThreadTest
   fun testARandomStringInTheFeatureTagShouldNotAffectAPIRequest() {
     config =
-      BKTConfig.builder()
+      BKTConfig
+        .builder()
         .apiKey(BuildConfig.API_KEY)
         .apiEndpoint(BuildConfig.API_ENDPOINT)
         .featureTag("random-string-abc")
@@ -108,7 +112,8 @@ class BKTClientMetricEventTests {
   @UiThreadTest
   fun testTimeout() {
     config =
-      BKTConfig.builder()
+      BKTConfig
+        .builder()
         .apiKey(BuildConfig.API_KEY)
         .apiEndpoint(BuildConfig.API_ENDPOINT)
         .featureTag("random-string-abc")

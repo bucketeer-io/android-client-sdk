@@ -15,9 +15,10 @@ import kotlin.contracts.ExperimentalContracts
 fun Response.toBKTException(adapter: JsonAdapter<ErrorResponse>): BKTException {
   val bodyString = body?.string() ?: ""
   val errorBody: ErrorResponse? =
-    kotlin.runCatching {
-      adapter.fromJson(bodyString)
-    }.getOrNull()
+    kotlin
+      .runCatching {
+        adapter.fromJson(bodyString)
+      }.getOrNull()
 
   return when (code) {
     in 300..399 -> {
@@ -113,8 +114,8 @@ fun Response.toBKTException(adapter: JsonAdapter<ErrorResponse>): BKTException {
 internal fun Throwable.toBKTException(
   requestTimeoutMillis: Long,
   statusCode: Int = 0,
-): BKTException {
-  return when (this) {
+): BKTException =
+  when (this) {
     is BKTException -> this
     is SocketTimeoutException,
     is InterruptedIOException,
@@ -129,7 +130,6 @@ internal fun Throwable.toBKTException(
       BKTException.UnknownServerException("Unknown server error: ${this.message}", this, statusCode = statusCode)
     else -> BKTException.UnknownException("Unknown error: ${this.message}", this)
   }
-}
 
 @OptIn(ExperimentalContracts::class)
 inline fun <T> measureTimeMillisWithResult(block: () -> T): Pair<Long, T> {

@@ -43,9 +43,8 @@ data class BKTUser internal constructor(
   }
 }
 
-internal fun BKTUser.toRequest(): User {
-  return User(
+internal fun BKTUser.toRequest(): User =
+  User(
     id = this.id,
     data = this.attributes,
   )
-}

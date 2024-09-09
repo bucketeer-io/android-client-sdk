@@ -17,7 +17,10 @@ import org.junit.runner.RunWith
 @RunWith(TestParameterInjector::class)
 class MetricsEventAdapterFactoryTest {
   @Suppress("unused")
-  enum class TestCase(val json: String, val event: EventData.MetricsEvent) {
+  enum class TestCase(
+    val json: String,
+    val event: EventData.MetricsEvent,
+  ) {
     LatencyMetric(
       json =
         """
