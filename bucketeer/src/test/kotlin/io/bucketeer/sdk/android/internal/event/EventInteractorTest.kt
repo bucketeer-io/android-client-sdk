@@ -134,7 +134,7 @@ class EventInteractorTest {
             metadata =
               mapOf(
                 "app_version" to "1.2.3",
-                "os_version" to "19",
+                "os_version" to "21",
                 "device_model" to "robolectric",
               ),
           ),
@@ -175,7 +175,7 @@ class EventInteractorTest {
             metadata =
               mapOf(
                 "app_version" to "1.2.3",
-                "os_version" to "19",
+                "os_version" to "21",
                 "device_model" to "robolectric",
               ),
           ),
@@ -216,7 +216,7 @@ class EventInteractorTest {
             metadata =
               mapOf(
                 "app_version" to "1.2.3",
-                "os_version" to "19",
+                "os_version" to "21",
                 "device_model" to "robolectric",
               ),
           ),
@@ -262,7 +262,7 @@ class EventInteractorTest {
             metadata =
               mapOf(
                 "app_version" to "1.2.3",
-                "os_version" to "19",
+                "os_version" to "21",
                 "device_model" to "robolectric",
               ),
           ),
@@ -293,7 +293,7 @@ class EventInteractorTest {
             metadata =
               mapOf(
                 "app_version" to "1.2.3",
-                "os_version" to "19",
+                "os_version" to "21",
                 "device_model" to "robolectric",
               ),
           ),
@@ -341,7 +341,7 @@ class EventInteractorTest {
             metadata =
               mapOf(
                 "app_version" to "1.2.3",
-                "os_version" to "19",
+                "os_version" to "21",
                 "device_model" to "robolectric",
               ),
           ),
@@ -388,7 +388,7 @@ class EventInteractorTest {
             metadata =
               mapOf(
                 "app_version" to "1.2.3",
-                "os_version" to "19",
+                "os_version" to "21",
                 "device_model" to "robolectric",
               ),
           ),
@@ -450,7 +450,7 @@ class EventInteractorTest {
                   metadata =
                     mapOf(
                       "app_version" to "1.2.3",
-                      "os_version" to "19",
+                      "os_version" to "21",
                       "device_model" to "robolectric",
                     ),
                 ),
@@ -476,7 +476,7 @@ class EventInteractorTest {
                   metadata =
                     mapOf(
                       "app_version" to "1.2.3",
-                      "os_version" to "19",
+                      "os_version" to "21",
                       "device_model" to "robolectric",
                     ),
                 ),
@@ -497,7 +497,7 @@ class EventInteractorTest {
                   metadata =
                     mapOf(
                       "app_version" to "1.2.3",
-                      "os_version" to "19",
+                      "os_version" to "21",
                       "device_model" to "robolectric",
                     ),
                 ),
@@ -573,7 +573,7 @@ class EventInteractorTest {
               metadata =
                 mapOf(
                   "app_version" to "1.2.3",
-                  "os_version" to "19",
+                  "os_version" to "21",
                   "device_model" to "robolectric",
                 ),
             ),
@@ -599,7 +599,7 @@ class EventInteractorTest {
               metadata =
                 mapOf(
                   "app_version" to "1.2.3",
-                  "os_version" to "19",
+                  "os_version" to "21",
                   "device_model" to "robolectric",
                 ),
             ),
@@ -620,7 +620,7 @@ class EventInteractorTest {
               metadata =
                 mapOf(
                   "app_version" to "1.2.3",
-                  "os_version" to "19",
+                  "os_version" to "21",
                   "device_model" to "robolectric",
                 ),
             ),
@@ -645,7 +645,7 @@ class EventInteractorTest {
               metadata =
                 mapOf(
                   "app_version" to "1.2.3",
-                  "os_version" to "19",
+                  "os_version" to "21",
                   "device_model" to "robolectric",
                 ),
             ),
@@ -756,7 +756,7 @@ class EventInteractorTest {
                   metadata =
                     mapOf(
                       "app_version" to "1.2.3",
-                      "os_version" to "19",
+                      "os_version" to "21",
                       "device_model" to "robolectric",
                     ),
                 ),
@@ -782,7 +782,7 @@ class EventInteractorTest {
                   metadata =
                     mapOf(
                       "app_version" to "1.2.3",
-                      "os_version" to "19",
+                      "os_version" to "21",
                       "device_model" to "robolectric",
                     ),
                 ),
@@ -855,7 +855,7 @@ class EventInteractorTest {
                   metadata =
                     mapOf(
                       "app_version" to "1.2.3",
-                      "os_version" to "19",
+                      "os_version" to "21",
                       "device_model" to "robolectric",
                     ),
                 ),
@@ -881,7 +881,7 @@ class EventInteractorTest {
                   metadata =
                     mapOf(
                       "app_version" to "1.2.3",
-                      "os_version" to "19",
+                      "os_version" to "21",
                       "device_model" to "robolectric",
                     ),
                 ),
@@ -902,7 +902,7 @@ class EventInteractorTest {
                   metadata =
                     mapOf(
                       "app_version" to "1.2.3",
-                      "os_version" to "19",
+                      "os_version" to "21",
                       "device_model" to "robolectric",
                     ),
                 ),
@@ -939,7 +939,7 @@ class EventInteractorTest {
               metadata =
                 mapOf(
                   "app_version" to "1.2.3",
-                  "os_version" to "19",
+                  "os_version" to "21",
                   "device_model" to "robolectric",
                 ),
             ),
@@ -960,7 +960,7 @@ class EventInteractorTest {
               metadata =
                 mapOf(
                   "app_version" to "1.2.3",
-                  "os_version" to "19",
+                  "os_version" to "21",
                   "device_model" to "robolectric",
                 ),
             ),
