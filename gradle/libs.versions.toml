@@ -25,7 +25,7 @@ moshi-adapters = { module = "com.squareup.moshi:moshi-adapters", version.ref = "
 junit = { module = "junit:junit", version = "4.13.2" }
 robolectric = { module = "org.robolectric:robolectric", version = "4.13" }
 truth = { module = "com.google.truth:truth", version = "1.4.4" }
-testParameterInjector = { module = "com.google.testparameterinjector:test-parameter-injector", version = "1.17" }
+testParameterInjector = { module = "com.google.testparameterinjector:test-parameter-injector", version = "1.18" }
 
 androidx-test-core = { module = "androidx.test:core", version.ref = "androidxTest" }
 androidx-test-rules = { module = "androidx.test:rules", version.ref = "androidxTest" }
