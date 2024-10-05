@@ -21,7 +21,7 @@ android {
     applicationId "io.bucketeer.sample"
     minSdkVersion project.findProperty("android.minSdkVersion") as int
     targetSdkVersion project.findProperty("android.targetSdkVersion") as int
-    versionCode 1
+    versionCode 211060
     versionName "1.0"
     testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -29,6 +29,8 @@ android {
     def API_ENDPOINT = properties.getProperty("api_endpoint") ?: System.getenv("API_ENDPOINT")
     buildConfigField("String", "API_KEY", "\"${API_KEY}\"")
     buildConfigField("String", "API_ENDPOINT", "\"${API_ENDPOINT}\"")
+
+    setProperty("archivesBaseName", "BKT_v$versionName($versionCode)")
   }
   signingConfigs {
     release {
@@ -72,7 +74,7 @@ dependencies {
 
   implementation libs.kotlin.coroutines.android
   implementation(platform(libs.firebase))
-  implementation libs.firebase.messaging.ktx
+  //implementation libs.firebase.messaging.ktx
 }
 repositories {
   mavenCentral()

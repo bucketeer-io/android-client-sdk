@@ -1,14 +1,15 @@
 package io.bucketeer.sample
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
@@ -16,8 +17,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.textfield.TextInputLayout
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.messaging.ktx.messaging
 import io.bucketeer.sdk.android.BKTClient
 import io.bucketeer.sdk.android.BKTConfig
 import io.bucketeer.sdk.android.BKTException
@@ -27,7 +26,6 @@ import io.bucketeer.sdk.android.sample.BuildConfig
 import io.bucketeer.sdk.android.sample.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.util.concurrent.TimeUnit
@@ -67,10 +65,15 @@ class MainActivity : ComponentActivity() {
   }
 
   private lateinit var variantTypeSpinner: Spinner
+  private lateinit var appVersionTextView: TextView
 
+  @SuppressLint("SetTextI18n")
   public override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
+    appVersionTextView = findViewById(R.id.appVersionTv)
+    appVersionTextView.text = "${BuildConfig.VERSION_NAME}-b${BuildConfig.VERSION_CODE}"
+
     variantTypeSpinner = findViewById(R.id.spinner)
     val adapter =
       ArrayAdapter(
@@ -262,7 +265,7 @@ class MainActivity : ComponentActivity() {
         .apiKey(BuildConfig.API_KEY)
         .apiEndpoint(BuildConfig.API_ENDPOINT)
         .featureTag(getTag())
-        .appVersion(BuildConfig.VERSION_NAME)
+        .appVersion(BuildConfig.VERSION_CODE.toString())
         .eventsMaxQueueSize(10)
         .pollingInterval(TimeUnit.SECONDS.toMillis(20))
         .backgroundPollingInterval(TimeUnit.SECONDS.toMillis(60))
@@ -273,6 +276,7 @@ class MainActivity : ComponentActivity() {
       BKTUser
         .builder()
         .id(getUserId())
+        .customAttributes(mapOf("app_version" to BuildConfig.VERSION_CODE.toString()))
         .build()
 
     val future = BKTClient.initialize(this, config, user)
@@ -320,28 +324,29 @@ class MainActivity : ComponentActivity() {
   }
 
   private suspend fun onGrantedNotificationPermission() {
-    val token = Firebase.messaging.token.await()
-    println("FCM Token $token")
-
-    subscribeToTopic()
+//    val token = Firebase.messaging.token.await()
+//    println("FCM Token $token")
+//
+//    subscribeToTopic()
   }
 
   // In order to receive the update notification when the flag value changed
   // We need subscribe to topic, with the topic name is in this format bucketeer-<YOUR_FEATURE_TAG>
   // Please put your Firebase project's google-services.json under the folder `sample/src` before test this.
-  private fun subscribeToTopic() {
-    val tag = getTag()
-    Firebase.messaging
-      .subscribeToTopic("bucketeer-$tag")
-      .addOnCompleteListener { task ->
-        var msg = "Real time update enabled"
-        if (!task.isSuccessful) {
-          msg = "Subscribe to real time update failed"
-        }
-        Log.d(TAG, msg)
-        Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
-      }
-  }
+
+//  private fun subscribeToTopic() {
+//    val tag = getTag()
+//    Firebase.messaging
+//      .subscribeToTopic("bucketeer-$tag")
+//      .addOnCompleteListener { task ->
+//        var msg = "Real time update enabled"
+//        if (!task.isSuccessful) {
+//          msg = "Subscribe to real time update failed"
+//        }
+//        Log.d(TAG, msg)
+//        Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
+//      }
+//  }
 
   companion object {
     const val TAG = "MainActivity"
