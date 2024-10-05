@@ -1,3 +1,5 @@
+//uncomment for test FCM realtime update
+
 //package io.bucketeer.sample
 //
 //import android.util.Log

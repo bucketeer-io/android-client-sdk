@@ -74,6 +74,7 @@ dependencies {
 
   implementation libs.kotlin.coroutines.android
   implementation(platform(libs.firebase))
+  //uncomment for test FCM realtime update
   //implementation libs.firebase.messaging.ktx
 }
 repositories {

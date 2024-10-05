@@ -324,6 +324,7 @@ class MainActivity : ComponentActivity() {
   }
 
   private suspend fun onGrantedNotificationPermission() {
+// uncomment for test FCM realtime update
 //    val token = Firebase.messaging.token.await()
 //    println("FCM Token $token")
 //
