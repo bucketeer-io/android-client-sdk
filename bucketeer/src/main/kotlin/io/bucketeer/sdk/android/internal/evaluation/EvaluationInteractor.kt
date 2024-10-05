@@ -116,7 +116,13 @@ internal class EvaluationInteractor(
           // to avoid unintentional lock on Interactor's execution thread.
           if (shouldNotifyListener) {
             mainHandler.post {
-              updateListeners.forEach { it.value.onUpdate() }
+              updateListeners.forEach {
+                runCatching {
+                  it.value.onUpdate()
+                }.onFailure { onUpdateError ->
+                  logd(onUpdateError) { "onUpdateError: ${onUpdateError.message}" }
+                }
+              }
             }
           }
         }
