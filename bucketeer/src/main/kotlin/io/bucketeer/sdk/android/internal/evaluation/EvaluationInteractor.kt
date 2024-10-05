@@ -51,36 +51,37 @@ internal class EvaluationInteractor(
     evaluationStorage.setUserAttributesUpdated()
   }
 
-  @Suppress("MoveVariableDeclarationIntoWhen")
   fun fetch(
     user: User,
     timeoutMillis: Long?,
   ): GetEvaluationsResult {
-    val currentEvaluationsId = evaluationStorage.getCurrentEvaluationId()
-    val evaluatedAt = evaluationStorage.getEvaluatedAt()
-    val userAttributesUpdated = evaluationStorage.getUserAttributesUpdated().toString()
-    val featureTag = evaluationStorage.getFeatureTag()
-    val condition =
-      UserEvaluationCondition(
-        evaluatedAt = evaluatedAt,
-        userAttributesUpdated = userAttributesUpdated,
-      )
-    val result = apiClient.getEvaluations(user, currentEvaluationsId, timeoutMillis, condition)
+    var featureTag: String? = null
+    try {
+      val currentEvaluationsId = evaluationStorage.getCurrentEvaluationId()
+      val evaluatedAt = evaluationStorage.getEvaluatedAt()
+      val userAttributesUpdated = evaluationStorage.getUserAttributesUpdated().toString()
+      featureTag = evaluationStorage.getFeatureTag()
+      val condition =
+        UserEvaluationCondition(
+          evaluatedAt = evaluatedAt,
+          userAttributesUpdated = userAttributesUpdated,
+        )
 
-    when (result) {
-      is GetEvaluationsResult.Success -> {
-        val response = result.value
-        val newEvaluationsId = response.userEvaluationsId
+      val result = apiClient.getEvaluations(user, currentEvaluationsId, timeoutMillis, condition)
 
-        if (currentEvaluationsId == newEvaluationsId) {
-          logd { "Nothing to sync" }
-          // make sure we set `userAttributesUpdated` back to `false` even in case nothing to sync
-          evaluationStorage.clearUserAttributesUpdated()
-          return result
-        }
+      when (result) {
+        is GetEvaluationsResult.Success -> {
+          val response = result.value
+          val newEvaluationsId = response.userEvaluationsId
 
-        var shouldNotifyListener = true
-        try {
+          if (currentEvaluationsId == newEvaluationsId) {
+            logd { "Nothing to sync" }
+            // make sure we set `userAttributesUpdated` back to `false` even in case nothing to sync
+            evaluationStorage.clearUserAttributesUpdated()
+            return result
+          }
+
+          var shouldNotifyListener = true
           // https://github.com/bucketeer-io/android-client-sdk/issues/69
           // forceUpdate: a boolean that tells the SDK to delete all the current data
           // and save the latest evaluations from the response
@@ -109,29 +110,29 @@ internal class EvaluationInteractor(
                 evaluatedAt = newEvaluatedAt,
               )
           }
-        } catch (ex: Exception) {
-          loge { "Failed to update latest evaluations" }
-          return GetEvaluationsResult.Failure(
-            BKTException.IllegalStateException("error: ${ex.message}"),
-            featureTag,
-          )
-        }
 
-        evaluationStorage.clearUserAttributesUpdated()
-        // Update listeners should be called on the main thread
-        // to avoid unintentional lock on Interactor's execution thread.
-        if (shouldNotifyListener) {
-          mainHandler.post {
-            updateListeners.forEach { it.value.onUpdate() }
+          evaluationStorage.clearUserAttributesUpdated()
+          // Update listeners should be called on the main thread
+          // to avoid unintentional lock on Interactor's execution thread.
+          if (shouldNotifyListener) {
+            mainHandler.post {
+              updateListeners.forEach { it.value.onUpdate() }
+            }
           }
         }
-      }
 
-      is GetEvaluationsResult.Failure -> {
-        logd(result.error) { "ApiError: ${result.error.message}" }
+        is GetEvaluationsResult.Failure -> {
+          logd(result.error) { "ApiError: ${result.error.message}" }
+        }
       }
+      return result
+    } catch (ex: Exception) {
+      loge { "Failed to update latest evaluations" }
+      return GetEvaluationsResult.Failure(
+        BKTException.IllegalStateException("error: ${ex.message}"),
+        featureTag ?: "",
+      )
     }
-    return result
   }
 
   fun refreshCache() {
