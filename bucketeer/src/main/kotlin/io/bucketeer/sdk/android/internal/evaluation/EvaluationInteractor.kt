@@ -117,6 +117,7 @@ internal class EvaluationInteractor(
           if (shouldNotifyListener) {
             mainHandler.post {
               updateListeners.forEach {
+                // Prevent crash if consumer code throwing unhandled error
                 runCatching {
                   it.value.onUpdate()
                 }.onFailure { onUpdateError ->
