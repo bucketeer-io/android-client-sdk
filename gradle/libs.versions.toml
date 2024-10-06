@@ -1,5 +1,5 @@
 [versions]
-agp = "8.6.1"
+agp = "8.7.0"
 json = "20240303"
 kotlin = "2.0.20"
 androidxLifecycle = "2.8.6"
@@ -7,7 +7,7 @@ androidxTest = "1.6.1"
 moshi = "1.15.1"
 okhttp = "4.12.0"
 coroutines = "1.9.0"
-firebaseMessagingKtx = "24.0.1"
+firebaseMessagingKtx = "24.0.2"
 
 [libraries]
 json = { module = "org.json:json", version.ref = "json" }
@@ -41,7 +41,7 @@ materialComponents = { module = "com.google.android.material:material", version 
 stetho = { module = "com.facebook.stetho:stetho", version = "1.6.0" }
 
 kotlin-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
-firebase = { module = "com.google.firebase:firebase-bom", version = "33.3.0" }
+firebase = { module = "com.google.firebase:firebase-bom", version = "33.4.0" }
 firebase-messaging-ktx = { group = "com.google.firebase", name = "firebase-messaging-ktx", version.ref = "firebaseMessagingKtx" }
 
 [plugins]
