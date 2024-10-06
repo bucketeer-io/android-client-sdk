@@ -288,7 +288,9 @@ internal fun newEventDataMetricEvent(
           MetricsEventType.UNKNOWN,
           MetricsEventData.UnknownErrorMetricsEvent(
             apiId = apiId,
-            labels = labels,
+            labels = labels.apply {
+              set("error_message", error.message ?: "UnknownException")
+            },
           ),
         )
 
