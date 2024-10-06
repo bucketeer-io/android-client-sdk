@@ -84,19 +84,19 @@ class EvaluationInteractorCaptureErrorTests {
       apiClient = MockReturnSuccessAPIClient(),
       storage = MockEvaluationStorage("test_user_1", getUserAttributesUpdatedError = Exception("getUserAttributesUpdatedError")),
       expected =
-      GetEvaluationsResult.Failure(
-        BKTException.IllegalStateException("error: getUserAttributesUpdatedError"),
-        "feature_tag_value",
-      ),
+        GetEvaluationsResult.Failure(
+          BKTException.IllegalStateException("error: getUserAttributesUpdatedError"),
+          "feature_tag_value",
+        ),
     ),
     STORAGE_ERROR_3(
       apiClient = MockReturnSuccessAPIClient(),
       storage = MockEvaluationStorage("test_user_1", clearUserAttributesUpdatedError = Exception("clearUserAttributesUpdatedError")),
       expected =
-      GetEvaluationsResult.Failure(
-        BKTException.IllegalStateException("error: clearUserAttributesUpdatedError"),
-        "feature_tag_value",
-      ),
+        GetEvaluationsResult.Failure(
+          BKTException.IllegalStateException("error: clearUserAttributesUpdatedError"),
+          "feature_tag_value",
+        ),
     ),
   }
 }
@@ -216,9 +216,7 @@ private class MockEvaluationStorage(
     evaluations: List<Evaluation>,
     archivedFeatureIds: List<String>,
     evaluatedAt: String,
-  ): Boolean {
-    return true
-  }
+  ): Boolean = true
 
   override fun refreshCache() {}
 }
