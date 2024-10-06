@@ -51,6 +51,88 @@ internal class EvaluationInteractor(
     evaluationStorage.setUserAttributesUpdated()
   }
 
+  private fun getEvaluations(
+    user: User,
+    timeoutMillis: Long?,
+  ): GetEvaluationsResult {
+    val currentEvaluationsId = evaluationStorage.getCurrentEvaluationId()
+    val evaluatedAt = evaluationStorage.getEvaluatedAt()
+    val userAttributesUpdated = evaluationStorage.getUserAttributesUpdated().toString()
+
+    val condition =
+      UserEvaluationCondition(
+        evaluatedAt = evaluatedAt,
+        userAttributesUpdated = userAttributesUpdated,
+      )
+
+    val result = apiClient.getEvaluations(user, currentEvaluationsId, timeoutMillis, condition)
+
+    when (result) {
+      is GetEvaluationsResult.Success -> {
+        val response = result.value
+        val newEvaluationsId = response.userEvaluationsId
+
+        if (currentEvaluationsId == newEvaluationsId) {
+          logd { "Nothing to sync" }
+          // make sure we set `userAttributesUpdated` back to `false` even in case nothing to sync
+          evaluationStorage.clearUserAttributesUpdated()
+          return result
+        }
+
+        var shouldNotifyListener = true
+        // https://github.com/bucketeer-io/android-client-sdk/issues/69
+        // forceUpdate: a boolean that tells the SDK to delete all the current data
+        // and save the latest evaluations from the response
+        val forceUpdate = response.evaluations.forceUpdate
+        val newEvaluatedAt = response.evaluations.createdAt
+        if (forceUpdate) {
+          val currentEvaluations: List<Evaluation> = response.evaluations.evaluations
+          // 1- Delete all the evaluations from DB, and save the latest evaluations from the response into the DB
+          // 2- Save the UserEvaluations.CreatedAt in the response as evaluatedAt in the SharedPreferences
+          evaluationStorage.deleteAllAndInsert(
+            evaluationsId = newEvaluationsId,
+            evaluations = currentEvaluations,
+            evaluatedAt = newEvaluatedAt,
+          )
+        } else {
+          // 1- Check the evaluation list in the response and upsert them in the DB if the list is not empty
+          // 2- Check the list of the feature flags that were archived on the console and delete them from the DB
+          // 3- Save the UserEvaluations.CreatedAt in the response as evaluatedAt in the SharedPreferences
+          val archivedFeatureIds = response.evaluations.archivedFeatureIds
+          val updatedEvaluations = response.evaluations.evaluations
+          shouldNotifyListener =
+            evaluationStorage.update(
+              evaluationsId = newEvaluationsId,
+              evaluations = updatedEvaluations,
+              archivedFeatureIds = archivedFeatureIds,
+              evaluatedAt = newEvaluatedAt,
+            )
+        }
+
+        evaluationStorage.clearUserAttributesUpdated()
+        // Update listeners should be called on the main thread
+        // to avoid unintentional lock on Interactor's execution thread.
+        if (shouldNotifyListener) {
+          mainHandler.post {
+            updateListeners.forEach {
+              // Prevent crash if consumer code throwing unhandled error
+              runCatching {
+                it.value.onUpdate()
+              }.onFailure { onUpdateError ->
+                logd(onUpdateError) { "onUpdateError: ${onUpdateError.message}" }
+              }
+            }
+          }
+        }
+      }
+
+      is GetEvaluationsResult.Failure -> {
+        logd(result.error) { "ApiError: ${result.error.message}" }
+      }
+    }
+    return result
+  }
+
   fun fetch(
     user: User,
     timeoutMillis: Long?,
@@ -58,83 +140,7 @@ internal class EvaluationInteractor(
     var featureTag: String? = null
     try {
       featureTag = evaluationStorage.getFeatureTag()
-
-      val currentEvaluationsId = evaluationStorage.getCurrentEvaluationId()
-      val evaluatedAt = evaluationStorage.getEvaluatedAt()
-      val userAttributesUpdated = evaluationStorage.getUserAttributesUpdated().toString()
-
-      val condition =
-        UserEvaluationCondition(
-          evaluatedAt = evaluatedAt,
-          userAttributesUpdated = userAttributesUpdated,
-        )
-
-      val result = apiClient.getEvaluations(user, currentEvaluationsId, timeoutMillis, condition)
-
-      when (result) {
-        is GetEvaluationsResult.Success -> {
-          val response = result.value
-          val newEvaluationsId = response.userEvaluationsId
-
-          if (currentEvaluationsId == newEvaluationsId) {
-            logd { "Nothing to sync" }
-            // make sure we set `userAttributesUpdated` back to `false` even in case nothing to sync
-            evaluationStorage.clearUserAttributesUpdated()
-            return result
-          }
-
-          var shouldNotifyListener = true
-          // https://github.com/bucketeer-io/android-client-sdk/issues/69
-          // forceUpdate: a boolean that tells the SDK to delete all the current data
-          // and save the latest evaluations from the response
-          val forceUpdate = response.evaluations.forceUpdate
-          val newEvaluatedAt = response.evaluations.createdAt
-          if (forceUpdate) {
-            val currentEvaluations: List<Evaluation> = response.evaluations.evaluations
-            // 1- Delete all the evaluations from DB, and save the latest evaluations from the response into the DB
-            // 2- Save the UserEvaluations.CreatedAt in the response as evaluatedAt in the SharedPreferences
-            evaluationStorage.deleteAllAndInsert(
-              evaluationsId = newEvaluationsId,
-              evaluations = currentEvaluations,
-              evaluatedAt = newEvaluatedAt,
-            )
-          } else {
-            // 1- Check the evaluation list in the response and upsert them in the DB if the list is not empty
-            // 2- Check the list of the feature flags that were archived on the console and delete them from the DB
-            // 3- Save the UserEvaluations.CreatedAt in the response as evaluatedAt in the SharedPreferences
-            val archivedFeatureIds = response.evaluations.archivedFeatureIds
-            val updatedEvaluations = response.evaluations.evaluations
-            shouldNotifyListener =
-              evaluationStorage.update(
-                evaluationsId = newEvaluationsId,
-                evaluations = updatedEvaluations,
-                archivedFeatureIds = archivedFeatureIds,
-                evaluatedAt = newEvaluatedAt,
-              )
-          }
-
-          evaluationStorage.clearUserAttributesUpdated()
-          // Update listeners should be called on the main thread
-          // to avoid unintentional lock on Interactor's execution thread.
-          if (shouldNotifyListener) {
-            mainHandler.post {
-              updateListeners.forEach {
-                // Prevent crash if consumer code throwing unhandled error
-                runCatching {
-                  it.value.onUpdate()
-                }.onFailure { onUpdateError ->
-                  logd(onUpdateError) { "onUpdateError: ${onUpdateError.message}" }
-                }
-              }
-            }
-          }
-        }
-
-        is GetEvaluationsResult.Failure -> {
-          logd(result.error) { "ApiError: ${result.error.message}" }
-        }
-      }
-      return result
+      return getEvaluations(user = user, timeoutMillis = timeoutMillis)
     } catch (ex: Exception) {
       loge { "Failed to update latest evaluations" }
       return GetEvaluationsResult.Failure(

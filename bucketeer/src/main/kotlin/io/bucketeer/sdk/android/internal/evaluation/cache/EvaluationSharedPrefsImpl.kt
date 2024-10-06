@@ -1,5 +1,6 @@
 package io.bucketeer.sdk.android.internal.evaluation.cache
 
+import android.annotation.SuppressLint
 import android.content.SharedPreferences
 import io.bucketeer.sdk.android.internal.Constants
 
@@ -9,21 +10,23 @@ internal class EvaluationSharedPrefsImpl(
   override var currentEvaluationsId: String
     get() = sharedPrefs.getString(Constants.PREFERENCE_KEY_USER_EVALUATION_ID, "") ?: ""
 
+    @SuppressLint("ApplySharedPref")
     set(value) {
       sharedPrefs
         .edit()
         .putString(Constants.PREFERENCE_KEY_USER_EVALUATION_ID, value)
-        .apply()
+        .commit()
     }
 
   override var featureTag: String
     get() = sharedPrefs.getString(Constants.PREFERENCE_KEY_FEATURE_TAG, "") ?: ""
 
+    @SuppressLint("ApplySharedPref")
     set(value) {
       sharedPrefs
         .edit()
         .putString(Constants.PREFERENCE_KEY_FEATURE_TAG, value)
-        .apply()
+        .commit()
     }
 
   // https://github.com/bucketeer-io/android-client-sdk/issues/69
@@ -33,19 +36,21 @@ internal class EvaluationSharedPrefsImpl(
   override var evaluatedAt: String
     get() = sharedPrefs.getString(Constants.PREFERENCE_KEY_EVALUATED_AT, "0") ?: "0"
 
+    @SuppressLint("ApplySharedPref")
     set(value) {
       sharedPrefs
         .edit()
         .putString(Constants.PREFERENCE_KEY_EVALUATED_AT, value)
-        .apply()
+        .commit()
     }
   override var userAttributesUpdated: Boolean
     get() = sharedPrefs.getBoolean(Constants.PREFERENCE_KEY_USER_ATTRIBUTES_UPDATED, false)
 
+    @SuppressLint("ApplySharedPref")
     set(value) {
       sharedPrefs
         .edit()
         .putBoolean(Constants.PREFERENCE_KEY_USER_ATTRIBUTES_UPDATED, value)
-        .apply()
+        .commit()
     }
 }
