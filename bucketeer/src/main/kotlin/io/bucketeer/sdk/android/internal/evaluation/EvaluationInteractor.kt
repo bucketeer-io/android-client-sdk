@@ -57,10 +57,12 @@ internal class EvaluationInteractor(
   ): GetEvaluationsResult {
     var featureTag: String? = null
     try {
+      featureTag = evaluationStorage.getFeatureTag()
+
       val currentEvaluationsId = evaluationStorage.getCurrentEvaluationId()
       val evaluatedAt = evaluationStorage.getEvaluatedAt()
       val userAttributesUpdated = evaluationStorage.getUserAttributesUpdated().toString()
-      featureTag = evaluationStorage.getFeatureTag()
+
       val condition =
         UserEvaluationCondition(
           evaluatedAt = evaluatedAt,
