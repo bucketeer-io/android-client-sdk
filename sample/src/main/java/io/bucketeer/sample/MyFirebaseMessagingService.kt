@@ -1,4 +1,4 @@
-//uncomment for test FCM realtime update
+// uncomment for test FCM realtime update
 
 //package io.bucketeer.sample
 //
