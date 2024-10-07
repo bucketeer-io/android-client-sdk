@@ -142,7 +142,7 @@ internal class EvaluationInteractor(
       featureTag = evaluationStorage.getFeatureTag()
       return getEvaluations(user = user, timeoutMillis = timeoutMillis)
     } catch (ex: Exception) {
-      loge { "Failed to update latest evaluations" }
+      loge(ex) { "failed when fetching evaluations: ${ex.message}" }
       return GetEvaluationsResult.Failure(
         BKTException.IllegalStateException("error: ${ex.message}"),
         featureTag ?: "",
