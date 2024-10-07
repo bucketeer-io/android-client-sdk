@@ -76,7 +76,7 @@ class EvaluationInteractorCaptureErrorTests {
       storage = MockEvaluationStorage("test_user_1", deleteAllAndInsertError = Exception("deleteAllAndInsert")),
       expected =
         GetEvaluationsResult.Failure(
-          BKTException.IllegalStateException("error: deleteAllAndInsert"),
+          BKTException.IllegalStateException("failed when fetching evaluations: deleteAllAndInsert"),
           "feature_tag_value",
         ),
     ),
@@ -85,7 +85,7 @@ class EvaluationInteractorCaptureErrorTests {
       storage = MockEvaluationStorage("test_user_1", getUserAttributesUpdatedError = Exception("getUserAttributesUpdatedError")),
       expected =
         GetEvaluationsResult.Failure(
-          BKTException.IllegalStateException("error: getUserAttributesUpdatedError"),
+          BKTException.IllegalStateException("failed when fetching evaluations: getUserAttributesUpdatedError"),
           "feature_tag_value",
         ),
     ),
@@ -94,7 +94,7 @@ class EvaluationInteractorCaptureErrorTests {
       storage = MockEvaluationStorage("test_user_1", clearUserAttributesUpdatedError = Exception("clearUserAttributesUpdatedError")),
       expected =
         GetEvaluationsResult.Failure(
-          BKTException.IllegalStateException("error: clearUserAttributesUpdatedError"),
+          BKTException.IllegalStateException("failed when fetching evaluations: clearUserAttributesUpdatedError"),
           "feature_tag_value",
         ),
     ),

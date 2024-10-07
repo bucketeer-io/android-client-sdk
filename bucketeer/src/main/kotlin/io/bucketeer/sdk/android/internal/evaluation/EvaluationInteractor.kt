@@ -144,7 +144,7 @@ internal class EvaluationInteractor(
     } catch (ex: Exception) {
       loge(ex) { "failed when fetching evaluations: ${ex.message}" }
       return GetEvaluationsResult.Failure(
-        BKTException.IllegalStateException("error: ${ex.message}"),
+        BKTException.IllegalStateException("failed when fetching evaluations: ${ex.message}"),
         featureTag ?: "",
       )
     }
