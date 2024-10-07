@@ -71,12 +71,30 @@ class EvaluationInteractorCaptureErrorTests {
           featureTag = "feature_tag_value",
         ),
     ),
-    STORAGE_ERROR(
+    STORAGE_ERROR_1(
       apiClient = MockReturnSuccessAPIClient(),
-      storage = MockEvaluationStorage("test_user_1"),
+      storage = MockEvaluationStorage("test_user_1", deleteAllAndInsertError = Exception("deleteAllAndInsert")),
       expected =
         GetEvaluationsResult.Failure(
-          BKTException.IllegalStateException("error: runtime exception"),
+          BKTException.IllegalStateException("failed when fetching evaluations: deleteAllAndInsert"),
+          "feature_tag_value",
+        ),
+    ),
+    STORAGE_ERROR_2(
+      apiClient = MockReturnSuccessAPIClient(),
+      storage = MockEvaluationStorage("test_user_1", getUserAttributesUpdatedError = Exception("getUserAttributesUpdatedError")),
+      expected =
+        GetEvaluationsResult.Failure(
+          BKTException.IllegalStateException("failed when fetching evaluations: getUserAttributesUpdatedError"),
+          "feature_tag_value",
+        ),
+    ),
+    STORAGE_ERROR_3(
+      apiClient = MockReturnSuccessAPIClient(),
+      storage = MockEvaluationStorage("test_user_1", clearUserAttributesUpdatedError = Exception("clearUserAttributesUpdatedError")),
+      expected =
+        GetEvaluationsResult.Failure(
+          BKTException.IllegalStateException("failed when fetching evaluations: clearUserAttributesUpdatedError"),
           "feature_tag_value",
         ),
     ),
@@ -146,6 +164,9 @@ private class MockErrorAPIClient : ApiClient {
 
 private class MockEvaluationStorage(
   override val userId: String,
+  val clearUserAttributesUpdatedError: Throwable? = null,
+  val getUserAttributesUpdatedError: Throwable? = null,
+  val deleteAllAndInsertError: Throwable? = null,
 ) : EvaluationStorage {
   private var featureTag = ""
 
@@ -155,9 +176,18 @@ private class MockEvaluationStorage(
 
   override fun setUserAttributesUpdated() {}
 
-  override fun clearUserAttributesUpdated() {}
+  override fun clearUserAttributesUpdated() {
+    if (clearUserAttributesUpdatedError != null) {
+      throw clearUserAttributesUpdatedError
+    }
+  }
 
-  override fun getUserAttributesUpdated(): Boolean = false
+  override fun getUserAttributesUpdated(): Boolean {
+    if (getUserAttributesUpdatedError != null) {
+      throw getUserAttributesUpdatedError
+    }
+    return false
+  }
 
   override fun getEvaluatedAt(): String = "0"
 
@@ -175,14 +205,18 @@ private class MockEvaluationStorage(
     evaluationsId: String,
     evaluations: List<Evaluation>,
     evaluatedAt: String,
-  ): Unit = throw Exception("runtime exception")
+  ) {
+    if (deleteAllAndInsertError != null) {
+      throw deleteAllAndInsertError
+    }
+  }
 
   override fun update(
     evaluationsId: String,
     evaluations: List<Evaluation>,
     archivedFeatureIds: List<String>,
     evaluatedAt: String,
-  ): Boolean = throw Exception("runtime exception")
+  ): Boolean = true
 
   override fun refreshCache() {}
 }

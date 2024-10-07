@@ -22,6 +22,8 @@ class BKTExceptionToEventDataMetricEventTest {
     val expectedLabelsForRedirectRequestException = mapOf("tag" to "android", "response_code" to "302")
     val expectedLabelsForUnknownServerException =
       mapOf("tag" to "android", "response_code" to "499", "error_message" to "UnknownServerException")
+    val expectedLabelsForUnknownException =
+      mapOf("tag" to "android", "error_message" to "UnknownException")
     val expectedApiId = ApiId.GET_EVALUATIONS
     val expectedMetadata = newMetadata("1.0.0")
   }
@@ -212,14 +214,14 @@ class BKTExceptionToEventDataMetricEventTest {
       ),
     ),
     UNKNOWN(
-      BKTException.UnknownException(message = ""),
+      BKTException.UnknownException(message = "UnknownException"),
       EventData.MetricsEvent(
         timestamp = EXPECTED_TIMESTAMP,
         type = MetricsEventType.UNKNOWN,
         event =
           MetricsEventData.UnknownErrorMetricsEvent(
             apiId = expectedApiId,
-            labels = expectedLabelsForOtherCases,
+            labels = expectedLabelsForUnknownException,
           ),
         sourceId = SourceID.ANDROID,
         sdkVersion = BuildConfig.SDK_VERSION,
