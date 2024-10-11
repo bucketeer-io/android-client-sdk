@@ -64,7 +64,7 @@ jobs:
           force-avd-creation: false
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
-          script: ./gradle uninstallAll && ./gradlew connectedCheck --stacktrace
+          script: ./gradlew uninstallAll && ./gradlew connectedCheck --stacktrace
 
       - name: Upload Bucketeer build reports
         if: always()
