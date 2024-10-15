@@ -3,4 +3,7 @@
 
 -keep class io.bucketeer.sdk.android.internal.model.** { *; }
 -keepclassmembers class io.bucketeer.sdk.android.internal.model.** { *; }
--keepclassmembers class io.bucketeer.sdk.android.internal.model.** { public <init>(...); }
+-keepclassmembers class io.bucketeer.sdk.android.internal.model.** {
+    public <init>();
+    public <init>(...);
+}
