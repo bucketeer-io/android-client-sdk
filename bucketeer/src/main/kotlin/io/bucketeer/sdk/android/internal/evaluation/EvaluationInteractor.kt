@@ -119,7 +119,7 @@ internal class EvaluationInteractor(
               runCatching {
                 it.value.onUpdate()
               }.onFailure { onUpdateError ->
-                val message = "onUpdateError: ${onUpdateError.message}"
+                val message = "failed while calling onUpdate listener: ${onUpdateError.message}"
                 logd(onUpdateError) { message }
                 logInternalError(BKTException.IllegalStateException(message))
               }
