@@ -5,6 +5,7 @@ import io.bucketeer.sdk.android.BKTException
 import io.bucketeer.sdk.android.BuildConfig
 import io.bucketeer.sdk.android.internal.Clock
 import io.bucketeer.sdk.android.internal.IdGenerator
+import io.bucketeer.sdk.android.internal.loge
 import io.bucketeer.sdk.android.internal.model.ApiId
 import io.bucketeer.sdk.android.internal.model.Evaluation
 import io.bucketeer.sdk.android.internal.model.Event
@@ -162,8 +163,13 @@ internal fun newErrorMetricsEvent(
   appVersion: String,
   error: BKTException,
   apiId: ApiId,
-): Event =
-  Event(
+): Event? {
+  if (error is BKTException.UnauthorizedException || error is BKTException.ForbiddenException) {
+    loge(error) { "An unauthorized or forbidden error occurred. Please check your API Key." }
+    return null
+  }
+
+  return Event(
     id = idGenerator.newId(),
     type = EventType.METRICS,
     event =
@@ -175,6 +181,7 @@ internal fun newErrorMetricsEvent(
         apiId,
       ),
   )
+}
 
 internal fun newEventDataMetricEvent(
   error: BKTException,

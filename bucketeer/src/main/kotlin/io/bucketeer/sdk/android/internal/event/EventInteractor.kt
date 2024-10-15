@@ -109,7 +109,7 @@ internal class EventInteractor(
         error = error,
         apiId = apiId,
       )
-    addMetricEvents(listOf(event))
+    event?.let { addMetricEvents(listOf(event)) }
   }
 
   /*

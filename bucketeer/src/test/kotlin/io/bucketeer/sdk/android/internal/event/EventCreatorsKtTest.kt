@@ -1,5 +1,9 @@
 package io.bucketeer.sdk.android.internal.event
 
+import io.bucketeer.sdk.android.BKTException
+import io.bucketeer.sdk.android.internal.ClockImpl
+import io.bucketeer.sdk.android.internal.IdGeneratorImpl
+import io.bucketeer.sdk.android.internal.model.ApiId
 import org.junit.Test
 
 class EventCreatorsKtTest {
@@ -10,5 +14,29 @@ class EventCreatorsKtTest {
     assert(500L.toStringInDoubleFormat() == "0.5")
     assert(432L.toStringInDoubleFormat() == "0.432")
     assert(51L.toStringInDoubleFormat() == "0.051")
+  }
+
+  @Test
+  fun testShouldReturnNullWhenUnauthorizedOrForbidden() {
+    val clock = ClockImpl()
+    val idGenerator = IdGeneratorImpl()
+    val featureTag = "testFeatureTag"
+    val appVersion = "1.0.0"
+    val apiId = ApiId.GET_EVALUATIONS
+
+    val unauthorizedException = BKTException.UnauthorizedException("401 error")
+    val forbiddenException = BKTException.ForbiddenException("403 error")
+    val badRequestException = BKTException.BadRequestException("Bad request error")
+    val clientClosedRequestException = BKTException.ClientClosedRequestException("Client closed request error")
+    val internalServerErrorException = BKTException.InternalServerErrorException("Internal server error")
+    val notFoundException = BKTException.FeatureNotFoundException("404 error")
+
+    assert(newErrorMetricsEvent(clock, idGenerator, featureTag, appVersion, unauthorizedException, apiId) == null)
+    assert(newErrorMetricsEvent(clock, idGenerator, featureTag, appVersion, forbiddenException, apiId) == null)
+
+    assert(newErrorMetricsEvent(clock, idGenerator, featureTag, appVersion, badRequestException, apiId) != null)
+    assert(newErrorMetricsEvent(clock, idGenerator, featureTag, appVersion, clientClosedRequestException, apiId) != null)
+    assert(newErrorMetricsEvent(clock, idGenerator, featureTag, appVersion, internalServerErrorException, apiId) != null)
+    assert(newErrorMetricsEvent(clock, idGenerator, featureTag, appVersion, notFoundException, apiId) != null)
   }
 }

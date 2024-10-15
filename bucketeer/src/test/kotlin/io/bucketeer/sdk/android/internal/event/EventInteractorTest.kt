@@ -397,6 +397,27 @@ class EventInteractorTest {
   }
 
   @Test
+  fun `should not create error event for Unauthorized and ForbiddenExceptions`() {
+    val listener = FakeEventUpdateListener()
+
+    interactor.setEventUpdateListener(listener)
+
+    interactor.trackFetchEvaluationsFailure(
+      "feature_tag_value",
+      BKTException.UnauthorizedException("unauthorized"),
+    )
+
+    assertThat(listener.calls).hasSize(0)
+
+    interactor.trackFetchEvaluationsFailure(
+      "feature_tag_value",
+      BKTException.ForbiddenException("forbidden"),
+    )
+
+    assertThat(listener.calls).hasSize(0)
+  }
+
+  @Test
   fun `sendEvents - success`() {
     server.enqueue(
       MockResponse()
