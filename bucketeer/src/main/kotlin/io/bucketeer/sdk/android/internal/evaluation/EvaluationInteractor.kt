@@ -29,6 +29,9 @@ internal class EvaluationInteractor(
   @VisibleForTesting
   internal val updateListeners = mutableMapOf<String, BKTClient.EvaluationUpdateListener>()
 
+  @VisibleForTesting
+  internal var onInternalErrorListener: OnErrorListener? = null
+
   init {
     updateFeatureTag(featureTag)
   }
@@ -171,8 +174,6 @@ internal class EvaluationInteractor(
   }
 
   fun getLatest(featureId: String): Evaluation? = evaluationStorage.getBy(featureId)
-
-  private var onInternalErrorListener: OnErrorListener? = null
 
   fun setErrorListener(listener: OnErrorListener?) {
     onInternalErrorListener = listener
