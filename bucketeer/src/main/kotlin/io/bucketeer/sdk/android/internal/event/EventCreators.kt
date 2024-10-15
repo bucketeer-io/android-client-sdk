@@ -165,7 +165,7 @@ internal fun newErrorMetricsEvent(
   apiId: ApiId,
 ): Event? {
   if (error is BKTException.UnauthorizedException || error is BKTException.ForbiddenException) {
-    loge(error) { "Skip generating error events for unauthorized or forbidden errors." }
+    loge(error) { "An unauthorized or forbidden error occurred. Please check your API Key." }
     return null
   }
 
