@@ -271,9 +271,23 @@ class BKTClientImplTest {
       1000,
     )
 
+    Shadows.shadowOf(Looper.getMainLooper()).idle()
+
     assertThat(BKTClient.getInstance()).isInstanceOf(BKTClient::class.java)
+    val client = BKTClient.getInstance() as BKTClientImpl
+    client.addEvaluationUpdateListener {}
+
+    val evaluationInteractor = client.componentImpl.evaluationInteractor
+    evaluationInteractor.addUpdateListener { }
+
+    assertThat(evaluationInteractor.updateListeners.isEmpty()).isFalse()
+    assertThat(evaluationInteractor.onErrorListener).isNotNull()
 
     BKTClient.destroy()
+
+    Thread.sleep(100)
+    assertThat(evaluationInteractor.updateListeners.isEmpty()).isTrue()
+    assertThat(evaluationInteractor.onErrorListener).isNull()
 
     assertThrows(BKTException.IllegalArgumentException::class.java) {
       BKTClient.getInstance()
