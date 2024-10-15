@@ -6,6 +6,7 @@ import androidx.test.core.app.ApplicationProvider
 import com.google.common.truth.Truth.assertThat
 import com.squareup.moshi.Moshi
 import io.bucketeer.sdk.android.BKTConfig
+import io.bucketeer.sdk.android.BKTException
 import io.bucketeer.sdk.android.internal.di.ComponentImpl
 import io.bucketeer.sdk.android.internal.di.DataModule
 import io.bucketeer.sdk.android.internal.di.InteractorModule
@@ -594,6 +595,47 @@ class EvaluationInteractorTest {
     interactor.clearUpdateListeners()
 
     assertThat(interactor.updateListeners).isEmpty()
+  }
+
+  @Test
+  @LooperMode(Mode.PAUSED)
+  fun `should call error listener if there is error throwing from onUpdate()`() {
+    val expectResponse =
+      GetEvaluationsResponse(
+        evaluations = user1EvaluationsUpsert,
+        userEvaluationsId = "user_evaluations_id_value_updated",
+      )
+    server.enqueue(
+      MockResponse()
+        .setResponseCode(200)
+        .setBody(
+          moshi
+            .adapter(GetEvaluationsResponse::class.java)
+            .toJson(
+              expectResponse,
+            ),
+        ),
+    )
+
+    var updateListenerCalled = false
+    var onErrorListenerCalled = false
+
+    interactor.addUpdateListener {
+      updateListenerCalled = true
+      throw Exception("onUpdate error")
+    }
+
+    interactor.setErrorListener {
+      onErrorListenerCalled = true
+      assertThat(it).isInstanceOf(BKTException.IllegalStateException::class.java)
+    }
+
+    interactor.fetch(user1, null)
+
+    shadowOf(Looper.getMainLooper()).idle()
+
+    assertThat(updateListenerCalled).isTrue()
+    assertThat(onErrorListenerCalled).isTrue()
   }
 }
 

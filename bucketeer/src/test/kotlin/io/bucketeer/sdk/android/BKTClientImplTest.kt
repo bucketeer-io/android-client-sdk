@@ -271,9 +271,28 @@ class BKTClientImplTest {
       1000,
     )
 
+    Shadows.shadowOf(Looper.getMainLooper()).idle()
+
     assertThat(BKTClient.getInstance()).isInstanceOf(BKTClient::class.java)
+    val client = BKTClient.getInstance() as BKTClientImpl
+    client.addEvaluationUpdateListener {}
+
+    val evaluationInteractor = client.componentImpl.evaluationInteractor
+    val eventInteractor = client.componentImpl.eventInteractor
+
+    evaluationInteractor.addUpdateListener { }
+    eventInteractor.setEventUpdateListener { }
+
+    assertThat(evaluationInteractor.updateListeners.isEmpty()).isFalse()
+    assertThat(evaluationInteractor.onErrorListener).isNotNull()
+    assertThat(eventInteractor.eventUpdateListener).isNotNull()
 
     BKTClient.destroy()
+
+    Thread.sleep(100)
+    assertThat(evaluationInteractor.updateListeners.isEmpty()).isTrue()
+    assertThat(evaluationInteractor.onErrorListener).isNull()
+    assertThat(eventInteractor.eventUpdateListener).isNull()
 
     assertThrows(BKTException.IllegalArgumentException::class.java) {
       BKTClient.getInstance()
@@ -1399,6 +1418,108 @@ class BKTClientImplTest {
     assertThat(lastEvent.type).isEqualTo(EventType.METRICS)
     assertThat((lastEvent.event as EventData.MetricsEvent).type)
       .isEqualTo(MetricsEventType.INTERNAL_SERVER_ERROR)
+  }
+
+  @Test
+  fun `fetchEvaluations - onUpdateListener failure`() {
+    server.enqueue(
+      MockResponse()
+        .setResponseCode(200)
+        .setBody(
+          moshi
+            .adapter(GetEvaluationsResponse::class.java)
+            .toJson(
+              GetEvaluationsResponse(
+                evaluations =
+                  UserEvaluations(
+                    id = "id_value",
+                    evaluations = listOf(evaluation1),
+                    createdAt = "1690798021",
+                    forceUpdate = true,
+                  ),
+                userEvaluationsId = "user_evaluations_id_value",
+              ),
+            ),
+        ),
+    )
+    val updatedEvaluation1 =
+      evaluation1.copy(
+        variationValue = "test variation value1 updated",
+      )
+    server.enqueue(
+      MockResponse()
+        .setResponseCode(200)
+        .setBody(
+          moshi
+            .adapter(GetEvaluationsResponse::class.java)
+            .toJson(
+              GetEvaluationsResponse(
+                evaluations =
+                  user1Evaluations.copy(
+                    evaluations = listOf(updatedEvaluation1),
+                  ),
+                userEvaluationsId = "user_evaluations_id_value_updated",
+              ),
+            ),
+        ),
+    )
+
+    val initializeFuture =
+      BKTClient.initialize(
+        ApplicationProvider.getApplicationContext(),
+        config,
+        user1.toBKTUser(),
+        1000,
+      )
+    initializeFuture.get()
+
+    val client = BKTClient.getInstance() as BKTClientImpl
+
+    var onUpdateListenerCalled = false
+    client.addEvaluationUpdateListener {
+      onUpdateListenerCalled = true
+      throw RuntimeException("onUpdateListener failure")
+    }
+
+    val result = client.fetchEvaluations().get()
+
+    Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+    Thread.sleep(100)
+
+    assertThat(result).isNull()
+
+    assertThat(
+      client.componentImpl.dataModule.evaluationStorage
+        .getCurrentEvaluationId(),
+    ).isEqualTo("user_evaluations_id_value_updated")
+
+    assertThat(
+      client.componentImpl.dataModule.evaluationStorage
+        .get(),
+    ).isEqualTo(listOf(updatedEvaluation1))
+
+    assertThat(onUpdateListenerCalled).isTrue()
+
+    // 2 metrics events (latency , size) from the BKTClient internal init()
+    // 2 metrics events (latency , size) from the test code above
+    // 1 internal error metrics event from the onUpdateListener
+    // Because we filter duplicate
+    // Finally we will have only 3 items
+    val events =
+      client.componentImpl.dataModule.eventSQLDao
+        .getEvents()
+    assertThat(
+      events,
+    ).hasSize(3)
+
+    val internalSdkErrorMetricsEvent =
+      events.first {
+        it.event is EventData.MetricsEvent &&
+          (it.event as EventData.MetricsEvent).event is MetricsEventData.InternalSdkErrorMetricsEvent
+      }
+
+    assertThat(internalSdkErrorMetricsEvent).isNotNull()
   }
 
   @Test

@@ -172,6 +172,7 @@ internal class BKTClientImpl(
 
   internal fun initializeInternal(timeoutMillis: Long): Future<BKTException?> {
     scheduleTasks()
+    listenEvaluationInteractorError()
     return executor.submit<BKTException?> {
       refreshCache()
       fetchEvaluationsSync(component, executor, timeoutMillis)
@@ -222,6 +223,19 @@ internal class BKTClientImpl(
     }
   }
 
+  private fun listenEvaluationInteractorError() {
+    component.evaluationInteractor.setErrorListener { error ->
+      executor.execute {
+        val featureTag = config.featureTag
+        val interactor = component.eventInteractor
+        interactor.trackFetchEvaluationsFailure(
+          featureTag = featureTag,
+          error = error,
+        )
+      }
+    }
+  }
+
   private fun scheduleTasks() {
     // Lifecycle observer must be executed on the main thread
     runOnMainThread {
@@ -243,7 +257,7 @@ internal class BKTClientImpl(
 
   internal fun destroy() {
     executor.execute {
-      (component as ComponentImpl).dataModule.destroy()
+      component.destroy()
     }
   }
 
