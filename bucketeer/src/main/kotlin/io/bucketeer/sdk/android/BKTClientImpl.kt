@@ -257,10 +257,7 @@ internal class BKTClientImpl(
 
   internal fun destroy() {
     executor.execute {
-      // Clear all listeners to prevent memory leaks by circular references
-      component.evaluationInteractor.setErrorListener(null)
-      component.evaluationInteractor.clearUpdateListeners()
-      (component as ComponentImpl).dataModule.destroy()
+      component.destroy()
     }
   }
 

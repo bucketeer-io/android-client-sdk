@@ -278,16 +278,21 @@ class BKTClientImplTest {
     client.addEvaluationUpdateListener {}
 
     val evaluationInteractor = client.componentImpl.evaluationInteractor
+    val eventInteractor = client.componentImpl.eventInteractor
+
     evaluationInteractor.addUpdateListener { }
+    eventInteractor.setEventUpdateListener { }
 
     assertThat(evaluationInteractor.updateListeners.isEmpty()).isFalse()
     assertThat(evaluationInteractor.onErrorListener).isNotNull()
+    assertThat(eventInteractor.eventUpdateListener).isNotNull()
 
     BKTClient.destroy()
 
     Thread.sleep(100)
     assertThat(evaluationInteractor.updateListeners.isEmpty()).isTrue()
     assertThat(evaluationInteractor.onErrorListener).isNull()
+    assertThat(eventInteractor.eventUpdateListener).isNull()
 
     assertThrows(BKTException.IllegalArgumentException::class.java) {
       BKTClient.getInstance()

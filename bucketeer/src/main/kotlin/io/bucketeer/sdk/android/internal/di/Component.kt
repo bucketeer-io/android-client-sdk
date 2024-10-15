@@ -12,6 +12,8 @@ internal interface Component {
   val userHolder: UserHolder
   val evaluationInteractor: EvaluationInteractor
   val eventInteractor: EventInteractor
+
+  fun destroy()
 }
 
 internal class ComponentImpl(
@@ -46,5 +48,13 @@ internal class ComponentImpl(
       appVersion = dataModule.config.appVersion,
       featureTag = dataModule.config.featureTag,
     )
+  }
+
+  override fun destroy() {
+    // Clear all listeners to prevent memory leaks by circular references
+    evaluationInteractor.clearUpdateListeners()
+    evaluationInteractor.setErrorListener(null)
+    eventInteractor.setEventUpdateListener(null)
+    dataModule.destroy()
   }
 }

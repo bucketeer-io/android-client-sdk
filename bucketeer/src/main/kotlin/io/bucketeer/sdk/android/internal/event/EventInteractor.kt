@@ -23,7 +23,9 @@ internal class EventInteractor(
   private val appVersion: String,
   private val featureTag: String,
 ) {
-  private var eventUpdateListener: EventUpdateListener? = null
+
+  @VisibleForTesting
+  internal var eventUpdateListener: EventUpdateListener? = null
 
   fun setEventUpdateListener(listener: EventUpdateListener?) {
     this.eventUpdateListener = listener
