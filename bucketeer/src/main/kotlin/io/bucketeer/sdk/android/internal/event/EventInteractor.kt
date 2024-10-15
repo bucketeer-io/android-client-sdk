@@ -23,7 +23,6 @@ internal class EventInteractor(
   private val appVersion: String,
   private val featureTag: String,
 ) {
-
   @VisibleForTesting
   internal var eventUpdateListener: EventUpdateListener? = null
 
