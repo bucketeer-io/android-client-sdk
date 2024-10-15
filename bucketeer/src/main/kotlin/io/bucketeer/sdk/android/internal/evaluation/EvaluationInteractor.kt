@@ -30,7 +30,7 @@ internal class EvaluationInteractor(
   internal val updateListeners = mutableMapOf<String, BKTClient.EvaluationUpdateListener>()
 
   @VisibleForTesting
-  internal var internalErrorListener: OnErrorListener? = null
+  internal var onErrorListener: OnErrorListener? = null
 
   init {
     updateFeatureTag(featureTag)
@@ -176,11 +176,11 @@ internal class EvaluationInteractor(
   fun getLatest(featureId: String): Evaluation? = evaluationStorage.getBy(featureId)
 
   fun setErrorListener(listener: OnErrorListener?) {
-    internalErrorListener = listener
+    onErrorListener = listener
   }
 
   private fun logInternalError(error: BKTException) {
-    internalErrorListener?.onInternalError(error)
+    onErrorListener?.onInternalError(error)
   }
 
   fun interface OnErrorListener {
