@@ -1412,12 +1412,12 @@ class BKTClientImplTest {
             .toJson(
               GetEvaluationsResponse(
                 evaluations =
-                UserEvaluations(
-                  id = "id_value",
-                  evaluations = listOf(evaluation1),
-                  createdAt = "1690798021",
-                  forceUpdate = true,
-                ),
+                  UserEvaluations(
+                    id = "id_value",
+                    evaluations = listOf(evaluation1),
+                    createdAt = "1690798021",
+                    forceUpdate = true,
+                  ),
                 userEvaluationsId = "user_evaluations_id_value",
               ),
             ),
@@ -1436,9 +1436,9 @@ class BKTClientImplTest {
             .toJson(
               GetEvaluationsResponse(
                 evaluations =
-                user1Evaluations.copy(
-                  evaluations = listOf(updatedEvaluation1),
-                ),
+                  user1Evaluations.copy(
+                    evaluations = listOf(updatedEvaluation1),
+                  ),
                 userEvaluationsId = "user_evaluations_id_value_updated",
               ),
             ),
@@ -1479,7 +1479,7 @@ class BKTClientImplTest {
       client.componentImpl.dataModule.evaluationStorage
         .get(),
     ).isEqualTo(listOf(updatedEvaluation1))
-    
+
     assertThat(onUpdateListenerCalled).isTrue()
 
     // 2 metrics events (latency , size) from the BKTClient internal init()
@@ -1487,15 +1487,18 @@ class BKTClientImplTest {
     // 1 internal error metrics event from the onUpdateListener
     // Because we filter duplicate
     // Finally we will have only 3 items
-    val events = client.componentImpl.dataModule.eventSQLDao.getEvents()
+    val events =
+      client.componentImpl.dataModule.eventSQLDao
+        .getEvents()
     assertThat(
       events,
     ).hasSize(3)
 
-    val internalSdkErrorMetricsEvent = events.first {
-      it.event is EventData.MetricsEvent &&
+    val internalSdkErrorMetricsEvent =
+      events.first {
+        it.event is EventData.MetricsEvent &&
           (it.event as EventData.MetricsEvent).event is MetricsEventData.InternalSdkErrorMetricsEvent
-    }
+      }
 
     assertThat(internalSdkErrorMetricsEvent).isNotNull()
   }
