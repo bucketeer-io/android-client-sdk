@@ -119,7 +119,9 @@ internal class EvaluationInteractor(
               runCatching {
                 it.value.onUpdate()
               }.onFailure { onUpdateError ->
-                logd(onUpdateError) { "onUpdateError: ${onUpdateError.message}" }
+                val message = "onUpdateError: ${onUpdateError.message}"
+                logd(onUpdateError) { message }
+                logInternalError(BKTException.IllegalStateException(message))
               }
             }
           }
@@ -169,4 +171,18 @@ internal class EvaluationInteractor(
   }
 
   fun getLatest(featureId: String): Evaluation? = evaluationStorage.getBy(featureId)
+
+  private var onInternalErrorListener: OnErrorListener? = null
+
+  fun setErrorListener(listener: OnErrorListener?) {
+    onInternalErrorListener = listener
+  }
+
+  private fun logInternalError(error: BKTException) {
+    onInternalErrorListener?.onInternalError(error)
+  }
+
+  fun interface OnErrorListener {
+    fun onInternalError(error: BKTException)
+  }
 }
