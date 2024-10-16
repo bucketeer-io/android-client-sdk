@@ -75,7 +75,8 @@ class BKTClientMetricEventTests {
 
     Thread.sleep(100)
     val events = eventDao.getEvents()
-    assertThat(events.count()).isEqualTo(1)
+
+    // We did not generate error events for forbidden (403) errors. The event count is expected to be 0.
     assertThat(
       events.any {
         val type = it.type
@@ -85,11 +86,12 @@ class BKTClientMetricEventTests {
           event.type == MetricsEventType.FORBIDDEN_ERROR &&
           event.event.apiId == ApiId.GET_EVALUATIONS
       },
-    ).isTrue()
+    ).isFalse()
+    assertThat(events.count()).isEqualTo(0)
 
     val flushResult = client.flush().get()
-    assertThat(flushResult).isInstanceOf(BKTException.ForbiddenException::class.java)
-    assertThat(eventDao.getEvents().count()).isEqualTo(2)
+    assertThat(flushResult).isNull()
+    assertThat(eventDao.getEvents().count()).isEqualTo(0)
   }
 
   @Test
