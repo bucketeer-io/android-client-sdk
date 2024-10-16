@@ -1,5 +1,24 @@
 # Changelog
 
+## [2.2.1](https://github.com/bucketeer-io/android-client-sdk/compare/v2.2.0...v2.2.1) (2024-10-16)
+
+
+### Bug Fixes
+
+* skip generating events for unauthorized or forbidden errors ([#201](https://github.com/bucketeer-io/android-client-sdk/issues/201)) ([283283c](https://github.com/bucketeer-io/android-client-sdk/commit/283283c25fd49a87bc525329c5e4bca81c8ad5cd))
+
+
+### Miscellaneous
+
+* capture all potential errors when fetching evaluations  ([#200](https://github.com/bucketeer-io/android-client-sdk/issues/200)) ([c23cbcf](https://github.com/bucketeer-io/android-client-sdk/commit/c23cbcfe27a46891d48b7d8f9461190acf72cab7))
+
+
+### Build System
+
+* **deps:** update all non-major dependencies ([#191](https://github.com/bucketeer-io/android-client-sdk/issues/191)) ([c846b1e](https://github.com/bucketeer-io/android-client-sdk/commit/c846b1e27fd27adaf7ee771c0b1680a9e1e297a5))
+* **deps:** update all non-major dependencies ([#193](https://github.com/bucketeer-io/android-client-sdk/issues/193)) ([f2a74c1](https://github.com/bucketeer-io/android-client-sdk/commit/f2a74c18cbb97bc4951ed87c8f573406013ccc48))
+* **deps:** update all non-major dependencies ([#197](https://github.com/bucketeer-io/android-client-sdk/issues/197)) ([c2890bc](https://github.com/bucketeer-io/android-client-sdk/commit/c2890bc49dc9398634ac3ca7a91122eb586f33a6))
+
 ## [2.2.0](https://github.com/bucketeer-io/android-client-sdk/compare/v2.1.7...v2.2.0) (2024-09-09)
 
 
