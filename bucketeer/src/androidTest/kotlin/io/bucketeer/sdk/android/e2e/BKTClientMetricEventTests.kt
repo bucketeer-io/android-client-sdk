@@ -76,7 +76,7 @@ class BKTClientMetricEventTests {
     Thread.sleep(100)
     val events = eventDao.getEvents()
 
-    // We skipped generating error events forbidden (403) errors. The event count should be 0.
+    // We did not generate error events for forbidden (403) errors. The event count is expected to be 0.
     assertThat(
       events.any {
         val type = it.type
