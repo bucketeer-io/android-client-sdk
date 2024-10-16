@@ -90,8 +90,8 @@ class BKTClientMetricEventTests {
     assertThat(events.count()).isEqualTo(0)
 
     val flushResult = client.flush().get()
-    assertThat(flushResult).isInstanceOf(BKTException.ForbiddenException::class.java)
-    assertThat(eventDao.getEvents().count()).isEqualTo(2)
+    assertThat(flushResult).isNull()
+    assertThat(eventDao.getEvents().count()).isEqualTo(0)
   }
 
   @Test
