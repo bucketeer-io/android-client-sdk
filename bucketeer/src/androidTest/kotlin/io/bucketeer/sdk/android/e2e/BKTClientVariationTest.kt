@@ -93,28 +93,30 @@ class BKTClientVariationTest {
 
     assertEvaluationDetails(
       actual = BKTClient.getInstance().stringVariationDetails(FEATURE_ID_STRING, defaultValue = "1"),
-      expected = BKTEvaluationDetails(
-        featureId = FEATURE_ID_STRING,
-        featureVersion = 4,
-        userId = USER_ID,
-        variationId = "36a53a17-60b4-4a99-a54a-7fcbf21f7c8c",
-        variationName = "variation 1",
-        variationValue = "value-1",
-        reason = BKTEvaluationDetails.Reason.DEFAULT,
-      ),
+      expected =
+        BKTEvaluationDetails(
+          featureId = FEATURE_ID_STRING,
+          featureVersion = 4,
+          userId = USER_ID,
+          variationId = "36a53a17-60b4-4a99-a54a-7fcbf21f7c8c",
+          variationName = "variation 1",
+          variationValue = "value-1",
+          reason = BKTEvaluationDetails.Reason.DEFAULT,
+        ),
     )
 
     assertEvaluationDetails(
       actual = BKTClient.getInstance().objectVariationDetails(FEATURE_ID_STRING, defaultValue = BKTValue.String("1")),
-      expected = BKTEvaluationDetails(
-        featureId = FEATURE_ID_STRING,
-        featureVersion = 4,
-        userId = USER_ID,
-        variationId = "36a53a17-60b4-4a99-a54a-7fcbf21f7c8c",
-        variationName = "variation 1",
-        variationValue = BKTValue.String("value-1"),
-        reason = BKTEvaluationDetails.Reason.DEFAULT,
-      ),
+      expected =
+        BKTEvaluationDetails(
+          featureId = FEATURE_ID_STRING,
+          featureVersion = 4,
+          userId = USER_ID,
+          variationId = "36a53a17-60b4-4a99-a54a-7fcbf21f7c8c",
+          variationName = "variation 1",
+          variationValue = BKTValue.String("value-1"),
+          reason = BKTEvaluationDetails.Reason.DEFAULT,
+        ),
     )
   }
 
@@ -146,28 +148,30 @@ class BKTClientVariationTest {
 
     assertEvaluationDetails(
       actual = BKTClient.getInstance().intVariationDetails(FEATURE_ID_INT, defaultValue = 1),
-      expected = BKTEvaluationDetails(
-        featureId = FEATURE_ID_INT,
-        featureVersion = 3,
-        userId = USER_ID,
-        variationId = "9b9a4396-d2ec-4eaf-aee6-ca0276881120",
-        variationName = "variation 10",
-        variationValue = 10,
-        reason = BKTEvaluationDetails.Reason.DEFAULT,
-      ),
+      expected =
+        BKTEvaluationDetails(
+          featureId = FEATURE_ID_INT,
+          featureVersion = 3,
+          userId = USER_ID,
+          variationId = "9b9a4396-d2ec-4eaf-aee6-ca0276881120",
+          variationName = "variation 10",
+          variationValue = 10,
+          reason = BKTEvaluationDetails.Reason.DEFAULT,
+        ),
     )
 
     assertEvaluationDetails(
       actual = BKTClient.getInstance().objectVariationDetails(FEATURE_ID_INT, defaultValue = BKTValue.Number(1.0)),
-      expected = BKTEvaluationDetails(
-        featureId = FEATURE_ID_INT,
-        featureVersion = 3,
-        userId = USER_ID,
-        variationId = "9b9a4396-d2ec-4eaf-aee6-ca0276881120",
-        variationName = "variation 10",
-        variationValue = BKTValue.Number(10.0),
-        reason = BKTEvaluationDetails.Reason.DEFAULT,
-      ),
+      expected =
+        BKTEvaluationDetails(
+          featureId = FEATURE_ID_INT,
+          featureVersion = 3,
+          userId = USER_ID,
+          variationId = "9b9a4396-d2ec-4eaf-aee6-ca0276881120",
+          variationName = "variation 10",
+          variationValue = BKTValue.Number(10.0),
+          reason = BKTEvaluationDetails.Reason.DEFAULT,
+        ),
     )
   }
 
@@ -190,55 +194,59 @@ class BKTClientVariationTest {
     val actual = BKTClient.getInstance().evaluationDetails(FEATURE_ID_DOUBLE)
     assertEvaluation(
       actual = actual,
-      expected = BKTEvaluation(
-        id = "feature-android-e2e-double:3:bucketeer-android-user-id-1",
-        featureId = FEATURE_ID_DOUBLE,
-        featureVersion = 3,
-        userId = USER_ID,
-        variationId = "384bbcf0-0d1d-4e7a-b589-850f16f833b4",
-        variationName = "variation 2.1",
-        variationValue = "2.1",
-        reason = BKTEvaluation.Reason.DEFAULT,
-      ),
+      expected =
+        BKTEvaluation(
+          id = "feature-android-e2e-double:3:bucketeer-android-user-id-1",
+          featureId = FEATURE_ID_DOUBLE,
+          featureVersion = 3,
+          userId = USER_ID,
+          variationId = "384bbcf0-0d1d-4e7a-b589-850f16f833b4",
+          variationName = "variation 2.1",
+          variationValue = "2.1",
+          reason = BKTEvaluation.Reason.DEFAULT,
+        ),
     )
 
     assertEvaluationDetails(
       actual = BKTClient.getInstance().doubleVariationDetails(FEATURE_ID_DOUBLE, defaultValue = 3.4),
-      expected = BKTEvaluationDetails(
-        featureId = FEATURE_ID_DOUBLE,
-        featureVersion = 3,
-        userId = USER_ID,
-        variationId = "384bbcf0-0d1d-4e7a-b589-850f16f833b4",
-        variationName = "variation 2.1",
-        variationValue = 2.1,
-        reason = BKTEvaluationDetails.Reason.DEFAULT,
-      ),
+      expected =
+        BKTEvaluationDetails(
+          featureId = FEATURE_ID_DOUBLE,
+          featureVersion = 3,
+          userId = USER_ID,
+          variationId = "384bbcf0-0d1d-4e7a-b589-850f16f833b4",
+          variationName = "variation 2.1",
+          variationValue = 2.1,
+          reason = BKTEvaluationDetails.Reason.DEFAULT,
+        ),
     )
 
     assertEvaluationDetails(
       actual = BKTClient.getInstance().intVariationDetails(FEATURE_ID_DOUBLE, defaultValue = 44),
-      expected = BKTEvaluationDetails(
-        featureId = FEATURE_ID_DOUBLE,
-        featureVersion = 3,
-        userId = USER_ID,
-        variationId = "384bbcf0-0d1d-4e7a-b589-850f16f833b4",
-        variationName = "variation 2.1",
-        variationValue = 2,
-        reason = BKTEvaluationDetails.Reason.DEFAULT,
-      ),
+      expected =
+        BKTEvaluationDetails(
+          featureId = FEATURE_ID_DOUBLE,
+          featureVersion = 3,
+          userId = USER_ID,
+          variationId = "384bbcf0-0d1d-4e7a-b589-850f16f833b4",
+          variationName = "variation 2.1",
+          variationValue = 2,
+          reason = BKTEvaluationDetails.Reason.DEFAULT,
+        ),
     )
 
     assertEvaluationDetails(
       actual = BKTClient.getInstance().objectVariationDetails(FEATURE_ID_DOUBLE, defaultValue = BKTValue.Number(1.0)),
-      expected = BKTEvaluationDetails(
-        featureId = FEATURE_ID_DOUBLE,
-        featureVersion = 3,
-        userId = USER_ID,
-        variationId = "384bbcf0-0d1d-4e7a-b589-850f16f833b4",
-        variationName = "variation 2.1",
-        variationValue = BKTValue.Number(2.1),
-        reason = BKTEvaluationDetails.Reason.DEFAULT,
-      ),
+      expected =
+        BKTEvaluationDetails(
+          featureId = FEATURE_ID_DOUBLE,
+          featureVersion = 3,
+          userId = USER_ID,
+          variationId = "384bbcf0-0d1d-4e7a-b589-850f16f833b4",
+          variationName = "variation 2.1",
+          variationValue = BKTValue.Number(2.1),
+          reason = BKTEvaluationDetails.Reason.DEFAULT,
+        ),
     )
   }
 
@@ -270,28 +278,30 @@ class BKTClientVariationTest {
 
     assertEvaluationDetails(
       actual = BKTClient.getInstance().boolVariationDetails(FEATURE_ID_BOOLEAN, defaultValue = true),
-      expected = BKTEvaluationDetails(
-        featureId = FEATURE_ID_BOOLEAN,
-        featureVersion = 3,
-        userId = USER_ID,
-        variationId = "774fb34d-5b08-4305-9995-08cdac47aa0f",
-        variationName = "variation true",
-        variationValue = true,
-        reason = BKTEvaluationDetails.Reason.DEFAULT,
-      ),
+      expected =
+        BKTEvaluationDetails(
+          featureId = FEATURE_ID_BOOLEAN,
+          featureVersion = 3,
+          userId = USER_ID,
+          variationId = "774fb34d-5b08-4305-9995-08cdac47aa0f",
+          variationName = "variation true",
+          variationValue = true,
+          reason = BKTEvaluationDetails.Reason.DEFAULT,
+        ),
     )
 
     assertEvaluationDetails(
       actual = BKTClient.getInstance().objectVariationDetails(FEATURE_ID_BOOLEAN, defaultValue = BKTValue.Number(1.0)),
-      expected = BKTEvaluationDetails(
-        featureId = FEATURE_ID_BOOLEAN,
-        featureVersion = 3,
-        userId = USER_ID,
-        variationId = "774fb34d-5b08-4305-9995-08cdac47aa0f",
-        variationName = "variation true",
-        variationValue = BKTValue.Boolean(true),
-        reason = BKTEvaluationDetails.Reason.DEFAULT,
-      ),
+      expected =
+        BKTEvaluationDetails(
+          featureId = FEATURE_ID_BOOLEAN,
+          featureVersion = 3,
+          userId = USER_ID,
+          variationId = "774fb34d-5b08-4305-9995-08cdac47aa0f",
+          variationName = "variation true",
+          variationValue = BKTValue.Boolean(true),
+          reason = BKTEvaluationDetails.Reason.DEFAULT,
+        ),
     )
   }
 
@@ -325,16 +335,17 @@ class BKTClientVariationTest {
     val actual = BKTClient.getInstance().evaluationDetails(FEATURE_ID_JSON)
     assertEvaluation(
       actual = actual,
-      expected = BKTEvaluation(
-        id = "feature-android-e2e-json:3:bucketeer-android-user-id-1",
-        featureId = FEATURE_ID_JSON,
-        featureVersion = 3,
-        userId = USER_ID,
-        variationId = "4499d1ca-411d-4ec6-9ae8-df51087e72bb",
-        variationName = "variation 1",
-        variationValue = """{ "key": "value-1" }""",
-        reason = BKTEvaluation.Reason.DEFAULT,
-      ),
+      expected =
+        BKTEvaluation(
+          id = "feature-android-e2e-json:3:bucketeer-android-user-id-1",
+          featureId = FEATURE_ID_JSON,
+          featureVersion = 3,
+          userId = USER_ID,
+          variationId = "4499d1ca-411d-4ec6-9ae8-df51087e72bb",
+          variationName = "variation 1",
+          variationValue = """{ "key": "value-1" }""",
+          reason = BKTEvaluation.Reason.DEFAULT,
+        ),
     )
 
     val actualEvaluationDetails =
@@ -352,20 +363,21 @@ class BKTClientVariationTest {
 
     assertEvaluationDetails(
       actual = actualEvaluationDetails,
-      expected = BKTEvaluationDetails(
-        featureId = FEATURE_ID_JSON,
-        featureVersion = 3,
-        userId = USER_ID,
-        variationId = "4499d1ca-411d-4ec6-9ae8-df51087e72bb",
-        variationName = "variation 1",
-        variationValue =
-          BKTValue.Structure(
-            mapOf(
-              "key" to BKTValue.String("value-1"),
+      expected =
+        BKTEvaluationDetails(
+          featureId = FEATURE_ID_JSON,
+          featureVersion = 3,
+          userId = USER_ID,
+          variationId = "4499d1ca-411d-4ec6-9ae8-df51087e72bb",
+          variationName = "variation 1",
+          variationValue =
+            BKTValue.Structure(
+              mapOf(
+                "key" to BKTValue.String("value-1"),
+              ),
             ),
-          ),
-        reason = BKTEvaluationDetails.Reason.DEFAULT,
-      ),
+          reason = BKTEvaluationDetails.Reason.DEFAULT,
+        ),
     )
   }
 }

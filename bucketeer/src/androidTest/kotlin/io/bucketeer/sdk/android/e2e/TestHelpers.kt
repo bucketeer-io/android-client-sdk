@@ -18,11 +18,11 @@ fun assertEvaluation(
   assertThat(actual.reason).isEqualTo(expected.reason)
 }
 
-fun <T>assertEvaluationDetails(
+fun <T> assertEvaluationDetails(
   actual: BKTEvaluationDetails<T>,
   expected: BKTEvaluationDetails<T>,
 ) {
-  //Skipped check featureVersion
+  // Skipped check featureVersion
   assertThat(actual.featureId).isEqualTo(expected.featureId)
   assertThat(actual.userId).isEqualTo(expected.userId)
   assertThat(actual.variationId).isEqualTo(expected.variationId)

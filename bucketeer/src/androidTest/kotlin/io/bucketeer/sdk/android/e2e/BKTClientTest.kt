@@ -95,15 +95,16 @@ class BKTClientTest {
     val detailStringEvaluationDetails = client.stringVariationDetails(FEATURE_ID_STRING, defaultValue = "")
     assertEvaluationDetails(
       actual = detailStringEvaluationDetails,
-      expected = BKTEvaluationDetails(
-        featureId = FEATURE_ID_STRING,
-        featureVersion = 4,
-        userId = USER_ID,
-        variationId = "b59a19d5-f4b1-47f8-a46e-6d9ca14740c1",
-        variationName = "variation 2",
-        variationValue = "value-2",
-        reason = BKTEvaluationDetails.Reason.RULE,
-      ),
+      expected =
+        BKTEvaluationDetails(
+          featureId = FEATURE_ID_STRING,
+          featureVersion = 4,
+          userId = USER_ID,
+          variationId = "b59a19d5-f4b1-47f8-a46e-6d9ca14740c1",
+          variationName = "variation 2",
+          variationValue = "value-2",
+          reason = BKTEvaluationDetails.Reason.RULE,
+        ),
     )
   }
 }
