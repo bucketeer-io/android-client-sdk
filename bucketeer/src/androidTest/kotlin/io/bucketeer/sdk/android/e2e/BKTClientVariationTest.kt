@@ -91,10 +91,9 @@ class BKTClientVariationTest {
       ),
     )
 
-    assertThat(
-      BKTClient.getInstance().stringVariationDetails(FEATURE_ID_STRING, defaultValue = "1"),
-    ).isEqualTo(
-      BKTEvaluationDetails(
+    assertEvaluationDetails(
+      actual = BKTClient.getInstance().stringVariationDetails(FEATURE_ID_STRING, defaultValue = "1"),
+      expected = BKTEvaluationDetails(
         featureId = FEATURE_ID_STRING,
         featureVersion = 4,
         userId = USER_ID,
@@ -105,10 +104,9 @@ class BKTClientVariationTest {
       ),
     )
 
-    assertThat(
-      BKTClient.getInstance().objectVariationDetails(FEATURE_ID_STRING, defaultValue = BKTValue.String("1")),
-    ).isEqualTo(
-      BKTEvaluationDetails(
+    assertEvaluationDetails(
+      actual = BKTClient.getInstance().objectVariationDetails(FEATURE_ID_STRING, defaultValue = BKTValue.String("1")),
+      expected = BKTEvaluationDetails(
         featureId = FEATURE_ID_STRING,
         featureVersion = 4,
         userId = USER_ID,
@@ -146,10 +144,9 @@ class BKTClientVariationTest {
       ),
     )
 
-    assertThat(
-      BKTClient.getInstance().intVariationDetails(FEATURE_ID_INT, defaultValue = 1),
-    ).isEqualTo(
-      BKTEvaluationDetails(
+    assertEvaluationDetails(
+      actual = BKTClient.getInstance().intVariationDetails(FEATURE_ID_INT, defaultValue = 1),
+      expected = BKTEvaluationDetails(
         featureId = FEATURE_ID_INT,
         featureVersion = 3,
         userId = USER_ID,
@@ -160,10 +157,9 @@ class BKTClientVariationTest {
       ),
     )
 
-    assertThat(
-      BKTClient.getInstance().objectVariationDetails(FEATURE_ID_INT, defaultValue = BKTValue.Number(1.0)),
-    ).isEqualTo(
-      BKTEvaluationDetails(
+    assertEvaluationDetails(
+      actual = BKTClient.getInstance().objectVariationDetails(FEATURE_ID_INT, defaultValue = BKTValue.Number(1.0)),
+      expected = BKTEvaluationDetails(
         featureId = FEATURE_ID_INT,
         featureVersion = 3,
         userId = USER_ID,
@@ -193,8 +189,8 @@ class BKTClientVariationTest {
   fun doubleVariation_detail() {
     val actual = BKTClient.getInstance().evaluationDetails(FEATURE_ID_DOUBLE)
     assertEvaluation(
-      actual,
-      BKTEvaluation(
+      actual = actual,
+      expected = BKTEvaluation(
         id = "feature-android-e2e-double:3:bucketeer-android-user-id-1",
         featureId = FEATURE_ID_DOUBLE,
         featureVersion = 3,
@@ -206,10 +202,9 @@ class BKTClientVariationTest {
       ),
     )
 
-    assertThat(
-      BKTClient.getInstance().doubleVariationDetails(FEATURE_ID_DOUBLE, defaultValue = 3.4),
-    ).isEqualTo(
-      BKTEvaluationDetails(
+    assertEvaluationDetails(
+      actual = BKTClient.getInstance().doubleVariationDetails(FEATURE_ID_DOUBLE, defaultValue = 3.4),
+      expected = BKTEvaluationDetails(
         featureId = FEATURE_ID_DOUBLE,
         featureVersion = 3,
         userId = USER_ID,
@@ -220,10 +215,9 @@ class BKTClientVariationTest {
       ),
     )
 
-    assertThat(
-      BKTClient.getInstance().intVariationDetails(FEATURE_ID_DOUBLE, defaultValue = 44),
-    ).isEqualTo(
-      BKTEvaluationDetails(
+    assertEvaluationDetails(
+      actual = BKTClient.getInstance().intVariationDetails(FEATURE_ID_DOUBLE, defaultValue = 44),
+      expected = BKTEvaluationDetails(
         featureId = FEATURE_ID_DOUBLE,
         featureVersion = 3,
         userId = USER_ID,
@@ -234,10 +228,9 @@ class BKTClientVariationTest {
       ),
     )
 
-    assertThat(
-      BKTClient.getInstance().objectVariationDetails(FEATURE_ID_DOUBLE, defaultValue = BKTValue.Number(1.0)),
-    ).isEqualTo(
-      BKTEvaluationDetails(
+    assertEvaluationDetails(
+      actual = BKTClient.getInstance().objectVariationDetails(FEATURE_ID_DOUBLE, defaultValue = BKTValue.Number(1.0)),
+      expected = BKTEvaluationDetails(
         featureId = FEATURE_ID_DOUBLE,
         featureVersion = 3,
         userId = USER_ID,
@@ -275,10 +268,9 @@ class BKTClientVariationTest {
       ),
     )
 
-    assertThat(
-      BKTClient.getInstance().boolVariationDetails(FEATURE_ID_BOOLEAN, defaultValue = true),
-    ).isEqualTo(
-      BKTEvaluationDetails(
+    assertEvaluationDetails(
+      actual = BKTClient.getInstance().boolVariationDetails(FEATURE_ID_BOOLEAN, defaultValue = true),
+      expected = BKTEvaluationDetails(
         featureId = FEATURE_ID_BOOLEAN,
         featureVersion = 3,
         userId = USER_ID,
@@ -289,10 +281,9 @@ class BKTClientVariationTest {
       ),
     )
 
-    assertThat(
-      BKTClient.getInstance().objectVariationDetails(FEATURE_ID_BOOLEAN, defaultValue = BKTValue.Number(1.0)),
-    ).isEqualTo(
-      BKTEvaluationDetails(
+    assertEvaluationDetails(
+      actual = BKTClient.getInstance().objectVariationDetails(FEATURE_ID_BOOLEAN, defaultValue = BKTValue.Number(1.0)),
+      expected = BKTEvaluationDetails(
         featureId = FEATURE_ID_BOOLEAN,
         featureVersion = 3,
         userId = USER_ID,
@@ -333,8 +324,8 @@ class BKTClientVariationTest {
   fun objectVariation_detail() {
     val actual = BKTClient.getInstance().evaluationDetails(FEATURE_ID_JSON)
     assertEvaluation(
-      actual,
-      BKTEvaluation(
+      actual = actual,
+      expected = BKTEvaluation(
         id = "feature-android-e2e-json:3:bucketeer-android-user-id-1",
         featureId = FEATURE_ID_JSON,
         featureVersion = 3,
@@ -359,10 +350,9 @@ class BKTClientVariationTest {
             ),
         )
 
-    assertThat(
-      actualEvaluationDetails,
-    ).isEqualTo(
-      BKTEvaluationDetails(
+    assertEvaluationDetails(
+      actual = actualEvaluationDetails,
+      expected = BKTEvaluationDetails(
         featureId = FEATURE_ID_JSON,
         featureVersion = 3,
         userId = USER_ID,

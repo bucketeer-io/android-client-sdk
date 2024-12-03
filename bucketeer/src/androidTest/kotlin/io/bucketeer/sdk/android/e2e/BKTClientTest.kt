@@ -93,10 +93,9 @@ class BKTClientTest {
     )
 
     val detailStringEvaluationDetails = client.stringVariationDetails(FEATURE_ID_STRING, defaultValue = "")
-    assertThat(
-      detailStringEvaluationDetails,
-    ).isEqualTo(
-      BKTEvaluationDetails(
+    assertEvaluationDetails(
+      actual = detailStringEvaluationDetails,
+      expected = BKTEvaluationDetails(
         featureId = FEATURE_ID_STRING,
         featureVersion = 4,
         userId = USER_ID,
