@@ -30,11 +30,14 @@
         "org.robolectric",
         "com.google.truth",
         "com.google.testparameterinjector",
-        "androidx.test"
+        "androidx.test",
+        "kotlin",
+        "ksp"
       ],
       "matchUpdateTypes": ["major"],
       "commitMessagePrefix": "test(deps):",
-      "commitMessageAction": "update"
+      "commitMessageAction": "update",
+      "_comment": "Need wait for this issue to be fixed https://github.com/jeremymailen/kotlinter-gradle/issues/414. After that we could remove 'kotlin', 'ksp' from this list."
     },
     {
       "groupName": "all non-major dependencies",
