@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.2](https://github.com/bucketeer-io/android-client-sdk/compare/v2.2.1...v2.2.2) (2025-03-05)
+
+
+### Build System
+
+* **deps:** update all non-major dependencies ([#215](https://github.com/bucketeer-io/android-client-sdk/issues/215)) ([72843af](https://github.com/bucketeer-io/android-client-sdk/commit/72843af8a8d730af91cfcca0f68e4a7be64de8e8))
+
 ## [2.2.1](https://github.com/bucketeer-io/android-client-sdk/compare/v2.2.0...v2.2.1) (2024-10-16)
 
 
