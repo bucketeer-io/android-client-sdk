@@ -5,10 +5,7 @@
 
 ### Build System
 
-* **deps:** update all major dependencies ([#209](https://github.com/bucketeer-io/android-client-sdk/issues/209)) ([5e0ffbc](https://github.com/bucketeer-io/android-client-sdk/commit/5e0ffbc3e3971b6409fb9d27dabbbcd8374333bf))
-* **deps:** update all non-major dependencies ([#204](https://github.com/bucketeer-io/android-client-sdk/issues/204)) ([d57a007](https://github.com/bucketeer-io/android-client-sdk/commit/d57a00792b2a5667337c3efb2ffa6210afa4793f))
 * **deps:** update all non-major dependencies ([#215](https://github.com/bucketeer-io/android-client-sdk/issues/215)) ([72843af](https://github.com/bucketeer-io/android-client-sdk/commit/72843af8a8d730af91cfcca0f68e4a7be64de8e8))
-* **deps:** update dependency org.json:json to v20241224 ([#213](https://github.com/bucketeer-io/android-client-sdk/issues/213)) ([5e5c8f8](https://github.com/bucketeer-io/android-client-sdk/commit/5e5c8f8100b2d58c17b452be12a1e62e5932f563))
 
 ## [2.2.1](https://github.com/bucketeer-io/android-client-sdk/compare/v2.2.0...v2.2.1) (2024-10-16)
 
