@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "1",
-    "project_id": "bucketeer-dev",
-    "storage_bucket": "bucketeer-dev.appspot.com"
+    "project_number": "733448580849",
+    "project_id": "bucketeer-dev-cd29c",
+    "storage_bucket": "bucketeer-dev-cd29c.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:733448580849:android:3c",
+        "mobilesdk_app_id": "1:733448580849:android:3c0fd5d3aaa084b4ce8350",
         "android_client_info": {
           "package_name": "io.bucketeer.sample"
         }
@@ -15,7 +15,26 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDLZ"
+          "current_key": "AIzaSyDLZT2pEbvVCQTaqaFFLvf3EwiO_rdT74M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:733448580849:android:e6840738e94053eece8350",
+        "android_client_info": {
+          "package_name": "jp.bucketeer.sample"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDLZT2pEbvVCQTaqaFFLvf3EwiO_rdT74M"
         }
       ],
       "services": {
