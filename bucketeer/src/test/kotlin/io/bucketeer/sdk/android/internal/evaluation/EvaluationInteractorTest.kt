@@ -678,12 +678,12 @@ class EvaluationInteractorTest {
         }
 
       val clearUpdateListenersJob =
-        launch(Dispatchers.Default) {
+        launch(Dispatchers.IO) {
           repeat(1000) {
             try {
               logd { "clearUpdateListeners" }
               interactor.clearUpdateListeners()
-              delay(5L)
+              delay(3L)
             } catch (e: ConcurrentModificationException) {
               fail("ConcurrentModificationException occurred")
             }
