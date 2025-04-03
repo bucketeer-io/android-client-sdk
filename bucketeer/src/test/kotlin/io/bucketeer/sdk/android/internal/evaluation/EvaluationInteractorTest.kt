@@ -650,7 +650,6 @@ class EvaluationInteractorTest {
     runBlocking {
       class DummyListener : BKTClient.EvaluationUpdateListener {
         override fun onUpdate() {
-
         }
       }
       // Launch concurrent coroutines to add loggers and log messages
