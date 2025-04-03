@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.2.3](https://github.com/bucketeer-io/android-client-sdk/compare/v2.2.2...v2.2.3) (2025-04-03)
+
+
+### Bug Fixes
+
+* concurrentModificationException when sending evaluation update events ([#219](https://github.com/bucketeer-io/android-client-sdk/issues/219)) ([2639521](https://github.com/bucketeer-io/android-client-sdk/commit/263952105ffa4966faad1d1b14bd6319bed930f5))
+
+
+### Build System
+
+* **deps:** update all non-major dependencies ([#217](https://github.com/bucketeer-io/android-client-sdk/issues/217)) ([c392c52](https://github.com/bucketeer-io/android-client-sdk/commit/c392c5278bdcc036548bdfa8490bb744e65a3b2a))
+
 ## [2.2.2](https://github.com/bucketeer-io/android-client-sdk/compare/v2.2.1...v2.2.2) (2025-03-05)
 
 
