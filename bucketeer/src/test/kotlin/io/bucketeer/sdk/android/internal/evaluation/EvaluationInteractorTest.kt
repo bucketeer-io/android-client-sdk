@@ -5,7 +5,6 @@ import android.os.Looper
 import androidx.test.core.app.ApplicationProvider
 import com.google.common.truth.Truth.assertThat
 import com.squareup.moshi.Moshi
-import io.bucketeer.sdk.android.BKTClient
 import io.bucketeer.sdk.android.BKTConfig
 import io.bucketeer.sdk.android.BKTException
 import io.bucketeer.sdk.android.internal.di.ComponentImpl
@@ -648,18 +647,13 @@ class EvaluationInteractorTest {
   @Test
   fun `concurrent modification EvaluationUpdateListener`(): Unit =
     runBlocking {
-      class DummyListener : BKTClient.EvaluationUpdateListener {
-        override fun onUpdate() {
-        }
-      }
       // Launch concurrent coroutines to add DummyListener
       val job1 =
         launch(Dispatchers.IO) {
           repeat(1000) {
             try {
               logd { "addUpdateListener" }
-              val listener = DummyListener()
-              interactor.addUpdateListener(listener)
+              interactor.addUpdateListener {}
             } catch (e: ConcurrentModificationException) {
               fail("ConcurrentModificationException occurred")
             }
