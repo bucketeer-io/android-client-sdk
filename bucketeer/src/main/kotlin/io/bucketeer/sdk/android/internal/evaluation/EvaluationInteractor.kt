@@ -137,6 +137,7 @@ internal class EvaluationInteractor(
   }
 
   @VisibleForTesting
+  @Throws
   internal fun triggerOnUpdate() {
     synchronized(updateListeners) {
       updateListeners.forEach {
