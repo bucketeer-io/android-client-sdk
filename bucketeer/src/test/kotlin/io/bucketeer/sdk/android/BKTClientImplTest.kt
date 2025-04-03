@@ -1620,7 +1620,6 @@ class BKTClientImplTest {
 
     // Add listener to see if we have ConcurrentModificationException
     BKTClient.getInstance().addEvaluationUpdateListener {
-
     }
 
     @Suppress("DEPRECATION")
