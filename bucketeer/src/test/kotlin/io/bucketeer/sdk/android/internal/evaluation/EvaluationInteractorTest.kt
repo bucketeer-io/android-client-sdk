@@ -5,6 +5,7 @@ import android.os.Looper
 import androidx.test.core.app.ApplicationProvider
 import com.google.common.truth.Truth.assertThat
 import com.squareup.moshi.Moshi
+import io.bucketeer.sdk.android.BKTClient
 import io.bucketeer.sdk.android.BKTConfig
 import io.bucketeer.sdk.android.BKTException
 import io.bucketeer.sdk.android.internal.di.ComponentImpl
@@ -12,6 +13,7 @@ import io.bucketeer.sdk.android.internal.di.DataModule
 import io.bucketeer.sdk.android.internal.di.InteractorModule
 import io.bucketeer.sdk.android.internal.evaluation.cache.EvaluationSharedPrefs
 import io.bucketeer.sdk.android.internal.evaluation.storage.EvaluationStorage
+import io.bucketeer.sdk.android.internal.logd
 import io.bucketeer.sdk.android.internal.model.request.GetEvaluationsRequest
 import io.bucketeer.sdk.android.internal.model.response.GetEvaluationsResponse
 import io.bucketeer.sdk.android.internal.remote.GetEvaluationsResult
@@ -26,6 +28,11 @@ import io.bucketeer.sdk.android.mocks.user1Evaluations
 import io.bucketeer.sdk.android.mocks.user1EvaluationsForceUpdate
 import io.bucketeer.sdk.android.mocks.user1EvaluationsUpsert
 import io.bucketeer.sdk.android.mocks.user2
+import junit.framework.Assert.fail
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.joinAll
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
@@ -637,6 +644,44 @@ class EvaluationInteractorTest {
     assertThat(updateListenerCalled).isTrue()
     assertThat(onErrorListenerCalled).isTrue()
   }
+
+  @Test
+  fun `concurrent modification EvaluationUpdateListener`(): Unit =
+    runBlocking {
+      class DummyListener : BKTClient.EvaluationUpdateListener {
+        override fun onUpdate() {
+
+        }
+      }
+      // Launch concurrent coroutines to add loggers and log messages
+      val job1 =
+        launch(Dispatchers.IO) {
+          repeat(1000) {
+            try {
+              logd { "addUpdateListener" }
+              val listener = DummyListener()
+              interactor.addUpdateListener(listener)
+            } catch (e: ConcurrentModificationException) {
+              fail("ConcurrentModificationException occurred")
+            }
+          }
+        }
+
+      val job2 =
+        launch(Dispatchers.Default) {
+          repeat(1000) {
+            try {
+              logd { "onUpdate" }
+              interactor.triggerOnUpdate()
+            } catch (e: ConcurrentModificationException) {
+              fail("ConcurrentModificationException occurred")
+            }
+          }
+        }
+
+      // Wait for both coroutines to finish
+      joinAll(job1, job2)
+    }
 }
 
 // https://github.com/bucketeer-io/android-client-sdk/pull/89#discussion_r1342258888

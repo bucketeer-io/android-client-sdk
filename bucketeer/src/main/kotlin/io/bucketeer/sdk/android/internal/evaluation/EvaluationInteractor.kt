@@ -117,15 +117,13 @@ internal class EvaluationInteractor(
         // to avoid unintentional lock on Interactor's execution thread.
         if (shouldNotifyListener) {
           mainHandler.post {
-            updateListeners.forEach {
-              // Prevent crash if consumer code throwing unhandled error
-              runCatching {
-                it.value.onUpdate()
-              }.onFailure { onUpdateError ->
-                val message = "failed while calling onUpdate listener: ${onUpdateError.message}"
-                logd(onUpdateError) { message }
-                logInternalError(BKTException.IllegalStateException(message))
-              }
+            // Prevent crash if consumer code throwing unhandled error
+            runCatching {
+              triggerOnUpdate()
+            }.onFailure { onUpdateError ->
+              val message = "failed while calling onUpdate listener: ${onUpdateError.message}"
+              logd(onUpdateError) { message }
+              logInternalError(BKTException.IllegalStateException(message))
             }
           }
         }
@@ -136,6 +134,13 @@ internal class EvaluationInteractor(
       }
     }
     return result
+  }
+
+  @VisibleForTesting
+  internal fun triggerOnUpdate() {
+    updateListeners.forEach {
+      it.value.onUpdate()
+    }
   }
 
   fun fetch(
