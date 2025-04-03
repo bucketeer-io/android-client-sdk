@@ -704,7 +704,7 @@ class EvaluationInteractorTest {
           }
         }
 
-      // Wait for both coroutines to finish
+      // Wait for all coroutines to finish
       joinAll(
         addUpdateListenerJob,
         triggerOnUpdateJob,
