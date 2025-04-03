@@ -12,6 +12,7 @@ import io.bucketeer.sdk.android.internal.di.DataModule
 import io.bucketeer.sdk.android.internal.di.InteractorModule
 import io.bucketeer.sdk.android.internal.evaluation.cache.EvaluationSharedPrefs
 import io.bucketeer.sdk.android.internal.evaluation.storage.EvaluationStorage
+import io.bucketeer.sdk.android.internal.logd
 import io.bucketeer.sdk.android.internal.model.request.GetEvaluationsRequest
 import io.bucketeer.sdk.android.internal.model.response.GetEvaluationsResponse
 import io.bucketeer.sdk.android.internal.remote.GetEvaluationsResult
@@ -26,6 +27,12 @@ import io.bucketeer.sdk.android.mocks.user1Evaluations
 import io.bucketeer.sdk.android.mocks.user1EvaluationsForceUpdate
 import io.bucketeer.sdk.android.mocks.user1EvaluationsUpsert
 import io.bucketeer.sdk.android.mocks.user2
+import junit.framework.Assert.fail
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.joinAll
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
@@ -137,8 +144,10 @@ class EvaluationInteractorTest {
       )
 
     componentBuildWithEmptyFeatureTag.evaluationInteractor.prepareDependencyAndRun {
-      val storageBuildWithEmptyFeatureTag = componentBuildWithEmptyFeatureTag.dataModule.evaluationStorage
-      val sharedPrefsBuildWithEmptyFeatureTag = componentBuildWithEmptyFeatureTag.dataModule.evaluationSharedPrefs
+      val storageBuildWithEmptyFeatureTag =
+        componentBuildWithEmptyFeatureTag.dataModule.evaluationStorage
+      val sharedPrefsBuildWithEmptyFeatureTag =
+        componentBuildWithEmptyFeatureTag.dataModule.evaluationSharedPrefs
       assertThat(storageBuildWithEmptyFeatureTag.getCurrentEvaluationId()).isEqualTo("")
       sharedPrefsBuildWithEmptyFeatureTag.currentEvaluationsId = "should_be_clear"
       assertThat(storageBuildWithEmptyFeatureTag.getCurrentEvaluationId()).isEqualTo("should_be_clear")
@@ -637,6 +646,72 @@ class EvaluationInteractorTest {
     assertThat(updateListenerCalled).isTrue()
     assertThat(onErrorListenerCalled).isTrue()
   }
+
+  @Test
+  fun `concurrent modification EvaluationUpdateListener`(): Unit =
+    runBlocking {
+      // Launch concurrent coroutines to add DummyListener
+      val addUpdateListenerJob =
+        launch(Dispatchers.IO) {
+          repeat(1000) {
+            try {
+              logd { "addUpdateListener" }
+              interactor.addUpdateListener {}
+              delay(1L)
+            } catch (e: ConcurrentModificationException) {
+              fail("ConcurrentModificationException occurred")
+            }
+          }
+        }
+
+      val triggerOnUpdateJob =
+        launch(Dispatchers.Default) {
+          repeat(1000) {
+            try {
+              logd { "onUpdate" }
+              interactor.triggerOnUpdate()
+              delay(1L)
+            } catch (e: ConcurrentModificationException) {
+              fail("ConcurrentModificationException occurred")
+            }
+          }
+        }
+
+      val clearUpdateListenersJob =
+        launch(Dispatchers.IO) {
+          repeat(1000) {
+            try {
+              logd { "clearUpdateListeners" }
+              interactor.clearUpdateListeners()
+              delay(3L)
+            } catch (e: ConcurrentModificationException) {
+              fail("ConcurrentModificationException occurred")
+            }
+          }
+        }
+
+      val removeUpdateListenerJob =
+        launch(Dispatchers.Default) {
+          repeat(1000) {
+            try {
+              logd { "removeUpdateListener" }
+              val token = interactor.addUpdateListener {}
+              delay(1L)
+              interactor.removeUpdateListener(token)
+            } catch (e: ConcurrentModificationException) {
+              fail("ConcurrentModificationException occurred")
+            }
+          }
+        }
+
+      // Wait for all coroutines to finish
+      joinAll(
+        addUpdateListenerJob,
+        triggerOnUpdateJob,
+        removeUpdateListenerJob,
+        clearUpdateListenersJob,
+      )
+    }
 }
 
 // https://github.com/bucketeer-io/android-client-sdk/pull/89#discussion_r1342258888

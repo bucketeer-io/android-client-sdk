@@ -117,15 +117,13 @@ internal class EvaluationInteractor(
         // to avoid unintentional lock on Interactor's execution thread.
         if (shouldNotifyListener) {
           mainHandler.post {
-            updateListeners.forEach {
-              // Prevent crash if consumer code throwing unhandled error
-              runCatching {
-                it.value.onUpdate()
-              }.onFailure { onUpdateError ->
-                val message = "failed while calling onUpdate listener: ${onUpdateError.message}"
-                logd(onUpdateError) { message }
-                logInternalError(BKTException.IllegalStateException(message))
-              }
+            // Prevent crash if consumer code throwing unhandled error
+            runCatching {
+              triggerOnUpdate()
+            }.onFailure { onUpdateError ->
+              val message = "failed while calling onUpdate listener: ${onUpdateError.message}"
+              logd(onUpdateError) { message }
+              logInternalError(BKTException.IllegalStateException(message))
             }
           }
         }
@@ -136,6 +134,16 @@ internal class EvaluationInteractor(
       }
     }
     return result
+  }
+
+  @VisibleForTesting
+  @Throws
+  internal fun triggerOnUpdate() {
+    synchronized(updateListeners) {
+      updateListeners.forEach {
+        it.value.onUpdate()
+      }
+    }
   }
 
   fun fetch(
@@ -161,16 +169,22 @@ internal class EvaluationInteractor(
 
   fun addUpdateListener(listener: BKTClient.EvaluationUpdateListener): String {
     val key = idGenerator.newId()
-    updateListeners[key] = listener
+    synchronized(updateListeners) {
+      updateListeners[key] = listener
+    }
     return key
   }
 
   fun removeUpdateListener(key: String) {
-    updateListeners.remove(key)
+    synchronized(updateListeners) {
+      updateListeners.remove(key)
+    }
   }
 
   fun clearUpdateListeners() {
-    updateListeners.clear()
+    synchronized(updateListeners) {
+      updateListeners.clear()
+    }
   }
 
   fun getLatest(featureId: String): Evaluation? = evaluationStorage.getBy(featureId)
