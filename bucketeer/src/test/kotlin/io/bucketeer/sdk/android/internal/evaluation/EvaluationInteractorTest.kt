@@ -652,7 +652,7 @@ class EvaluationInteractorTest {
         override fun onUpdate() {
         }
       }
-      // Launch concurrent coroutines to add loggers and log messages
+      // Launch concurrent coroutines to add DummyListener
       val job1 =
         launch(Dispatchers.IO) {
           repeat(1000) {
