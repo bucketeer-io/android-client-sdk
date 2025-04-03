@@ -1618,6 +1618,11 @@ class BKTClientImplTest {
       1000,
     )
 
+    // Add listener to see if we have ConcurrentModificationException
+    BKTClient.getInstance().addEvaluationUpdateListener {
+
+    }
+
     @Suppress("DEPRECATION")
     val actual = BKTClient.getInstance().evaluationDetails(evaluation1.featureId)
     assertThat(actual).isNotInstanceOf(BKTException::class.java)

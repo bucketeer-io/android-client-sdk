@@ -138,8 +138,10 @@ internal class EvaluationInteractor(
 
   @VisibleForTesting
   internal fun triggerOnUpdate() {
-    updateListeners.forEach {
-      it.value.onUpdate()
+    synchronized(updateListeners) {
+      updateListeners.forEach {
+        it.value.onUpdate()
+      }
     }
   }
 
@@ -166,16 +168,22 @@ internal class EvaluationInteractor(
 
   fun addUpdateListener(listener: BKTClient.EvaluationUpdateListener): String {
     val key = idGenerator.newId()
-    updateListeners[key] = listener
+    synchronized(updateListeners) {
+      updateListeners[key] = listener
+    }
     return key
   }
 
   fun removeUpdateListener(key: String) {
-    updateListeners.remove(key)
+    synchronized(updateListeners) {
+      updateListeners.remove(key)
+    }
   }
 
   fun clearUpdateListeners() {
-    updateListeners.clear()
+    synchronized(updateListeners) {
+      updateListeners.clear()
+    }
   }
 
   fun getLatest(featureId: String): Evaluation? = evaluationStorage.getBy(featureId)
