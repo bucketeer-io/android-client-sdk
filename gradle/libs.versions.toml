@@ -1,7 +1,8 @@
 [versions]
 agp = "8.9.1"
 json = "20250107"
-kotlin = "2.1.20"
+kotlin = "2.0.21"
+ksp = "2.0.21-1.0.27"
 androidxLifecycle = "2.8.7"
 androidxTest = "1.6.1"
 moshi = "1.15.2"
@@ -51,6 +52,6 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 kotlin-dokka = { id = "org.jetbrains.dokka", version = "2.0.0" }
 publish = { id = "com.vanniktech.maven.publish", version = "0.31.0" }
-ksp = { id = "com.google.devtools.ksp", version = "2.1.20-1.0.32" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 kotlinter = { id = "org.jmailen.kotlinter", version = "5.0.1" }
 google-services = { id = "com.google.gms.google-services", version = "4.4.2" }
