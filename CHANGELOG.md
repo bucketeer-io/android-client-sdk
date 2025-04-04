@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.4](https://github.com/bucketeer-io/android-client-sdk/compare/v2.2.3...v2.2.4) (2025-04-04)
+
+
+### Build System
+
+* **deps:** downgrade kotlin to 2.0.21 for app compatibility ([#223](https://github.com/bucketeer-io/android-client-sdk/issues/223)) ([140e439](https://github.com/bucketeer-io/android-client-sdk/commit/140e4399d73d7f1252649ca97b00b32ad1ad7450))
+
 ## [2.2.3](https://github.com/bucketeer-io/android-client-sdk/compare/v2.2.2...v2.2.3) (2025-04-03)
 
 
