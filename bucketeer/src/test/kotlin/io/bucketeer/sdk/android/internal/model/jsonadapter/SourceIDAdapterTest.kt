@@ -11,7 +11,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(TestParameterInjector::class)
-class SourceIDAdapterTest {
+internal class SourceIDAdapterTest {
   lateinit var adapter: JsonAdapter<SourceID>
 
   @Before

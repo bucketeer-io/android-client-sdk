@@ -9,5 +9,4 @@ pluginManagement {
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 include ':bucketeer'
-include ':mocks'
 include ':sample'

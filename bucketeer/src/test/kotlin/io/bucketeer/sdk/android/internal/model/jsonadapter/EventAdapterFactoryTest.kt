@@ -20,7 +20,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(TestParameterInjector::class)
-class EventAdapterFactoryTest {
+internal class EventAdapterFactoryTest {
   // we don't need test case for GOAL_BATCH,
   // as it doesn't used in Client SDK.
   @Suppress("unused")

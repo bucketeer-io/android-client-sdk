@@ -4,7 +4,6 @@ import com.google.common.truth.Truth
 import com.google.testing.junit.testparameterinjector.TestParameter
 import com.google.testing.junit.testparameterinjector.TestParameterInjector
 import io.bucketeer.sdk.android.BKTException
-import io.bucketeer.sdk.android.BuildConfig
 import io.bucketeer.sdk.android.internal.model.ApiId
 import io.bucketeer.sdk.android.internal.model.EventData
 import io.bucketeer.sdk.android.internal.model.MetricsEventData
@@ -14,7 +13,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(TestParameterInjector::class)
-class BKTExceptionToEventDataMetricEventTest {
+internal class BKTExceptionToEventDataMetricEventTest {
   companion object {
     const val EXPECTED_TIMESTAMP = 19998L
     val expectedLabelsForOtherCases = mapOf("tag" to "android")
@@ -26,6 +25,8 @@ class BKTExceptionToEventDataMetricEventTest {
       mapOf("tag" to "android", "error_message" to "UnknownException")
     val expectedApiId = ApiId.GET_EVALUATIONS
     val expectedMetadata = newMetadata("1.0.0")
+    val expectedSourceId = SourceID.OPEN_FEATURE_KOTLIN
+    const val EXPECTED_SDK_VERSION = "0.0.8"
   }
 
   @Suppress("unused")
@@ -43,8 +44,8 @@ class BKTExceptionToEventDataMetricEventTest {
             apiId = expectedApiId,
             labels = expectedLabelsForOtherCases,
           ),
-        sourceId = SourceID.ANDROID,
-        sdkVersion = BuildConfig.SDK_VERSION,
+        sourceId = expectedSourceId,
+        sdkVersion = EXPECTED_SDK_VERSION,
         metadata = expectedMetadata,
       ),
     ),
@@ -58,8 +59,8 @@ class BKTExceptionToEventDataMetricEventTest {
             apiId = expectedApiId,
             labels = expectedLabelsForOtherCases,
           ),
-        sourceId = SourceID.ANDROID,
-        sdkVersion = BuildConfig.SDK_VERSION,
+        sourceId = expectedSourceId,
+        sdkVersion = EXPECTED_SDK_VERSION,
         metadata = expectedMetadata,
       ),
     ),
@@ -73,8 +74,8 @@ class BKTExceptionToEventDataMetricEventTest {
             apiId = expectedApiId,
             labels = expectedLabelsForOtherCases,
           ),
-        sourceId = SourceID.ANDROID,
-        sdkVersion = BuildConfig.SDK_VERSION,
+        sourceId = expectedSourceId,
+        sdkVersion = EXPECTED_SDK_VERSION,
         metadata = expectedMetadata,
       ),
     ),
@@ -88,8 +89,8 @@ class BKTExceptionToEventDataMetricEventTest {
             apiId = expectedApiId,
             labels = expectedLabelsForOtherCases,
           ),
-        sourceId = SourceID.ANDROID,
-        sdkVersion = BuildConfig.SDK_VERSION,
+        sourceId = expectedSourceId,
+        sdkVersion = EXPECTED_SDK_VERSION,
         metadata = expectedMetadata,
       ),
     ),
@@ -103,8 +104,8 @@ class BKTExceptionToEventDataMetricEventTest {
             apiId = expectedApiId,
             labels = expectedLabelsForOtherCases,
           ),
-        sourceId = SourceID.ANDROID,
-        sdkVersion = BuildConfig.SDK_VERSION,
+        sourceId = expectedSourceId,
+        sdkVersion = EXPECTED_SDK_VERSION,
         metadata = expectedMetadata,
       ),
     ),
@@ -118,8 +119,8 @@ class BKTExceptionToEventDataMetricEventTest {
             apiId = expectedApiId,
             labels = expectedLabelsForOtherCases,
           ),
-        sourceId = SourceID.ANDROID,
-        sdkVersion = BuildConfig.SDK_VERSION,
+        sourceId = expectedSourceId,
+        sdkVersion = EXPECTED_SDK_VERSION,
         metadata = expectedMetadata,
       ),
     ),
@@ -133,8 +134,8 @@ class BKTExceptionToEventDataMetricEventTest {
             apiId = expectedApiId,
             labels = expectedLabelsForOtherCases,
           ),
-        sourceId = SourceID.ANDROID,
-        sdkVersion = BuildConfig.SDK_VERSION,
+        sourceId = expectedSourceId,
+        sdkVersion = EXPECTED_SDK_VERSION,
         metadata = expectedMetadata,
       ),
     ),
@@ -148,8 +149,8 @@ class BKTExceptionToEventDataMetricEventTest {
             apiId = expectedApiId,
             labels = expectedLabelsForOtherCases,
           ),
-        sourceId = SourceID.ANDROID,
-        sdkVersion = BuildConfig.SDK_VERSION,
+        sourceId = expectedSourceId,
+        sdkVersion = EXPECTED_SDK_VERSION,
         metadata = expectedMetadata,
       ),
     ),
@@ -163,8 +164,8 @@ class BKTExceptionToEventDataMetricEventTest {
             apiId = expectedApiId,
             labels = expectedLabelsForOtherCases,
           ),
-        sourceId = SourceID.ANDROID,
-        sdkVersion = BuildConfig.SDK_VERSION,
+        sourceId = expectedSourceId,
+        sdkVersion = EXPECTED_SDK_VERSION,
         metadata = expectedMetadata,
       ),
     ),
@@ -178,8 +179,8 @@ class BKTExceptionToEventDataMetricEventTest {
             apiId = expectedApiId,
             labels = expectedLabelsForOtherCases,
           ),
-        sourceId = SourceID.ANDROID,
-        sdkVersion = BuildConfig.SDK_VERSION,
+        sourceId = expectedSourceId,
+        sdkVersion = EXPECTED_SDK_VERSION,
         metadata = expectedMetadata,
       ),
     ),
@@ -193,8 +194,8 @@ class BKTExceptionToEventDataMetricEventTest {
             apiId = expectedApiId,
             labels = expectedLabelsForTimeoutCase,
           ),
-        sourceId = SourceID.ANDROID,
-        sdkVersion = BuildConfig.SDK_VERSION,
+        sourceId = expectedSourceId,
+        sdkVersion = EXPECTED_SDK_VERSION,
         metadata = expectedMetadata,
       ),
     ),
@@ -208,8 +209,8 @@ class BKTExceptionToEventDataMetricEventTest {
             apiId = expectedApiId,
             labels = expectedLabelsForOtherCases,
           ),
-        sourceId = SourceID.ANDROID,
-        sdkVersion = BuildConfig.SDK_VERSION,
+        sourceId = expectedSourceId,
+        sdkVersion = EXPECTED_SDK_VERSION,
         metadata = expectedMetadata,
       ),
     ),
@@ -223,8 +224,8 @@ class BKTExceptionToEventDataMetricEventTest {
             apiId = expectedApiId,
             labels = expectedLabelsForUnknownException,
           ),
-        sourceId = SourceID.ANDROID,
-        sdkVersion = BuildConfig.SDK_VERSION,
+        sourceId = expectedSourceId,
+        sdkVersion = EXPECTED_SDK_VERSION,
         metadata = expectedMetadata,
       ),
     ),
@@ -238,8 +239,8 @@ class BKTExceptionToEventDataMetricEventTest {
             apiId = expectedApiId,
             labels = expectedLabelsForRedirectRequestException,
           ),
-        sourceId = SourceID.ANDROID,
-        sdkVersion = BuildConfig.SDK_VERSION,
+        sourceId = expectedSourceId,
+        sdkVersion = EXPECTED_SDK_VERSION,
         metadata = expectedMetadata,
       ),
     ),
@@ -253,8 +254,8 @@ class BKTExceptionToEventDataMetricEventTest {
             apiId = expectedApiId,
             labels = expectedLabelsForOtherCases,
           ),
-        sourceId = SourceID.ANDROID,
-        sdkVersion = BuildConfig.SDK_VERSION,
+        sourceId = expectedSourceId,
+        sdkVersion = EXPECTED_SDK_VERSION,
         metadata = expectedMetadata,
       ),
     ),
@@ -268,8 +269,8 @@ class BKTExceptionToEventDataMetricEventTest {
             apiId = expectedApiId,
             labels = expectedLabelsForUnknownServerException,
           ),
-        sourceId = SourceID.ANDROID,
-        sdkVersion = BuildConfig.SDK_VERSION,
+        sourceId = expectedSourceId,
+        sdkVersion = EXPECTED_SDK_VERSION,
         metadata = expectedMetadata,
       ),
     ),
@@ -286,6 +287,8 @@ class BKTExceptionToEventDataMetricEventTest {
         featureTag = "android",
         appVersion = "1.0.0",
         apiId = ApiId.GET_EVALUATIONS,
+        sourceId = SourceID.OPEN_FEATURE_KOTLIN,
+        sdkVersion = "0.0.8",
       )
     Truth.assertThat(result).isEqualTo(case.expected)
   }

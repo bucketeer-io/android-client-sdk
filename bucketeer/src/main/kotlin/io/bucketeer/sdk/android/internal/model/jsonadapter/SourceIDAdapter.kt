@@ -4,7 +4,7 @@ import com.squareup.moshi.FromJson
 import com.squareup.moshi.ToJson
 import io.bucketeer.sdk.android.internal.model.SourceID
 
-class SourceIDAdapter {
+internal class SourceIDAdapter {
   @ToJson
   fun toJson(type: SourceID): Int = type.value
 

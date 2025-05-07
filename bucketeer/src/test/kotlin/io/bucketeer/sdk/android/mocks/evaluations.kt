@@ -249,7 +249,7 @@ val evaluation4: Evaluation by lazy {
   )
 }
 
-val evaluationEvent: Event by lazy {
+internal val evaluationEvent: Event by lazy {
   Event(
     "event-id",
     EventData.EvaluationEvent(

@@ -7,6 +7,7 @@ import io.bucketeer.sdk.android.internal.evaluation.EvaluationInteractor
 import io.bucketeer.sdk.android.internal.evaluation.storage.EvaluationStorage
 import io.bucketeer.sdk.android.internal.event.EventInteractor
 import io.bucketeer.sdk.android.internal.event.db.EventSQLDao
+import io.bucketeer.sdk.android.internal.model.SourceID
 import io.bucketeer.sdk.android.internal.remote.ApiClient
 
 internal class InteractorModule(
@@ -34,6 +35,8 @@ internal class InteractorModule(
     idGenerator: IdGenerator,
     appVersion: String,
     featureTag: String,
+    sourceId: SourceID,
+    sdkVersion: String,
   ): EventInteractor =
     EventInteractor(
       eventsMaxBatchQueueCount = eventsMaxBatchQueueCount,
@@ -43,5 +46,7 @@ internal class InteractorModule(
       idGenerator = idGenerator,
       appVersion = appVersion,
       featureTag = featureTag,
+      sourceId = sourceId,
+      sdkVersion = sdkVersion,
     )
 }

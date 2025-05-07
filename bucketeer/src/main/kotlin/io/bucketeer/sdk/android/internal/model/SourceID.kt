@@ -1,6 +1,6 @@
 package io.bucketeer.sdk.android.internal.model
 
-enum class SourceID(
+internal enum class SourceID(
   val value: Int,
 ) {
   UNKNOWN(0),
@@ -10,7 +10,14 @@ enum class SourceID(
   GOAL_BATCH(4),
   GO_SERVER(5),
   NODE_SERVER(6),
-
+  FLUTTER(8),
+  REACT(9),
+  REACT_NATIVE(10),
+  OPEN_FEATURE_KOTLIN(100),
+  OPEN_FEATURE_SWIFT(101),
+  OPEN_FEATURE_JAVASCRIPT(102),
+  OPEN_FEATURE_GO(103),
+  OPEN_FEATURE_NODEJS(104),
   ;
 
   companion object {

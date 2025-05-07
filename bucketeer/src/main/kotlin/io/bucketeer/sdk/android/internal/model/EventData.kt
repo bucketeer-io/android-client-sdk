@@ -5,7 +5,7 @@ import com.squareup.moshi.JsonClass
 
 // we can't use codegen here
 // see EventAdapterFactory
-sealed class EventData {
+internal sealed class EventData {
   @JsonClass(generateAdapter = true)
   data class GoalEvent(
     val timestamp: Long,

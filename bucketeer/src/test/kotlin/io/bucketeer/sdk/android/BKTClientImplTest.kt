@@ -1636,7 +1636,7 @@ private val BKTClient.componentImpl: ComponentImpl
   get() = (this as BKTClientImpl).component as ComponentImpl
 
 // these assertion methods do not check full-equality, but that should be covered in other tests
-fun assertLatencyMetricsEvent(
+internal fun assertLatencyMetricsEvent(
   actual: Event,
   expectedLabels: Map<String, String>,
   apiId: ApiId,
@@ -1660,7 +1660,7 @@ fun assertLatencyMetricsEvent(
   // actualLatencyEvent.duration is not assertable
 }
 
-fun assertSizeMetricsEvent(
+internal fun assertSizeMetricsEvent(
   actual: Event,
   expectedSizeEvent: MetricsEventData.SizeMetricsEvent,
 ) {
@@ -1680,7 +1680,7 @@ fun assertSizeMetricsEvent(
   assertThat(actualSizeEvent).isEqualTo(expectedSizeEvent)
 }
 
-fun assertTimeoutErrorMetricsEvent(
+internal fun assertTimeoutErrorMetricsEvent(
   actual: Event,
   expectedMetricsEvent: MetricsEventData.TimeoutErrorMetricsEvent,
 ) {
@@ -1690,7 +1690,7 @@ fun assertTimeoutErrorMetricsEvent(
   assertThat(actualMetricsEvent.event).isEqualTo(expectedMetricsEvent)
 }
 
-fun assertGoalEvent(
+internal fun assertGoalEvent(
   actual: Event,
   expectedGoalId: String,
   expectedValue: Double,
