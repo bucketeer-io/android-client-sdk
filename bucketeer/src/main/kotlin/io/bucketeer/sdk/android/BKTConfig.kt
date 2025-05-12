@@ -1,6 +1,6 @@
 package io.bucketeer.sdk.android
 
-import io.bucketeer.sdk.android.internal.logw
+import android.util.Log
 import io.bucketeer.sdk.android.internal.util.require
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 
@@ -12,6 +12,8 @@ internal const val DEFAULT_POLLING_INTERVAL_MILLIS: Long = 600_000 // 10 minutes
 internal const val MINIMUM_BACKGROUND_POLLING_INTERVAL_MILLIS: Long = 1_200_000 // 20 minutes
 internal const val DEFAULT_BACKGROUND_POLLING_INTERVAL_MILLIS: Long = 3_600_000 // 1 hour
 
+// hide internal constructor from copy() method
+@ConsistentCopyVisibility
 data class BKTConfig internal constructor(
   val apiKey: String,
   val apiEndpoint: String,
@@ -83,18 +85,27 @@ data class BKTConfig internal constructor(
       return this
     }
 
+    private fun logWarning(messageCreator: (() -> String?)? = null) {
+      // LoggerHolder.log() is not available here, so we use the logger directly.
+      logger?.log(
+        Log.WARN,
+        messageCreator,
+        null,
+      )
+    }
+
     fun build(): BKTConfig {
       require(!this.apiKey.isNullOrEmpty()) { "apiKey is required" }
       require(this.apiEndpoint?.toHttpUrlOrNull() != null) { "apiEndpoint is invalid" }
       require(!this.appVersion.isNullOrEmpty()) { "appVersion is required" }
 
       if (this.pollingInterval < MINIMUM_POLLING_INTERVAL_MILLIS) {
-        logw { "pollingInterval: $pollingInterval is set but must be above $MINIMUM_POLLING_INTERVAL_MILLIS" }
+        logWarning { "pollingInterval: $pollingInterval is set but must be above $MINIMUM_POLLING_INTERVAL_MILLIS" }
         this.pollingInterval = MINIMUM_POLLING_INTERVAL_MILLIS
       }
 
       if (this.backgroundPollingInterval < MINIMUM_BACKGROUND_POLLING_INTERVAL_MILLIS) {
-        logw {
+        logWarning {
           "backgroundPollingInterval: $backgroundPollingInterval is set but must be above " +
             "$MINIMUM_BACKGROUND_POLLING_INTERVAL_MILLIS"
         }
@@ -102,7 +113,7 @@ data class BKTConfig internal constructor(
       }
 
       if (this.eventsFlushInterval < MINIMUM_FLUSH_INTERVAL_MILLIS) {
-        logw { "eventsFlushInterval: $eventsFlushInterval is set but must be above $MINIMUM_FLUSH_INTERVAL_MILLIS" }
+        logWarning { "eventsFlushInterval: $eventsFlushInterval is set but must be above $MINIMUM_FLUSH_INTERVAL_MILLIS" }
         this.eventsFlushInterval = DEFAULT_FLUSH_INTERVAL_MILLIS
       }
 
