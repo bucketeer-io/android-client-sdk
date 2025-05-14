@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.5](https://github.com/bucketeer-io/android-client-sdk/compare/v2.2.4...v2.2.5) (2025-05-14)
+
+
+### Bug Fixes
+
+* prevent logger leaks when destroying and not working when building the client ([#227](https://github.com/bucketeer-io/android-client-sdk/issues/227)) ([7f80012](https://github.com/bucketeer-io/android-client-sdk/commit/7f8001207c65e316bdf78b6d1abe00e6e9d02ae4))
+
 ## [2.2.4](https://github.com/bucketeer-io/android-client-sdk/compare/v2.2.3...v2.2.4) (2025-04-04)
 
 
