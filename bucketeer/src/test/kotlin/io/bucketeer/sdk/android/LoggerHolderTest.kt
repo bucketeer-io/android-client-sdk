@@ -44,6 +44,7 @@ internal class LoggerHolderTest {
             try {
               logd { "Test message" }
               LoggerHolder.addLogger(TestLogger())
+              LoggerHolder.clearLoggers()
               LoggerHolder.addLogger(TestLogger())
             } catch (e: ConcurrentModificationException) {
               fail("ConcurrentModificationException occurred")

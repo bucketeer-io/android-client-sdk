@@ -132,6 +132,7 @@ interface BKTClient {
           clientImpl.destroy()
         }
         instance = null
+        LoggerHolder.clearLoggers()
       }
     }
   }

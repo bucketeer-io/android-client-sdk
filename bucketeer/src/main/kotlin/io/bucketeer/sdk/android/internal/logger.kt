@@ -25,6 +25,12 @@ internal object LoggerHolder {
       }
     }
   }
+
+  fun clearLoggers() {
+    synchronized(logHandlers) {
+      logHandlers.clear()
+    }
+  }
 }
 
 // TODO: Add msgCreator log methods
