@@ -47,6 +47,8 @@ internal class ComponentImpl(
       idGenerator = dataModule.idGenerator,
       appVersion = dataModule.config.appVersion,
       featureTag = dataModule.config.featureTag,
+      sourceId = dataModule.config.sourceId,
+      sdkVersion = dataModule.config.sdkVersion,
     )
   }
 

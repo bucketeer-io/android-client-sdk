@@ -55,6 +55,8 @@ internal open class DataModule(
       apiKey = config.apiKey,
       featureTag = config.featureTag,
       moshi = moshi,
+      sourceId = config.sourceId,
+      sdkVersion = config.sdkVersion,
     )
   }
 

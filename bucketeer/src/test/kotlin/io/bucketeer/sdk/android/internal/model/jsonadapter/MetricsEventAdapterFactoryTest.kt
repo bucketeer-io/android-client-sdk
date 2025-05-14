@@ -9,7 +9,7 @@ import io.bucketeer.sdk.android.internal.model.ApiId
 import io.bucketeer.sdk.android.internal.model.EventData
 import io.bucketeer.sdk.android.internal.model.MetricsEventData
 import io.bucketeer.sdk.android.internal.model.MetricsEventType
-import io.bucketeer.sdk.android.internal.model.SourceID
+import io.bucketeer.sdk.android.internal.model.SourceId
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -60,7 +60,7 @@ class MetricsEventAdapterFactoryTest {
                 ),
               latencySecond = 5.0,
             ),
-          sourceId = SourceID.ANDROID,
+          sourceId = SourceId.ANDROID,
           sdkVersion = "2.0.1",
           metadata =
             mapOf(
@@ -109,7 +109,7 @@ class MetricsEventAdapterFactoryTest {
                 ),
               sizeByte = 1234,
             ),
-          sourceId = SourceID.ANDROID,
+          sourceId = SourceId.ANDROID,
           sdkVersion = "2.0.1",
           metadata =
             mapOf(
@@ -156,7 +156,7 @@ class MetricsEventAdapterFactoryTest {
                   "timeout" to "5.0",
                 ),
             ),
-          sourceId = SourceID.ANDROID,
+          sourceId = SourceId.ANDROID,
           sdkVersion = "2.0.1",
           metadata =
             mapOf(
@@ -201,7 +201,7 @@ class MetricsEventAdapterFactoryTest {
                   "tag" to "tag_value",
                 ),
             ),
-          sourceId = SourceID.ANDROID,
+          sourceId = SourceId.ANDROID,
           sdkVersion = "2.0.1",
           metadata =
             mapOf(
@@ -246,7 +246,7 @@ class MetricsEventAdapterFactoryTest {
                   "tag" to "tag_value",
                 ),
             ),
-          sourceId = SourceID.ANDROID,
+          sourceId = SourceId.ANDROID,
           sdkVersion = "2.0.1",
           metadata =
             mapOf(
@@ -291,7 +291,7 @@ class MetricsEventAdapterFactoryTest {
                   "tag" to "tag_value",
                 ),
             ),
-          sourceId = SourceID.ANDROID,
+          sourceId = SourceId.ANDROID,
           sdkVersion = "2.0.1",
           metadata =
             mapOf(
@@ -336,7 +336,7 @@ class MetricsEventAdapterFactoryTest {
                   "tag" to "tag_value",
                 ),
             ),
-          sourceId = SourceID.ANDROID,
+          sourceId = SourceId.ANDROID,
           sdkVersion = "2.0.1",
           metadata =
             mapOf(
@@ -381,7 +381,7 @@ class MetricsEventAdapterFactoryTest {
                   "tag" to "tag_value",
                 ),
             ),
-          sourceId = SourceID.ANDROID,
+          sourceId = SourceId.ANDROID,
           sdkVersion = "2.0.1",
           metadata =
             mapOf(
@@ -426,7 +426,7 @@ class MetricsEventAdapterFactoryTest {
                   "tag" to "tag_value",
                 ),
             ),
-          sourceId = SourceID.ANDROID,
+          sourceId = SourceId.ANDROID,
           sdkVersion = "2.0.1",
           metadata =
             mapOf(
@@ -471,7 +471,7 @@ class MetricsEventAdapterFactoryTest {
                   "tag" to "tag_value",
                 ),
             ),
-          sourceId = SourceID.ANDROID,
+          sourceId = SourceId.ANDROID,
           sdkVersion = "2.0.1",
           metadata =
             mapOf(
@@ -516,7 +516,7 @@ class MetricsEventAdapterFactoryTest {
                   "tag" to "tag_value",
                 ),
             ),
-          sourceId = SourceID.ANDROID,
+          sourceId = SourceId.ANDROID,
           sdkVersion = "2.0.1",
           metadata =
             mapOf(
@@ -561,7 +561,7 @@ class MetricsEventAdapterFactoryTest {
                   "tag" to "tag_value",
                 ),
             ),
-          sourceId = SourceID.ANDROID,
+          sourceId = SourceId.ANDROID,
           sdkVersion = "2.0.1",
           metadata =
             mapOf(
@@ -610,7 +610,7 @@ class MetricsEventAdapterFactoryTest {
                   "error_message" to "code 418",
                 ),
             ),
-          sourceId = SourceID.ANDROID,
+          sourceId = SourceId.ANDROID,
           sdkVersion = "2.0.1",
           metadata =
             mapOf(
@@ -657,7 +657,7 @@ class MetricsEventAdapterFactoryTest {
                   "response_code" to "302",
                 ),
             ),
-          sourceId = SourceID.ANDROID,
+          sourceId = SourceId.ANDROID,
           sdkVersion = "2.0.1",
           metadata =
             mapOf(
@@ -702,7 +702,7 @@ class MetricsEventAdapterFactoryTest {
                   "tag" to "tag_value",
                 ),
             ),
-          sourceId = SourceID.ANDROID,
+          sourceId = SourceId.ANDROID,
           sdkVersion = "2.0.1",
           metadata =
             mapOf(
@@ -743,7 +743,7 @@ class MetricsEventAdapterFactoryTest {
                   "tag" to "tag_value",
                 ),
             ),
-          sourceId = SourceID.ANDROID,
+          sourceId = SourceId.ANDROID,
           sdkVersion = null,
           metadata = null,
         ),
@@ -787,7 +787,7 @@ class MetricsEventAdapterFactoryTest {
                   "tag" to "tag_value",
                 ),
             ),
-          sourceId = SourceID.GOAL_BATCH,
+          sourceId = SourceId.GOAL_BATCH,
           sdkVersion = "2.0.1",
           metadata =
             mapOf(
@@ -862,7 +862,7 @@ class MetricsEventAdapterFactoryTest {
                 "tag" to "tag_value",
               ),
           ),
-        sourceId = SourceID.ANDROID,
+        sourceId = SourceId.ANDROID,
         sdkVersion = "2.0.1",
         metadata =
           mapOf(

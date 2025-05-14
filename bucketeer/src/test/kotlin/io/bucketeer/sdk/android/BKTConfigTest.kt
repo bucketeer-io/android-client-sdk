@@ -1,6 +1,8 @@
 package io.bucketeer.sdk.android
 
 import com.google.common.truth.Truth.assertThat
+import io.bucketeer.sdk.android.internal.model.SourceId
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertThrows
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -18,8 +20,7 @@ class BKTConfigTest {
         .featureTag("feature-tag")
         .appVersion("1.2.3")
         .build()
-
-    assertThat(actual).isEqualTo(
+    val expected =
       BKTConfig(
         apiKey = "api-key",
         apiEndpoint = "https://example.com",
@@ -30,8 +31,45 @@ class BKTConfigTest {
         backgroundPollingInterval = DEFAULT_BACKGROUND_POLLING_INTERVAL_MILLIS,
         appVersion = "1.2.3",
         logger = DefaultLogger("Bucketeer"),
-      ),
+        sourceIdValue = SourceId.ANDROID.value,
+        sdkVersion = BuildConfig.SDK_VERSION,
+      )
+    assertThat(actual).isEqualTo(
+      expected,
     )
+    assertThat(actual.sourceId).isEqualTo(SourceId.ANDROID)
+  }
+
+  @Test
+  fun buildForWrapperSDK() {
+    val actual =
+      BKTConfig
+        .builder()
+        .apiKey("api-key")
+        .apiEndpoint("https://example.com")
+        .featureTag("feature-tag")
+        .appVersion("1.2.3")
+        .wrapperSdkSourceId(SourceId.FLUTTER.value)
+        .wrapperSdkVersion("0.0.1-beta-op-ft-kt")
+        .build()
+    val expected =
+      BKTConfig(
+        apiKey = "api-key",
+        apiEndpoint = "https://example.com",
+        featureTag = "feature-tag",
+        eventsFlushInterval = DEFAULT_FLUSH_INTERVAL_MILLIS,
+        eventsMaxBatchQueueCount = DEFAULT_MAX_QUEUE_SIZE,
+        pollingInterval = DEFAULT_POLLING_INTERVAL_MILLIS,
+        backgroundPollingInterval = DEFAULT_BACKGROUND_POLLING_INTERVAL_MILLIS,
+        appVersion = "1.2.3",
+        logger = DefaultLogger("Bucketeer"),
+        sourceIdValue = SourceId.FLUTTER.value,
+        sdkVersion = "0.0.1-beta-op-ft-kt",
+      )
+    assertThat(actual).isEqualTo(
+      expected,
+    )
+    assertThat(actual.sourceId).isEqualTo(SourceId.FLUTTER)
   }
 
   @Test
@@ -237,6 +275,8 @@ class BKTConfigTest {
         backgroundPollingInterval = DEFAULT_BACKGROUND_POLLING_INTERVAL_MILLIS,
         appVersion = "1.2.3",
         logger = null,
+        sourceIdValue = SourceId.ANDROID.value,
+        sdkVersion = BuildConfig.SDK_VERSION,
       ),
     )
   }
@@ -270,5 +310,133 @@ class BKTConfigTest {
       }
 
     assertThat(error).hasMessageThat().isEqualTo("appVersion is required")
+  }
+
+  @Test
+  fun `wrapperSdkSourceId - available`() {
+    val availableSourceIds =
+      listOf(
+        SourceId.FLUTTER,
+        SourceId.OPEN_FEATURE_KOTLIN,
+      )
+    for (sourceId in availableSourceIds) {
+      val actual =
+        BKTConfig
+          .builder()
+          .apiKey("api-key")
+          .apiEndpoint("https://example.com")
+          .featureTag("feature-tag")
+          .appVersion("1.2.3")
+          .wrapperSdkSourceId(sourceId.value)
+          .wrapperSdkVersion("0.0.1")
+          .build()
+      val expected =
+        BKTConfig(
+          apiKey = "api-key",
+          apiEndpoint = "https://example.com",
+          featureTag = "feature-tag",
+          eventsFlushInterval = DEFAULT_FLUSH_INTERVAL_MILLIS,
+          eventsMaxBatchQueueCount = DEFAULT_MAX_QUEUE_SIZE,
+          pollingInterval = DEFAULT_POLLING_INTERVAL_MILLIS,
+          backgroundPollingInterval = DEFAULT_BACKGROUND_POLLING_INTERVAL_MILLIS,
+          appVersion = "1.2.3",
+          logger = DefaultLogger("Bucketeer"),
+          sourceIdValue = sourceId.value,
+          sdkVersion = "0.0.1",
+        )
+      assertThat(actual).isEqualTo(
+        expected,
+      )
+      assertThat(actual.sourceId).isEqualTo(sourceId)
+    }
+  }
+
+  @Test
+  fun `wrapperSdkSourceId - not available`() {
+    val listSourceIds =
+      SourceId.entries.filter {
+        it != SourceId.FLUTTER && it != SourceId.OPEN_FEATURE_KOTLIN
+      }
+    for (si in listSourceIds) {
+      val actual =
+        BKTConfig
+          .builder()
+          .apiKey("api-key")
+          .apiEndpoint("https://example.com")
+          .featureTag("feature-tag")
+          .appVersion("1.2.3")
+          .wrapperSdkSourceId(si.value)
+          .build()
+      val expected =
+        BKTConfig(
+          apiKey = "api-key",
+          apiEndpoint = "https://example.com",
+          featureTag = "feature-tag",
+          eventsFlushInterval = DEFAULT_FLUSH_INTERVAL_MILLIS,
+          eventsMaxBatchQueueCount = DEFAULT_MAX_QUEUE_SIZE,
+          pollingInterval = DEFAULT_POLLING_INTERVAL_MILLIS,
+          backgroundPollingInterval = DEFAULT_BACKGROUND_POLLING_INTERVAL_MILLIS,
+          appVersion = "1.2.3",
+          logger = DefaultLogger("Bucketeer"),
+          // no error expected
+          // the sourceId will be set to SourceID.ANDROID
+          // and the sdkVersion will be set to BuildConfig.SDK_VERSION
+          sourceIdValue = SourceId.ANDROID.value,
+          sdkVersion = BuildConfig.SDK_VERSION,
+        )
+      assertThat(actual).isEqualTo(
+        expected,
+      )
+      assertThat(actual.sourceId).isEqualTo(SourceId.ANDROID)
+    }
+  }
+
+  // Test cases for resolveSourceIdAndSdkVersion function
+  @Test
+  fun `resolveSourceIdAndSdkVersion should return ANDROID sourceID and SDK_VERSION when no wrapper SDK is provided`() {
+    val (sourceId, sdkVersion) =
+      resolveSourceIdAndSdkVersion(
+        wrapperSdkSourceId = null,
+        wrapperSdkVersion = null,
+      )
+
+    assertEquals(SourceId.ANDROID, sourceId)
+    assertEquals(BuildConfig.SDK_VERSION, sdkVersion)
+  }
+
+  @Test
+  fun `resolveSourceIdAndSdkVersion should return provided wrapper SDK sourceID and version`() {
+    val (sourceId, sdkVersion) =
+      resolveSourceIdAndSdkVersion(
+        wrapperSdkSourceId = SourceId.FLUTTER,
+        wrapperSdkVersion = "1.2.3",
+      )
+
+    assertEquals(SourceId.FLUTTER, sourceId)
+    assertEquals("1.2.3", sdkVersion)
+  }
+
+  @Test
+  fun `resolveSourceIdAndSdkVersion should return default wrapper SDK version when version is null or blank`() {
+    val (sourceId, sdkVersion) =
+      resolveSourceIdAndSdkVersion(
+        wrapperSdkSourceId = SourceId.FLUTTER,
+        wrapperSdkVersion = null,
+      )
+
+    assertEquals(SourceId.FLUTTER, sourceId)
+    assertEquals(DEFAULT_WRAPPER_SDK_VERSION, sdkVersion)
+  }
+
+  @Test
+  fun `resolveSourceIdAndSdkVersion should return ANDROID sourceID when an unsupported sourceID is provided`() {
+    val (sourceId, sdkVersion) =
+      resolveSourceIdAndSdkVersion(
+        wrapperSdkSourceId = SourceId.UNKNOWN,
+        wrapperSdkVersion = "1.2.3",
+      )
+
+    assertEquals(SourceId.ANDROID, sourceId)
+    assertEquals(BuildConfig.SDK_VERSION, sdkVersion)
   }
 }
