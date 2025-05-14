@@ -4,7 +4,7 @@ import android.content.Context
 import com.squareup.moshi.Moshi
 import io.bucketeer.sdk.android.internal.Constants
 import io.bucketeer.sdk.android.internal.database.OpenHelperCallback
-import io.bucketeer.sdk.android.internal.model.SourceID
+import io.bucketeer.sdk.android.internal.model.SourceId
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 
@@ -59,6 +59,6 @@ internal fun createTestBKTConfig(
     backgroundPollingInterval = backgroundPollingInterval,
     appVersion = appVersion,
     logger = logger,
-    sourceIdValue = SourceID.ANDROID.value,
+    sourceIdValue = SourceId.ANDROID.value,
     sdkVersion = BuildConfig.SDK_VERSION,
   )

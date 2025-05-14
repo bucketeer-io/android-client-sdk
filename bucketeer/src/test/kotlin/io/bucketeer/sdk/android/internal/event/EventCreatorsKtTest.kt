@@ -4,7 +4,7 @@ import io.bucketeer.sdk.android.BKTException
 import io.bucketeer.sdk.android.internal.ClockImpl
 import io.bucketeer.sdk.android.internal.IdGeneratorImpl
 import io.bucketeer.sdk.android.internal.model.ApiId
-import io.bucketeer.sdk.android.internal.model.SourceID
+import io.bucketeer.sdk.android.internal.model.SourceId
 import org.junit.Test
 
 class EventCreatorsKtTest {
@@ -24,7 +24,7 @@ class EventCreatorsKtTest {
     val featureTag = "testFeatureTag"
     val appVersion = "1.0.0"
     val apiId = ApiId.GET_EVALUATIONS
-    val sourceId = SourceID.OPEN_FEATURE_KOTLIN
+    val sourceId = SourceId.OPEN_FEATURE_KOTLIN
     val sdkVersion = "0.0.9"
 
     val unauthorizedException = BKTException.UnauthorizedException("401 error")

@@ -14,7 +14,7 @@ import io.bucketeer.sdk.android.internal.model.MetricsEventData
 import io.bucketeer.sdk.android.internal.model.MetricsEventType
 import io.bucketeer.sdk.android.internal.model.Reason
 import io.bucketeer.sdk.android.internal.model.ReasonType
-import io.bucketeer.sdk.android.internal.model.SourceID
+import io.bucketeer.sdk.android.internal.model.SourceId
 import io.bucketeer.sdk.android.internal.model.User
 
 internal fun newMetadata(appVersion: String): Map<String, String> =
@@ -31,7 +31,7 @@ internal fun newEvaluationEvent(
   user: User,
   evaluation: Evaluation,
   appVersion: String,
-  sourceId: SourceID,
+  sourceId: SourceId,
   sdkVersion: String,
 ): Event =
   Event(
@@ -60,7 +60,7 @@ internal fun newDefaultEvaluationEvent(
   user: User,
   featureId: String,
   appVersion: String,
-  sourceId: SourceID,
+  sourceId: SourceId,
   sdkVersion: String,
 ): Event =
   Event(
@@ -91,7 +91,7 @@ internal fun newGoalEvent(
   featureTag: String,
   user: User,
   appVersion: String,
-  sourceId: SourceID,
+  sourceId: SourceId,
   sdkVersion: String,
 ): Event =
   Event(
@@ -119,7 +119,7 @@ internal fun newSuccessMetricsEvents(
   apiId: ApiId,
   latencySecond: Double,
   sizeByte: Int,
-  sourceId: SourceID,
+  sourceId: SourceId,
   sdkVersion: String,
 ): List<Event> {
   val labels = mapOf("tag" to featureTag)
@@ -170,7 +170,7 @@ internal fun newErrorMetricsEvent(
   appVersion: String,
   error: BKTException,
   apiId: ApiId,
-  sourceId: SourceID,
+  sourceId: SourceId,
   sdkVersion: String,
 ): Event? {
   if (error is BKTException.UnauthorizedException || error is BKTException.ForbiddenException) {
@@ -200,7 +200,7 @@ internal fun newEventDataMetricEvent(
   featureTag: String,
   appVersion: String,
   apiId: ApiId,
-  sourceId: SourceID,
+  sourceId: SourceId,
   sdkVersion: String,
 ): EventData.MetricsEvent {
   val labels = mutableMapOf("tag" to featureTag)

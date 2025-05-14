@@ -13,7 +13,7 @@ import io.bucketeer.sdk.android.internal.model.MetricsEventData
 import io.bucketeer.sdk.android.internal.model.MetricsEventType
 import io.bucketeer.sdk.android.internal.model.Reason
 import io.bucketeer.sdk.android.internal.model.ReasonType
-import io.bucketeer.sdk.android.internal.model.SourceID
+import io.bucketeer.sdk.android.internal.model.SourceId
 import io.bucketeer.sdk.android.internal.model.User
 import org.junit.Before
 import org.junit.Test
@@ -78,7 +78,7 @@ internal class EventAdapterFactoryTest {
                     ),
                 ),
               tag = "tag_value",
-              sourceId = SourceID.ANDROID,
+              sourceId = SourceId.ANDROID,
               sdkVersion = "2.0.1",
               metadata =
                 mapOf(
@@ -135,7 +135,7 @@ internal class EventAdapterFactoryTest {
                     ),
                 ),
               tag = "tag_value",
-              sourceId = SourceID.ANDROID,
+              sourceId = SourceId.ANDROID,
               sdkVersion = null,
               metadata = null,
             ),
@@ -202,7 +202,7 @@ internal class EventAdapterFactoryTest {
                   ruleId = "rule_id_value",
                 ),
               tag = "tag_value",
-              sourceId = SourceID.ANDROID,
+              sourceId = SourceId.ANDROID,
               sdkVersion = "2.0.1",
               metadata =
                 mapOf(
@@ -273,7 +273,7 @@ internal class EventAdapterFactoryTest {
                   ruleId = "rule_id_value",
                 ),
               tag = "tag_value",
-              sourceId = SourceID.ANDROID,
+              sourceId = SourceId.ANDROID,
               sdkVersion = null,
             ),
         ),
@@ -325,7 +325,7 @@ internal class EventAdapterFactoryTest {
                     ),
                   latencySecond = 5.0,
                 ),
-              sourceId = SourceID.ANDROID,
+              sourceId = SourceId.ANDROID,
               sdkVersion = "2.0.1",
               metadata =
                 mapOf(
@@ -379,7 +379,7 @@ internal class EventAdapterFactoryTest {
                     ),
                   latencySecond = 5.0,
                 ),
-              sourceId = SourceID.ANDROID,
+              sourceId = SourceId.ANDROID,
               sdkVersion = null,
               metadata = null,
             ),

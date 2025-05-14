@@ -7,7 +7,7 @@ import com.squareup.moshi.Moshi
 import io.bucketeer.sdk.android.BKTException
 import io.bucketeer.sdk.android.BuildConfig
 import io.bucketeer.sdk.android.internal.di.DataModule
-import io.bucketeer.sdk.android.internal.model.SourceID
+import io.bucketeer.sdk.android.internal.model.SourceId
 import io.bucketeer.sdk.android.internal.model.request.GetEvaluationsRequest
 import io.bucketeer.sdk.android.internal.model.request.RegisterEventsRequest
 import io.bucketeer.sdk.android.internal.model.response.ErrorResponse
@@ -130,7 +130,7 @@ internal class ApiClientImplTest {
         apiKey = "api_key_value",
         featureTag = "feature_tag_value",
         moshi = moshi,
-        sourceId = SourceID.ANDROID,
+        sourceId = SourceId.ANDROID,
         sdkVersion = BuildConfig.SDK_VERSION,
       )
 
@@ -164,7 +164,7 @@ internal class ApiClientImplTest {
             evaluatedAt = "1690798100",
             userAttributesUpdated = "true",
           ),
-        sourceId = SourceID.ANDROID,
+        sourceId = SourceId.ANDROID,
         sdkVersion = BuildConfig.SDK_VERSION,
       ),
     )
@@ -199,7 +199,7 @@ internal class ApiClientImplTest {
         apiKey = "api_key_value",
         featureTag = "feature_tag_value",
         moshi = moshi,
-        sourceId = SourceID.FLUTTER,
+        sourceId = SourceId.FLUTTER,
         sdkVersion = "10.2.3",
       )
 
@@ -233,7 +233,7 @@ internal class ApiClientImplTest {
             evaluatedAt = "1690798100",
             userAttributesUpdated = "true",
           ),
-        sourceId = SourceID.FLUTTER,
+        sourceId = SourceId.FLUTTER,
         sdkVersion = "10.2.3",
       ),
     )
@@ -255,7 +255,7 @@ internal class ApiClientImplTest {
         apiKey = "api_key_value",
         featureTag = "feature_tag_value",
         moshi = moshi,
-        sourceId = SourceID.ANDROID,
+        sourceId = SourceId.ANDROID,
         sdkVersion = BuildConfig.SDK_VERSION,
       )
 
@@ -291,7 +291,7 @@ internal class ApiClientImplTest {
         apiKey = "api_key_value",
         featureTag = "feature_tag_value",
         moshi = moshi,
-        sourceId = SourceID.ANDROID,
+        sourceId = SourceId.ANDROID,
         sdkVersion = BuildConfig.SDK_VERSION,
       )
 
@@ -330,7 +330,7 @@ internal class ApiClientImplTest {
         apiKey = "api_key_value",
         featureTag = "feature_tag_value",
         moshi = moshi,
-        sourceId = SourceID.ANDROID,
+        sourceId = SourceId.ANDROID,
         sdkVersion = BuildConfig.SDK_VERSION,
       )
 
@@ -378,7 +378,7 @@ internal class ApiClientImplTest {
         apiKey = "api_key_value",
         featureTag = "feature_tag_value",
         moshi = moshi,
-        sourceId = SourceID.ANDROID,
+        sourceId = SourceId.ANDROID,
         sdkVersion = BuildConfig.SDK_VERSION,
       )
 
@@ -422,7 +422,7 @@ internal class ApiClientImplTest {
         apiKey = "api_key_value",
         featureTag = "feature_tag_value",
         moshi = moshi,
-        sourceId = SourceID.ANDROID,
+        sourceId = SourceId.ANDROID,
         sdkVersion = BuildConfig.SDK_VERSION,
       )
 
@@ -473,7 +473,7 @@ internal class ApiClientImplTest {
         apiKey = "api_key_value",
         featureTag = "feature_tag_value",
         moshi = moshi,
-        sourceId = SourceID.ANDROID,
+        sourceId = SourceId.ANDROID,
         sdkVersion = BuildConfig.SDK_VERSION,
       )
 
@@ -492,7 +492,7 @@ internal class ApiClientImplTest {
       RegisterEventsRequest(
         events = listOf(evaluationEvent1, latencyMetricsEvent1),
         sdkVersion = BuildConfig.SDK_VERSION,
-        sourceId = SourceID.ANDROID,
+        sourceId = SourceId.ANDROID,
       ),
     )
 
@@ -541,7 +541,7 @@ internal class ApiClientImplTest {
         apiKey = "api_key_value",
         featureTag = "feature_tag_value",
         moshi = moshi,
-        sourceId = SourceID.FLUTTER,
+        sourceId = SourceId.FLUTTER,
         sdkVersion = "1.0.1",
       )
 
@@ -560,7 +560,7 @@ internal class ApiClientImplTest {
       RegisterEventsRequest(
         events = listOf(evaluationEvent1, latencyMetricsEvent1),
         sdkVersion = "1.0.1",
-        sourceId = SourceID.FLUTTER,
+        sourceId = SourceId.FLUTTER,
       ),
     )
 
@@ -590,7 +590,7 @@ internal class ApiClientImplTest {
         featureTag = "feature_tag_value",
         moshi = moshi,
         defaultRequestTimeoutMillis = 1_000,
-        sourceId = SourceID.ANDROID,
+        sourceId = SourceId.ANDROID,
         sdkVersion = BuildConfig.SDK_VERSION,
       )
 
@@ -616,7 +616,7 @@ internal class ApiClientImplTest {
         apiKey = "api_key_value",
         featureTag = "feature_tag_value",
         moshi = moshi,
-        sourceId = SourceID.ANDROID,
+        sourceId = SourceId.ANDROID,
         sdkVersion = BuildConfig.SDK_VERSION,
       )
 
@@ -654,7 +654,7 @@ internal class ApiClientImplTest {
         apiKey = "api_key_value",
         featureTag = "feature_tag_value",
         moshi = moshi,
-        sourceId = SourceID.ANDROID,
+        sourceId = SourceId.ANDROID,
         sdkVersion = BuildConfig.SDK_VERSION,
       )
 
@@ -689,7 +689,7 @@ internal class ApiClientImplTest {
         apiKey = "api_key_value",
         featureTag = "feature_tag_value",
         moshi = moshi,
-        sourceId = SourceID.ANDROID,
+        sourceId = SourceId.ANDROID,
         sdkVersion = BuildConfig.SDK_VERSION,
       )
 
@@ -727,7 +727,7 @@ internal class ApiClientImplTest {
         apiKey = "api_key_value",
         featureTag = "feature_tag_value",
         moshi = moshi,
-        sourceId = SourceID.ANDROID,
+        sourceId = SourceId.ANDROID,
         sdkVersion = BuildConfig.SDK_VERSION,
       )
 

@@ -17,7 +17,7 @@ import io.bucketeer.sdk.android.internal.di.ComponentImpl
 import io.bucketeer.sdk.android.internal.model.EventData
 import io.bucketeer.sdk.android.internal.model.EventType
 import io.bucketeer.sdk.android.internal.model.ReasonType
-import io.bucketeer.sdk.android.internal.model.SourceID
+import io.bucketeer.sdk.android.internal.model.SourceId
 import org.json.JSONObject
 import org.junit.After
 import org.junit.Before
@@ -118,7 +118,7 @@ class BKTClientEventTest {
         return@any type == EventType.EVALUATION &&
           event is EventData.EvaluationEvent &&
           event.reason.type == ReasonType.DEFAULT &&
-          event.sourceId == SourceID.ANDROID &&
+          event.sourceId == SourceId.ANDROID &&
           event.sdkVersion == BuildConfig.SDK_VERSION
       },
     ).isTrue()

@@ -16,7 +16,7 @@ import io.bucketeer.sdk.android.internal.di.ComponentImpl
 import io.bucketeer.sdk.android.internal.model.EventData
 import io.bucketeer.sdk.android.internal.model.EventType
 import io.bucketeer.sdk.android.internal.model.ReasonType
-import io.bucketeer.sdk.android.internal.model.SourceID
+import io.bucketeer.sdk.android.internal.model.SourceId
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -39,7 +39,7 @@ class BKTClientWithWrapperSDKSourceId {
         .apiKey(BuildConfig.API_KEY)
         .apiEndpoint(BuildConfig.API_ENDPOINT)
         .featureTag(FEATURE_TAG)
-        .wrapperSdkSourceId(SourceID.FLUTTER.value)
+        .wrapperSdkSourceId(SourceId.FLUTTER.value)
         .wrapperSdkVersion("3.2.1")
         .appVersion("1.2.3")
         .build()
@@ -81,7 +81,7 @@ class BKTClientWithWrapperSDKSourceId {
         return@any type == EventType.EVALUATION &&
           event is EventData.EvaluationEvent &&
           event.reason.type == ReasonType.DEFAULT &&
-          event.sourceId == SourceID.FLUTTER &&
+          event.sourceId == SourceId.FLUTTER &&
           event.sdkVersion == "3.2.1"
       },
     ).isTrue()
@@ -91,7 +91,7 @@ class BKTClientWithWrapperSDKSourceId {
         val event = it.event
         return@any type == EventType.METRICS &&
           event is EventData.MetricsEvent &&
-          event.sourceId == SourceID.FLUTTER &&
+          event.sourceId == SourceId.FLUTTER &&
           event.sdkVersion == "3.2.1"
       },
     ).isTrue()

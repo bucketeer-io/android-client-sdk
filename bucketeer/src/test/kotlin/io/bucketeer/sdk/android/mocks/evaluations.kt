@@ -8,7 +8,7 @@ import io.bucketeer.sdk.android.internal.model.EventData
 import io.bucketeer.sdk.android.internal.model.EventType
 import io.bucketeer.sdk.android.internal.model.Reason
 import io.bucketeer.sdk.android.internal.model.ReasonType
-import io.bucketeer.sdk.android.internal.model.SourceID
+import io.bucketeer.sdk.android.internal.model.SourceId
 import io.bucketeer.sdk.android.internal.model.User
 import io.bucketeer.sdk.android.internal.model.UserEvaluations
 
@@ -263,7 +263,7 @@ internal val evaluationEvent: Event by lazy {
         ),
       tag = "android",
       timestamp = 10,
-      sourceId = SourceID.ANDROID,
+      sourceId = SourceId.ANDROID,
       user = User("user-id"),
     ),
     EventType.EVALUATION,

@@ -1,7 +1,7 @@
 package io.bucketeer.sdk.android
 
 import android.util.Log
-import io.bucketeer.sdk.android.internal.model.SourceID
+import io.bucketeer.sdk.android.internal.model.SourceId
 import io.bucketeer.sdk.android.internal.util.require
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 
@@ -34,7 +34,7 @@ data class BKTConfig internal constructor(
   }
 
   // SourceID is internal and its not exposed to the public API.
-  internal val sourceId: SourceID = SourceID.from(sourceIdValue)
+  internal val sourceId: SourceId = SourceId.from(sourceIdValue)
 
   class Builder internal constructor() {
     private var apiKey: String? = null
@@ -147,7 +147,7 @@ data class BKTConfig internal constructor(
         this.eventsFlushInterval = DEFAULT_FLUSH_INTERVAL_MILLIS
       }
 
-      val wrapperSdkSourceIdInternal = this.wrapperSdkSourceId?.let { SourceID.from(it) }
+      val wrapperSdkSourceIdInternal = this.wrapperSdkSourceId?.let { SourceId.from(it) }
       val (sourceId, sdkVersion) =
         resolveSourceIdAndSdkVersion(
           wrapperSdkSourceId = wrapperSdkSourceIdInternal,
@@ -180,32 +180,32 @@ data class BKTConfig internal constructor(
 }
 
 internal fun resolveSourceIdAndSdkVersion(
-  wrapperSdkSourceId: SourceID?,
+  wrapperSdkSourceId: SourceId?,
   wrapperSdkVersion: String?,
-): Pair<SourceID, String> {
-  val sourceId = resolveSdkSourceId(wrapperSdkSourceId ?: SourceID.ANDROID)
+): Pair<SourceId, String> {
+  val sourceId = resolveSdkSourceId(wrapperSdkSourceId ?: SourceId.ANDROID)
   val sdkVersion = resolveSdkVersion(sourceId, wrapperSdkVersion)
   return Pair(sourceId, sdkVersion)
 }
 
-private fun resolveSdkSourceId(sourceId: SourceID): SourceID {
+private fun resolveSdkSourceId(sourceId: SourceId): SourceId {
   val availableWrapperSDKs =
     setOf(
-      SourceID.FLUTTER,
-      SourceID.OPEN_FEATURE_KOTLIN,
+      SourceId.FLUTTER,
+      SourceId.OPEN_FEATURE_KOTLIN,
     )
   return if (sourceId in availableWrapperSDKs) {
     sourceId
   } else {
-    SourceID.ANDROID
+    SourceId.ANDROID
   }
 }
 
 private fun resolveSdkVersion(
-  sourceId: SourceID,
+  sourceId: SourceId,
   version: String?,
 ): String =
-  if (sourceId != SourceID.ANDROID) {
+  if (sourceId != SourceId.ANDROID) {
     if (!version.isNullOrBlank()) version else DEFAULT_WRAPPER_SDK_VERSION
   } else {
     BuildConfig.SDK_VERSION

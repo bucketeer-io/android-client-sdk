@@ -1,6 +1,6 @@
 package io.bucketeer.sdk.android.internal.model
 
-internal enum class SourceID(
+internal enum class SourceId(
   val value: Int,
 ) {
   UNKNOWN(0),
@@ -17,10 +17,10 @@ internal enum class SourceID(
   OPEN_FEATURE_SWIFT(101),
   OPEN_FEATURE_JAVASCRIPT(102),
   OPEN_FEATURE_GO(103),
-  OPEN_FEATURE_NODEJS(104),
+  OPEN_FEATURE_NODE(104),
   ;
 
   companion object {
-    fun from(value: Int): SourceID = entries.firstOrNull { it.value == value } ?: UNKNOWN
+    fun from(value: Int): SourceId = entries.firstOrNull { it.value == value } ?: UNKNOWN
   }
 }

@@ -10,21 +10,21 @@ import io.bucketeer.sdk.android.internal.model.ApiId
 import io.bucketeer.sdk.android.internal.model.Evaluation
 import io.bucketeer.sdk.android.internal.model.Event
 import io.bucketeer.sdk.android.internal.model.EventData
-import io.bucketeer.sdk.android.internal.model.SourceID
+import io.bucketeer.sdk.android.internal.model.SourceId
 import io.bucketeer.sdk.android.internal.model.User
 import io.bucketeer.sdk.android.internal.remote.ApiClient
 import io.bucketeer.sdk.android.internal.remote.RegisterEventsResult
 
 internal class EventInteractor(
-  private val eventsMaxBatchQueueCount: Int,
-  private val apiClient: ApiClient,
-  private val eventSQLDao: EventSQLDao,
-  private val clock: Clock,
-  private val idGenerator: IdGenerator,
-  private val appVersion: String,
-  private val featureTag: String,
-  private val sourceId: SourceID,
-  private val sdkVersion: String,
+    private val eventsMaxBatchQueueCount: Int,
+    private val apiClient: ApiClient,
+    private val eventSQLDao: EventSQLDao,
+    private val clock: Clock,
+    private val idGenerator: IdGenerator,
+    private val appVersion: String,
+    private val featureTag: String,
+    private val sourceId: SourceId,
+    private val sdkVersion: String,
 ) {
   @VisibleForTesting
   internal var eventUpdateListener: EventUpdateListener? = null

@@ -8,7 +8,7 @@ import io.bucketeer.sdk.android.internal.model.ApiId
 import io.bucketeer.sdk.android.internal.model.EventData
 import io.bucketeer.sdk.android.internal.model.MetricsEventData
 import io.bucketeer.sdk.android.internal.model.MetricsEventType
-import io.bucketeer.sdk.android.internal.model.SourceID
+import io.bucketeer.sdk.android.internal.model.SourceId
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -25,7 +25,7 @@ internal class BKTExceptionToEventDataMetricEventTest {
       mapOf("tag" to "android", "error_message" to "UnknownException")
     val expectedApiId = ApiId.GET_EVALUATIONS
     val expectedMetadata = newMetadata("1.0.0")
-    val expectedSourceId = SourceID.OPEN_FEATURE_KOTLIN
+    val expectedSourceId = SourceId.OPEN_FEATURE_KOTLIN
     const val EXPECTED_SDK_VERSION = "0.0.8"
   }
 
@@ -287,7 +287,7 @@ internal class BKTExceptionToEventDataMetricEventTest {
         featureTag = "android",
         appVersion = "1.0.0",
         apiId = ApiId.GET_EVALUATIONS,
-        sourceId = SourceID.OPEN_FEATURE_KOTLIN,
+        sourceId = SourceId.OPEN_FEATURE_KOTLIN,
         sdkVersion = "0.0.8",
       )
     Truth.assertThat(result).isEqualTo(case.expected)

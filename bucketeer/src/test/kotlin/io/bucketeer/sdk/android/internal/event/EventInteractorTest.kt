@@ -23,7 +23,7 @@ import io.bucketeer.sdk.android.internal.model.MetricsEventData
 import io.bucketeer.sdk.android.internal.model.MetricsEventType
 import io.bucketeer.sdk.android.internal.model.Reason
 import io.bucketeer.sdk.android.internal.model.ReasonType
-import io.bucketeer.sdk.android.internal.model.SourceID
+import io.bucketeer.sdk.android.internal.model.SourceId
 import io.bucketeer.sdk.android.internal.model.request.RegisterEventsRequest
 import io.bucketeer.sdk.android.internal.model.response.ErrorResponse
 import io.bucketeer.sdk.android.internal.model.response.RegisterEventsErrorResponse
@@ -71,7 +71,7 @@ class EventInteractorTest {
         .eventsMaxQueueSize(3)
         .appVersion("1.2.3")
         .wrapperSdkVersion("0.0.2")
-        .wrapperSdkSourceId(SourceID.OPEN_FEATURE_KOTLIN.value)
+        .wrapperSdkSourceId(SourceId.OPEN_FEATURE_KOTLIN.value)
         .build()
 
     component =
