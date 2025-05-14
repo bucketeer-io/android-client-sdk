@@ -28,15 +28,15 @@ internal class InteractorModule(
     )
 
   fun eventInteractor(
-      eventsMaxBatchQueueCount: Int,
-      apiClient: ApiClient,
-      eventSQLDao: EventSQLDao,
-      clock: Clock,
-      idGenerator: IdGenerator,
-      appVersion: String,
-      featureTag: String,
-      sourceId: SourceId,
-      sdkVersion: String,
+    eventsMaxBatchQueueCount: Int,
+    apiClient: ApiClient,
+    eventSQLDao: EventSQLDao,
+    clock: Clock,
+    idGenerator: IdGenerator,
+    appVersion: String,
+    featureTag: String,
+    sourceId: SourceId,
+    sdkVersion: String,
   ): EventInteractor =
     EventInteractor(
       eventsMaxBatchQueueCount = eventsMaxBatchQueueCount,

@@ -25,13 +25,13 @@ import java.util.concurrent.TimeUnit
 internal const val DEFAULT_REQUEST_TIMEOUT_MILLIS: Long = 30_000
 
 internal class ApiClientImpl(
-    apiEndpoint: String,
-    private val apiKey: String,
-    private val featureTag: String,
-    private val moshi: Moshi,
-    defaultRequestTimeoutMillis: Long = DEFAULT_REQUEST_TIMEOUT_MILLIS,
-    private val sourceId: SourceId,
-    private val sdkVersion: String,
+  apiEndpoint: String,
+  private val apiKey: String,
+  private val featureTag: String,
+  private val moshi: Moshi,
+  defaultRequestTimeoutMillis: Long = DEFAULT_REQUEST_TIMEOUT_MILLIS,
+  private val sourceId: SourceId,
+  private val sdkVersion: String,
 ) : ApiClient {
   private val apiEndpoint = apiEndpoint.toHttpUrl()
 
