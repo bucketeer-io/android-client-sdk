@@ -244,7 +244,7 @@ class EvaluationInteractorTest {
     assertThat(firstRequestBody!!.userEvaluationCondition).isEqualTo(
       UserEvaluationCondition(
         evaluatedAt = "10000",
-        userAttributesUpdated = "false",
+        userAttributesUpdated = false,
       ),
     )
 
@@ -260,7 +260,7 @@ class EvaluationInteractorTest {
     assertThat(secondRequestBody!!.userEvaluationCondition).isEqualTo(
       UserEvaluationCondition(
         evaluatedAt = "1690798021",
-        userAttributesUpdated = "true",
+        userAttributesUpdated = true,
       ),
     )
 
@@ -310,7 +310,7 @@ class EvaluationInteractorTest {
     assertThat(requestBody.userEvaluationCondition).isEqualTo(
       UserEvaluationCondition(
         evaluatedAt = "0",
-        userAttributesUpdated = "true",
+        userAttributesUpdated = true,
       ),
     )
 

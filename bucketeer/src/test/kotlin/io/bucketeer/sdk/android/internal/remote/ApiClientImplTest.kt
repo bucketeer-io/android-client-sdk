@@ -139,7 +139,7 @@ internal class ApiClientImplTest {
         condition =
           UserEvaluationCondition(
             evaluatedAt = "1690798100",
-            userAttributesUpdated = "true",
+            userAttributesUpdated = true,
           ),
       )
 
@@ -161,7 +161,7 @@ internal class ApiClientImplTest {
         userEvaluationCondition =
           UserEvaluationCondition(
             evaluatedAt = "1690798100",
-            userAttributesUpdated = "true",
+            userAttributesUpdated = true,
           ),
         sdkVersion = BuildConfig.SDK_VERSION,
       ),
@@ -195,7 +195,7 @@ internal class ApiClientImplTest {
           condition =
             UserEvaluationCondition(
               evaluatedAt = "1690798200",
-              userAttributesUpdated = "false",
+              userAttributesUpdated = false,
             ),
         )
       }
@@ -230,7 +230,7 @@ internal class ApiClientImplTest {
           condition =
             UserEvaluationCondition(
               evaluatedAt = "1690798200",
-              userAttributesUpdated = "false",
+              userAttributesUpdated = false,
             ),
         )
       }
@@ -264,7 +264,7 @@ internal class ApiClientImplTest {
         condition =
           UserEvaluationCondition(
             evaluatedAt = "1690798200",
-            userAttributesUpdated = "false",
+            userAttributesUpdated = false,
           ),
       )
 
@@ -310,7 +310,7 @@ internal class ApiClientImplTest {
         condition =
           UserEvaluationCondition(
             evaluatedAt = "1690799200",
-            userAttributesUpdated = "true",
+            userAttributesUpdated = true,
           ),
       )
 
@@ -352,7 +352,7 @@ internal class ApiClientImplTest {
         condition =
           UserEvaluationCondition(
             evaluatedAt = "1690799200",
-            userAttributesUpdated = "true",
+            userAttributesUpdated = true,
           ),
       )
 
@@ -577,7 +577,7 @@ internal class ApiClientImplTest {
         condition =
           UserEvaluationCondition(
             evaluatedAt = "1690798100",
-            userAttributesUpdated = "true",
+            userAttributesUpdated = true,
           ),
       )
 
