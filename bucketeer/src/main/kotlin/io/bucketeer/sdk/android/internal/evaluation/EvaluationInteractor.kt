@@ -60,7 +60,7 @@ internal class EvaluationInteractor(
   ): GetEvaluationsResult {
     val currentEvaluationsId = evaluationStorage.getCurrentEvaluationId()
     val evaluatedAt = evaluationStorage.getEvaluatedAt()
-    val userAttributesUpdated = evaluationStorage.getUserAttributesUpdated().toString()
+    val userAttributesUpdated = evaluationStorage.getUserAttributesUpdated()
 
     val condition =
       UserEvaluationCondition(
