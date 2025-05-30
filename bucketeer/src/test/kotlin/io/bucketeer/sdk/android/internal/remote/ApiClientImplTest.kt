@@ -7,7 +7,7 @@ import com.squareup.moshi.Moshi
 import io.bucketeer.sdk.android.BKTException
 import io.bucketeer.sdk.android.BuildConfig
 import io.bucketeer.sdk.android.internal.di.DataModule
-import io.bucketeer.sdk.android.internal.model.SourceID
+import io.bucketeer.sdk.android.internal.model.SourceId
 import io.bucketeer.sdk.android.internal.model.request.GetEvaluationsRequest
 import io.bucketeer.sdk.android.internal.model.request.RegisterEventsRequest
 import io.bucketeer.sdk.android.internal.model.response.ErrorResponse
@@ -110,7 +110,7 @@ internal class ApiClientImplTest {
   }
 
   @Test
-  fun `getEvaluations - success`() {
+  fun `getEvaluations - success - sourceId = Android`() {
     val expected =
       GetEvaluationsResponse(
         evaluations = user1Evaluations,
@@ -130,6 +130,8 @@ internal class ApiClientImplTest {
         apiKey = "api_key_value",
         featureTag = "feature_tag_value",
         moshi = moshi,
+        sourceId = SourceId.ANDROID,
+        sdkVersion = BuildConfig.SDK_VERSION,
       )
 
     val result =
@@ -157,13 +159,82 @@ internal class ApiClientImplTest {
         tag = "feature_tag_value",
         user = user1,
         userEvaluationsId = "user_evaluation_id",
-        sourceId = SourceID.ANDROID,
         userEvaluationCondition =
           UserEvaluationCondition(
             evaluatedAt = "1690798100",
             userAttributesUpdated = true,
           ),
+        sourceId = SourceId.ANDROID,
         sdkVersion = BuildConfig.SDK_VERSION,
+      ),
+    )
+
+    // assert response
+    assertThat(result).isInstanceOf(GetEvaluationsResult.Success::class.java)
+    val success = result as GetEvaluationsResult.Success
+    assertThat(success.value).isEqualTo(expected)
+    assertThat(success.seconds).isAtLeast(1)
+    assertThat(success.sizeByte).isEqualTo(706)
+    assertThat(success.featureTag).isEqualTo("feature_tag_value")
+  }
+
+  @Test
+  fun `getEvaluations - success - sourceId = Flutter`() {
+    val expected =
+      GetEvaluationsResponse(
+        evaluations = user1Evaluations,
+        userEvaluationsId = "user_evaluation_id",
+      )
+    server.enqueue(
+      MockResponse()
+        .setBodyDelay(1, TimeUnit.SECONDS)
+        .setBody(
+          moshi.adapter(GetEvaluationsResponse::class.java).toJson(expected),
+        ).setResponseCode(200),
+    )
+
+    client =
+      ApiClientImpl(
+        apiEndpoint = apiEndpoint,
+        apiKey = "api_key_value",
+        featureTag = "feature_tag_value",
+        moshi = moshi,
+        sourceId = SourceId.FLUTTER,
+        sdkVersion = "10.2.3",
+      )
+
+    val result =
+      client.getEvaluations(
+        user = user1,
+        userEvaluationsId = "user_evaluation_id",
+        condition =
+          UserEvaluationCondition(
+            evaluatedAt = "1690798100",
+            userAttributesUpdated = "true",
+          ),
+      )
+
+    // assert request
+    assertThat(server.requestCount).isEqualTo(1)
+    val request = server.takeRequest()
+    assertThat(request.method).isEqualTo("POST")
+    assertThat(request.path).isEqualTo("/get_evaluations")
+    assertThat(
+      moshi
+        .adapter(GetEvaluationsRequest::class.java)
+        .fromJson(request.body.readString(Charsets.UTF_8)),
+    ).isEqualTo(
+      GetEvaluationsRequest(
+        tag = "feature_tag_value",
+        user = user1,
+        userEvaluationsId = "user_evaluation_id",
+        userEvaluationCondition =
+          UserEvaluationCondition(
+            evaluatedAt = "1690798100",
+            userAttributesUpdated = "true",
+          ),
+        sourceId = SourceId.FLUTTER,
+        sdkVersion = "10.2.3",
       ),
     )
 
@@ -184,6 +255,8 @@ internal class ApiClientImplTest {
         apiKey = "api_key_value",
         featureTag = "feature_tag_value",
         moshi = moshi,
+        sourceId = SourceId.ANDROID,
+        sdkVersion = BuildConfig.SDK_VERSION,
       )
 
     val (millis, result) =
@@ -218,6 +291,8 @@ internal class ApiClientImplTest {
         apiKey = "api_key_value",
         featureTag = "feature_tag_value",
         moshi = moshi,
+        sourceId = SourceId.ANDROID,
+        sdkVersion = BuildConfig.SDK_VERSION,
       )
 
     val timeout = TimeUnit.SECONDS.toMillis(2)
@@ -255,6 +330,8 @@ internal class ApiClientImplTest {
         apiKey = "api_key_value",
         featureTag = "feature_tag_value",
         moshi = moshi,
+        sourceId = SourceId.ANDROID,
+        sdkVersion = BuildConfig.SDK_VERSION,
       )
 
     val result =
@@ -301,6 +378,8 @@ internal class ApiClientImplTest {
         apiKey = "api_key_value",
         featureTag = "feature_tag_value",
         moshi = moshi,
+        sourceId = SourceId.ANDROID,
+        sdkVersion = BuildConfig.SDK_VERSION,
       )
 
     val result =
@@ -343,6 +422,8 @@ internal class ApiClientImplTest {
         apiKey = "api_key_value",
         featureTag = "feature_tag_value",
         moshi = moshi,
+        sourceId = SourceId.ANDROID,
+        sdkVersion = BuildConfig.SDK_VERSION,
       )
 
     val result =
@@ -365,7 +446,7 @@ internal class ApiClientImplTest {
   }
 
   @Test
-  fun `registerEvents - success`() {
+  fun `registerEvents - success - sourceId - Android`() {
     server.enqueue(
       MockResponse()
         .setResponseCode(200)
@@ -392,6 +473,8 @@ internal class ApiClientImplTest {
         apiKey = "api_key_value",
         featureTag = "feature_tag_value",
         moshi = moshi,
+        sourceId = SourceId.ANDROID,
+        sdkVersion = BuildConfig.SDK_VERSION,
       )
 
     val result = client.registerEvents(events = listOf(evaluationEvent1, latencyMetricsEvent1))
@@ -409,7 +492,75 @@ internal class ApiClientImplTest {
       RegisterEventsRequest(
         events = listOf(evaluationEvent1, latencyMetricsEvent1),
         sdkVersion = BuildConfig.SDK_VERSION,
-        sourceId = SourceID.ANDROID,
+        sourceId = SourceId.ANDROID,
+      ),
+    )
+
+    // assert response
+    assertThat(result).isInstanceOf(RegisterEventsResult.Success::class.java)
+    val success = result as RegisterEventsResult.Success
+    assertThat(success.value).isEqualTo(
+      RegisterEventsResponse(
+        errors =
+          mapOf(
+            evaluationEvent1.id to
+              RegisterEventsErrorResponse(
+                retriable = true,
+                message = "error",
+              ),
+          ),
+      ),
+    )
+  }
+
+  @Test
+  fun `registerEvents - success - sourceId - Flutter`() {
+    server.enqueue(
+      MockResponse()
+        .setResponseCode(200)
+        .setBody(
+          moshi
+            .adapter(RegisterEventsResponse::class.java)
+            .toJson(
+              RegisterEventsResponse(
+                errors =
+                  mapOf(
+                    evaluationEvent1.id to
+                      RegisterEventsErrorResponse(
+                        retriable = true,
+                        message = "error",
+                      ),
+                  ),
+              ),
+            ),
+        ),
+    )
+    client =
+      ApiClientImpl(
+        apiEndpoint = apiEndpoint,
+        apiKey = "api_key_value",
+        featureTag = "feature_tag_value",
+        moshi = moshi,
+        sourceId = SourceId.FLUTTER,
+        sdkVersion = "1.0.1",
+      )
+
+    val result = client.registerEvents(events = listOf(evaluationEvent1, latencyMetricsEvent1))
+
+    // assert request
+    val request = server.takeRequest()
+    assertThat(server.requestCount).isEqualTo(1)
+    assertThat(request.method).isEqualTo("POST")
+    assertThat(request.path).isEqualTo("/register_events")
+    assertThat(
+      moshi
+        .adapter(RegisterEventsRequest::class.java)
+        .fromJson(request.body.readString(Charsets.UTF_8)),
+    ).isEqualTo(
+      RegisterEventsRequest(
+        events = listOf(evaluationEvent1, latencyMetricsEvent1),
+        sdkVersion = "1.0.1",
+        sourceId = SourceId.FLUTTER,
       ),
     )
 
@@ -439,6 +590,8 @@ internal class ApiClientImplTest {
         featureTag = "feature_tag_value",
         moshi = moshi,
         defaultRequestTimeoutMillis = 1_000,
+        sourceId = SourceId.ANDROID,
+        sdkVersion = BuildConfig.SDK_VERSION,
       )
 
     val (millis, result) =
@@ -463,6 +616,8 @@ internal class ApiClientImplTest {
         apiKey = "api_key_value",
         featureTag = "feature_tag_value",
         moshi = moshi,
+        sourceId = SourceId.ANDROID,
+        sdkVersion = BuildConfig.SDK_VERSION,
       )
 
     val result = client.registerEvents(events = listOf(evaluationEvent1, latencyMetricsEvent1))
@@ -499,6 +654,8 @@ internal class ApiClientImplTest {
         apiKey = "api_key_value",
         featureTag = "feature_tag_value",
         moshi = moshi,
+        sourceId = SourceId.ANDROID,
+        sdkVersion = BuildConfig.SDK_VERSION,
       )
 
     val result = client.registerEvents(events = listOf(evaluationEvent1, latencyMetricsEvent1))
@@ -532,6 +689,8 @@ internal class ApiClientImplTest {
         apiKey = "api_key_value",
         featureTag = "feature_tag_value",
         moshi = moshi,
+        sourceId = SourceId.ANDROID,
+        sdkVersion = BuildConfig.SDK_VERSION,
       )
 
     val result = client.registerEvents(events = listOf(evaluationEvent1, latencyMetricsEvent1))
@@ -568,6 +727,8 @@ internal class ApiClientImplTest {
         apiKey = "api_key_value",
         featureTag = "feature_tag_value",
         moshi = moshi,
+        sourceId = SourceId.ANDROID,
+        sdkVersion = BuildConfig.SDK_VERSION,
       )
 
     val result =

@@ -99,7 +99,6 @@ dependencies {
   // Google Play Services
   compileOnly libs.googlePlayServices.basement
 
-  testImplementation projects.mocks
   testImplementation libs.okhttp.mockwebserver
   testImplementation libs.junit
   testImplementation libs.truth

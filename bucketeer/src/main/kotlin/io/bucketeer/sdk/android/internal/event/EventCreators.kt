@@ -2,7 +2,6 @@ package io.bucketeer.sdk.android.internal.event
 
 import android.os.Build
 import io.bucketeer.sdk.android.BKTException
-import io.bucketeer.sdk.android.BuildConfig
 import io.bucketeer.sdk.android.internal.Clock
 import io.bucketeer.sdk.android.internal.IdGenerator
 import io.bucketeer.sdk.android.internal.loge
@@ -15,7 +14,7 @@ import io.bucketeer.sdk.android.internal.model.MetricsEventData
 import io.bucketeer.sdk.android.internal.model.MetricsEventType
 import io.bucketeer.sdk.android.internal.model.Reason
 import io.bucketeer.sdk.android.internal.model.ReasonType
-import io.bucketeer.sdk.android.internal.model.SourceID
+import io.bucketeer.sdk.android.internal.model.SourceId
 import io.bucketeer.sdk.android.internal.model.User
 
 internal fun newMetadata(appVersion: String): Map<String, String> =
@@ -32,6 +31,8 @@ internal fun newEvaluationEvent(
   user: User,
   evaluation: Evaluation,
   appVersion: String,
+  sourceId: SourceId,
+  sdkVersion: String,
 ): Event =
   Event(
     id = idGenerator.newId(),
@@ -46,8 +47,8 @@ internal fun newEvaluationEvent(
         user = user,
         reason = evaluation.reason,
         tag = featureTag,
-        sourceId = SourceID.ANDROID,
-        sdkVersion = BuildConfig.SDK_VERSION,
+        sourceId = sourceId,
+        sdkVersion = sdkVersion,
         metadata = newMetadata(appVersion),
       ),
   )
@@ -59,6 +60,8 @@ internal fun newDefaultEvaluationEvent(
   user: User,
   featureId: String,
   appVersion: String,
+  sourceId: SourceId,
+  sdkVersion: String,
 ): Event =
   Event(
     id = idGenerator.newId(),
@@ -74,8 +77,8 @@ internal fun newDefaultEvaluationEvent(
             type = ReasonType.CLIENT,
           ),
         tag = featureTag,
-        sourceId = SourceID.ANDROID,
-        sdkVersion = BuildConfig.SDK_VERSION,
+        sourceId = sourceId,
+        sdkVersion = sdkVersion,
         metadata = newMetadata(appVersion),
       ),
   )
@@ -88,6 +91,8 @@ internal fun newGoalEvent(
   featureTag: String,
   user: User,
   appVersion: String,
+  sourceId: SourceId,
+  sdkVersion: String,
 ): Event =
   Event(
     id = idGenerator.newId(),
@@ -100,8 +105,8 @@ internal fun newGoalEvent(
         value = value,
         user = user,
         tag = featureTag,
-        sourceId = SourceID.ANDROID,
-        sdkVersion = BuildConfig.SDK_VERSION,
+        sourceId = sourceId,
+        sdkVersion = sdkVersion,
         metadata = newMetadata(appVersion),
       ),
   )
@@ -114,6 +119,8 @@ internal fun newSuccessMetricsEvents(
   apiId: ApiId,
   latencySecond: Double,
   sizeByte: Int,
+  sourceId: SourceId,
+  sdkVersion: String,
 ): List<Event> {
   val labels = mapOf("tag" to featureTag)
   return listOf(
@@ -130,8 +137,8 @@ internal fun newSuccessMetricsEvents(
               labels = labels,
               latencySecond = latencySecond,
             ),
-          sourceId = SourceID.ANDROID,
-          sdkVersion = BuildConfig.SDK_VERSION,
+          sourceId = sourceId,
+          sdkVersion = sdkVersion,
           metadata = newMetadata(appVersion),
         ),
     ),
@@ -148,8 +155,8 @@ internal fun newSuccessMetricsEvents(
               labels = labels,
               sizeByte = sizeByte,
             ),
-          sourceId = SourceID.ANDROID,
-          sdkVersion = BuildConfig.SDK_VERSION,
+          sourceId = sourceId,
+          sdkVersion = sdkVersion,
           metadata = newMetadata(appVersion),
         ),
     ),
@@ -163,6 +170,8 @@ internal fun newErrorMetricsEvent(
   appVersion: String,
   error: BKTException,
   apiId: ApiId,
+  sourceId: SourceId,
+  sdkVersion: String,
 ): Event? {
   if (error is BKTException.UnauthorizedException || error is BKTException.ForbiddenException) {
     loge(error) { "An unauthorized or forbidden error occurred. Please check your API Key." }
@@ -174,11 +183,13 @@ internal fun newErrorMetricsEvent(
     type = EventType.METRICS,
     event =
       newEventDataMetricEvent(
-        error,
-        clock.currentTimeSeconds(),
-        featureTag,
-        appVersion,
-        apiId,
+        error = error,
+        timestamp = clock.currentTimeSeconds(),
+        featureTag = featureTag,
+        appVersion = appVersion,
+        apiId = apiId,
+        sourceId = sourceId,
+        sdkVersion = sdkVersion,
       ),
   )
 }
@@ -189,6 +200,8 @@ internal fun newEventDataMetricEvent(
   featureTag: String,
   appVersion: String,
   apiId: ApiId,
+  sourceId: SourceId,
+  sdkVersion: String,
 ): EventData.MetricsEvent {
   val labels = mutableMapOf("tag" to featureTag)
   val (type, event) =
@@ -340,8 +353,8 @@ internal fun newEventDataMetricEvent(
     timestamp = timestamp,
     type = type,
     event = event,
-    sourceId = SourceID.ANDROID,
-    sdkVersion = BuildConfig.SDK_VERSION,
+    sourceId = sourceId,
+    sdkVersion = sdkVersion,
     metadata = newMetadata(appVersion),
   )
 }

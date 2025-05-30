@@ -5,7 +5,7 @@ import com.squareup.moshi.JsonClass
 
 // we can't use codegen here
 // see EventAdapterFactory
-sealed class EventData {
+internal sealed class EventData {
   @JsonClass(generateAdapter = true)
   data class GoalEvent(
     val timestamp: Long,
@@ -14,7 +14,7 @@ sealed class EventData {
     val value: Double,
     val user: User,
     val tag: String,
-    val sourceId: SourceID,
+    val sourceId: SourceId,
     val sdkVersion: String? = null,
     val metadata: Map<String, String>? = null,
     @Json(name = "@type")
@@ -31,7 +31,7 @@ sealed class EventData {
     val user: User,
     val reason: Reason,
     val tag: String,
-    val sourceId: SourceID,
+    val sourceId: SourceId,
     val sdkVersion: String? = null,
     val metadata: Map<String, String>? = null,
     @Json(name = "@type")
@@ -44,7 +44,7 @@ sealed class EventData {
     val timestamp: Long,
     val event: MetricsEventData,
     val type: MetricsEventType,
-    val sourceId: SourceID,
+    val sourceId: SourceId,
     val sdkVersion: String? = null,
     val metadata: Map<String, String>? = null,
     @Json(name = "@type")

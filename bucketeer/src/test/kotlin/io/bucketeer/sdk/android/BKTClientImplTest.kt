@@ -14,7 +14,7 @@ import io.bucketeer.sdk.android.internal.model.EventData
 import io.bucketeer.sdk.android.internal.model.EventType
 import io.bucketeer.sdk.android.internal.model.MetricsEventData
 import io.bucketeer.sdk.android.internal.model.MetricsEventType
-import io.bucketeer.sdk.android.internal.model.SourceID
+import io.bucketeer.sdk.android.internal.model.SourceId
 import io.bucketeer.sdk.android.internal.model.User
 import io.bucketeer.sdk.android.internal.model.UserEvaluations
 import io.bucketeer.sdk.android.internal.model.request.RegisterEventsRequest
@@ -403,7 +403,7 @@ class BKTClientImplTest {
       )
 
     assertThat(requestBody.events).hasSize(2)
-    assertThat(requestBody.sourceId).isEqualTo(SourceID.ANDROID)
+    assertThat(requestBody.sourceId).isEqualTo(SourceId.ANDROID)
     assertThat(requestBody.events.map { it.type }).isEqualTo(
       listOf(
         EventType.METRICS,
@@ -470,7 +470,7 @@ class BKTClientImplTest {
       )
 
     assertThat(requestBody.events).hasSize(2)
-    assertThat(requestBody.sourceId).isEqualTo(SourceID.ANDROID)
+    assertThat(requestBody.sourceId).isEqualTo(SourceId.ANDROID)
     assertThat(requestBody.events.map { it.type }).isEqualTo(
       listOf(
         EventType.METRICS,
@@ -1636,7 +1636,7 @@ private val BKTClient.componentImpl: ComponentImpl
   get() = (this as BKTClientImpl).component as ComponentImpl
 
 // these assertion methods do not check full-equality, but that should be covered in other tests
-fun assertLatencyMetricsEvent(
+internal fun assertLatencyMetricsEvent(
   actual: Event,
   expectedLabels: Map<String, String>,
   apiId: ApiId,
@@ -1660,7 +1660,7 @@ fun assertLatencyMetricsEvent(
   // actualLatencyEvent.duration is not assertable
 }
 
-fun assertSizeMetricsEvent(
+internal fun assertSizeMetricsEvent(
   actual: Event,
   expectedSizeEvent: MetricsEventData.SizeMetricsEvent,
 ) {
@@ -1680,7 +1680,7 @@ fun assertSizeMetricsEvent(
   assertThat(actualSizeEvent).isEqualTo(expectedSizeEvent)
 }
 
-fun assertTimeoutErrorMetricsEvent(
+internal fun assertTimeoutErrorMetricsEvent(
   actual: Event,
   expectedMetricsEvent: MetricsEventData.TimeoutErrorMetricsEvent,
 ) {
@@ -1690,7 +1690,7 @@ fun assertTimeoutErrorMetricsEvent(
   assertThat(actualMetricsEvent.event).isEqualTo(expectedMetricsEvent)
 }
 
-fun assertGoalEvent(
+internal fun assertGoalEvent(
   actual: Event,
   expectedGoalId: String,
   expectedValue: Double,

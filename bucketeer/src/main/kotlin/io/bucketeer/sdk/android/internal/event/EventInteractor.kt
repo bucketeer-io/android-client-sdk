@@ -10,6 +10,7 @@ import io.bucketeer.sdk.android.internal.model.ApiId
 import io.bucketeer.sdk.android.internal.model.Evaluation
 import io.bucketeer.sdk.android.internal.model.Event
 import io.bucketeer.sdk.android.internal.model.EventData
+import io.bucketeer.sdk.android.internal.model.SourceId
 import io.bucketeer.sdk.android.internal.model.User
 import io.bucketeer.sdk.android.internal.remote.ApiClient
 import io.bucketeer.sdk.android.internal.remote.RegisterEventsResult
@@ -22,6 +23,8 @@ internal class EventInteractor(
   private val idGenerator: IdGenerator,
   private val appVersion: String,
   private val featureTag: String,
+  private val sourceId: SourceId,
+  private val sdkVersion: String,
 ) {
   @VisibleForTesting
   internal var eventUpdateListener: EventUpdateListener? = null
@@ -36,7 +39,16 @@ internal class EventInteractor(
     evaluation: Evaluation,
   ) {
     eventSQLDao.addEvent(
-      newEvaluationEvent(clock, idGenerator, featureTag, user, evaluation, appVersion),
+      newEvaluationEvent(
+        clock = clock,
+        idGenerator = idGenerator,
+        featureTag = featureTag,
+        user = user,
+        evaluation = evaluation,
+        appVersion = appVersion,
+        sourceId = sourceId,
+        sdkVersion = sdkVersion,
+      ),
     )
 
     updateEventsAndNotify()
@@ -48,7 +60,16 @@ internal class EventInteractor(
     featureId: String,
   ) {
     eventSQLDao.addEvent(
-      newDefaultEvaluationEvent(clock, idGenerator, featureTag, user, featureId, appVersion),
+      newDefaultEvaluationEvent(
+        clock = clock,
+        idGenerator = idGenerator,
+        featureTag = featureTag,
+        user = user,
+        featureId = featureId,
+        appVersion = appVersion,
+        sourceId = sourceId,
+        sdkVersion = sdkVersion,
+      ),
     )
 
     updateEventsAndNotify()
@@ -61,7 +82,17 @@ internal class EventInteractor(
     value: Double,
   ) {
     eventSQLDao.addEvent(
-      newGoalEvent(clock, idGenerator, goalId, value, featureTag, user, appVersion),
+      newGoalEvent(
+        clock = clock,
+        idGenerator = idGenerator,
+        goalId = goalId,
+        value = value,
+        featureTag = featureTag,
+        user = user,
+        appVersion = appVersion,
+        sourceId = sourceId,
+        sdkVersion = sdkVersion,
+      ),
     )
 
     updateEventsAndNotify()
@@ -83,6 +114,8 @@ internal class EventInteractor(
         apiId = ApiId.GET_EVALUATIONS,
         latencySecond = seconds,
         sizeByte = sizeByte,
+        sourceId = sourceId,
+        sdkVersion = sdkVersion,
       )
     addMetricEvents(events)
   }
@@ -109,6 +142,8 @@ internal class EventInteractor(
         appVersion = appVersion,
         error = error,
         apiId = apiId,
+        sourceId = sourceId,
+        sdkVersion = sdkVersion,
       )
     event?.let { addMetricEvents(listOf(event)) }
   }
@@ -178,6 +213,7 @@ internal class EventInteractor(
 
         SendEventsResult.Success(sent = true)
       }
+
       is RegisterEventsResult.Failure -> {
         val error = result.error
         logd(throwable = error) { "Failed to register events" }

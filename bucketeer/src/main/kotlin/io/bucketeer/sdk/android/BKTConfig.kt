@@ -1,6 +1,7 @@
 package io.bucketeer.sdk.android
 
 import android.util.Log
+import io.bucketeer.sdk.android.internal.model.SourceId
 import io.bucketeer.sdk.android.internal.util.require
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 
@@ -11,6 +12,7 @@ internal const val MINIMUM_POLLING_INTERVAL_MILLIS: Long = 60_000 // 60 seconds
 internal const val DEFAULT_POLLING_INTERVAL_MILLIS: Long = 600_000 // 10 minutes
 internal const val MINIMUM_BACKGROUND_POLLING_INTERVAL_MILLIS: Long = 1_200_000 // 20 minutes
 internal const val DEFAULT_BACKGROUND_POLLING_INTERVAL_MILLIS: Long = 3_600_000 // 1 hour
+internal const val DEFAULT_WRAPPER_SDK_VERSION = "0.0.1"
 
 // hide internal constructor from copy() method
 @ConsistentCopyVisibility
@@ -24,10 +26,15 @@ data class BKTConfig internal constructor(
   val backgroundPollingInterval: Long,
   val appVersion: String,
   val logger: BKTLogger?,
+  val sourceIdValue: Int,
+  val sdkVersion: String,
 ) {
   companion object {
     fun builder(): Builder = Builder()
   }
+
+  // SourceID is internal and its not exposed to the public API.
+  internal val sourceId: SourceId = SourceId.from(sourceIdValue)
 
   class Builder internal constructor() {
     private var apiKey: String? = null
@@ -39,6 +46,8 @@ data class BKTConfig internal constructor(
     private var backgroundPollingInterval: Long = DEFAULT_BACKGROUND_POLLING_INTERVAL_MILLIS
     private var appVersion: String? = null
     private var logger: BKTLogger? = DefaultLogger()
+    private var wrapperSdkVersion: String? = null
+    private var wrapperSdkSourceId: Int? = null
 
     fun apiKey(apiKey: String): Builder {
       this.apiKey = apiKey
@@ -85,6 +94,27 @@ data class BKTConfig internal constructor(
       return this
     }
 
+    // Sets the SDK sourceID explicitly.
+    // IMPORTANT: This option is intended for internal use only.
+    // It should NOT be set by developers directly integrating this SDK.
+    // Use this option ONLY when another SDK acts as a proxy and wraps this native SDK.
+    // In such cases, set this value to the sourceID of the proxy SDK.
+    // The sourceID is used to identify the origin of the request.
+    fun wrapperSdkSourceId(sourceId: Int): Builder {
+      this.wrapperSdkSourceId = sourceId
+      return this
+    }
+
+    // Sets the SDK version explicitly.
+    // IMPORTANT: This option is intended for internal use only.
+    // It should NOT be set by developers directly integrating this SDK.
+    // Use this option ONLY when another SDK acts as a proxy and wraps this native SDK.
+    // In such cases, set this value to the version of the proxy SDK.
+    fun wrapperSdkVersion(version: String): Builder {
+      this.wrapperSdkVersion = version
+      return this
+    }
+
     private fun logWarning(messageCreator: (() -> String?)? = null) {
       // LoggerHolder.log() is not available here, so we use the logger directly.
       logger?.log(
@@ -117,6 +147,21 @@ data class BKTConfig internal constructor(
         this.eventsFlushInterval = DEFAULT_FLUSH_INTERVAL_MILLIS
       }
 
+      val wrapperSdkSourceIdInternal = this.wrapperSdkSourceId?.let { SourceId.from(it) }
+      val (sourceId, sdkVersion) =
+        resolveSourceIdAndSdkVersion(
+          wrapperSdkSourceId = wrapperSdkSourceIdInternal,
+          wrapperSdkVersion = this.wrapperSdkVersion,
+        )
+
+      wrapperSdkSourceIdInternal?.let {
+        // The input wrapperSdkSourceId is different from the resolved sourceId.
+        // This means that the wrapper SDK is not supported.
+        if (wrapperSdkSourceIdInternal != sourceId) {
+          logWarning { "wrapperSdkSourceId: `$wrapperSdkSourceIdInternal` is set, but it’s not supported." }
+        }
+      }
+
       return BKTConfig(
         apiKey = this.apiKey!!,
         apiEndpoint = this.apiEndpoint!!,
@@ -127,7 +172,41 @@ data class BKTConfig internal constructor(
         backgroundPollingInterval = this.backgroundPollingInterval,
         appVersion = this.appVersion!!,
         logger = this.logger,
+        sourceIdValue = sourceId.value,
+        sdkVersion = sdkVersion,
       )
     }
   }
 }
+
+internal fun resolveSourceIdAndSdkVersion(
+  wrapperSdkSourceId: SourceId?,
+  wrapperSdkVersion: String?,
+): Pair<SourceId, String> {
+  val sourceId = resolveSdkSourceId(wrapperSdkSourceId ?: SourceId.ANDROID)
+  val sdkVersion = resolveSdkVersion(sourceId, wrapperSdkVersion)
+  return Pair(sourceId, sdkVersion)
+}
+
+private fun resolveSdkSourceId(sourceId: SourceId): SourceId {
+  val availableWrapperSDKs =
+    setOf(
+      SourceId.FLUTTER,
+      SourceId.OPEN_FEATURE_KOTLIN,
+    )
+  return if (sourceId in availableWrapperSDKs) {
+    sourceId
+  } else {
+    SourceId.ANDROID
+  }
+}
+
+private fun resolveSdkVersion(
+  sourceId: SourceId,
+  version: String?,
+): String =
+  if (sourceId != SourceId.ANDROID) {
+    if (!version.isNullOrBlank()) version else DEFAULT_WRAPPER_SDK_VERSION
+  } else {
+    BuildConfig.SDK_VERSION
+  }

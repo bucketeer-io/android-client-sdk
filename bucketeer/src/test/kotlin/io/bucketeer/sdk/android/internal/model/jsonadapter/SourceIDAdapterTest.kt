@@ -5,23 +5,23 @@ import com.google.testing.junit.testparameterinjector.TestParameter
 import com.google.testing.junit.testparameterinjector.TestParameterInjector
 import com.squareup.moshi.JsonAdapter
 import io.bucketeer.sdk.android.internal.di.DataModule
-import io.bucketeer.sdk.android.internal.model.SourceID
+import io.bucketeer.sdk.android.internal.model.SourceId
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(TestParameterInjector::class)
-class SourceIDAdapterTest {
-  lateinit var adapter: JsonAdapter<SourceID>
+internal class SourceIDAdapterTest {
+  lateinit var adapter: JsonAdapter<SourceId>
 
   @Before
   fun setup() {
-    adapter = DataModule.createMoshi().adapter(SourceID::class.java)
+    adapter = DataModule.createMoshi().adapter(SourceId::class.java)
   }
 
   @Test
   fun fromJson(
-    @TestParameter sourceID: SourceID,
+    @TestParameter sourceID: SourceId,
   ) {
     val result = adapter.fromJson(sourceID.value.toString())
 
@@ -30,7 +30,7 @@ class SourceIDAdapterTest {
 
   @Test
   fun toJson(
-    @TestParameter sourceID: SourceID,
+    @TestParameter sourceID: SourceId,
   ) {
     val result = adapter.toJson(sourceID)
 

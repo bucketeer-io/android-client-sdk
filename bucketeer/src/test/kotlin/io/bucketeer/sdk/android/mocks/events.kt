@@ -10,9 +10,9 @@ import io.bucketeer.sdk.android.internal.model.MetricsEventData
 import io.bucketeer.sdk.android.internal.model.MetricsEventType
 import io.bucketeer.sdk.android.internal.model.Reason
 import io.bucketeer.sdk.android.internal.model.ReasonType
-import io.bucketeer.sdk.android.internal.model.SourceID
+import io.bucketeer.sdk.android.internal.model.SourceId
 
-val evaluationEvent1: Event by lazy {
+internal val evaluationEvent1: Event by lazy {
   Event(
     id = "5ce0ae1a-8568-44d3-961b-89d7735f2a93",
     type = EventType.EVALUATION,
@@ -24,13 +24,13 @@ val evaluationEvent1: Event by lazy {
         user = user1,
         reason = Reason(type = ReasonType.DEFAULT),
         tag = "",
-        sourceId = SourceID.ANDROID,
+        sourceId = SourceId.ANDROID,
         sdkVersion = io.bucketeer.sdk.android.BuildConfig.SDK_VERSION,
       ),
   )
 }
 
-val evaluationEvent2: Event by lazy {
+internal val evaluationEvent2: Event by lazy {
   Event(
     id = "62d76a53-3396-4dfb-8dce-dd1b794a984d",
     type = EventType.EVALUATION,
@@ -42,7 +42,7 @@ val evaluationEvent2: Event by lazy {
         user = user1,
         reason = Reason(type = ReasonType.DEFAULT),
         tag = "",
-        sourceId = SourceID.ANDROID,
+        sourceId = SourceId.ANDROID,
         sdkVersion = io.bucketeer.sdk.android.BuildConfig.SDK_VERSION,
         metadata =
           mapOf(
@@ -54,7 +54,7 @@ val evaluationEvent2: Event by lazy {
   )
 }
 
-val goalEvent1: Event by lazy {
+internal val goalEvent1: Event by lazy {
   Event(
     id = "408741bd-ae4c-45e9-888d-a85e88817fec",
     type = EventType.GOAL,
@@ -66,7 +66,7 @@ val goalEvent1: Event by lazy {
         user = user1,
         value = 0.0,
         tag = "",
-        sourceId = SourceID.ANDROID,
+        sourceId = SourceId.ANDROID,
         sdkVersion = io.bucketeer.sdk.android.BuildConfig.SDK_VERSION,
         metadata =
           mapOf(
@@ -78,7 +78,7 @@ val goalEvent1: Event by lazy {
   )
 }
 
-val duplicateGoalEvent1: Event by lazy {
+internal val duplicateGoalEvent1: Event by lazy {
   Event(
     id = "408741bd-ae4c-45e9-888d-a85e88817fdd",
     type = EventType.GOAL,
@@ -90,7 +90,7 @@ val duplicateGoalEvent1: Event by lazy {
         user = user1,
         value = 0.0,
         tag = "",
-        sourceId = SourceID.ANDROID,
+        sourceId = SourceId.ANDROID,
         sdkVersion = io.bucketeer.sdk.android.BuildConfig.SDK_VERSION,
         metadata =
           mapOf(
@@ -102,7 +102,7 @@ val duplicateGoalEvent1: Event by lazy {
   )
 }
 
-val goalEvent2: Event by lazy {
+internal val goalEvent2: Event by lazy {
   Event(
     id = "5ea231b4-c3c7-4b9f-97a2-ee50337f51f0",
     type = EventType.GOAL,
@@ -114,7 +114,7 @@ val goalEvent2: Event by lazy {
         user = user1,
         value = 0.0,
         tag = "",
-        sourceId = SourceID.ANDROID,
+        sourceId = SourceId.ANDROID,
         sdkVersion = io.bucketeer.sdk.android.BuildConfig.SDK_VERSION,
         metadata =
           mapOf(
@@ -126,7 +126,7 @@ val goalEvent2: Event by lazy {
   )
 }
 
-val latencyMetricsEvent1: Event by lazy {
+internal val latencyMetricsEvent1: Event by lazy {
   Event(
     id = "e1c03cae-367d-4be4-a613-759441a37801",
     type = EventType.METRICS,
@@ -135,7 +135,7 @@ val latencyMetricsEvent1: Event by lazy {
         timestamp = 1661823274, // 2022-08-30 01:34:34
         event = getEvaluationLatencyMetricsEvent1,
         type = MetricsEventType.RESPONSE_LATENCY,
-        sourceId = SourceID.ANDROID,
+        sourceId = SourceId.ANDROID,
         sdkVersion = io.bucketeer.sdk.android.BuildConfig.SDK_VERSION,
         metadata =
           mapOf(
@@ -155,7 +155,7 @@ val getEvaluationLatencyMetricsEvent1 =
   )
 
 // Will duplicate with `metricsEvent1`
-val duplicateLatencyMetricsEvent1: Event by lazy {
+internal val duplicateLatencyMetricsEvent1: Event by lazy {
   Event(
     id = "bbc03cae-367d-4be4-a613-759441a378aa",
     type = EventType.METRICS,
@@ -164,7 +164,7 @@ val duplicateLatencyMetricsEvent1: Event by lazy {
         timestamp = 1661823274, // 2022-08-30 01:34:34
         event = getEvaluationLatencyMetricsEvent1,
         type = MetricsEventType.RESPONSE_LATENCY,
-        sourceId = SourceID.ANDROID,
+        sourceId = SourceId.ANDROID,
         sdkVersion = io.bucketeer.sdk.android.BuildConfig.SDK_VERSION,
         metadata =
           mapOf(
@@ -176,7 +176,7 @@ val duplicateLatencyMetricsEvent1: Event by lazy {
   )
 }
 
-val sizeMetricsEvent1: Event by lazy {
+internal val sizeMetricsEvent1: Event by lazy {
   Event(
     id = "aac03cae-367d-4be4-a613-759441a37820",
     type = EventType.METRICS,
@@ -185,7 +185,7 @@ val sizeMetricsEvent1: Event by lazy {
         timestamp = 1661823275,
         event = getEvaluationSizeMetricsEvent1,
         type = MetricsEventType.RESPONSE_SIZE,
-        sourceId = SourceID.ANDROID,
+        sourceId = SourceId.ANDROID,
         sdkVersion = io.bucketeer.sdk.android.BuildConfig.SDK_VERSION,
         metadata =
           mapOf(
@@ -197,14 +197,14 @@ val sizeMetricsEvent1: Event by lazy {
   )
 }
 
-val getEvaluationSizeMetricsEvent1 =
+internal val getEvaluationSizeMetricsEvent1 =
   MetricsEventData.SizeMetricsEvent(
     ApiId.GET_EVALUATIONS,
     labels = mapOf("tag" to "android", "state" to "FULL"),
     sizeByte = 400,
   )
 
-val internalErrorMetricsEvent1: Event by lazy {
+internal val internalErrorMetricsEvent1: Event by lazy {
   Event(
     id = "aac03cae-367d-4be4-a613-759441a37820",
     type = EventType.METRICS,
@@ -217,7 +217,7 @@ val internalErrorMetricsEvent1: Event by lazy {
             labels = mapOf("tag" to "android", "state" to "FULL"),
           ),
         type = MetricsEventType.INTERNAL_SERVER_ERROR,
-        sourceId = SourceID.ANDROID,
+        sourceId = SourceId.ANDROID,
         sdkVersion = io.bucketeer.sdk.android.BuildConfig.SDK_VERSION,
         metadata =
           mapOf(

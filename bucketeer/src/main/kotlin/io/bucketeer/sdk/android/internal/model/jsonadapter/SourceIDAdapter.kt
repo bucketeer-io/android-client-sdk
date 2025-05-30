@@ -2,12 +2,12 @@ package io.bucketeer.sdk.android.internal.model.jsonadapter
 
 import com.squareup.moshi.FromJson
 import com.squareup.moshi.ToJson
-import io.bucketeer.sdk.android.internal.model.SourceID
+import io.bucketeer.sdk.android.internal.model.SourceId
 
-class SourceIDAdapter {
+internal class SourceIDAdapter {
   @ToJson
-  fun toJson(type: SourceID): Int = type.value
+  fun toJson(type: SourceId): Int = type.value
 
   @FromJson
-  fun fromJson(value: Int): SourceID = SourceID.from(value)
+  fun fromJson(value: Int): SourceId = SourceId.from(value)
 }

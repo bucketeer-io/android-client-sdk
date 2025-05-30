@@ -4,6 +4,7 @@ import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import io.bucketeer.sdk.android.internal.logd
 import io.bucketeer.sdk.android.internal.model.Event
+import io.bucketeer.sdk.android.internal.model.SourceId
 import io.bucketeer.sdk.android.internal.model.User
 import io.bucketeer.sdk.android.internal.model.request.GetEvaluationsRequest
 import io.bucketeer.sdk.android.internal.model.request.RegisterEventsRequest
@@ -29,6 +30,8 @@ internal class ApiClientImpl(
   private val featureTag: String,
   private val moshi: Moshi,
   defaultRequestTimeoutMillis: Long = DEFAULT_REQUEST_TIMEOUT_MILLIS,
+  private val sourceId: SourceId,
+  private val sdkVersion: String,
 ) : ApiClient {
   private val apiEndpoint = apiEndpoint.toHttpUrl()
 
@@ -55,6 +58,8 @@ internal class ApiClientImpl(
         user = user,
         userEvaluationsId = userEvaluationsId,
         userEvaluationCondition = condition,
+        sourceId = sourceId,
+        sdkVersion = sdkVersion,
       )
 
     val request =
@@ -127,7 +132,7 @@ internal class ApiClientImpl(
   }
 
   override fun registerEvents(events: List<Event>): RegisterEventsResult {
-    val body = RegisterEventsRequest(events = events)
+    val body = RegisterEventsRequest(events = events, sourceId = sourceId, sdkVersion = sdkVersion)
 
     val request =
       Request

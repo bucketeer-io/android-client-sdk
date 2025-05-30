@@ -11,7 +11,7 @@ import io.bucketeer.sdk.android.internal.model.EventData
 import io.bucketeer.sdk.android.internal.model.EventType
 import java.lang.reflect.Type
 
-class EventAdapterFactory : JsonAdapter.Factory {
+internal class EventAdapterFactory : JsonAdapter.Factory {
   override fun create(
     type: Type,
     annotations: MutableSet<out Annotation>,

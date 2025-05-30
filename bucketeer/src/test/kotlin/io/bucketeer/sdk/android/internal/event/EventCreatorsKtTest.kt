@@ -4,6 +4,7 @@ import io.bucketeer.sdk.android.BKTException
 import io.bucketeer.sdk.android.internal.ClockImpl
 import io.bucketeer.sdk.android.internal.IdGeneratorImpl
 import io.bucketeer.sdk.android.internal.model.ApiId
+import io.bucketeer.sdk.android.internal.model.SourceId
 import org.junit.Test
 
 class EventCreatorsKtTest {
@@ -23,20 +24,90 @@ class EventCreatorsKtTest {
     val featureTag = "testFeatureTag"
     val appVersion = "1.0.0"
     val apiId = ApiId.GET_EVALUATIONS
+    val sourceId = SourceId.OPEN_FEATURE_KOTLIN
+    val sdkVersion = "0.0.9"
 
     val unauthorizedException = BKTException.UnauthorizedException("401 error")
     val forbiddenException = BKTException.ForbiddenException("403 error")
     val badRequestException = BKTException.BadRequestException("Bad request error")
-    val clientClosedRequestException = BKTException.ClientClosedRequestException("Client closed request error")
-    val internalServerErrorException = BKTException.InternalServerErrorException("Internal server error")
+    val clientClosedRequestException =
+      BKTException.ClientClosedRequestException("Client closed request error")
+    val internalServerErrorException =
+      BKTException.InternalServerErrorException("Internal server error")
     val notFoundException = BKTException.FeatureNotFoundException("404 error")
 
-    assert(newErrorMetricsEvent(clock, idGenerator, featureTag, appVersion, unauthorizedException, apiId) == null)
-    assert(newErrorMetricsEvent(clock, idGenerator, featureTag, appVersion, forbiddenException, apiId) == null)
+    assert(
+      newErrorMetricsEvent(
+        clock,
+        idGenerator,
+        featureTag,
+        appVersion,
+        unauthorizedException,
+        apiId,
+        sourceId,
+        sdkVersion,
+      ) == null,
+    )
+    assert(
+      newErrorMetricsEvent(
+        clock,
+        idGenerator,
+        featureTag,
+        appVersion,
+        forbiddenException,
+        apiId,
+        sourceId,
+        sdkVersion,
+      ) == null,
+    )
 
-    assert(newErrorMetricsEvent(clock, idGenerator, featureTag, appVersion, badRequestException, apiId) != null)
-    assert(newErrorMetricsEvent(clock, idGenerator, featureTag, appVersion, clientClosedRequestException, apiId) != null)
-    assert(newErrorMetricsEvent(clock, idGenerator, featureTag, appVersion, internalServerErrorException, apiId) != null)
-    assert(newErrorMetricsEvent(clock, idGenerator, featureTag, appVersion, notFoundException, apiId) != null)
+    assert(
+      newErrorMetricsEvent(
+        clock,
+        idGenerator,
+        featureTag,
+        appVersion,
+        badRequestException,
+        apiId,
+        sourceId,
+        sdkVersion,
+      ) != null,
+    )
+    assert(
+      newErrorMetricsEvent(
+        clock,
+        idGenerator,
+        featureTag,
+        appVersion,
+        clientClosedRequestException,
+        apiId,
+        sourceId,
+        sdkVersion,
+      ) != null,
+    )
+    assert(
+      newErrorMetricsEvent(
+        clock,
+        idGenerator,
+        featureTag,
+        appVersion,
+        internalServerErrorException,
+        apiId,
+        sourceId,
+        sdkVersion,
+      ) != null,
+    )
+    assert(
+      newErrorMetricsEvent(
+        clock,
+        idGenerator,
+        featureTag,
+        appVersion,
+        notFoundException,
+        apiId,
+        sourceId,
+        sdkVersion,
+      ) != null,
+    )
   }
 }
