@@ -95,6 +95,11 @@ internal class ApiClientImplTest {
     FORBIDDEN_NULL_BODY_RESPONSE(403, BKTException.ForbiddenException::class.java, null),
     NOT_FOUND_NULL_BODY_RESPONSE(404, BKTException.FeatureNotFoundException::class.java, null),
     METHOD_NOT_ALLOWED_NULL_BODY_RESPONSE(405, BKTException.InvalidHttpMethodException::class.java, null),
+    INVALID_ERROR_RESPONSE(
+      code = 418,
+      expectedClass = BKTException.UnknownServerException::class.java,
+      expectedResponse = """{"code":3, "message":"proto: (line 1:177): invalid value for bool field userAttributesUpdated: \"false\"", "details":[]}""",
+    ),
   }
 
   @Before
@@ -330,12 +335,7 @@ internal class ApiClientImplTest {
   ) {
     server.enqueue(
       MockResponse()
-        .setResponseCode(case.code)
-        .apply {
-          if (case.expectedResponse != null) {
-            this.setBody(case.expectedResponse)
-          }
-        },
+        .setResponseCode(case.code),
     )
     client =
       ApiClientImpl(
@@ -362,6 +362,7 @@ internal class ApiClientImplTest {
 
     assertThat(error).isInstanceOf(case.expectedClass)
     assertThat(error.message).doesNotContain("${case.code}")
+    assertThat(error.message).isEqualTo("")
   }
 
   @Test
@@ -521,9 +522,9 @@ internal class ApiClientImplTest {
       MockResponse()
         .setResponseCode(case.code)
         .apply {
-          if (case.expectedResponse != null) {
-            this.setBody(case.expectedResponse)
-          }
+//          if (case.expectedResponse != null) {
+//            this.setBody(case.expectedResponse)
+//          }
         },
     )
     client =

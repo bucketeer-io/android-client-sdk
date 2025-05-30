@@ -1,9 +1,9 @@
 package io.bucketeer.sdk.android.internal.remote
 
-import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.JsonDataException
 import com.squareup.moshi.JsonEncodingException
 import io.bucketeer.sdk.android.BKTException
+import io.bucketeer.sdk.android.internal.model.jsonadapter.ErrorResponseParser
 import io.bucketeer.sdk.android.internal.model.response.ErrorResponse
 import okhttp3.Response
 import java.io.EOFException
@@ -12,18 +12,25 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import kotlin.contracts.ExperimentalContracts
 
-fun Response.toBKTException(adapter: JsonAdapter<ErrorResponse>): BKTException {
+internal fun Response.toErrorResponse(parser: ErrorResponseParser): ErrorResponse {
   val bodyString = body?.string() ?: ""
-  val errorBody: ErrorResponse? =
-    kotlin
-      .runCatching {
-        adapter.fromJson(bodyString)
-      }.getOrNull()
+  return try {
+    parser.parse(bodyString)
+  } catch (_: Exception) {
+    ErrorResponse(
+      error = ErrorResponse.ErrorDetail(
+        code = 0,
+        message = bodyString
+      )
+    )
+  }
+}
 
+internal fun ErrorResponse.toBKTException(code: Int): BKTException {
   return when (code) {
     in 300..399 -> {
       BKTException.RedirectRequestException(
-        message = errorBody?.error?.message ?: "RedirectRequest error",
+        message = error.message,
         statusCode = code,
       )
     }
@@ -38,7 +45,7 @@ fun Response.toBKTException(adapter: JsonAdapter<ErrorResponse>): BKTException {
       // - gateway: missing events
       // - gateway: body is required
       BKTException.BadRequestException(
-        message = errorBody?.error?.message ?: "BadRequest error",
+        message = error.message,
       )
     }
     401 -> {
@@ -48,64 +55,64 @@ fun Response.toBKTException(adapter: JsonAdapter<ErrorResponse>): BKTException {
       // - gateway: bad role
       // - gateway: disabled APIKey
       BKTException.UnauthorizedException(
-        message = errorBody?.error?.message ?: "Unauthorized error",
+        message = error.message,
       )
     }
     403 -> {
       // Forbidden
       BKTException.ForbiddenException(
-        message = errorBody?.error?.message ?: "Forbidden error",
+        message = error.message,
       )
     }
     404 -> {
       // NotFound
       // - feature not found
       BKTException.FeatureNotFoundException(
-        message = errorBody?.error?.message ?: "NotFound error",
+        message = error.message,
       )
     }
     405 -> {
       // MethodNotAllowed
       // - gateway: invalid http method
       BKTException.InvalidHttpMethodException(
-        message = errorBody?.error?.message ?: "MethodNotAllowed error",
+        message = error.message,
       )
     }
     408 -> {
       BKTException.TimeoutException(
-        message = errorBody?.error?.message ?: "Request timeout error: 408",
+        message = "${error.message}. Request timeout error: 408",
         cause = null,
         timeoutMillis = 0,
       )
     }
     413 -> {
       BKTException.PayloadTooLargeException(
-        message = errorBody?.error?.message ?: "PayloadTooLarge error",
+        message = error.message,
       )
     }
     499 -> {
       // ClientClosedRequest
       BKTException.ClientClosedRequestException(
-        message = errorBody?.error?.message ?: "ClientClosedRequest error",
+        message = error.message,
       )
     }
     500 -> {
       // InternalServerError
       // - gateway: internal
       BKTException.InternalServerErrorException(
-        message = errorBody?.error?.message ?: "InternalServer error",
+        message = error.message,
       )
     }
     502, 503, 504 -> {
       // ServiceUnavailable
       // - gateway: internal
       BKTException.ServiceUnavailableException(
-        message = errorBody?.error?.message ?: "ServiceUnavailable error",
+        message = error.message,
       )
     }
     else ->
       BKTException.UnknownServerException(
-        message = "Unknown error: '$errorBody'",
+        message = "Unknown error: '${error.message}'",
         statusCode = code,
       )
   }

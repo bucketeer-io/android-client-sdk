@@ -1,10 +1,10 @@
 package io.bucketeer.sdk.android.internal.remote
 
-import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import io.bucketeer.sdk.android.internal.logd
 import io.bucketeer.sdk.android.internal.model.Event
 import io.bucketeer.sdk.android.internal.model.User
+import io.bucketeer.sdk.android.internal.model.jsonadapter.ErrorResponseParser
 import io.bucketeer.sdk.android.internal.model.request.GetEvaluationsRequest
 import io.bucketeer.sdk.android.internal.model.request.RegisterEventsRequest
 import io.bucketeer.sdk.android.internal.model.response.ErrorResponse
@@ -39,8 +39,11 @@ internal class ApiClientImpl(
       .callTimeout(defaultRequestTimeoutMillis, TimeUnit.MILLISECONDS)
       .build()
 
-  private val errorResponseJsonAdapter: JsonAdapter<ErrorResponse> by lazy {
-    moshi.adapter(ErrorResponse::class.java)
+  private val errorResponseParser: ErrorResponseParser by lazy {
+    ErrorResponseParser(
+      moshi.adapter(ErrorResponse::class.java),
+      moshi.adapter(ErrorResponse.ErrorDetail::class.java)
+    )
   }
 
   override fun getEvaluations(
@@ -90,7 +93,8 @@ internal class ApiClientImpl(
             responseStatusCode = rawResponse.code
 
             if (!rawResponse.isSuccessful) {
-              throw rawResponse.toBKTException(errorResponseJsonAdapter)
+              val errorResponse = rawResponse.toErrorResponse(parser = errorResponseParser)
+              throw errorResponse.toBKTException(code = rawResponse.code)
             }
 
             val response =
@@ -149,7 +153,8 @@ internal class ApiClientImpl(
         responseStatusCode = response.code
 
         if (!response.isSuccessful) {
-          val e = response.toBKTException(errorResponseJsonAdapter)
+          val errorResponse = response.toErrorResponse(parser = errorResponseParser)
+          val e = errorResponse.toBKTException(code = response.code)
           logd(throwable = e) { "<-- Register events error" }
           throw e
         }
