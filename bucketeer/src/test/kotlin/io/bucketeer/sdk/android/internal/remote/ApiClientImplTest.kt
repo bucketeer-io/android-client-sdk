@@ -210,7 +210,7 @@ internal class ApiClientImplTest {
         condition =
           UserEvaluationCondition(
             evaluatedAt = "1690798100",
-            userAttributesUpdated = "true",
+            userAttributesUpdated = true,
           ),
       )
 
@@ -231,7 +231,7 @@ internal class ApiClientImplTest {
         userEvaluationCondition =
           UserEvaluationCondition(
             evaluatedAt = "1690798100",
-            userAttributesUpdated = "true",
+            userAttributesUpdated = true,
           ),
         sourceId = SourceId.FLUTTER,
         sdkVersion = "10.2.3",
