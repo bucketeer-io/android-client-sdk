@@ -193,10 +193,13 @@ internal fun resolveSdkVersion(
   wrapperSdkVersion: String?,
 ): String =
   if (sourceId != SourceId.ANDROID) {
-    if (!wrapperSdkVersion.isNullOrBlank()) wrapperSdkVersion
-    else throw BKTException.IllegalArgumentException(
-      "wrapperSdkVersion is required when sourceId is not ANDROID",
-    )
+    if (!wrapperSdkVersion.isNullOrBlank()) {
+      wrapperSdkVersion
+    } else {
+      throw BKTException.IllegalArgumentException(
+        "wrapperSdkVersion is required when sourceId is not ANDROID",
+      )
+    }
   } else {
     BuildConfig.SDK_VERSION
   }

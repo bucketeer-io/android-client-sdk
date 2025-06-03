@@ -357,16 +357,17 @@ class BKTConfigTest {
         it != SourceId.FLUTTER && it != SourceId.OPEN_FEATURE_KOTLIN
       }
     for (si in listSourceIds) {
-      val error = assertThrows(BKTException.IllegalArgumentException::class.java) {
-        BKTConfig
-          .builder()
-          .apiKey("api-key")
-          .apiEndpoint("https://example.com")
-          .featureTag("feature-tag")
-          .appVersion("1.2.3")
-          .wrapperSdkSourceId(si.value)
-          .build()
-      }
+      val error =
+        assertThrows(BKTException.IllegalArgumentException::class.java) {
+          BKTConfig
+            .builder()
+            .apiKey("api-key")
+            .apiEndpoint("https://example.com")
+            .featureTag("feature-tag")
+            .appVersion("1.2.3")
+            .wrapperSdkSourceId(si.value)
+            .build()
+        }
       assertThat(error).hasMessageThat().contains("Unsupported wrapperSdkSourceId")
     }
   }
@@ -392,10 +393,11 @@ class BKTConfigTest {
 
   @Test
   fun `resolveSdkSourceId - unsupported sourceId throws exception`() {
-    val error = assertThrows(BKTException.IllegalArgumentException::class.java) {
-      // Using an unsupported SourceId
-      resolveSdkSourceId(SourceId.IOS.value)
-    }
+    val error =
+      assertThrows(BKTException.IllegalArgumentException::class.java) {
+        // Using an unsupported SourceId
+        resolveSdkSourceId(SourceId.IOS.value)
+      }
     assertThat(error).hasMessageThat().contains("Unsupported wrapperSdkSourceId")
   }
 
@@ -413,18 +415,19 @@ class BKTConfigTest {
 
   @Test
   fun `resolveSdkVersion - non-ANDROID with blank version throws exception`() {
-    val error = assertThrows(BKTException.IllegalArgumentException::class.java) {
-      resolveSdkVersion(SourceId.FLUTTER, "")
-    }
+    val error =
+      assertThrows(BKTException.IllegalArgumentException::class.java) {
+        resolveSdkVersion(SourceId.FLUTTER, "")
+      }
     assertThat(error).hasMessageThat().contains("wrapperSdkVersion is required when sourceId is not ANDROID")
   }
 
   @Test
   fun `resolveSdkVersion - non-ANDROID with null version throws exception`() {
-    val error = assertThrows(BKTException.IllegalArgumentException::class.java) {
-      resolveSdkVersion(SourceId.FLUTTER, null)
-    }
+    val error =
+      assertThrows(BKTException.IllegalArgumentException::class.java) {
+        resolveSdkVersion(SourceId.FLUTTER, null)
+      }
     assertThat(error).hasMessageThat().contains("wrapperSdkVersion is required when sourceId is not ANDROID")
   }
 }
-
