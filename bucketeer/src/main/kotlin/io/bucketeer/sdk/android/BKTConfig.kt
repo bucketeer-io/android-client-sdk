@@ -1,6 +1,7 @@
 package io.bucketeer.sdk.android
 
 import android.util.Log
+import androidx.annotation.VisibleForTesting
 import io.bucketeer.sdk.android.internal.model.SourceId
 import io.bucketeer.sdk.android.internal.util.require
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
@@ -12,7 +13,6 @@ internal const val MINIMUM_POLLING_INTERVAL_MILLIS: Long = 60_000 // 60 seconds
 internal const val DEFAULT_POLLING_INTERVAL_MILLIS: Long = 600_000 // 10 minutes
 internal const val MINIMUM_BACKGROUND_POLLING_INTERVAL_MILLIS: Long = 1_200_000 // 20 minutes
 internal const val DEFAULT_BACKGROUND_POLLING_INTERVAL_MILLIS: Long = 3_600_000 // 1 hour
-internal const val DEFAULT_WRAPPER_SDK_VERSION = "0.0.1"
 
 // hide internal constructor from copy() method
 @ConsistentCopyVisibility
@@ -26,7 +26,7 @@ data class BKTConfig internal constructor(
   val backgroundPollingInterval: Long,
   val appVersion: String,
   val logger: BKTLogger?,
-  val sourceIdValue: Int,
+  val sourceIdNumber: Int,
   val sdkVersion: String,
 ) {
   companion object {
@@ -34,7 +34,7 @@ data class BKTConfig internal constructor(
   }
 
   // SourceID is internal and its not exposed to the public API.
-  internal val sourceId: SourceId = SourceId.from(sourceIdValue)
+  internal val sourceId: SourceId = SourceId.from(sourceIdNumber)
 
   class Builder internal constructor() {
     private var apiKey: String? = null
@@ -147,20 +147,8 @@ data class BKTConfig internal constructor(
         this.eventsFlushInterval = DEFAULT_FLUSH_INTERVAL_MILLIS
       }
 
-      val wrapperSdkSourceIdInternal = this.wrapperSdkSourceId?.let { SourceId.from(it) }
-      val (sourceId, sdkVersion) =
-        resolveSourceIdAndSdkVersion(
-          wrapperSdkSourceId = wrapperSdkSourceIdInternal,
-          wrapperSdkVersion = this.wrapperSdkVersion,
-        )
-
-      wrapperSdkSourceIdInternal?.let {
-        // The input wrapperSdkSourceId is different from the resolved sourceId.
-        // This means that the wrapper SDK is not supported.
-        if (wrapperSdkSourceIdInternal != sourceId) {
-          logWarning { "wrapperSdkSourceId: `$wrapperSdkSourceIdInternal` is set, but it’s not supported." }
-        }
-      }
+      val resolvedSourceId = resolveSdkSourceId(this.wrapperSdkSourceId)
+      val sdkVersion = resolveSdkVersion(resolvedSourceId, wrapperSdkVersion)
 
       return BKTConfig(
         apiKey = this.apiKey!!,
@@ -172,41 +160,43 @@ data class BKTConfig internal constructor(
         backgroundPollingInterval = this.backgroundPollingInterval,
         appVersion = this.appVersion!!,
         logger = this.logger,
-        sourceIdValue = sourceId.value,
+        sourceIdNumber = resolvedSourceId.value,
         sdkVersion = sdkVersion,
       )
     }
   }
 }
 
-internal fun resolveSourceIdAndSdkVersion(
-  wrapperSdkSourceId: SourceId?,
-  wrapperSdkVersion: String?,
-): Pair<SourceId, String> {
-  val sourceId = resolveSdkSourceId(wrapperSdkSourceId ?: SourceId.ANDROID)
-  val sdkVersion = resolveSdkVersion(sourceId, wrapperSdkVersion)
-  return Pair(sourceId, sdkVersion)
-}
-
-private fun resolveSdkSourceId(sourceId: SourceId): SourceId {
+@VisibleForTesting
+internal fun resolveSdkSourceId(wrapperSdkSourceIdNumber: Int?): SourceId {
+  if (wrapperSdkSourceIdNumber == null) {
+    return SourceId.ANDROID
+  }
+  val wrapperSdkSourceId = SourceId.from(wrapperSdkSourceIdNumber)
   val availableWrapperSDKs =
     setOf(
       SourceId.FLUTTER,
       SourceId.OPEN_FEATURE_KOTLIN,
     )
-  return if (sourceId in availableWrapperSDKs) {
-    sourceId
+  return if (wrapperSdkSourceId in availableWrapperSDKs) {
+    wrapperSdkSourceId
   } else {
-    SourceId.ANDROID
+    throw BKTException.IllegalArgumentException(
+      "Unsupported wrapperSdkSourceId: `$wrapperSdkSourceId`",
+    )
   }
 }
 
-private fun resolveSdkVersion(
+@VisibleForTesting
+internal fun resolveSdkVersion(
   sourceId: SourceId,
-  version: String?,
+  wrapperSdkVersion: String?,
 ): String =
   if (sourceId != SourceId.ANDROID) {
-    if (!version.isNullOrBlank()) version else DEFAULT_WRAPPER_SDK_VERSION
+    if (!wrapperSdkVersion.isNullOrBlank()) wrapperSdkVersion
+    else throw BKTException.IllegalArgumentException(
+      "wrapperSdkVersion is required when sourceId is not ANDROID",
+    )
   } else {
     BuildConfig.SDK_VERSION
   }
