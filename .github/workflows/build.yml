@@ -9,43 +9,56 @@ on:
       - ".github/workflows/**"
   workflow_dispatch:
 
+env:
+  GRADLE_OPTS: -Dorg.gradle.daemon=true -Dorg.gradle.parallel=true -Dorg.gradle.caching=true -Dorg.gradle.jvmargs="-Xmx4g -XX:MaxMetaspaceSize=1g -XX:+HeapDumpOnOutOfMemoryError" -Dorg.gradle.workers.max=4
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Set up JDK 11
-        uses: actions/setup-java@v4.7.0
+        uses: actions/setup-java@3a4f6e1af504cf6a31855fa899c6aa5355ba6c12 # v4.7.0
         with:
           distribution: "temurin"
           java-version: 17
 
       - name: Setup gradle
-        uses: gradle/gradle-build-action@v3
+        uses: gradle/actions/setup-gradle@8379f6a1328ee0e06e2bb424dadb7b159856a326 # v4.4.0
+        id: gradle
+        continue-on-error: true
+        with:
+          gradle-home-cache-cleanup: true
+          cache-read-only: false
+        env:
+          SEGMENT_DOWNLOAD_TIMEOUT_MINS: 2  # Reduce timeout from default 5 minutes
+          GRADLE_BUILD_ACTION_CACHE_DEBUG_ENABLED: true
 
-      - name: Ktlint
-        run: ./gradlew lintKotlin --stacktrace
+      # Retry gradle setup if it failed (usually due to cache timeout)
+      - name: Retry Setup gradle
+        if: steps.gradle.outcome == 'failure'
+        uses: gradle/actions/setup-gradle@8379f6a1328ee0e06e2bb424dadb7b159856a326 # v4.4.0
+        with:
+          gradle-home-cache-cleanup: true
+          cache-read-only: false
+          cache-disabled: true  # Disable cache on retry to avoid timeout
 
-      - name: Check Lint
-        run: ./gradlew lintDebug --stacktrace
+      # Run all checks and builds in a single gradle invocation for better performance
+      - name: Run all checks and build
+        run: ./gradlew lintKotlin lintDebug assemble :bucketeer:testDebugUnitTest --parallel --build-cache --stacktrace
+        env:
+          # Additional Gradle properties for test optimization
+          ORG_GRADLE_PROJECT_android.testOptions.unitTests.maxParallelForks: 4
 
-      - name: Build all build types
-        run: ./gradlew assemble --stacktrace
-
-      - name: Run Bucketeer unit tests
-        run: ./gradlew :bucketeer:testDebugUnitTest --stacktrace
-
-      - name: upload bucketeer build reports
+      - name: Upload Bucketeer build reports
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: bucketeer-build-reports
           path: bucketeer/build/reports
+
   e2e:
     needs: build
     uses: ./.github/workflows/e2e.yml
     secrets: inherit
-
-env:
-  GRADLE_OPTS: -Dorg.gradle.daemon=false -Dorg.gradle.configureondemand=true -Dkotlin.incremental=false -Dorg.gradle.jvmargs="-XX:+HeapDumpOnOutOfMemoryError -XX:MetaspaceSize=1g"
