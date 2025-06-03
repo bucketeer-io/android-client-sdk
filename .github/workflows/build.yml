@@ -9,17 +9,14 @@ on:
       - ".github/workflows/**"
   workflow_dispatch:
 
+env:
+  GRADLE_OPTS: -Dorg.gradle.daemon=true -Dorg.gradle.parallel=true -Dorg.gradle.caching=true -Dorg.gradle.jvmargs="-Xmx4g -XX:MaxMetaspaceSize=1g -XX:+HeapDumpOnOutOfMemoryError" -Dorg.gradle.workers.max=4
+
 jobs:
   build:
     runs-on: ubuntu-latest
-    outputs:
-      cache-key: ${{ steps.cache-key.outputs.key }}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-
-      - name: Generate cache key
-        id: cache-key
-        run: echo "key=${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}" >> $GITHUB_OUTPUT
 
       - name: Set up JDK 11
         uses: actions/setup-java@3a4f6e1af504cf6a31855fa899c6aa5355ba6c12 # v4.7.0
@@ -36,7 +33,7 @@ jobs:
           cache-read-only: false
         env:
           SEGMENT_DOWNLOAD_TIMEOUT_MINS: 2  # Reduce timeout from default 5 minutes
-          GRADLE_BUILD_ACTION_CACHE_DEBUG_ENABLED: true  # Enable debug logging
+          GRADLE_BUILD_ACTION_CACHE_DEBUG_ENABLED: true
 
       # Retry gradle setup if it failed (usually due to cache timeout)
       - name: Retry Setup gradle
@@ -47,34 +44,14 @@ jobs:
           cache-read-only: false
           cache-disabled: true  # Disable cache on retry to avoid timeout
 
-      # This init script optimizes Gradle builds for CI:
-      # 1. Runs unit tests in parallel using half of available CPU cores
-      # 2. Enables Dagger's fast initialization for faster annotation processing
-      # 3. Reduces build time by ~20-30% without changing build outputs
-      - name: Create gradle init script
-        run: |
-          mkdir -p ~/.gradle/init.d
-          cat << 'EOF' > ~/.gradle/init.d/ci-optimizations.gradle
-
-          allprojects {
-              tasks.withType(Test) {
-                  maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
-              }
-          }
-
-          gradle.beforeProject { project ->
-              project.tasks.withType(com.android.build.gradle.internal.tasks.AndroidVariantTask) {
-                  it.javaCompileOptions.annotationProcessorOptions.arguments['dagger.fastInit'] = 'enabled'
-                  it.javaCompileOptions.annotationProcessorOptions.arguments['dagger.experimentalDaggerErrorMessages'] = 'enabled'
-              }
-          }
-          EOF
-
       # Run all checks and builds in a single gradle invocation for better performance
       - name: Run all checks and build
         run: ./gradlew lintKotlin lintDebug assemble :bucketeer:testDebugUnitTest --parallel --build-cache --stacktrace
+        env:
+          # Additional Gradle properties for test optimization
+          ORG_GRADLE_PROJECT_android.testOptions.unitTests.maxParallelForks: 4
 
-      - name: upload bucketeer build reports
+      - name: Upload Bucketeer build reports
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
@@ -85,6 +62,3 @@ jobs:
     needs: build
     uses: ./.github/workflows/e2e.yml
     secrets: inherit
-
-env:
-  GRADLE_OPTS: -Dorg.gradle.daemon=true -Dorg.gradle.parallel=true -Dorg.gradle.caching=true -Dorg.gradle.jvmargs="-Xmx4g -XX:MaxMetaspaceSize=1g -XX:+HeapDumpOnOutOfMemoryError" -Dorg.gradle.workers.max=4
