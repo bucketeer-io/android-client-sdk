@@ -6,19 +6,24 @@ on:
 
 jobs:
   e2e:
-    # macos-13-xlarge is an M1 mac (which has no Android SDK)
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 20
     strategy:
       matrix:
         api-level:
           - 32
         target:
-          - google_apis
+          - default  # Faster than google_apis
         arch:
           - x86_64
         cores:
           - 8
+        shard:
+          - 0
+          - 1
+          - 2
+          - 3
+          - 4
     steps:
       - uses: actions/checkout@v4
 
@@ -47,17 +52,6 @@ jobs:
             avd-${{ matrix.api-level }}-${{ matrix.target }}-
             avd-${{ matrix.api-level }}-
 
-      # Cache Android SDK components
-      - name: Cache Android SDK
-        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
-        with:
-          path: |
-            ~/.android/sdk
-            ~/.android/cmdline-tools
-          key: android-sdk-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            android-sdk-${{ runner.os }}-
-
       - name: Enable KVM
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
@@ -73,20 +67,19 @@ jobs:
           arch: ${{ matrix.arch }}
           cores: ${{ matrix.cores }}
           force-avd-creation: false
-          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -memory 2048
-          disable-animations: false
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -memory 2048 -no-snapshot-load
+          disable-animations: true
           script: echo "Generated AVD snapshot for caching"
 
-      # Pre-download dependencies
-      - name: Download dependencies
-        run: ./gradlew dependencies --no-daemon
-
-      - name: Run Android integration tests
+      - name: Run Android integration tests (Shard ${{ matrix.shard }})
         env:
           API_KEY: ${{ secrets.E2E_API_KEY }}
           API_ENDPOINT: ${{ secrets.E2E_API_ENDPOINT }}
           # Optimized Gradle options for CI
           GRADLE_OPTS: -Dorg.gradle.daemon=true -Dorg.gradle.parallel=true -Dorg.gradle.caching=true -Dorg.gradle.jvmargs="-Xmx2g -XX:MaxMetaspaceSize=1g -XX:+HeapDumpOnOutOfMemoryError"
+          # Test sharding configuration
+          ANDROID_TEST_SHARD_INDEX: ${{ matrix.shard }}
+          ANDROID_TEST_NUM_SHARDS: 5
         uses: reactivecircus/android-emulator-runner@1dcd0090116d15e7c562f8db72807de5e036a4ed # v2.34.0
         with:
           api-level: ${{ matrix.api-level }}
@@ -96,12 +89,12 @@ jobs:
           force-avd-creation: false
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -memory 2048
           disable-animations: true
-          # Run tests with optimized Gradle settings
-          script: ./gradlew uninstallAll connectedCheck --stacktrace --build-cache
+          # Run tests with sharding
+          script: ./gradlew uninstallAll connectedCheck --stacktrace --build-cache -Pandroid.testInstrumentationRunnerArguments.numShards=$ANDROID_TEST_NUM_SHARDS -Pandroid.testInstrumentationRunnerArguments.shardIndex=$ANDROID_TEST_SHARD_INDEX
 
       - name: Upload Bucketeer build reports
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: bucketeer-instrumentation-build-reports
+          name: bucketeer-instrumentation-build-reports-shard-${{ matrix.shard }}
           path: bucketeer/build/reports
