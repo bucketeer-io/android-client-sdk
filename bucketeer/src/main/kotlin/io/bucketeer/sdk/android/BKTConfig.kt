@@ -26,7 +26,7 @@ data class BKTConfig internal constructor(
   val backgroundPollingInterval: Long,
   val appVersion: String,
   val logger: BKTLogger?,
-  val sourceIdNumber: Int,
+  val sourceIdValue: Int,
   val sdkVersion: String,
 ) {
   companion object {
@@ -34,7 +34,7 @@ data class BKTConfig internal constructor(
   }
 
   // SourceID is internal and its not exposed to the public API.
-  internal val sourceId: SourceId = SourceId.from(sourceIdNumber)
+  internal val sourceId: SourceId = SourceId.from(sourceIdValue)
 
   class Builder internal constructor() {
     private var apiKey: String? = null
@@ -148,7 +148,7 @@ data class BKTConfig internal constructor(
       }
 
       val resolvedSourceId = resolveSdkSourceId(this.wrapperSdkSourceId)
-      val sdkVersion = resolveSdkVersion(resolvedSourceId, wrapperSdkVersion)
+      val resolvedSdkVersion = resolveSdkVersion(resolvedSourceId, wrapperSdkVersion)
 
       return BKTConfig(
         apiKey = this.apiKey!!,
@@ -160,8 +160,8 @@ data class BKTConfig internal constructor(
         backgroundPollingInterval = this.backgroundPollingInterval,
         appVersion = this.appVersion!!,
         logger = this.logger,
-        sourceIdNumber = resolvedSourceId.value,
-        sdkVersion = sdkVersion,
+        sourceIdValue = resolvedSourceId.value,
+        sdkVersion = resolvedSdkVersion,
       )
     }
   }

@@ -30,7 +30,7 @@ class BKTConfigTest {
         backgroundPollingInterval = DEFAULT_BACKGROUND_POLLING_INTERVAL_MILLIS,
         appVersion = "1.2.3",
         logger = DefaultLogger("Bucketeer"),
-        sourceIdNumber = SourceId.ANDROID.value,
+        sourceIdValue = SourceId.ANDROID.value,
         sdkVersion = BuildConfig.SDK_VERSION,
       )
     assertThat(actual).isEqualTo(
@@ -62,7 +62,7 @@ class BKTConfigTest {
         backgroundPollingInterval = DEFAULT_BACKGROUND_POLLING_INTERVAL_MILLIS,
         appVersion = "1.2.3",
         logger = DefaultLogger("Bucketeer"),
-        sourceIdNumber = SourceId.FLUTTER.value,
+        sourceIdValue = SourceId.FLUTTER.value,
         sdkVersion = "0.0.1-beta-op-ft-kt",
       )
     assertThat(actual).isEqualTo(
@@ -274,7 +274,7 @@ class BKTConfigTest {
         backgroundPollingInterval = DEFAULT_BACKGROUND_POLLING_INTERVAL_MILLIS,
         appVersion = "1.2.3",
         logger = null,
-        sourceIdNumber = SourceId.ANDROID.value,
+        sourceIdValue = SourceId.ANDROID.value,
         sdkVersion = BuildConfig.SDK_VERSION,
       ),
     )
@@ -340,7 +340,7 @@ class BKTConfigTest {
           backgroundPollingInterval = DEFAULT_BACKGROUND_POLLING_INTERVAL_MILLIS,
           appVersion = "1.2.3",
           logger = DefaultLogger("Bucketeer"),
-          sourceIdNumber = sourceId.value,
+          sourceIdValue = sourceId.value,
           sdkVersion = "0.0.1",
         )
       assertThat(actual).isEqualTo(
@@ -403,8 +403,8 @@ class BKTConfigTest {
 
   @Test
   fun `resolveSdkVersion - ANDROID returns BuildConfig version`() {
-    val result = resolveSdkVersion(SourceId.ANDROID, null)
-    assertThat(result).isEqualTo(BuildConfig.SDK_VERSION)
+    assertThat(resolveSdkVersion(SourceId.ANDROID, null)).isEqualTo(BuildConfig.SDK_VERSION)
+    assertThat(resolveSdkVersion(SourceId.ANDROID, "")).isEqualTo(BuildConfig.SDK_VERSION)
   }
 
   @Test

@@ -59,6 +59,6 @@ internal fun createTestBKTConfig(
     backgroundPollingInterval = backgroundPollingInterval,
     appVersion = appVersion,
     logger = logger,
-    sourceIdNumber = SourceId.ANDROID.value,
+    sourceIdValue = SourceId.ANDROID.value,
     sdkVersion = BuildConfig.SDK_VERSION,
   )
