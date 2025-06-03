@@ -372,7 +372,6 @@ class BKTConfigTest {
     }
   }
 
-  // Test cases for resolveSourceIdAnd resolveSdkVersion function here
   @Test
   fun `resolveSdkSourceId - null returns ANDROID`() {
     val result = resolveSdkSourceId(null)
