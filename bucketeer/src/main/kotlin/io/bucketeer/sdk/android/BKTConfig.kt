@@ -147,8 +147,12 @@ data class BKTConfig internal constructor(
         this.eventsFlushInterval = DEFAULT_FLUSH_INTERVAL_MILLIS
       }
 
-      val resolvedSourceId = resolveSdkSourceId(this.wrapperSdkSourceId)
-      val resolvedSdkVersion = resolveSdkVersion(resolvedSourceId, wrapperSdkVersion)
+      val resolvedSourceId = resolveSdkSourceId(wrapperSdkSourceIdValue = this.wrapperSdkSourceId)
+      val resolvedSdkVersion =
+        resolveSdkVersion(
+          resolvedSourceId = resolvedSourceId,
+          wrapperSdkVersion = wrapperSdkVersion,
+        )
 
       return BKTConfig(
         apiKey = this.apiKey!!,
@@ -168,11 +172,11 @@ data class BKTConfig internal constructor(
 }
 
 @VisibleForTesting
-internal fun resolveSdkSourceId(wrapperSdkSourceIdNumber: Int?): SourceId {
-  if (wrapperSdkSourceIdNumber == null) {
+internal fun resolveSdkSourceId(wrapperSdkSourceIdValue: Int?): SourceId {
+  if (wrapperSdkSourceIdValue == null) {
     return SourceId.ANDROID
   }
-  val wrapperSdkSourceId = SourceId.from(wrapperSdkSourceIdNumber)
+  val wrapperSdkSourceId = SourceId.from(wrapperSdkSourceIdValue)
   val availableWrapperSDKs =
     setOf(
       SourceId.FLUTTER,
@@ -189,10 +193,10 @@ internal fun resolveSdkSourceId(wrapperSdkSourceIdNumber: Int?): SourceId {
 
 @VisibleForTesting
 internal fun resolveSdkVersion(
-  sourceId: SourceId,
+  resolvedSourceId: SourceId,
   wrapperSdkVersion: String?,
 ): String =
-  if (sourceId != SourceId.ANDROID) {
+  if (resolvedSourceId != SourceId.ANDROID) {
     if (!wrapperSdkVersion.isNullOrBlank()) {
       wrapperSdkVersion
     } else {
