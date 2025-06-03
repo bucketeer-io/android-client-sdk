@@ -2,7 +2,6 @@ package io.bucketeer.sdk.android
 
 import com.google.common.truth.Truth.assertThat
 import io.bucketeer.sdk.android.internal.model.SourceId
-import org.junit.Assert.assertEquals
 import org.junit.Assert.assertThrows
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -358,85 +357,86 @@ class BKTConfigTest {
         it != SourceId.FLUTTER && it != SourceId.OPEN_FEATURE_KOTLIN
       }
     for (si in listSourceIds) {
-      val actual =
-        BKTConfig
-          .builder()
-          .apiKey("api-key")
-          .apiEndpoint("https://example.com")
-          .featureTag("feature-tag")
-          .appVersion("1.2.3")
-          .wrapperSdkSourceId(si.value)
-          .build()
-      val expected =
-        BKTConfig(
-          apiKey = "api-key",
-          apiEndpoint = "https://example.com",
-          featureTag = "feature-tag",
-          eventsFlushInterval = DEFAULT_FLUSH_INTERVAL_MILLIS,
-          eventsMaxBatchQueueCount = DEFAULT_MAX_QUEUE_SIZE,
-          pollingInterval = DEFAULT_POLLING_INTERVAL_MILLIS,
-          backgroundPollingInterval = DEFAULT_BACKGROUND_POLLING_INTERVAL_MILLIS,
-          appVersion = "1.2.3",
-          logger = DefaultLogger("Bucketeer"),
-          // no error expected
-          // the sourceId will be set to SourceID.ANDROID
-          // and the sdkVersion will be set to BuildConfig.SDK_VERSION
-          sourceIdValue = SourceId.ANDROID.value,
-          sdkVersion = BuildConfig.SDK_VERSION,
-        )
-      assertThat(actual).isEqualTo(
-        expected,
-      )
-      assertThat(actual.sourceId).isEqualTo(SourceId.ANDROID)
+      val error =
+        assertThrows(BKTException.IllegalArgumentException::class.java) {
+          BKTConfig
+            .builder()
+            .apiKey("api-key")
+            .apiEndpoint("https://example.com")
+            .featureTag("feature-tag")
+            .appVersion("1.2.3")
+            .wrapperSdkSourceId(si.value)
+            .build()
+        }
+      assertThat(error).hasMessageThat().contains("Unsupported wrapperSdkSourceId")
     }
   }
 
-  // Test cases for resolveSourceIdAndSdkVersion function
   @Test
-  fun `resolveSourceIdAndSdkVersion should return ANDROID sourceID and SDK_VERSION when no wrapper SDK is provided`() {
-    val (sourceId, sdkVersion) =
-      resolveSourceIdAndSdkVersion(
-        wrapperSdkSourceId = null,
-        wrapperSdkVersion = null,
-      )
-
-    assertEquals(SourceId.ANDROID, sourceId)
-    assertEquals(BuildConfig.SDK_VERSION, sdkVersion)
+  fun `resolveSdkSourceId - null returns ANDROID`() {
+    val result = resolveSdkSourceId(wrapperSdkSourceIdValue = null)
+    assertThat(result).isEqualTo(SourceId.ANDROID)
   }
 
   @Test
-  fun `resolveSourceIdAndSdkVersion should return provided wrapper SDK sourceID and version`() {
-    val (sourceId, sdkVersion) =
-      resolveSourceIdAndSdkVersion(
-        wrapperSdkSourceId = SourceId.FLUTTER,
-        wrapperSdkVersion = "1.2.3",
-      )
-
-    assertEquals(SourceId.FLUTTER, sourceId)
-    assertEquals("1.2.3", sdkVersion)
+  fun `resolveSdkSourceId - FLUTTER returns FLUTTER`() {
+    val result = resolveSdkSourceId(wrapperSdkSourceIdValue = SourceId.FLUTTER.value)
+    assertThat(result).isEqualTo(SourceId.FLUTTER)
   }
 
   @Test
-  fun `resolveSourceIdAndSdkVersion should return default wrapper SDK version when version is null or blank`() {
-    val (sourceId, sdkVersion) =
-      resolveSourceIdAndSdkVersion(
-        wrapperSdkSourceId = SourceId.FLUTTER,
-        wrapperSdkVersion = null,
-      )
-
-    assertEquals(SourceId.FLUTTER, sourceId)
-    assertEquals(DEFAULT_WRAPPER_SDK_VERSION, sdkVersion)
+  fun `resolveSdkSourceId - OPEN_FEATURE_KOTLIN returns OPEN_FEATURE_KOTLIN`() {
+    val result = resolveSdkSourceId(wrapperSdkSourceIdValue = SourceId.OPEN_FEATURE_KOTLIN.value)
+    assertThat(result).isEqualTo(SourceId.OPEN_FEATURE_KOTLIN)
   }
 
   @Test
-  fun `resolveSourceIdAndSdkVersion should return ANDROID sourceID when an unsupported sourceID is provided`() {
-    val (sourceId, sdkVersion) =
-      resolveSourceIdAndSdkVersion(
-        wrapperSdkSourceId = SourceId.UNKNOWN,
-        wrapperSdkVersion = "1.2.3",
-      )
+  fun `resolveSdkSourceId - unsupported wrapperSdk sourceId throws exception`() {
+    val listSourceIds =
+      SourceId.entries.filter {
+        it != SourceId.FLUTTER && it != SourceId.OPEN_FEATURE_KOTLIN
+      }
+    for (si in listSourceIds) {
+      val error =
+        assertThrows(BKTException.IllegalArgumentException::class.java) {
+          // Using an unsupported wrapperSdk SourceId
+          resolveSdkSourceId(wrapperSdkSourceIdValue = si.value)
+        }
+      assertThat(error).hasMessageThat().contains("Unsupported wrapperSdkSourceId")
+    }
+  }
 
-    assertEquals(SourceId.ANDROID, sourceId)
-    assertEquals(BuildConfig.SDK_VERSION, sdkVersion)
+  @Test
+  fun `resolveSdkVersion - ANDROID returns BuildConfig version`() {
+    assertThat(resolveSdkVersion(SourceId.ANDROID, null)).isEqualTo(BuildConfig.SDK_VERSION)
+    assertThat(resolveSdkVersion(SourceId.ANDROID, "")).isEqualTo(BuildConfig.SDK_VERSION)
+  }
+
+  @Test
+  fun `resolveSdkVersion - non-ANDROID with version returns wrapper version`() {
+    val result = resolveSdkVersion(SourceId.FLUTTER, "1.2.3")
+    assertThat(result).isEqualTo("1.2.3")
+  }
+
+  @Test
+  fun `resolveSdkVersion - non-ANDROID with blank version throws exception`() {
+    val error =
+      assertThrows(BKTException.IllegalArgumentException::class.java) {
+        resolveSdkVersion(SourceId.FLUTTER, "")
+      }
+    assertThat(error)
+      .hasMessageThat()
+      .contains("wrapperSdkVersion is required when sourceId is not ANDROID")
+  }
+
+  @Test
+  fun `resolveSdkVersion - non-ANDROID with null version throws exception`() {
+    val error =
+      assertThrows(BKTException.IllegalArgumentException::class.java) {
+        resolveSdkVersion(SourceId.FLUTTER, null)
+      }
+    assertThat(error)
+      .hasMessageThat()
+      .contains("wrapperSdkVersion is required when sourceId is not ANDROID")
   }
 }
