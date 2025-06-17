@@ -63,6 +63,10 @@
       "matchUpdateTypes": ["major"],
       "commitMessagePrefix": "build(deps):",
       "commitMessageAction": "update"
+    },
+    {
+      "matchPackagePatterns": ["^kotlin$", "^ksp$"],
+      "enabled": false
     }
   ]
 }
