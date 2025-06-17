@@ -21,7 +21,8 @@
       ],
       "matchUpdateTypes": ["minor", "patch"],
       "commitMessagePrefix": "test(deps):",
-      "commitMessageAction": "update"
+      "commitMessageAction": "update",
+      "excludeManagers": ["github-actions"]
     },
     {
       "groupName": "all major test dependencies",
@@ -34,7 +35,8 @@
       ],
       "matchUpdateTypes": ["major"],
       "commitMessagePrefix": "test(deps):",
-      "commitMessageAction": "update"
+      "commitMessageAction": "update",
+      "excludeManagers": ["github-actions"]
     },
     {
       "groupName": "all non-major dependencies",
@@ -48,7 +50,8 @@
       ],
       "matchUpdateTypes": ["minor", "patch"],
       "commitMessagePrefix": "build(deps):",
-      "commitMessageAction": "update"
+      "commitMessageAction": "update",
+      "excludeManagers": ["github-actions"]
     },
     {
       "groupName": "all major dependencies",
@@ -62,7 +65,8 @@
       ],
       "matchUpdateTypes": ["major"],
       "commitMessagePrefix": "build(deps):",
-      "commitMessageAction": "update"
+      "commitMessageAction": "update",
+      "excludeManagers": ["github-actions"]
     },
     {
       "matchPackagePatterns": ["^kotlin$", "^ksp$"],
