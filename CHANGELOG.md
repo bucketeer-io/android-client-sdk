@@ -1,5 +1,24 @@
 # Changelog
 
+## [2.2.5](https://github.com/bucketeer-io/android-client-sdk/compare/v2.2.4...v2.2.5) (2025-06-17)
+
+
+### Bug Fixes
+
+* e2e fail because userAttributesUpdated should be bool ([#230](https://github.com/bucketeer-io/android-client-sdk/issues/230)) ([9dbd3e4](https://github.com/bucketeer-io/android-client-sdk/commit/9dbd3e4c62ba63892f547b999c37c45da7b18d37))
+* prevent logger leaks when destroying and not working when building the client ([#227](https://github.com/bucketeer-io/android-client-sdk/issues/227)) ([7f80012](https://github.com/bucketeer-io/android-client-sdk/commit/7f8001207c65e316bdf78b6d1abe00e6e9d02ae4))
+* wrapperSdkVersion is required when setting wrapperSdkSourceId. ([#231](https://github.com/bucketeer-io/android-client-sdk/issues/231)) ([3109600](https://github.com/bucketeer-io/android-client-sdk/commit/3109600f9e9f76de6881496d702e9cd63c1aa4ac))
+
+
+### Miscellaneous
+
+* allow setting the wrapper sdk version & source id for open feature support ([#226](https://github.com/bucketeer-io/android-client-sdk/issues/226)) ([7c02cc0](https://github.com/bucketeer-io/android-client-sdk/commit/7c02cc057ae7bbda0757434a6d4f68136a0e56c4))
+
+
+### Build System
+
+* **deps:** update all non-major dependencies ([#225](https://github.com/bucketeer-io/android-client-sdk/issues/225)) ([378a3f6](https://github.com/bucketeer-io/android-client-sdk/commit/378a3f6e6081837eb130e45a6bf86d020bbd40a5))
+
 ## [2.2.4](https://github.com/bucketeer-io/android-client-sdk/compare/v2.2.3...v2.2.4) (2025-04-04)
 
 
