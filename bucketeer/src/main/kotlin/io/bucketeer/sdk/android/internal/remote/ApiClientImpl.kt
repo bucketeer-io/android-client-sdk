@@ -40,6 +40,9 @@ internal class ApiClientImpl(
       .Builder()
       .addNetworkInterceptor(FixJsonContentTypeInterceptor())
       .callTimeout(defaultRequestTimeoutMillis, TimeUnit.MILLISECONDS)
+      .connectTimeout(defaultRequestTimeoutMillis, TimeUnit.MILLISECONDS)
+      .readTimeout(defaultRequestTimeoutMillis, TimeUnit.MILLISECONDS)
+      .writeTimeout(defaultRequestTimeoutMillis, TimeUnit.MILLISECONDS)
       .build()
 
   private val errorResponseJsonAdapter: JsonAdapter<ErrorResponse> by lazy {
@@ -81,6 +84,9 @@ internal class ApiClientImpl(
         client
           .newBuilder()
           .callTimeout(timeoutMillis, TimeUnit.MILLISECONDS)
+          .connectTimeout(timeoutMillis, TimeUnit.MILLISECONDS)
+          .readTimeout(timeoutMillis, TimeUnit.MILLISECONDS)
+          .writeTimeout(timeoutMillis, TimeUnit.MILLISECONDS)
           .build()
       }
 
