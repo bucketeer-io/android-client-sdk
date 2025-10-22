@@ -295,7 +295,7 @@ class EvaluationForegroundTaskTest {
   }
 
   @Test
-  fun `should continue scheduling after error when pollingInterval equal retryInterval`(){
+  fun `should continue scheduling after error when pollingInterval equal retryInterval`() {
     // Set up a config with pollingInterval equal to retryPollingInterval
     val equalIntervalConfig = createTestBKTConfig(
       apiKey = "api_key_value",
