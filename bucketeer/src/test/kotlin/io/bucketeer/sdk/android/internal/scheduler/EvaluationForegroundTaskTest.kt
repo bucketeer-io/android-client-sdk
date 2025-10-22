@@ -95,6 +95,11 @@ class EvaluationForegroundTaskTest {
 
     assertThat(server.requestCount).isEqualTo(1)
     assertThat(time).isAtLeast(980L)
+
+    // Should continue scheduling after success when retryCount is 0
+    val (time2, _) = measureTimeMillisWithResult { server.takeRequest(2, TimeUnit.SECONDS) }
+    assertThat(server.requestCount).isEqualTo(2)
+    assertThat(time2).isAtLeast(980L)
   }
 
   @Test
@@ -109,11 +114,18 @@ class EvaluationForegroundTaskTest {
     )
 
     task.start()
+    assertThat(server.requestCount).isEqualTo(0)
+
+    val (time, _) = measureTimeMillisWithResult { server.takeRequest(2, TimeUnit.SECONDS) }
+
+    assertThat(server.requestCount).isEqualTo(1)
+    assertThat(time).isAtLeast(980L)
+
     task.stop()
 
     val request = server.takeRequest(2, TimeUnit.SECONDS)
     assertThat(request).isNull()
-    assertThat(server.requestCount).isEqualTo(0)
+    assertThat(server.requestCount).isEqualTo(1)
   }
 
   @Test
@@ -217,5 +229,143 @@ class EvaluationForegroundTaskTest {
     // back to normal interval after successful request
     val (time3, _) = measureTimeMillisWithResult { server.takeRequest(2, TimeUnit.SECONDS) }
     assertThat(time3).isAtLeast(990L)
+  }
+
+  @Test
+  fun `retry - should not retry when pollingInterval is short enough`() {
+    // Set up a config with pollingInterval <= retryPollingInterval
+    val shortPollingConfig = createTestBKTConfig(
+      apiKey = "api_key_value",
+      apiEndpoint = server.url("").toString(),
+      featureTag = "feature_tag_value",
+      eventsMaxBatchQueueCount = 3,
+      pollingInterval = 500, // shorter than retry interval
+      appVersion = "1.2.3",
+    )
+
+    val shortPollingComponent = ComponentImpl(
+      dataModule = DataModule(
+        application = ApplicationProvider.getApplicationContext(),
+        config = shortPollingConfig,
+        user = user1,
+        inMemoryDB = true,
+      ),
+      interactorModule = InteractorModule(
+        mainHandler = Handler(Looper.getMainLooper()),
+      ),
+    )
+
+    task = EvaluationForegroundTask(
+      shortPollingComponent,
+      executor,
+      retryPollingInterval = 800, // longer than pollingInterval
+      maxRetryCount = 3,
+    )
+
+    // Enqueue error responses
+    server.enqueueResponse(moshi, 500, ErrorResponse(ErrorResponse.ErrorDetail(500, "500 error")))
+    server.enqueueResponse(moshi, 500, ErrorResponse(ErrorResponse.ErrorDetail(500, "500 error")))
+    server.enqueueResponse(moshi, 500, ErrorResponse(ErrorResponse.ErrorDetail(500, "500 error")))
+
+    task.start()
+
+    // Note: adding 150ms buffer to account for execution/mock server delays
+    // 490L < x < pollingInterval + 150ms
+    // initial request
+    val (time1, _) = measureTimeMillisWithResult { server.takeRequest(2, TimeUnit.SECONDS) }
+    assertThat(time1).isAtLeast(490L)
+    assertThat(time1).isLessThan(690L)
+    assertThat(server.requestCount).isEqualTo(1)
+
+    // subsequent requests should continue with normal polling interval, not retry interval
+    val (time2, _) = measureTimeMillisWithResult { server.takeRequest(2, TimeUnit.SECONDS) }
+    assertThat(time2).isAtLeast(490L)
+    assertThat(time2).isLessThan(600L)
+    assertThat(server.requestCount).isEqualTo(2)
+
+    val (time3, _) = measureTimeMillisWithResult { server.takeRequest(2, TimeUnit.SECONDS) }
+    assertThat(time3).isAtLeast(490L)
+    assertThat(time3).isLessThan(600L)
+    assertThat(server.requestCount).isEqualTo(3)
+
+    // Cleanup
+    executor.submit {
+      shortPollingComponent.dataModule.destroy()
+    }
+  }
+
+  @Test
+  fun `should continue scheduling after error when pollingInterval equal retryInterval`(){
+    // Set up a config with pollingInterval equal to retryPollingInterval
+    val equalIntervalConfig = createTestBKTConfig(
+      apiKey = "api_key_value",
+      apiEndpoint = server.url("").toString(),
+      featureTag = "feature_tag_value",
+      eventsMaxBatchQueueCount = 3,
+      pollingInterval = 800, // equal to retry interval
+      appVersion = "1.2.3",
+    )
+
+    val equalIntervalComponent = ComponentImpl(
+      dataModule = DataModule(
+        application = ApplicationProvider.getApplicationContext(),
+        config = equalIntervalConfig,
+        user = user1,
+        inMemoryDB = true,
+      ),
+      interactorModule = InteractorModule(
+        mainHandler = Handler(Looper.getMainLooper()),
+      ),
+    )
+
+    task = EvaluationForegroundTask(
+      equalIntervalComponent,
+      executor,
+      retryPollingInterval = 800, // equal to pollingInterval
+      maxRetryCount = 3,
+    )
+
+    // Enqueue multiple error responses followed by a success
+    server.enqueueResponse(moshi, 500, ErrorResponse(ErrorResponse.ErrorDetail(500, "500 error")))
+    server.enqueueResponse(moshi, 500, ErrorResponse(ErrorResponse.ErrorDetail(500, "500 error")))
+    server.enqueueResponse(moshi, 500, ErrorResponse(ErrorResponse.ErrorDetail(500, "500 error")))
+    server.enqueueResponse(
+      moshi,
+      200,
+      GetEvaluationsResponse(
+        evaluations = user1Evaluations,
+        userEvaluationsId = "user_evaluations_id_value",
+      ),
+    )
+
+    task.start()
+
+    // All requests should continue with the same interval (790ms < x < retryPollingInterval + 150ms ) despite errors
+    // Note: adding 150ms buffer to account for execution/mock server delays
+    val (time1, _) = measureTimeMillisWithResult { server.takeRequest(2, TimeUnit.SECONDS) }
+    assertThat(time1).isAtLeast(790L)
+    assertThat(time1).isLessThan(950L)
+    assertThat(server.requestCount).isEqualTo(1)
+
+    val (time2, _) = measureTimeMillisWithResult { server.takeRequest(2, TimeUnit.SECONDS) }
+    assertThat(time2).isAtLeast(790L)
+    assertThat(time2).isLessThan(950L)
+    assertThat(server.requestCount).isEqualTo(2)
+
+    val (time3, _) = measureTimeMillisWithResult { server.takeRequest(2, TimeUnit.SECONDS) }
+    assertThat(time3).isAtLeast(790L)
+    assertThat(time3).isLessThan(950L)
+    assertThat(server.requestCount).isEqualTo(3)
+
+    // Success request should also continue with same interval
+    val (time4, _) = measureTimeMillisWithResult { server.takeRequest(2, TimeUnit.SECONDS) }
+    assertThat(time4).isAtLeast(790L)
+    assertThat(time4).isLessThan(950L)
+    assertThat(server.requestCount).isEqualTo(4)
+
+    // Cleanup
+    executor.submit {
+      equalIntervalComponent.dataModule.destroy()
+    }
   }
 }
