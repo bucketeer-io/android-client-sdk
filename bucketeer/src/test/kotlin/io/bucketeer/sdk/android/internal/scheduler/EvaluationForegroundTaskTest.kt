@@ -234,33 +234,38 @@ class EvaluationForegroundTaskTest {
   @Test
   fun `retry - should not retry when pollingInterval is short enough`() {
     // Set up a config with pollingInterval <= retryPollingInterval
-    val shortPollingConfig = createTestBKTConfig(
-      apiKey = "api_key_value",
-      apiEndpoint = server.url("").toString(),
-      featureTag = "feature_tag_value",
-      eventsMaxBatchQueueCount = 3,
-      pollingInterval = 500, // shorter than retry interval
-      appVersion = "1.2.3",
-    )
+    val shortPollingConfig =
+      createTestBKTConfig(
+        apiKey = "api_key_value",
+        apiEndpoint = server.url("").toString(),
+        featureTag = "feature_tag_value",
+        eventsMaxBatchQueueCount = 3,
+        pollingInterval = 500, // shorter than retry interval
+        appVersion = "1.2.3",
+      )
 
-    val shortPollingComponent = ComponentImpl(
-      dataModule = DataModule(
-        application = ApplicationProvider.getApplicationContext(),
-        config = shortPollingConfig,
-        user = user1,
-        inMemoryDB = true,
-      ),
-      interactorModule = InteractorModule(
-        mainHandler = Handler(Looper.getMainLooper()),
-      ),
-    )
+    val shortPollingComponent =
+      ComponentImpl(
+        dataModule =
+          DataModule(
+            application = ApplicationProvider.getApplicationContext(),
+            config = shortPollingConfig,
+            user = user1,
+            inMemoryDB = true,
+          ),
+        interactorModule =
+          InteractorModule(
+            mainHandler = Handler(Looper.getMainLooper()),
+          ),
+      )
 
-    task = EvaluationForegroundTask(
-      shortPollingComponent,
-      executor,
-      retryPollingInterval = 800, // longer than pollingInterval
-      maxRetryCount = 3,
-    )
+    task =
+      EvaluationForegroundTask(
+        shortPollingComponent,
+        executor,
+        retryPollingInterval = 800, // longer than pollingInterval
+        maxRetryCount = 3,
+      )
 
     // Enqueue error responses
     server.enqueueResponse(moshi, 500, ErrorResponse(ErrorResponse.ErrorDetail(500, "500 error")))
@@ -297,33 +302,38 @@ class EvaluationForegroundTaskTest {
   @Test
   fun `should continue scheduling after error when pollingInterval equal retryInterval`() {
     // Set up a config with pollingInterval equal to retryPollingInterval
-    val equalIntervalConfig = createTestBKTConfig(
-      apiKey = "api_key_value",
-      apiEndpoint = server.url("").toString(),
-      featureTag = "feature_tag_value",
-      eventsMaxBatchQueueCount = 3,
-      pollingInterval = 800, // equal to retry interval
-      appVersion = "1.2.3",
-    )
+    val equalIntervalConfig =
+      createTestBKTConfig(
+        apiKey = "api_key_value",
+        apiEndpoint = server.url("").toString(),
+        featureTag = "feature_tag_value",
+        eventsMaxBatchQueueCount = 3,
+        pollingInterval = 800, // equal to retry interval
+        appVersion = "1.2.3",
+      )
 
-    val equalIntervalComponent = ComponentImpl(
-      dataModule = DataModule(
-        application = ApplicationProvider.getApplicationContext(),
-        config = equalIntervalConfig,
-        user = user1,
-        inMemoryDB = true,
-      ),
-      interactorModule = InteractorModule(
-        mainHandler = Handler(Looper.getMainLooper()),
-      ),
-    )
+    val equalIntervalComponent =
+      ComponentImpl(
+        dataModule =
+          DataModule(
+            application = ApplicationProvider.getApplicationContext(),
+            config = equalIntervalConfig,
+            user = user1,
+            inMemoryDB = true,
+          ),
+        interactorModule =
+          InteractorModule(
+            mainHandler = Handler(Looper.getMainLooper()),
+          ),
+      )
 
-    task = EvaluationForegroundTask(
-      equalIntervalComponent,
-      executor,
-      retryPollingInterval = 800, // equal to pollingInterval
-      maxRetryCount = 3,
-    )
+    task =
+      EvaluationForegroundTask(
+        equalIntervalComponent,
+        executor,
+        retryPollingInterval = 800, // equal to pollingInterval
+        maxRetryCount = 3,
+      )
 
     // Enqueue multiple error responses followed by a success
     server.enqueueResponse(moshi, 500, ErrorResponse(ErrorResponse.ErrorDetail(500, "500 error")))
