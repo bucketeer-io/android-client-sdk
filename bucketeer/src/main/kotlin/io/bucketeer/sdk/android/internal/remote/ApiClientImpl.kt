@@ -54,13 +54,14 @@ internal class ApiClientImpl(
   }
 
   private val getEvaluationExecutor = Executors.newSingleThreadScheduledExecutor()
+
   override fun getEvaluations(
     user: User,
     userEvaluationsId: String,
     timeoutMillis: Long?,
     condition: UserEvaluationCondition,
-  ): GetEvaluationsResult {
-    return retryOnException(
+  ): GetEvaluationsResult =
+    retryOnException(
       executor = getEvaluationExecutor,
       maxRetries = 3,
       delayMillis = 1000,
@@ -76,7 +77,6 @@ internal class ApiClientImpl(
         condition = condition,
       )
     }.get()
-  }
 
   private fun getEvaluationsInternal(
     user: User,
