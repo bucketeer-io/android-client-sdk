@@ -2,7 +2,6 @@ package io.bucketeer.sdk.android.internal.remote
 
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
-import io.bucketeer.sdk.android.BKTException
 import io.bucketeer.sdk.android.internal.logd
 import io.bucketeer.sdk.android.internal.model.Event
 import io.bucketeer.sdk.android.internal.model.SourceId
@@ -22,8 +21,6 @@ import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import java.util.concurrent.Executors
-import java.util.concurrent.Future
-import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
 
 internal const val DEFAULT_REQUEST_TIMEOUT_MILLIS: Long = 30_000
@@ -54,31 +51,9 @@ internal class ApiClientImpl(
   }
 
   private val getEvaluationExecutor = Executors.newSingleThreadScheduledExecutor()
+  private val registerExecutor = Executors.newSingleThreadScheduledExecutor()
 
   override fun getEvaluations(
-    user: User,
-    userEvaluationsId: String,
-    timeoutMillis: Long?,
-    condition: UserEvaluationCondition,
-  ): GetEvaluationsResult =
-    retryOnException(
-      executor = getEvaluationExecutor,
-      maxRetries = 3,
-      delayMillis = 1000,
-      exceptionCheck = { e ->
-        val bktException = e as? BKTException
-        bktException is BKTException.ClientClosedRequestException
-      },
-    ) {
-      getEvaluationsInternal(
-        user = user,
-        userEvaluationsId = userEvaluationsId,
-        timeoutMillis = timeoutMillis,
-        condition = condition,
-      )
-    }.get()
-
-  private fun getEvaluationsInternal(
     user: User,
     userEvaluationsId: String,
     timeoutMillis: Long?,
@@ -120,64 +95,64 @@ internal class ApiClientImpl(
       }
 
     var responseStatusCode = 0
-    try {
-      val call = actualClient.newCall(request)
+    val result = runCatching {
+      retryOnException(
+        executor = getEvaluationExecutor,
+        maxRetries = 0,
+        delayMillis = 1000L,
+        exceptionCheck = {
+//          it is BKTException.ClientClosedRequestException
+          false
+        },
+      ) {
+        val call =
+          actualClient.newCall(request)
+        logd { "--> Fetch Evaluation\n$body" }
 
-      logd { "--> Fetch Evaluation\n$body" }
+        val (millis, data) =
+          measureTimeMillisWithResult {
+            val rawResponse = call.execute()
+            responseStatusCode = rawResponse.code
 
-      val (millis, data) =
-        measureTimeMillisWithResult {
-          val rawResponse = call.execute()
-          responseStatusCode = rawResponse.code
+            if (!rawResponse.isSuccessful) {
+              throw rawResponse.toBKTException(errorResponseJsonAdapter)
+            }
 
-          if (!rawResponse.isSuccessful) {
-            throw rawResponse.toBKTException(errorResponseJsonAdapter)
+            val response =
+              requireNotNull(rawResponse.fromJson<GetEvaluationsResponse>()) { "failed to parse GetEvaluationsResponse" }
+
+            response to (rawResponse.body?.contentLength() ?: -1).toInt()
           }
 
-          val response =
-            requireNotNull(rawResponse.fromJson<GetEvaluationsResponse>()) { "failed to parse GetEvaluationsResponse" }
+        val (response, contentLength) = data
 
-          response to (rawResponse.body?.contentLength() ?: -1).toInt()
-        }
+        logd { "--> END Fetch Evaluation" }
+        logd { "<-- Fetch Evaluation\n$response\n<-- END Evaluation response" }
 
-      val (response, contentLength) = data
-
-      logd { "--> END Fetch Evaluation" }
-      logd { "<-- Fetch Evaluation\n$response\n<-- END Evaluation response" }
-
-      return GetEvaluationsResult.Success(
-        value = response,
-        seconds = millis / 1000.0,
-        sizeByte = contentLength,
-        featureTag = featureTag,
-      )
-    } catch (e: Exception) {
-      return GetEvaluationsResult.Failure(
-        e.toBKTException(
-          requestTimeoutMillis = client.callTimeoutMillis.toLong(),
-          statusCode = responseStatusCode,
-        ),
-        featureTag,
-      )
+        GetEvaluationsResult.Success(
+          value = response,
+          seconds = millis / 1000.0,
+          sizeByte = contentLength,
+          featureTag = featureTag,
+        )
+      }
     }
+
+    return result.fold(
+      onSuccess = { res -> res },
+      onFailure = { e ->
+        GetEvaluationsResult.Failure(
+          e.toBKTException(
+            requestTimeoutMillis = client.callTimeoutMillis.toLong(),
+            statusCode = responseStatusCode,
+          ),
+          featureTag,
+        )
+      },
+    )
   }
 
-  override fun registerEvents(events: List<Event>): RegisterEventsResult =
-    retryOnException(
-      executor = getEvaluationExecutor,
-      maxRetries = 3,
-      delayMillis = 1000,
-      exceptionCheck = { e ->
-        val bktException = e as? BKTException
-        bktException is BKTException.ClientClosedRequestException
-      },
-    ) {
-      registerEventsInternal(
-        events,
-      )
-    }.get()
-
-  private fun registerEventsInternal(events: List<Event>): RegisterEventsResult {
+  override fun registerEvents(events: List<Event>): RegisterEventsResult {
     val body = RegisterEventsRequest(events = events, sourceId = sourceId, sdkVersion = sdkVersion)
 
     val request =
@@ -260,31 +235,5 @@ private class FixJsonContentTypeInterceptor : Interceptor {
         .build()
 
     return chain.proceed(fixed)
-  }
-}
-
-internal fun <T> retryOnException(
-  executor: ScheduledExecutorService,
-  maxRetries: Int = 3,
-  delayMillis: Long = 1000,
-  exceptionCheck: (Throwable) -> Boolean,
-  block: () -> T,
-): Future<T> {
-  return executor.submit<T> {
-    var lastException: Throwable? = null
-    repeat(maxRetries + 1) { attempt ->
-      try {
-        return@submit block()
-      } catch (e: Throwable) {
-        lastException = e
-        if (!exceptionCheck(e) || attempt >= maxRetries) {
-          throw e
-        }
-        Thread.sleep(delayMillis * (attempt + 1))
-      }
-    }
-    // Tell the compiler that this function can make sure to return T or throw
-    // This code below is never reached
-    throw lastException!!
   }
 }
