@@ -162,7 +162,22 @@ internal class ApiClientImpl(
     }
   }
 
-  override fun registerEvents(events: List<Event>): RegisterEventsResult {
+  override fun registerEvents(events: List<Event>): RegisterEventsResult =
+    retryOnException(
+      executor = getEvaluationExecutor,
+      maxRetries = 3,
+      delayMillis = 1000,
+      exceptionCheck = { e ->
+        val bktException = e as? BKTException
+        bktException is BKTException.ClientClosedRequestException
+      },
+    ) {
+      registerEventsInternal(
+        events
+      )
+    }.get()
+
+  private fun registerEventsInternal(events: List<Event>): RegisterEventsResult {
     val body = RegisterEventsRequest(events = events, sourceId = sourceId, sdkVersion = sdkVersion)
 
     val request =
@@ -248,9 +263,9 @@ private class FixJsonContentTypeInterceptor : Interceptor {
   }
 }
 
-fun <T> retryOnException(
+internal fun <T> retryOnException(
   executor: ScheduledExecutorService,
-  maxRetries: Int,
+  maxRetries: Int = 3,
   delayMillis: Long = 1000,
   exceptionCheck: (Throwable) -> Boolean,
   block: () -> T,
