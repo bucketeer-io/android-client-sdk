@@ -13,33 +13,33 @@ internal fun <T> retryOnException(
   exceptionCheck: (Throwable) -> Boolean,
   block: () -> T,
 ): T {
-  val futureTask = object : FutureTask<T>(
-    Callable {
-      var lastException: Throwable? = null
-      repeat(maxRetries + 1) { attempt ->
-        try {
-          return@Callable block()
-        } catch (e: Throwable) {
-          lastException = e
-          if (!exceptionCheck(e) || attempt >= maxRetries) {
-            throw e
+  val futureTask =
+    object : FutureTask<T>(
+      Callable {
+        var lastException: Throwable? = null
+        repeat(maxRetries + 1) { attempt ->
+          try {
+            return@Callable block()
+          } catch (e: Throwable) {
+            lastException = e
+            if (!exceptionCheck(e) || attempt >= maxRetries) {
+              throw e
+            }
+            Thread.sleep(delayMillis * (attempt + 1))
           }
-          Thread.sleep(delayMillis * (attempt + 1))
         }
-      }
-      throw lastException!!
-    }
-  ) {}
+        throw lastException!!
+      },
+    ) {}
 
   executor.execute(futureTask)
   return futureTask.getOrThrow()
 }
 
 // Unwrap ExecutionException and throw the cause directly
-fun <T> Future<T>.getOrThrow(): T {
-  return try {
+fun <T> Future<T>.getOrThrow(): T =
+  try {
     get()
   } catch (e: ExecutionException) {
     throw e.cause ?: e
   }
-}

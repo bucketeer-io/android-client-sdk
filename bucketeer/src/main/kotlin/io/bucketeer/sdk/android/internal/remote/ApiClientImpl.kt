@@ -51,7 +51,7 @@ internal class ApiClientImpl(
   }
 
   private val getEvaluationExecutor = Executors.newSingleThreadScheduledExecutor()
-  private val registerExecutor = Executors.newSingleThreadScheduledExecutor()
+  private val registerEventExecutor = Executors.newSingleThreadScheduledExecutor()
 
   override fun getEvaluations(
     user: User,
@@ -95,48 +95,48 @@ internal class ApiClientImpl(
       }
 
     var responseStatusCode = 0
-    val result = runCatching {
-      retryOnException(
-        executor = getEvaluationExecutor,
-        maxRetries = 0,
-        delayMillis = 1000L,
-        exceptionCheck = {
-//          it is BKTException.ClientClosedRequestException
-          false
-        },
-      ) {
-        val call =
-          actualClient.newCall(request)
-        logd { "--> Fetch Evaluation\n$body" }
+    val result =
+      runCatching {
+        retryOnException(
+          executor = getEvaluationExecutor,
+          maxRetries = 0,
+          delayMillis = 1000L,
+          exceptionCheck = {
+            false
+          },
+        ) {
+          val call =
+            actualClient.newCall(request)
+          logd { "--> Fetch Evaluation\n$body" }
 
-        val (millis, data) =
-          measureTimeMillisWithResult {
-            val rawResponse = call.execute()
-            responseStatusCode = rawResponse.code
+          val (millis, data) =
+            measureTimeMillisWithResult {
+              val rawResponse = call.execute()
+              responseStatusCode = rawResponse.code
 
-            if (!rawResponse.isSuccessful) {
-              throw rawResponse.toBKTException(errorResponseJsonAdapter)
+              if (!rawResponse.isSuccessful) {
+                throw rawResponse.toBKTException(errorResponseJsonAdapter)
+              }
+
+              val response =
+                requireNotNull(rawResponse.fromJson<GetEvaluationsResponse>()) { "failed to parse GetEvaluationsResponse" }
+
+              response to (rawResponse.body?.contentLength() ?: -1).toInt()
             }
 
-            val response =
-              requireNotNull(rawResponse.fromJson<GetEvaluationsResponse>()) { "failed to parse GetEvaluationsResponse" }
+          val (response, contentLength) = data
 
-            response to (rawResponse.body?.contentLength() ?: -1).toInt()
-          }
+          logd { "--> END Fetch Evaluation" }
+          logd { "<-- Fetch Evaluation\n$response\n<-- END Evaluation response" }
 
-        val (response, contentLength) = data
-
-        logd { "--> END Fetch Evaluation" }
-        logd { "<-- Fetch Evaluation\n$response\n<-- END Evaluation response" }
-
-        GetEvaluationsResult.Success(
-          value = response,
-          seconds = millis / 1000.0,
-          sizeByte = contentLength,
-          featureTag = featureTag,
-        )
+          GetEvaluationsResult.Success(
+            value = response,
+            seconds = millis / 1000.0,
+            sizeByte = contentLength,
+            featureTag = featureTag,
+          )
+        }
       }
-    }
 
     return result.fold(
       onSuccess = { res -> res },
@@ -169,24 +169,34 @@ internal class ApiClientImpl(
 
     var responseStatusCode = 0
     val result =
-      client.newCall(request).runCatching {
-        logd { "--> Register events\n$body" }
-        val response = execute()
-        responseStatusCode = response.code
+      runCatching {
+        retryOnException(
+          executor = registerEventExecutor,
+          maxRetries = 0,
+          delayMillis = 1000L,
+          exceptionCheck = {
+            false
+          },
+        ) {
+          val call = client.newCall(request)
+          logd { "--> Register events\n$body" }
+          val response = call.execute()
+          responseStatusCode = response.code
 
-        if (!response.isSuccessful) {
-          val e = response.toBKTException(errorResponseJsonAdapter)
-          logd(throwable = e) { "<-- Register events error" }
-          throw e
+          if (!response.isSuccessful) {
+            val e = response.toBKTException(errorResponseJsonAdapter)
+            logd(throwable = e) { "<-- Register events error" }
+            throw e
+          }
+
+          val result =
+            requireNotNull(response.fromJson<RegisterEventsResponse>()) { "failed to parse RegisterEventsResponse" }
+
+          logd { "--> END Register events" }
+          logd { "<-- Register events\n$result\n<-- END Register events" }
+
+          RegisterEventsResult.Success(value = result)
         }
-
-        val result =
-          requireNotNull(response.fromJson<RegisterEventsResponse>()) { "failed to parse RegisterEventsResponse" }
-
-        logd { "--> END Register events" }
-        logd { "<-- Register events\n$result\n<-- END Register events" }
-
-        RegisterEventsResult.Success(value = result)
       }
 
     return result.fold(
