@@ -173,7 +173,7 @@ internal class ApiClientImpl(
       },
     ) {
       registerEventsInternal(
-        events
+        events,
       )
     }.get()
 

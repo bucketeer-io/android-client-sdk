@@ -759,16 +759,13 @@ internal class ApiClientImplTest {
 
   @Test()
   fun `should be retry when got 499 status code at least 3 times before throw error`() {
-
   }
 
   @Test()
-  fun `should not be retry when got 3xx, 4xx, 5xx error`(){
-
+  fun `should not be retry when got 3xx, 4xx, 5xx error`() {
   }
 
   @Test()
-  fun `should stop retry when got other status code != 499`(){
-
+  fun `should stop retry when got other status code != 499`() {
   }
 }
