@@ -2,6 +2,7 @@ package io.bucketeer.sdk.android.internal.remote
 
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
+import io.bucketeer.sdk.android.BKTException
 import io.bucketeer.sdk.android.internal.logd
 import io.bucketeer.sdk.android.internal.model.Event
 import io.bucketeer.sdk.android.internal.model.SourceId
@@ -99,10 +100,10 @@ internal class ApiClientImpl(
       runCatching {
         retryOnException(
           executor = getEvaluationExecutor,
-          maxRetries = 0,
+          maxRetries = 3,
           delayMillis = 1000L,
-          exceptionCheck = {
-            false
+          exceptionCheck = { ex ->
+            ex is BKTException.ClientClosedRequestException
           },
         ) {
           val call =
@@ -174,7 +175,7 @@ internal class ApiClientImpl(
           executor = registerEventExecutor,
           maxRetries = 0,
           delayMillis = 1000L,
-          exceptionCheck = {
+          exceptionCheck = { ex ->
             false
           },
         ) {
