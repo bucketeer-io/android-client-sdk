@@ -1,24 +1,18 @@
 package io.bucketeer.sdk.android
 
 import com.google.common.truth.Truth.assertThat
-import io.bucketeer.sdk.android.internal.remote.retryOnException
+import io.bucketeer.sdk.android.internal.remote.retryOnExceptionSync
 import org.junit.Assert.assertThrows
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import java.util.concurrent.Executors
-import java.util.concurrent.ScheduledExecutorService
 
 @RunWith(RobolectricTestRunner::class)
-class RetryOnExceptionTest {
-
-  private val executor: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor()
-
+class RetryOnExceptionSyncTest {
   @Test
   fun `success on first attempt`() {
     var attempts = 0
-    val result = retryOnException(
-      executor = executor,
+    val result = retryOnExceptionSync(
       maxRetries = 3,
       delayMillis = 10,
       exceptionCheck = { true },
@@ -34,8 +28,7 @@ class RetryOnExceptionTest {
   @Test
   fun `success after retries`() {
     var attempts = 0
-    val result = retryOnException(
-      executor = executor,
+    val result = retryOnExceptionSync(
       maxRetries = 3,
       delayMillis = 10,
       exceptionCheck = { true },
@@ -52,8 +45,7 @@ class RetryOnExceptionTest {
   fun `failure after max retries`() {
     var attempts = 0
     val exception = assertThrows(RuntimeException::class.java) {
-      retryOnException(
-        executor = executor,
+      retryOnExceptionSync(
         maxRetries = 2,
         delayMillis = 10,
         exceptionCheck = { true },
@@ -71,8 +63,7 @@ class RetryOnExceptionTest {
   fun `no retry on non-retriable exception`() {
     var attempts = 0
     val exception = assertThrows(IllegalArgumentException::class.java) {
-      retryOnException(
-        executor = executor,
+      retryOnExceptionSync(
         maxRetries = 3,
         delayMillis = 10,
         exceptionCheck = { it !is IllegalArgumentException },
@@ -89,8 +80,7 @@ class RetryOnExceptionTest {
   @Test
   fun `retry stops on first success after failures`() {
     var attempts = 0
-    val result = retryOnException(
-      executor = executor,
+    val result = retryOnExceptionSync(
       maxRetries = 5,
       delayMillis = 10,
       exceptionCheck = { true },
@@ -105,8 +95,7 @@ class RetryOnExceptionTest {
 
   @Test
   fun `returns correct value type`() {
-    val intResult = retryOnException(
-      executor = executor,
+    val intResult = retryOnExceptionSync(
       maxRetries = 1,
       delayMillis = 10,
       exceptionCheck = { true },
@@ -116,8 +105,7 @@ class RetryOnExceptionTest {
 
     assertThat(intResult).isEqualTo(42)
 
-    val listResult = retryOnException(
-      executor = executor,
+    val listResult = retryOnExceptionSync(
       maxRetries = 1,
       delayMillis = 10,
       exceptionCheck = { true },
@@ -132,8 +120,7 @@ class RetryOnExceptionTest {
   fun `exception check with specific exception types`() {
     var attempts = 0
     val exception = assertThrows(IllegalStateException::class.java) {
-      retryOnException(
-        executor = executor,
+      retryOnExceptionSync(
         maxRetries = 3,
         delayMillis = 10,
         exceptionCheck = { it is RuntimeException && it !is IllegalStateException },
@@ -151,8 +138,7 @@ class RetryOnExceptionTest {
   fun `mixed exceptions - retry on retriable then fail on non-retriable`() {
     var attempts = 0
     val exception = assertThrows(IllegalArgumentException::class.java) {
-      retryOnException(
-        executor = executor,
+      retryOnExceptionSync(
         maxRetries = 5,
         delayMillis = 10,
         exceptionCheck = { it is RuntimeException && it !is IllegalArgumentException },
@@ -174,8 +160,7 @@ class RetryOnExceptionTest {
   fun `zero maxRetries means one attempt only`() {
     var attempts = 0
     val exception = assertThrows(RuntimeException::class.java) {
-      retryOnException(
-        executor = executor,
+      retryOnExceptionSync(
         maxRetries = 0,
         delayMillis = 10,
         exceptionCheck = { true },

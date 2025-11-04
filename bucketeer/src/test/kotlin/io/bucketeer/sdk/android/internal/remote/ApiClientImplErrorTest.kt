@@ -1,0 +1,143 @@
+package io.bucketeer.sdk.android.internal.remote
+
+import com.google.common.truth.Truth.assertThat
+import com.squareup.moshi.Moshi
+import io.bucketeer.sdk.android.BuildConfig
+import io.bucketeer.sdk.android.internal.di.DataModule
+import io.bucketeer.sdk.android.internal.model.SourceId
+import io.bucketeer.sdk.android.internal.model.response.ErrorResponse
+import io.bucketeer.sdk.android.internal.model.response.GetEvaluationsResponse
+import io.bucketeer.sdk.android.mocks.user1
+import io.bucketeer.sdk.android.mocks.user1Evaluations
+import okhttp3.mockwebserver.MockResponse
+import okhttp3.mockwebserver.MockWebServer
+import org.junit.After
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import java.util.concurrent.TimeUnit
+
+@RunWith(RobolectricTestRunner::class)
+internal class ApiClientImplErrorTest {
+  private lateinit var server: MockWebServer
+  private lateinit var client: ApiClientImpl
+  private lateinit var apiEndpoint: String
+  private lateinit var moshi: Moshi
+  private lateinit var mockClientClosedRequestResponse: MockResponse
+  private lateinit var mockOtherErrorStatusResponse : MockResponse
+  private lateinit var mockSuccessResponse: MockResponse
+
+  @Before
+  fun setup() {
+    server = MockWebServer()
+    apiEndpoint = server.url("").toString()
+    moshi = DataModule.createMoshi()
+    mockClientClosedRequestResponse = MockResponse()
+      .setResponseCode(499)
+      .setBody(
+        moshi
+          .adapter(ErrorResponse::class.java)
+          .toJson(
+            ErrorResponse(
+              ErrorResponse.ErrorDetail(
+                code = 499,
+                message = "client closed request",
+              ),
+            ),
+          ),
+      )
+    mockOtherErrorStatusResponse = MockResponse()
+      .setResponseCode(530)
+      .setBody(
+        moshi
+          .adapter(ErrorResponse::class.java)
+          .toJson(
+            ErrorResponse(
+              ErrorResponse.ErrorDetail(
+                code = 530,
+                message = "custom server error",
+              ),
+            ),
+          ),
+      )
+    mockSuccessResponse = MockResponse()
+      .setBodyDelay(1, TimeUnit.SECONDS)
+      .apply {
+        this.setBody(
+          moshi.adapter(GetEvaluationsResponse::class.java).toJson(
+            GetEvaluationsResponse(
+              evaluations = user1Evaluations,
+              userEvaluationsId = "user_evaluation_id",
+            ),
+          ),
+        )
+      }.setResponseCode(200)
+  }
+
+  @After
+  fun tearDown() {
+    server.shutdown()
+  }
+  /*
+  cases
+  200 -> done, no retry, request count = 1
+  530 -> error, no retry, request count = 1
+  499, 530 -> error, retry once, request count = 2
+  499, 200 -> done okay, request count = 2
+  499, 499, 200 -> done okay, retry twice, request count = 3
+  499, 499, 499, 200 -> done okay, max retry reached, request count = 4
+  499, 499, 499, 530 -> error, max retry reached, request count = 4
+  */
+
+  @Test
+  fun `getEvaluations - error with body`(
+  ) {
+    server.enqueue(
+      MockResponse()
+        .setResponseCode(499)
+        .setBody(
+          moshi
+            .adapter(ErrorResponse::class.java)
+            .toJson(
+              ErrorResponse(
+                ErrorResponse.ErrorDetail(
+                  code = 499,
+                  message = "client closed request",
+                ),
+              ),
+            ),
+        ),
+    )
+
+    client =
+      ApiClientImpl(
+        apiEndpoint = apiEndpoint,
+        apiKey = "api_key_value",
+        featureTag = "feature_tag_value",
+        moshi = moshi,
+        sourceId = SourceId.ANDROID,
+        sdkVersion = BuildConfig.SDK_VERSION,
+      )
+
+    val result =
+      client.getEvaluations(
+        user = user1,
+        userEvaluationsId = "user_evaluation_id",
+        condition =
+          UserEvaluationCondition(
+            evaluatedAt = "1690799200",
+            userAttributesUpdated = true,
+          ),
+      )
+
+    assertThat(result).isInstanceOf(GetEvaluationsResult.Failure::class.java)
+    val failure = result as GetEvaluationsResult.Failure
+    val error = failure.error
+
+    assertThat(error).isInstanceOf(case.expectedClass)
+    if (case.expectedResponse != null) {
+      assertThat(error.message).contains(case.expectedResponse)
+    }
+  }
+}
