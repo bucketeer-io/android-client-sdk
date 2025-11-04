@@ -49,31 +49,8 @@ internal class ApiClientImpl(
   private val errorResponseJsonAdapter: JsonAdapter<ErrorResponse> by lazy {
     moshi.adapter(ErrorResponse::class.java)
   }
-  override fun getEvaluations(
-    user: User,
-    userEvaluationsId: String,
-    timeoutMillis: Long?,
-    condition: UserEvaluationCondition,
-  ): GetEvaluationsResult = retryOnExceptionSync(
-    maxRetries = 3,
-    delayMillis = 1000L,
-    exceptionCheck = { it is BKTException.ClientClosedRequestException },
-    block = {
-      val result =
-        getEvaluationsInternal(
-          user = user,
-          userEvaluationsId = userEvaluationsId,
-          timeoutMillis = timeoutMillis,
-          condition = condition,
-        )
-      if (result is GetEvaluationsResult.Failure) {
-        throw result.error
-      }
-      return@retryOnExceptionSync result
-    },
-  )
 
-  fun getEvaluationsInternal(
+  override fun getEvaluations(
     user: User,
     userEvaluationsId: String,
     timeoutMillis: Long?,
@@ -113,38 +90,48 @@ internal class ApiClientImpl(
           .writeTimeout(timeoutMillis, TimeUnit.MILLISECONDS)
           .build()
       }
-    actualClient.connectionPool.evictAll()
+
     var responseStatusCode = 0
     val result =
-      actualClient.newCall(request).runCatching {
-        logd { "--> Fetch Evaluation\n$body" }
+      runCatching {
+        retryOnExceptionSync(
+          maxRetries = 3,
+          delayMillis = 1000L,
+          exceptionCheck = { err ->
+            err is BKTException.ClientClosedRequestException
+          },
+        ) {
+          val call =
+            actualClient.newCall(request)
+          logd { "--> Fetch Evaluation\n$body" }
 
-        val (millis, data) =
-          measureTimeMillisWithResult {
-            val rawResponse = execute()
-            responseStatusCode = rawResponse.code
+          val (millis, data) =
+            measureTimeMillisWithResult {
+              val rawResponse = call.execute()
+              responseStatusCode = rawResponse.code
 
-            if (!rawResponse.isSuccessful) {
-              throw rawResponse.toBKTException(errorResponseJsonAdapter)
+              if (!rawResponse.isSuccessful) {
+                throw rawResponse.toBKTException(errorResponseJsonAdapter)
+              }
+
+              val response =
+                requireNotNull(rawResponse.fromJson<GetEvaluationsResponse>()) { "failed to parse GetEvaluationsResponse" }
+
+              response to (rawResponse.body?.contentLength() ?: -1).toInt()
             }
 
-            val response =
-              requireNotNull(rawResponse.fromJson<GetEvaluationsResponse>()) { "failed to parse GetEvaluationsResponse" }
+          val (response, contentLength) = data
 
-            response to (rawResponse.body?.contentLength() ?: -1).toInt()
-          }
+          logd { "--> END Fetch Evaluation" }
+          logd { "<-- Fetch Evaluation\n$response\n<-- END Evaluation response" }
 
-        val (response, contentLength) = data
-
-        logd { "--> END Fetch Evaluation" }
-        logd { "<-- Fetch Evaluation\n$response\n<-- END Evaluation response" }
-
-        GetEvaluationsResult.Success(
-          value = response,
-          seconds = millis / 1000.0,
-          sizeByte = contentLength,
-          featureTag = featureTag,
-        )
+          GetEvaluationsResult.Success(
+            value = response,
+            seconds = millis / 1000.0,
+            sizeByte = contentLength,
+            featureTag = featureTag,
+          )
+        }
       }
 
     return result.fold(
@@ -178,24 +165,33 @@ internal class ApiClientImpl(
 
     var responseStatusCode = 0
     val result =
-      client.newCall(request).runCatching {
-        logd { "--> Register events\n$body" }
-        val response = execute()
-        responseStatusCode = response.code
+      runCatching {
+        retryOnExceptionSync(
+          maxRetries = 3,
+          delayMillis = 1000L,
+          exceptionCheck = { err ->
+            err is BKTException.ClientClosedRequestException
+          },
+        ) {
+          val call = client.newCall(request)
+          logd { "--> Register events\n$body" }
+          val response = call.execute()
+          responseStatusCode = response.code
 
-        if (!response.isSuccessful) {
-          val e = response.toBKTException(errorResponseJsonAdapter)
-          logd(throwable = e) { "<-- Register events error" }
-          throw e
+          if (!response.isSuccessful) {
+            val e = response.toBKTException(errorResponseJsonAdapter)
+            logd(throwable = e) { "<-- Register events error" }
+            throw e
+          }
+
+          val result =
+            requireNotNull(response.fromJson<RegisterEventsResponse>()) { "failed to parse RegisterEventsResponse" }
+
+          logd { "--> END Register events" }
+          logd { "<-- Register events\n$result\n<-- END Register events" }
+
+          RegisterEventsResult.Success(value = result)
         }
-
-        val result =
-          requireNotNull(response.fromJson<RegisterEventsResponse>()) { "failed to parse RegisterEventsResponse" }
-
-        logd { "--> END Register events" }
-        logd { "<-- Register events\n$result\n<-- END Register events" }
-
-        RegisterEventsResult.Success(value = result)
       }
 
     return result.fold(
