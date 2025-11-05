@@ -8,7 +8,7 @@ internal fun <T> retryOnException(
 ): T {
   var lastException: Throwable? = null
   val maxAttempts = if (maxRetries < 0) 1 else maxRetries + 1
-  for (attempt in 0..maxAttempts) {
+  for (attempt in 0 until maxAttempts) {
     try {
       return block()
     } catch (e: Throwable) {
