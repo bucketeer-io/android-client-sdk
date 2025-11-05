@@ -1,6 +1,6 @@
 package io.bucketeer.sdk.android.internal.remote
 
-internal fun <T> retryOnExceptionSync(
+internal fun <T> retryOnException(
   maxRetries: Int = 3,
   delayMillis: Long = 1000,
   exceptionCheck: (Throwable) -> Boolean,
@@ -13,7 +13,7 @@ internal fun <T> retryOnExceptionSync(
       return block()
     } catch (e: Throwable) {
       lastException = e
-      if (!exceptionCheck(e) || attempt >= maxAttempts) {
+      if (!exceptionCheck(e) || attempt >= maxAttempts - 1) {
         throw e
       }
       Thread.sleep(delayMillis * (attempt + 1))

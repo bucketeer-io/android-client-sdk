@@ -94,7 +94,7 @@ internal class ApiClientImpl(
     var responseStatusCode = 0
     val result =
       runCatching {
-        retryOnExceptionSync(
+        retryOnException(
           maxRetries = 3,
           delayMillis = 1000L,
           exceptionCheck = { err ->
@@ -166,7 +166,7 @@ internal class ApiClientImpl(
     var responseStatusCode = 0
     val result =
       runCatching {
-        retryOnExceptionSync(
+        retryOnException(
           maxRetries = 3,
           delayMillis = 1000L,
           exceptionCheck = { err ->

@@ -1,19 +1,19 @@
 package io.bucketeer.sdk.android
 
 import com.google.common.truth.Truth.assertThat
-import io.bucketeer.sdk.android.internal.remote.retryOnExceptionSync
+import io.bucketeer.sdk.android.internal.remote.retryOnException
 import org.junit.Assert.assertThrows
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-class RetryOnExceptionSyncTest {
+class RetryOnExceptionTest {
   @Test
   fun `success on first attempt`() {
     var attempts = 0
     val result =
-      retryOnExceptionSync(
+      retryOnException(
         maxRetries = 3,
         delayMillis = 10,
         exceptionCheck = { true },
@@ -30,7 +30,7 @@ class RetryOnExceptionSyncTest {
   fun `success after retries`() {
     var attempts = 0
     val result =
-      retryOnExceptionSync(
+      retryOnException(
         maxRetries = 3,
         delayMillis = 10,
         exceptionCheck = { true },
@@ -48,7 +48,7 @@ class RetryOnExceptionSyncTest {
     var attempts = 0
     val exception =
       assertThrows(RuntimeException::class.java) {
-        retryOnExceptionSync(
+        retryOnException(
           maxRetries = 2,
           delayMillis = 10,
           exceptionCheck = { true },
@@ -67,7 +67,7 @@ class RetryOnExceptionSyncTest {
     var attempts = 0
     val exception =
       assertThrows(IllegalArgumentException::class.java) {
-        retryOnExceptionSync(
+        retryOnException(
           maxRetries = 3,
           delayMillis = 10,
           exceptionCheck = { it !is IllegalArgumentException },
@@ -85,7 +85,7 @@ class RetryOnExceptionSyncTest {
   fun `retry stops on first success after failures`() {
     var attempts = 0
     val result =
-      retryOnExceptionSync(
+      retryOnException(
         maxRetries = 5,
         delayMillis = 10,
         exceptionCheck = { true },
@@ -101,7 +101,7 @@ class RetryOnExceptionSyncTest {
   @Test
   fun `returns correct value type`() {
     val intResult =
-      retryOnExceptionSync(
+      retryOnException(
         maxRetries = 1,
         delayMillis = 10,
         exceptionCheck = { true },
@@ -112,7 +112,7 @@ class RetryOnExceptionSyncTest {
     assertThat(intResult).isEqualTo(42)
 
     val listResult =
-      retryOnExceptionSync(
+      retryOnException(
         maxRetries = 1,
         delayMillis = 10,
         exceptionCheck = { true },
@@ -128,7 +128,7 @@ class RetryOnExceptionSyncTest {
     var attempts = 0
     val exception =
       assertThrows(IllegalStateException::class.java) {
-        retryOnExceptionSync(
+        retryOnException(
           maxRetries = 3,
           delayMillis = 10,
           exceptionCheck = { it is RuntimeException && it !is IllegalStateException },
@@ -147,7 +147,7 @@ class RetryOnExceptionSyncTest {
     var attempts = 0
     val exception =
       assertThrows(IllegalArgumentException::class.java) {
-        retryOnExceptionSync(
+        retryOnException(
           maxRetries = 5,
           delayMillis = 10,
           exceptionCheck = { it is RuntimeException && it !is IllegalArgumentException },
@@ -170,7 +170,7 @@ class RetryOnExceptionSyncTest {
     var attempts = 0
     val exception =
       assertThrows(RuntimeException::class.java) {
-        retryOnExceptionSync(
+        retryOnException(
           maxRetries = 0,
           delayMillis = 10,
           exceptionCheck = { true },
