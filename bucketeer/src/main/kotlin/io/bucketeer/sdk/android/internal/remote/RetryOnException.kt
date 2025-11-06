@@ -1,5 +1,18 @@
 package io.bucketeer.sdk.android.internal.remote
 
+/**
+  * Retries the given [block] of code up to [maxRetries] times if it throws an exception
+  * that satisfies [exceptionCheck]. Waits for an increasing delay between retries.
+  *
+  * Note: This function blocks the current thread during delays. Use only on background threads.
+  *
+  * @param maxRetries Maximum retry attempts (default: 3).
+  * @param delayMillis Base delay in milliseconds between retries (default: 1000ms).
+  * @param exceptionCheck Predicate to determine if an exception is retriable.
+  * @param block Code block to execute.
+  * @return Result of [block] if successful.
+  * @throws Throwable Last exception if retries fail or exception is not retriable.
+  */
 internal fun <T> retryOnException(
   maxRetries: Int = 3,
   delayMillis: Long = 1000,
@@ -16,8 +29,12 @@ internal fun <T> retryOnException(
       if (!exceptionCheck(e) || attempt >= maxAttempts - 1) {
         throw e
       }
+      // Delay with linear backoff using Thread.sleep.
+      // Ensure this runs on a background thread as it blocks the current thread.
+      // Coroutine support is not used since the SDK does not rely on coroutines.
       Thread.sleep(delayMillis * (attempt + 1))
     }
   }
+  // This line should never be reached, but Kotlin compiler requires a return statement here.
   throw lastException!!
 }
