@@ -101,8 +101,10 @@ internal class ApiClientImpl(
             err is BKTException.ClientClosedRequestException
           },
         ) {
+          // Clone request to avoid issues with reusing the same request instance
+          val cloneRequest = request.newBuilder().build()
           val call =
-            actualClient.newCall(request)
+            actualClient.newCall(cloneRequest)
           logd { "--> Fetch Evaluation\n$body" }
 
           val (millis, data) =
@@ -173,7 +175,10 @@ internal class ApiClientImpl(
             err is BKTException.ClientClosedRequestException
           },
         ) {
-          val call = client.newCall(request)
+          // Clone request to avoid issues with reusing the same request instance
+          val cloneRequest = request.newBuilder().build()
+          val call =
+            client.newCall(cloneRequest)
           logd { "--> Register events\n$body" }
           val response = call.execute()
           responseStatusCode = response.code
