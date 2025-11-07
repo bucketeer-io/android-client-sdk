@@ -2,7 +2,7 @@ package io.bucketeer.sdk.android.internal.remote
 
 /**
 * Retries the given [block] of code up to [maxRetries] times if it throws an exception
-* that satisfies [exceptionCheck]. Waits for an increasing delay between retries.
+* that satisfies [exceptionCheck]. Linear backoff delay is applied between retries.
 *
 * Note: This function blocks the current thread during delays. Use only on background threads.
 *
