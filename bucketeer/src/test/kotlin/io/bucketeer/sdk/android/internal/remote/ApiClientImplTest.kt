@@ -84,7 +84,9 @@ internal class ApiClientImplTest {
       expectedResponse = null,
     ),
     PAYLOAD_TOO_LARGE(413, BKTException.PayloadTooLargeException::class.java, "error: 413"),
-    CLIENT_CLOSED_REQUEST(499, BKTException.ClientClosedRequestException::class.java, "error: 499"),
+
+    // CLIENT_CLOSED_REQUEST has a special handling for retry, so we skip the test here, please check ApiClientRetryTest.kt for the test.
+    // CLIENT_CLOSED_REQUEST(499, BKTException.ClientClosedRequestException::class.java, "error: 499"),
     INTERNAL_SERVER_ERROR(500, BKTException.InternalServerErrorException::class.java, "error: 500"),
     SERVICE_UNAVAILABLE(503, BKTException.ServiceUnavailableException::class.java, "error: 503"),
     UNKNOWN_SERVER(418, BKTException.UnknownServerException::class.java, "UnknownServerException 418"),

@@ -1421,6 +1421,134 @@ class BKTClientImplTest {
   }
 
   @Test
+  fun `fetchEvaluations - should retry on 499 status code`() {
+    server.enqueue(
+      MockResponse()
+        .setResponseCode(200)
+        .setBody(
+          moshi
+            .adapter(GetEvaluationsResponse::class.java)
+            .toJson(
+              GetEvaluationsResponse(
+                evaluations = user1Evaluations,
+                userEvaluationsId = "user_evaluations_id_value",
+              ),
+            ),
+        ),
+    )
+    server.enqueue(MockResponse().setResponseCode(499))
+    server.enqueue(
+      MockResponse()
+        .setResponseCode(200)
+        .setBody(
+          moshi
+            .adapter(GetEvaluationsResponse::class.java)
+            .toJson(
+              GetEvaluationsResponse(
+                evaluations = user1Evaluations,
+                userEvaluationsId = "user_evaluations_id_value_updated",
+              ),
+            ),
+        ),
+    )
+
+    val initializeFuture =
+      BKTClient.initialize(
+        ApplicationProvider.getApplicationContext(),
+        config,
+        user1.toBKTUser(),
+        1000,
+      )
+    initializeFuture.get()
+
+    val client = BKTClient.getInstance() as BKTClientImpl
+    val result = client.fetchEvaluations().get()
+
+    Thread.sleep(100)
+
+    assertThat(result).isNull()
+
+    assertThat(
+      client.componentImpl.dataModule.evaluationStorage
+        .getCurrentEvaluationId(),
+    ).isEqualTo("user_evaluations_id_value_updated")
+
+    assertThat(
+      client.componentImpl.dataModule.evaluationStorage
+        .get(),
+    ).hasSize(2)
+
+    // 2 metrics events (latency , size) from the BKTClient internal init()
+    // 2 metrics events (latency , size) from the test code above
+    // Because we filter duplicate
+    // Finally we will have only 2 items, no error event because of the retry
+    val actualEvents =
+      client.componentImpl.dataModule.eventSQLDao
+        .getEvents()
+    assertThat(actualEvents).hasSize(2)
+
+    // server.requestCount includes the initial request plus retries
+    assertThat(server.requestCount).isEqualTo(3)
+  }
+
+  @Test
+  fun `fetchEvaluations - fail after retry 3 times - should log only 1 error event`() {
+    server.enqueue(
+      MockResponse()
+        .setResponseCode(200)
+        .setBody(
+          moshi
+            .adapter(GetEvaluationsResponse::class.java)
+            .toJson(
+              GetEvaluationsResponse(
+                evaluations = user1Evaluations,
+                userEvaluationsId = "user_evaluations_id_value",
+              ),
+            ),
+        ),
+    )
+    server.enqueue(MockResponse().setResponseCode(499))
+    server.enqueue(MockResponse().setResponseCode(499))
+    server.enqueue(MockResponse().setResponseCode(500))
+
+    val initializeFuture =
+      BKTClient.initialize(
+        ApplicationProvider.getApplicationContext(),
+        config,
+        user1.toBKTUser(),
+        1000,
+      )
+    initializeFuture.get()
+
+    val client = BKTClient.getInstance() as BKTClientImpl
+    val result = client.fetchEvaluations().get()
+
+    Thread.sleep(100)
+
+    assertThat(result).isInstanceOf(BKTException.InternalServerErrorException::class.java)
+
+    assertThat(
+      client.componentImpl.dataModule.evaluationStorage
+        .getCurrentEvaluationId(),
+    ).isEqualTo("user_evaluations_id_value")
+
+    assertThat(
+      client.componentImpl.dataModule.evaluationStorage
+        .get(),
+    ).hasSize(2)
+
+    // 2 metrics events (latency , size) from the BKTClient internal init()
+    // 1 metrics events (error) from the test code above
+    val actualEvents =
+      client.componentImpl.dataModule.eventSQLDao
+        .getEvents()
+    assertThat(actualEvents).hasSize(3)
+
+    // server.requestCount includes the initial request plus retries
+    assertThat(server.requestCount).isEqualTo(4)
+  }
+
+  @Test
   fun `fetchEvaluations - onUpdateListener failure`() {
     server.enqueue(
       MockResponse()
