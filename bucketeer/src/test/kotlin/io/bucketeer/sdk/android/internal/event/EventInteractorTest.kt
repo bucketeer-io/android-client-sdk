@@ -44,7 +44,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import java.net.SocketTimeoutException
-import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
 @RunWith(RobolectricTestRunner::class)
@@ -1092,7 +1091,7 @@ private class TestDataModule(
   application: Application,
   config: BKTConfig,
   defaultRequestTimeoutMillis: Long,
-) : DataModule(application, user1, config, inMemoryDB = true, executor = Executors.newSingleThreadScheduledExecutor()) {
+) : DataModule(application, user1, config, inMemoryDB = true) {
   override val clock: Clock by lazy { FakeClock() }
 
   override val idGenerator: IdGenerator by lazy { FakeIdGenerator() }
@@ -1106,7 +1105,6 @@ private class TestDataModule(
       defaultRequestTimeoutMillis = defaultRequestTimeoutMillis,
       sourceId = config.sourceId,
       sdkVersion = config.sdkVersion,
-      retrier = retrier,
     )
   }
 }
