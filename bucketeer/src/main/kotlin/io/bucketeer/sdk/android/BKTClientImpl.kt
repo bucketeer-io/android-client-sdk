@@ -12,6 +12,7 @@ import io.bucketeer.sdk.android.internal.di.InteractorModule
 import io.bucketeer.sdk.android.internal.evaluation.getVariationValue
 import io.bucketeer.sdk.android.internal.event.SendEventsResult
 import io.bucketeer.sdk.android.internal.logd
+import io.bucketeer.sdk.android.internal.model.ReasonType
 import io.bucketeer.sdk.android.internal.remote.GetEvaluationsResult
 import io.bucketeer.sdk.android.internal.scheduler.TaskScheduler
 import io.bucketeer.sdk.android.internal.user.toBKTUser
@@ -196,7 +197,7 @@ internal class BKTClientImpl(
           featureTag = featureTag,
           user = user,
           featureId = featureId,
-          reason = io.bucketeer.sdk.android.internal.model.ReasonType.ERROR_FLAG_NOT_FOUND,
+          reason = ReasonType.ERROR_FLAG_NOT_FOUND,
         )
       }
       return BKTEvaluationDetails.newDefaultInstance(
@@ -234,7 +235,7 @@ internal class BKTClientImpl(
           featureTag = featureTag,
           user = user,
           featureId = featureId,
-          reason = io.bucketeer.sdk.android.internal.model.ReasonType.ERROR_WRONG_TYPE,
+          reason = ReasonType.ERROR_WRONG_TYPE,
         )
       }
       return BKTEvaluationDetails.newDefaultInstance(
