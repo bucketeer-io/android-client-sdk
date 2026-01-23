@@ -26,6 +26,7 @@ enum class ReasonType {
   TARGET,
   RULE,
   DEFAULT,
+
   @Deprecated("CLIENT is deprecated. Use error-prefixed reason types instead.")
   CLIENT,
   OFF_VARIATION,
