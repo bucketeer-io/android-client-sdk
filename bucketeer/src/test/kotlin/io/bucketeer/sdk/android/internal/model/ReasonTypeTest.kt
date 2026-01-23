@@ -49,22 +49,23 @@ class ReasonTypeTest {
   @Test
   fun testReasonTypeEnumValues() {
     // Verify all expected reason types are present in the enum
-    val expectedValues = setOf(
-      ReasonType.TARGET,
-      ReasonType.RULE,
-      ReasonType.DEFAULT,
-      @Suppress("DEPRECATION")
-      ReasonType.CLIENT,
-      ReasonType.OFF_VARIATION,
-      ReasonType.PREREQUISITE,
-      ReasonType.ERROR_NO_EVALUATIONS,
-      ReasonType.ERROR_FLAG_NOT_FOUND,
-      ReasonType.ERROR_WRONG_TYPE,
-      ReasonType.ERROR_USER_ID_NOT_SPECIFIED,
-      ReasonType.ERROR_FEATURE_FLAG_ID_NOT_SPECIFIED,
-      ReasonType.ERROR_EXCEPTION,
-      ReasonType.ERROR_CACHE_NOT_FOUND,
-    )
+    val expectedValues =
+      setOf(
+        ReasonType.TARGET,
+        ReasonType.RULE,
+        ReasonType.DEFAULT,
+        @Suppress("DEPRECATION")
+        ReasonType.CLIENT,
+        ReasonType.OFF_VARIATION,
+        ReasonType.PREREQUISITE,
+        ReasonType.ERROR_NO_EVALUATIONS,
+        ReasonType.ERROR_FLAG_NOT_FOUND,
+        ReasonType.ERROR_WRONG_TYPE,
+        ReasonType.ERROR_USER_ID_NOT_SPECIFIED,
+        ReasonType.ERROR_FEATURE_FLAG_ID_NOT_SPECIFIED,
+        ReasonType.ERROR_EXCEPTION,
+        ReasonType.ERROR_CACHE_NOT_FOUND,
+      )
 
     val actualValues = ReasonType.values().toSet()
     assertEquals(expectedValues, actualValues)

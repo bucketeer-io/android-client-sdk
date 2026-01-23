@@ -675,28 +675,48 @@ class BKTClientImplTest {
     val userId = "user id 1"
     val unknownFeatureId = "unknownFeatureId"
     val intDefaultInstance: BKTEvaluationDetails<Int> =
-      BKTEvaluationDetails.newDefaultInstance(featureId = unknownFeatureId, userId = userId, 1, reason = BKTEvaluationDetails.Reason.ERROR_FLAG_NOT_FOUND)
+      BKTEvaluationDetails.newDefaultInstance(
+        featureId = unknownFeatureId,
+        userId = userId,
+        1,
+        reason = BKTEvaluationDetails.Reason.ERROR_FLAG_NOT_FOUND,
+      )
     Assert.assertEquals(
       intDefaultInstance,
       BKTClient.getInstance().intVariationDetails(unknownFeatureId, 1),
     )
 
     val doubleDefaultInstance: BKTEvaluationDetails<Double> =
-      BKTEvaluationDetails.newDefaultInstance(featureId = unknownFeatureId, userId = userId, 1.0, reason = BKTEvaluationDetails.Reason.ERROR_FLAG_NOT_FOUND)
+      BKTEvaluationDetails.newDefaultInstance(
+        featureId = unknownFeatureId,
+        userId = userId,
+        1.0,
+        reason = BKTEvaluationDetails.Reason.ERROR_FLAG_NOT_FOUND,
+      )
     Assert.assertEquals(
       doubleDefaultInstance,
       BKTClient.getInstance().doubleVariationDetails(unknownFeatureId, 1.0),
     )
 
     val booleanDefaultInstance: BKTEvaluationDetails<Boolean> =
-      BKTEvaluationDetails.newDefaultInstance(featureId = unknownFeatureId, userId = userId, true, reason = BKTEvaluationDetails.Reason.ERROR_FLAG_NOT_FOUND)
+      BKTEvaluationDetails.newDefaultInstance(
+        featureId = unknownFeatureId,
+        userId = userId,
+        true,
+        reason = BKTEvaluationDetails.Reason.ERROR_FLAG_NOT_FOUND,
+      )
     Assert.assertEquals(
       booleanDefaultInstance,
       BKTClient.getInstance().boolVariationDetails(unknownFeatureId, true),
     )
 
     val stringDefaultInstance: BKTEvaluationDetails<String> =
-      BKTEvaluationDetails.newDefaultInstance(featureId = unknownFeatureId, userId = userId, "1", reason = BKTEvaluationDetails.Reason.ERROR_FLAG_NOT_FOUND)
+      BKTEvaluationDetails.newDefaultInstance(
+        featureId = unknownFeatureId,
+        userId = userId,
+        "1",
+        reason = BKTEvaluationDetails.Reason.ERROR_FLAG_NOT_FOUND,
+      )
     Assert.assertEquals(
       stringDefaultInstance,
       BKTClient.getInstance().stringVariationDetails(unknownFeatureId, "1"),

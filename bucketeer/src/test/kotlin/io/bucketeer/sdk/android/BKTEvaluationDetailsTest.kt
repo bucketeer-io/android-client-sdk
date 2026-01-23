@@ -111,12 +111,13 @@ class BKTEvaluationDetailsTest {
       ),
     )
 
-    val object1 = BKTValue.Structure(
-      mapOf(
-        "key1" to BKTValue.String("value1"),
-        "key" to BKTValue.String("value"),
-      ),
-    )
+    val object1 =
+      BKTValue.Structure(
+        mapOf(
+          "key1" to BKTValue.String("value1"),
+          "key" to BKTValue.String("value"),
+        ),
+      )
     val object1DefaultInstance: BKTEvaluationDetails<BKTValue> =
       BKTEvaluationDetails.newDefaultInstance(
         featureId = featureId,
@@ -382,12 +383,13 @@ class BKTEvaluationDetailsTest {
         userId = "user2",
         variationId = "var2",
         variationName = "name2",
-        variationValue = BKTValue.List(
-          listOf(
-            BKTValue.String("value1"),
-            BKTValue.String("value2"),
+        variationValue =
+          BKTValue.List(
+            listOf(
+              BKTValue.String("value1"),
+              BKTValue.String("value2"),
+            ),
           ),
-        ),
         reason = BKTEvaluationDetails.Reason.RULE,
       )
 
@@ -398,12 +400,13 @@ class BKTEvaluationDetailsTest {
         userId = "user2",
         variationId = "var2",
         variationName = "name2",
-        variationValue = BKTValue.List(
-          listOf(
-            BKTValue.String("value1"),
-            BKTValue.String("value2"),
+        variationValue =
+          BKTValue.List(
+            listOf(
+              BKTValue.String("value1"),
+              BKTValue.String("value2"),
+            ),
           ),
-        ),
         reason = BKTEvaluationDetails.Reason.RULE,
       )
 
@@ -424,12 +427,13 @@ class BKTEvaluationDetailsTest {
         userId = "user2",
         variationId = "var2",
         variationName = "name2",
-        variationValue = BKTValue.Structure(
-          mapOf(
-            "key1" to BKTValue.String("value1"),
-            "key2" to BKTValue.String("value2"),
+        variationValue =
+          BKTValue.Structure(
+            mapOf(
+              "key1" to BKTValue.String("value1"),
+              "key2" to BKTValue.String("value2"),
+            ),
           ),
-        ),
         reason = BKTEvaluationDetails.Reason.RULE,
       )
 
@@ -440,25 +444,28 @@ class BKTEvaluationDetailsTest {
         userId = "user2",
         variationId = "var2",
         variationName = "name2",
-        variationValue = BKTValue.Structure(
-          mapOf(
-            "key1" to BKTValue.String("value1"),
-            "key2" to BKTValue.String("value2"),
+        variationValue =
+          BKTValue.Structure(
+            mapOf(
+              "key1" to BKTValue.String("value1"),
+              "key2" to BKTValue.String("value2"),
+            ),
           ),
-        ),
         reason = BKTEvaluationDetails.Reason.RULE,
       )
 
     assertEquals(detail1, detail2)
     assertNotEquals(
       detail1.copy(
-        variationValue = BKTValue.Structure(
-          mapOf(
-            "key3" to BKTValue.String(
-              "value3",
+        variationValue =
+          BKTValue.Structure(
+            mapOf(
+              "key3" to
+                BKTValue.String(
+                  "value3",
+                ),
             ),
           ),
-        ),
       ),
       detail2,
     )
