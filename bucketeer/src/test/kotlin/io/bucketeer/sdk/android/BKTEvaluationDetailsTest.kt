@@ -21,7 +21,7 @@ class BKTEvaluationDetailsTest {
         variationId = "",
         variationName = "",
         variationValue = 1,
-        reason = BKTEvaluationDetails.Reason.CLIENT,
+        reason = BKTEvaluationDetails.Reason.ERROR_EXCEPTION,
       ),
     )
 
@@ -36,7 +36,7 @@ class BKTEvaluationDetailsTest {
         variationId = "",
         variationName = "",
         variationValue = 1.0,
-        reason = BKTEvaluationDetails.Reason.CLIENT,
+        reason = BKTEvaluationDetails.Reason.ERROR_EXCEPTION,
       ),
     )
 
@@ -51,7 +51,7 @@ class BKTEvaluationDetailsTest {
         variationId = "",
         variationName = "",
         variationValue = true,
-        reason = BKTEvaluationDetails.Reason.CLIENT,
+        reason = BKTEvaluationDetails.Reason.ERROR_EXCEPTION,
       ),
     )
 
@@ -66,7 +66,7 @@ class BKTEvaluationDetailsTest {
         variationId = "",
         variationName = "",
         variationValue = "1",
-        reason = BKTEvaluationDetails.Reason.CLIENT,
+        reason = BKTEvaluationDetails.Reason.ERROR_EXCEPTION,
       ),
     )
 
@@ -82,7 +82,7 @@ class BKTEvaluationDetailsTest {
         variationId = "",
         variationName = "",
         variationValue = json1,
-        reason = BKTEvaluationDetails.Reason.CLIENT,
+        reason = BKTEvaluationDetails.Reason.ERROR_EXCEPTION,
       ),
     )
 
@@ -98,7 +98,7 @@ class BKTEvaluationDetailsTest {
         variationId = "",
         variationName = "",
         variationValue = object1,
-        reason = BKTEvaluationDetails.Reason.CLIENT,
+        reason = BKTEvaluationDetails.Reason.ERROR_EXCEPTION,
       ),
     )
   }
@@ -427,15 +427,27 @@ class BKTEvaluationDetailsTest {
 
   @Test
   fun testReasonFrom() {
-    // Test cases for each valid Reason
+    // Test cases for each valid Reason - successful evaluations
     assertEquals(BKTEvaluationDetails.Reason.TARGET, BKTEvaluationDetails.Reason.from("TARGET"))
     assertEquals(BKTEvaluationDetails.Reason.RULE, BKTEvaluationDetails.Reason.from("RULE"))
     assertEquals(BKTEvaluationDetails.Reason.DEFAULT, BKTEvaluationDetails.Reason.from("DEFAULT"))
-    assertEquals(BKTEvaluationDetails.Reason.CLIENT, BKTEvaluationDetails.Reason.from("CLIENT"))
     assertEquals(BKTEvaluationDetails.Reason.OFF_VARIATION, BKTEvaluationDetails.Reason.from("OFF_VARIATION"))
     assertEquals(BKTEvaluationDetails.Reason.PREREQUISITE, BKTEvaluationDetails.Reason.from("PREREQUISITE"))
 
-    // Test case for an invalid Reason which should return CLIENT as default
-    assertEquals(BKTEvaluationDetails.Reason.CLIENT, BKTEvaluationDetails.Reason.from("INVALID_REASON"))
+    // Test cases for error reason types
+    assertEquals(BKTEvaluationDetails.Reason.ERROR_NO_EVALUATIONS, BKTEvaluationDetails.Reason.from("ERROR_NO_EVALUATIONS"))
+    assertEquals(BKTEvaluationDetails.Reason.ERROR_FLAG_NOT_FOUND, BKTEvaluationDetails.Reason.from("ERROR_FLAG_NOT_FOUND"))
+    assertEquals(BKTEvaluationDetails.Reason.ERROR_WRONG_TYPE, BKTEvaluationDetails.Reason.from("ERROR_WRONG_TYPE"))
+    assertEquals(BKTEvaluationDetails.Reason.ERROR_USER_ID_NOT_SPECIFIED, BKTEvaluationDetails.Reason.from("ERROR_USER_ID_NOT_SPECIFIED"))
+    assertEquals(BKTEvaluationDetails.Reason.ERROR_FEATURE_FLAG_ID_NOT_SPECIFIED, BKTEvaluationDetails.Reason.from("ERROR_FEATURE_FLAG_ID_NOT_SPECIFIED"))
+    assertEquals(BKTEvaluationDetails.Reason.ERROR_EXCEPTION, BKTEvaluationDetails.Reason.from("ERROR_EXCEPTION"))
+    assertEquals(BKTEvaluationDetails.Reason.ERROR_CACHE_NOT_FOUND, BKTEvaluationDetails.Reason.from("ERROR_CACHE_NOT_FOUND"))
+
+    // Test deprecated CLIENT reason type
+    @Suppress("DEPRECATION")
+    assertEquals(BKTEvaluationDetails.Reason.CLIENT, BKTEvaluationDetails.Reason.from("CLIENT"))
+
+    // Test case for an invalid Reason which should return ERROR_EXCEPTION as default
+    assertEquals(BKTEvaluationDetails.Reason.ERROR_EXCEPTION, BKTEvaluationDetails.Reason.from("INVALID_REASON"))
   }
 }

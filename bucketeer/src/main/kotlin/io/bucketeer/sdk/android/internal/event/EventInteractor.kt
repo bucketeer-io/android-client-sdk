@@ -58,6 +58,7 @@ internal class EventInteractor(
     featureTag: String,
     user: User,
     featureId: String,
+    reason: io.bucketeer.sdk.android.internal.model.ReasonType,
   ) {
     eventSQLDao.addEvent(
       newDefaultEvaluationEvent(
@@ -66,6 +67,7 @@ internal class EventInteractor(
         featureTag = featureTag,
         user = user,
         featureId = featureId,
+        reason = reason,
         appVersion = appVersion,
         sourceId = sourceId,
         sdkVersion = sdkVersion,

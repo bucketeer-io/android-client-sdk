@@ -59,6 +59,7 @@ internal fun newDefaultEvaluationEvent(
   featureTag: String,
   user: User,
   featureId: String,
+  reason: ReasonType,
   appVersion: String,
   sourceId: SourceId,
   sdkVersion: String,
@@ -74,7 +75,7 @@ internal fun newDefaultEvaluationEvent(
         user = user,
         reason =
           Reason(
-            type = ReasonType.CLIENT,
+            type = reason,
           ),
         tag = featureTag,
         sourceId = sourceId,

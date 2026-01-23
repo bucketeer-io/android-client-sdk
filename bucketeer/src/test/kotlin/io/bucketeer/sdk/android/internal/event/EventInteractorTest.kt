@@ -44,6 +44,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import java.net.SocketTimeoutException
+import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
 @RunWith(RobolectricTestRunner::class)
@@ -150,7 +151,12 @@ class EventInteractorTest {
 
     interactor.setEventUpdateListener(listener)
 
-    interactor.trackDefaultEvaluationEvent("feature_tag_value", user1, "feature_id_value")
+    interactor.trackDefaultEvaluationEvent(
+      "feature_tag_value",
+      user1,
+      "feature_id_value",
+      ReasonType.ERROR_FLAG_NOT_FOUND,
+    )
 
     assertThat(listener.calls).hasSize(1)
     assertThat(listener.calls[0]).hasSize(1)
@@ -170,7 +176,7 @@ class EventInteractorTest {
             featureId = "feature_id_value",
             userId = user1.id,
             user = user1,
-            reason = Reason(ReasonType.CLIENT),
+            reason = Reason(ReasonType.ERROR_FLAG_NOT_FOUND),
             tag = "feature_tag_value",
             sourceId = config.sourceId,
             sdkVersion = config.sdkVersion,
@@ -1086,7 +1092,7 @@ private class TestDataModule(
   application: Application,
   config: BKTConfig,
   defaultRequestTimeoutMillis: Long,
-) : DataModule(application, user1, config, inMemoryDB = true) {
+) : DataModule(application, user1, config, inMemoryDB = true, executor = Executors.newSingleThreadScheduledExecutor()) {
   override val clock: Clock by lazy { FakeClock() }
 
   override val idGenerator: IdGenerator by lazy { FakeIdGenerator() }
@@ -1100,6 +1106,7 @@ private class TestDataModule(
       defaultRequestTimeoutMillis = defaultRequestTimeoutMillis,
       sourceId = config.sourceId,
       sdkVersion = config.sdkVersion,
+      retrier = retrier,
     )
   }
 }
