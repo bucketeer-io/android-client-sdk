@@ -159,7 +159,7 @@ class BKTClientEventTest {
         val event = it.event
         return@any type == EventType.EVALUATION &&
           event is EventData.EvaluationEvent &&
-          event.reason.type == ReasonType.CLIENT
+          event.reason.type == ReasonType.ERROR_FLAG_NOT_FOUND
       },
     ).isTrue()
 

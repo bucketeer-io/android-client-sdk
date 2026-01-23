@@ -589,6 +589,7 @@ class BKTClientImplTest {
         featureId = featureId,
         userId = user1.id,
         defaultValue = 1,
+        reason = BKTEvaluationDetails.Reason.ERROR_WRONG_TYPE,
       ),
     )
 
@@ -599,6 +600,7 @@ class BKTClientImplTest {
         featureId = featureId,
         userId = user1.id,
         defaultValue = false,
+        reason = BKTEvaluationDetails.Reason.ERROR_WRONG_TYPE,
       ),
     )
 
@@ -609,6 +611,7 @@ class BKTClientImplTest {
         featureId = featureId,
         userId = user1.id,
         defaultValue = 1.0,
+        reason = BKTEvaluationDetails.Reason.ERROR_WRONG_TYPE,
       ),
     )
 
@@ -672,28 +675,28 @@ class BKTClientImplTest {
     val userId = "user id 1"
     val unknownFeatureId = "unknownFeatureId"
     val intDefaultInstance: BKTEvaluationDetails<Int> =
-      BKTEvaluationDetails.newDefaultInstance(featureId = unknownFeatureId, userId = userId, 1)
+      BKTEvaluationDetails.newDefaultInstance(featureId = unknownFeatureId, userId = userId, 1, reason = BKTEvaluationDetails.Reason.ERROR_FLAG_NOT_FOUND)
     Assert.assertEquals(
       intDefaultInstance,
       BKTClient.getInstance().intVariationDetails(unknownFeatureId, 1),
     )
 
     val doubleDefaultInstance: BKTEvaluationDetails<Double> =
-      BKTEvaluationDetails.newDefaultInstance(featureId = unknownFeatureId, userId = userId, 1.0)
+      BKTEvaluationDetails.newDefaultInstance(featureId = unknownFeatureId, userId = userId, 1.0, reason = BKTEvaluationDetails.Reason.ERROR_FLAG_NOT_FOUND)
     Assert.assertEquals(
       doubleDefaultInstance,
       BKTClient.getInstance().doubleVariationDetails(unknownFeatureId, 1.0),
     )
 
     val booleanDefaultInstance: BKTEvaluationDetails<Boolean> =
-      BKTEvaluationDetails.newDefaultInstance(featureId = unknownFeatureId, userId = userId, true)
+      BKTEvaluationDetails.newDefaultInstance(featureId = unknownFeatureId, userId = userId, true, reason = BKTEvaluationDetails.Reason.ERROR_FLAG_NOT_FOUND)
     Assert.assertEquals(
       booleanDefaultInstance,
       BKTClient.getInstance().boolVariationDetails(unknownFeatureId, true),
     )
 
     val stringDefaultInstance: BKTEvaluationDetails<String> =
-      BKTEvaluationDetails.newDefaultInstance(featureId = unknownFeatureId, userId = userId, "1")
+      BKTEvaluationDetails.newDefaultInstance(featureId = unknownFeatureId, userId = userId, "1", reason = BKTEvaluationDetails.Reason.ERROR_FLAG_NOT_FOUND)
     Assert.assertEquals(
       stringDefaultInstance,
       BKTClient.getInstance().stringVariationDetails(unknownFeatureId, "1"),
@@ -711,6 +714,7 @@ class BKTClientImplTest {
         featureId = unknownFeatureId,
         userId = userId,
         object1,
+        reason = BKTEvaluationDetails.Reason.ERROR_FLAG_NOT_FOUND,
       )
     Assert.assertEquals(
       objectDefaultInstance,
@@ -790,6 +794,7 @@ class BKTClientImplTest {
         featureId = featureId,
         userId = user1.id,
         defaultValue = true,
+        reason = BKTEvaluationDetails.Reason.ERROR_WRONG_TYPE,
       ),
     )
 
@@ -906,6 +911,7 @@ class BKTClientImplTest {
         featureId = featureId,
         userId = user1.id,
         defaultValue = false,
+        reason = BKTEvaluationDetails.Reason.ERROR_WRONG_TYPE,
       ),
     )
 
@@ -1005,6 +1011,7 @@ class BKTClientImplTest {
         featureId = featureId,
         userId = user1.id,
         defaultValue = 3,
+        reason = BKTEvaluationDetails.Reason.ERROR_WRONG_TYPE,
       ),
     )
 
@@ -1029,6 +1036,7 @@ class BKTClientImplTest {
         featureId = featureId,
         userId = user1.id,
         defaultValue = 2.0,
+        reason = BKTEvaluationDetails.Reason.ERROR_WRONG_TYPE,
       ),
     )
 
@@ -1157,6 +1165,7 @@ class BKTClientImplTest {
         featureId = featureId,
         userId = user1.id,
         defaultValue = 10,
+        reason = BKTEvaluationDetails.Reason.ERROR_WRONG_TYPE,
       ),
     )
 
@@ -1167,6 +1176,7 @@ class BKTClientImplTest {
         featureId = featureId,
         userId = user1.id,
         defaultValue = false,
+        reason = BKTEvaluationDetails.Reason.ERROR_WRONG_TYPE,
       ),
     )
 
@@ -1177,6 +1187,7 @@ class BKTClientImplTest {
         featureId = featureId,
         userId = user1.id,
         defaultValue = 5.5,
+        reason = BKTEvaluationDetails.Reason.ERROR_WRONG_TYPE,
       ),
     )
 
@@ -1230,6 +1241,7 @@ class BKTClientImplTest {
         featureId = unknownFeature,
         userId = user1.id,
         defaultValue = "33",
+        reason = BKTEvaluationDetails.Reason.ERROR_FLAG_NOT_FOUND,
       ),
     )
 
@@ -1240,6 +1252,7 @@ class BKTClientImplTest {
         featureId = unknownFeature,
         userId = user1.id,
         defaultValue = 9,
+        reason = BKTEvaluationDetails.Reason.ERROR_FLAG_NOT_FOUND,
       ),
     )
 
@@ -1250,6 +1263,7 @@ class BKTClientImplTest {
         featureId = unknownFeature,
         userId = user1.id,
         defaultValue = 10.2,
+        reason = BKTEvaluationDetails.Reason.ERROR_FLAG_NOT_FOUND,
       ),
     )
 
@@ -1260,6 +1274,7 @@ class BKTClientImplTest {
         featureId = unknownFeature,
         userId = user1.id,
         defaultValue = true,
+        reason = BKTEvaluationDetails.Reason.ERROR_FLAG_NOT_FOUND,
       ),
     )
 
@@ -1273,6 +1288,7 @@ class BKTClientImplTest {
         featureId = unknownFeature,
         userId = user1.id,
         defaultValue = BKTValue.Structure(mapOf("key" to BKTValue.String("value-1"))),
+        reason = BKTEvaluationDetails.Reason.ERROR_FLAG_NOT_FOUND,
       ),
     )
   }

@@ -11,7 +11,12 @@ class BKTEvaluationDetailsTest {
     val userId = "1"
     val featureId = "1001"
     val intDefaultInstance: BKTEvaluationDetails<Int> =
-      BKTEvaluationDetails.newDefaultInstance(featureId = featureId, userId = userId, 1)
+      BKTEvaluationDetails.newDefaultInstance(
+        featureId = featureId,
+        userId = userId,
+        1,
+        reason = BKTEvaluationDetails.Reason.ERROR_FLAG_NOT_FOUND,
+      )
     assertEquals(
       intDefaultInstance,
       BKTEvaluationDetails(
@@ -21,12 +26,17 @@ class BKTEvaluationDetailsTest {
         variationId = "",
         variationName = "",
         variationValue = 1,
-        reason = BKTEvaluationDetails.Reason.ERROR_EXCEPTION,
+        reason = BKTEvaluationDetails.Reason.ERROR_FLAG_NOT_FOUND,
       ),
     )
 
     val doubleDefaultInstance: BKTEvaluationDetails<Double> =
-      BKTEvaluationDetails.newDefaultInstance(featureId = featureId, userId = userId, 1.0)
+      BKTEvaluationDetails.newDefaultInstance(
+        featureId = featureId,
+        userId = userId,
+        1.0,
+        reason = BKTEvaluationDetails.Reason.ERROR_EXCEPTION,
+      )
     assertEquals(
       doubleDefaultInstance,
       BKTEvaluationDetails(
@@ -41,7 +51,12 @@ class BKTEvaluationDetailsTest {
     )
 
     val booleanDefaultInstance: BKTEvaluationDetails<Boolean> =
-      BKTEvaluationDetails.newDefaultInstance(featureId = featureId, userId = userId, true)
+      BKTEvaluationDetails.newDefaultInstance(
+        featureId = featureId,
+        userId = userId,
+        true,
+        reason = BKTEvaluationDetails.Reason.ERROR_EXCEPTION,
+      )
     assertEquals(
       booleanDefaultInstance,
       BKTEvaluationDetails(
@@ -56,7 +71,12 @@ class BKTEvaluationDetailsTest {
     )
 
     val stringDefaultInstance: BKTEvaluationDetails<String> =
-      BKTEvaluationDetails.newDefaultInstance(featureId = featureId, userId = userId, "1")
+      BKTEvaluationDetails.newDefaultInstance(
+        featureId = featureId,
+        userId = userId,
+        "1",
+        reason = BKTEvaluationDetails.Reason.ERROR_EXCEPTION,
+      )
     assertEquals(
       stringDefaultInstance,
       BKTEvaluationDetails(
@@ -72,7 +92,12 @@ class BKTEvaluationDetailsTest {
 
     val json1 = JSONObject("{\"key1\": \"value1\", \"key\": \"value\"}")
     val jsonDefaultInstance: BKTEvaluationDetails<JSONObject> =
-      BKTEvaluationDetails.newDefaultInstance(featureId = featureId, userId = userId, json1)
+      BKTEvaluationDetails.newDefaultInstance(
+        featureId = featureId,
+        userId = userId,
+        json1,
+        reason = BKTEvaluationDetails.Reason.ERROR_FLAG_NOT_FOUND,
+      )
     assertEquals(
       jsonDefaultInstance,
       BKTEvaluationDetails(
@@ -82,13 +107,23 @@ class BKTEvaluationDetailsTest {
         variationId = "",
         variationName = "",
         variationValue = json1,
-        reason = BKTEvaluationDetails.Reason.ERROR_EXCEPTION,
+        reason = BKTEvaluationDetails.Reason.ERROR_FLAG_NOT_FOUND,
       ),
     )
 
-    val object1 = BKTValue.Structure(mapOf("key1" to BKTValue.String("value1"), "key" to BKTValue.String("value")))
+    val object1 = BKTValue.Structure(
+      mapOf(
+        "key1" to BKTValue.String("value1"),
+        "key" to BKTValue.String("value"),
+      ),
+    )
     val object1DefaultInstance: BKTEvaluationDetails<BKTValue> =
-      BKTEvaluationDetails.newDefaultInstance(featureId = featureId, userId = userId, object1)
+      BKTEvaluationDetails.newDefaultInstance(
+        featureId = featureId,
+        userId = userId,
+        object1,
+        reason = BKTEvaluationDetails.Reason.ERROR_EXCEPTION,
+      )
     assertEquals(
       object1DefaultInstance,
       BKTEvaluationDetails(
@@ -347,7 +382,12 @@ class BKTEvaluationDetailsTest {
         userId = "user2",
         variationId = "var2",
         variationName = "name2",
-        variationValue = BKTValue.List(listOf(BKTValue.String("value1"), BKTValue.String("value2"))),
+        variationValue = BKTValue.List(
+          listOf(
+            BKTValue.String("value1"),
+            BKTValue.String("value2"),
+          ),
+        ),
         reason = BKTEvaluationDetails.Reason.RULE,
       )
 
@@ -358,12 +398,20 @@ class BKTEvaluationDetailsTest {
         userId = "user2",
         variationId = "var2",
         variationName = "name2",
-        variationValue = BKTValue.List(listOf(BKTValue.String("value1"), BKTValue.String("value2"))),
+        variationValue = BKTValue.List(
+          listOf(
+            BKTValue.String("value1"),
+            BKTValue.String("value2"),
+          ),
+        ),
         reason = BKTEvaluationDetails.Reason.RULE,
       )
 
     assertEquals(detail1, detail2)
-    assertNotEquals(detail1.copy(variationValue = BKTValue.List(listOf(BKTValue.String("value3")))), detail2)
+    assertNotEquals(
+      detail1.copy(variationValue = BKTValue.List(listOf(BKTValue.String("value3")))),
+      detail2,
+    )
     assertNotEquals(detail1.copy(featureId = "2", featureVersion = 2), detail2)
   }
 
@@ -376,7 +424,12 @@ class BKTEvaluationDetailsTest {
         userId = "user2",
         variationId = "var2",
         variationName = "name2",
-        variationValue = BKTValue.Structure(mapOf("key1" to BKTValue.String("value1"), "key2" to BKTValue.String("value2"))),
+        variationValue = BKTValue.Structure(
+          mapOf(
+            "key1" to BKTValue.String("value1"),
+            "key2" to BKTValue.String("value2"),
+          ),
+        ),
         reason = BKTEvaluationDetails.Reason.RULE,
       )
 
@@ -387,12 +440,28 @@ class BKTEvaluationDetailsTest {
         userId = "user2",
         variationId = "var2",
         variationName = "name2",
-        variationValue = BKTValue.Structure(mapOf("key1" to BKTValue.String("value1"), "key2" to BKTValue.String("value2"))),
+        variationValue = BKTValue.Structure(
+          mapOf(
+            "key1" to BKTValue.String("value1"),
+            "key2" to BKTValue.String("value2"),
+          ),
+        ),
         reason = BKTEvaluationDetails.Reason.RULE,
       )
 
     assertEquals(detail1, detail2)
-    assertNotEquals(detail1.copy(variationValue = BKTValue.Structure(mapOf("key3" to BKTValue.String("value3")))), detail2)
+    assertNotEquals(
+      detail1.copy(
+        variationValue = BKTValue.Structure(
+          mapOf(
+            "key3" to BKTValue.String(
+              "value3",
+            ),
+          ),
+        ),
+      ),
+      detail2,
+    )
     assertNotEquals(detail1.copy(featureId = "2", featureVersion = 2), detail2)
   }
 
@@ -431,23 +500,53 @@ class BKTEvaluationDetailsTest {
     assertEquals(BKTEvaluationDetails.Reason.TARGET, BKTEvaluationDetails.Reason.from("TARGET"))
     assertEquals(BKTEvaluationDetails.Reason.RULE, BKTEvaluationDetails.Reason.from("RULE"))
     assertEquals(BKTEvaluationDetails.Reason.DEFAULT, BKTEvaluationDetails.Reason.from("DEFAULT"))
-    assertEquals(BKTEvaluationDetails.Reason.OFF_VARIATION, BKTEvaluationDetails.Reason.from("OFF_VARIATION"))
-    assertEquals(BKTEvaluationDetails.Reason.PREREQUISITE, BKTEvaluationDetails.Reason.from("PREREQUISITE"))
+    assertEquals(
+      BKTEvaluationDetails.Reason.OFF_VARIATION,
+      BKTEvaluationDetails.Reason.from("OFF_VARIATION"),
+    )
+    assertEquals(
+      BKTEvaluationDetails.Reason.PREREQUISITE,
+      BKTEvaluationDetails.Reason.from("PREREQUISITE"),
+    )
 
     // Test cases for error reason types
-    assertEquals(BKTEvaluationDetails.Reason.ERROR_NO_EVALUATIONS, BKTEvaluationDetails.Reason.from("ERROR_NO_EVALUATIONS"))
-    assertEquals(BKTEvaluationDetails.Reason.ERROR_FLAG_NOT_FOUND, BKTEvaluationDetails.Reason.from("ERROR_FLAG_NOT_FOUND"))
-    assertEquals(BKTEvaluationDetails.Reason.ERROR_WRONG_TYPE, BKTEvaluationDetails.Reason.from("ERROR_WRONG_TYPE"))
-    assertEquals(BKTEvaluationDetails.Reason.ERROR_USER_ID_NOT_SPECIFIED, BKTEvaluationDetails.Reason.from("ERROR_USER_ID_NOT_SPECIFIED"))
-    assertEquals(BKTEvaluationDetails.Reason.ERROR_FEATURE_FLAG_ID_NOT_SPECIFIED, BKTEvaluationDetails.Reason.from("ERROR_FEATURE_FLAG_ID_NOT_SPECIFIED"))
-    assertEquals(BKTEvaluationDetails.Reason.ERROR_EXCEPTION, BKTEvaluationDetails.Reason.from("ERROR_EXCEPTION"))
-    assertEquals(BKTEvaluationDetails.Reason.ERROR_CACHE_NOT_FOUND, BKTEvaluationDetails.Reason.from("ERROR_CACHE_NOT_FOUND"))
+    assertEquals(
+      BKTEvaluationDetails.Reason.ERROR_NO_EVALUATIONS,
+      BKTEvaluationDetails.Reason.from("ERROR_NO_EVALUATIONS"),
+    )
+    assertEquals(
+      BKTEvaluationDetails.Reason.ERROR_FLAG_NOT_FOUND,
+      BKTEvaluationDetails.Reason.from("ERROR_FLAG_NOT_FOUND"),
+    )
+    assertEquals(
+      BKTEvaluationDetails.Reason.ERROR_WRONG_TYPE,
+      BKTEvaluationDetails.Reason.from("ERROR_WRONG_TYPE"),
+    )
+    assertEquals(
+      BKTEvaluationDetails.Reason.ERROR_USER_ID_NOT_SPECIFIED,
+      BKTEvaluationDetails.Reason.from("ERROR_USER_ID_NOT_SPECIFIED"),
+    )
+    assertEquals(
+      BKTEvaluationDetails.Reason.ERROR_FEATURE_FLAG_ID_NOT_SPECIFIED,
+      BKTEvaluationDetails.Reason.from("ERROR_FEATURE_FLAG_ID_NOT_SPECIFIED"),
+    )
+    assertEquals(
+      BKTEvaluationDetails.Reason.ERROR_EXCEPTION,
+      BKTEvaluationDetails.Reason.from("ERROR_EXCEPTION"),
+    )
+    assertEquals(
+      BKTEvaluationDetails.Reason.ERROR_CACHE_NOT_FOUND,
+      BKTEvaluationDetails.Reason.from("ERROR_CACHE_NOT_FOUND"),
+    )
 
     // Test deprecated CLIENT reason type
     @Suppress("DEPRECATION")
     assertEquals(BKTEvaluationDetails.Reason.CLIENT, BKTEvaluationDetails.Reason.from("CLIENT"))
 
     // Test case for an invalid Reason which should return ERROR_EXCEPTION as default
-    assertEquals(BKTEvaluationDetails.Reason.ERROR_EXCEPTION, BKTEvaluationDetails.Reason.from("INVALID_REASON"))
+    assertEquals(
+      BKTEvaluationDetails.Reason.ERROR_EXCEPTION,
+      BKTEvaluationDetails.Reason.from("INVALID_REASON"),
+    )
   }
 }

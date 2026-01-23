@@ -38,7 +38,7 @@ data class BKTEvaluationDetails<T>(
     TARGET,
     RULE,
     DEFAULT,
-    
+
     @Deprecated("CLIENT is deprecated. Use error-prefixed reason types instead.")
     CLIENT,
     OFF_VARIATION,
@@ -97,7 +97,7 @@ data class BKTEvaluationDetails<T>(
       featureId: String,
       userId: String,
       defaultValue: T,
-      reason: Reason = Reason.ERROR_EXCEPTION,
+      reason: Reason,
     ): BKTEvaluationDetails<T> =
       BKTEvaluationDetails(
         featureId = featureId,
