@@ -55,10 +55,10 @@ internal class EvaluationStorageImpl(
     // 4. [T2] `fetchEvaluations` succeeded. `clearUserAttributesUpdated` is called. `userAttributesUpdated` = false.
     // </pre>
     //
-    // In step 4, the `userAttributesUpdated` is cleared, but the update in step 3 is not sent to the server.
-    // To avoid this race condition, we use a versioning system `userAttributesId` to track the update.
-    // The `userAttributesId` is generated when `setUserAttributesUpdated` is called.
-    // When `fetchEvaluations` succeeded, we only clear the `userAttributesUpdated` if the `userAttributesId` matches.
+    // In step 4, the `userAttributesUpdated` flag is cleared, but the update in step 3 is not sent to the server.
+    // To avoid this race condition, we use a version number (`userAttributesVersion`) to track updates.
+    // The `userAttributesVersion` is incremented whenever `setUserAttributesUpdated` is called.
+    // When `fetchEvaluations` succeeds, we only clear `userAttributesUpdated` if the `userAttributesVersion` matches the one in the request state.
     userAttributesVersion++
     evaluationSharedPrefs.userAttributesUpdated = true
   }
