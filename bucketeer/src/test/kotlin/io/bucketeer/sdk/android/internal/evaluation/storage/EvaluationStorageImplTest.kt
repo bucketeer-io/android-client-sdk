@@ -77,10 +77,19 @@ class EvaluationStorageImplTest {
     assert(evaluationStorage.getCurrentEvaluationId() == "")
   }
 
+  @Test
   fun testClearUserAttributesUpdated() {
-    evaluationSharedPrefs.userAttributesUpdated = true
+    evaluationStorage.setUserAttributesUpdated()
     assert(evaluationStorage.getUserAttributesUpdated())
-    evaluationStorage.clearUserAttributesUpdated()
+    val id = evaluationStorage.getUserAttributesId()
+    assert(id.isNotEmpty())
+    
+    // Should not clear if id does not match
+    evaluationStorage.clearUserAttributesUpdated("unmatched-id")
+    assert(evaluationStorage.getUserAttributesUpdated())
+    
+    // Should clear if id matches
+    evaluationStorage.clearUserAttributesUpdated(id)
     assert(!evaluationStorage.getUserAttributesUpdated())
   }
 

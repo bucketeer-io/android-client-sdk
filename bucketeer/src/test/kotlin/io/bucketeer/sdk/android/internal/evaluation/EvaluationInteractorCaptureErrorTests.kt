@@ -176,11 +176,13 @@ private class MockEvaluationStorage(
 
   override fun setUserAttributesUpdated() {}
 
-  override fun clearUserAttributesUpdated() {
+  override fun clearUserAttributesUpdated(conditionId: String) {
     if (clearUserAttributesUpdatedError != null) {
       throw clearUserAttributesUpdatedError
     }
   }
+
+  override fun getUserAttributesId(): String = ""
 
   override fun getUserAttributesUpdated(): Boolean {
     if (getUserAttributesUpdatedError != null) {

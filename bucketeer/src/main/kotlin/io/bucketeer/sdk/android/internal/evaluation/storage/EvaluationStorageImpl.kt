@@ -25,14 +25,40 @@ internal class EvaluationStorageImpl(
 
   override fun getEvaluatedAt(): String = evaluationSharedPrefs.evaluatedAt
 
+  // https://github.com/bucketeer-io/android-client-sdk/issues/69
+  // userAttributesUpdated: when the user attributes change via the customAttributes interface,
+  // the userAttributesUpdated field must be set to true in the next request.
   override fun getUserAttributesUpdated(): Boolean = evaluationSharedPrefs.userAttributesUpdated
 
+  @Volatile
+  private var userAttributesId: String = ""
+
+  override fun getUserAttributesId(): String = userAttributesId
+
   override fun setUserAttributesUpdated() {
+    // https://github.com/bucketeer-io/ios-client-sdk/pull/116
+    // We used to simple boolean flag `userAttributesUpdated` to track if the user attributes are updated.
+    // However, there is a race condition when the user attributes are updated while the SDK is fetching the evaluations.
+    //
+    // <pre>
+    // 1. [T1] `setUserAttributesUpdated` is called. `userAttributesUpdated` = true.
+    // 2. [T2] `fetchEvaluations` is called. The request contains `userAttributesUpdated` = true.
+    // 3. [T1] `setUserAttributesUpdated` is called again. `userAttributesUpdated` = true.
+    // 4. [T2] `fetchEvaluations` succeeded. `clearUserAttributesUpdated` is called. `userAttributesUpdated` = false.
+    // </pre>
+    //
+    // In step 4, the `userAttributesUpdated` is cleared, but the update in step 3 is not sent to the server.
+    // To avoid this race condition, we use a versioning system `userAttributesId` to track the update.
+    // The `userAttributesId` is generated when `setUserAttributesUpdated` is called.
+    // When `fetchEvaluations` succeeded, we only clear the `userAttributesUpdated` if the `userAttributesId` matches.
+    userAttributesId = java.util.UUID.randomUUID().toString()
     evaluationSharedPrefs.userAttributesUpdated = true
   }
 
-  override fun clearUserAttributesUpdated() {
-    evaluationSharedPrefs.userAttributesUpdated = false
+  override fun clearUserAttributesUpdated(conditionId: String) {
+    if (userAttributesId == conditionId) {
+       evaluationSharedPrefs.userAttributesUpdated = false
+    }
   }
 
   override fun getBy(featureId: String): Evaluation? =

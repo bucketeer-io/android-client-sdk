@@ -14,7 +14,7 @@ internal interface MemCache<in Key : Any, Value : Any> {
 }
 
 private class MemCacheImpl<in Key : Any, Value : Any> : MemCache<Key, Value> {
-  private val map = mutableMapOf<Key, Value>()
+  private val map = java.util.concurrent.ConcurrentHashMap<Key, Value>()
 
   override fun set(
     key: Key,

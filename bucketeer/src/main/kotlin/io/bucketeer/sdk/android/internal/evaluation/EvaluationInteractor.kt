@@ -61,6 +61,7 @@ internal class EvaluationInteractor(
     val currentEvaluationsId = evaluationStorage.getCurrentEvaluationId()
     val evaluatedAt = evaluationStorage.getEvaluatedAt()
     val userAttributesUpdated = evaluationStorage.getUserAttributesUpdated()
+    val userAttributesId = evaluationStorage.getUserAttributesId()
 
     val condition =
       UserEvaluationCondition(
@@ -78,7 +79,7 @@ internal class EvaluationInteractor(
         if (currentEvaluationsId == newEvaluationsId) {
           logd { "Nothing to sync" }
           // make sure we set `userAttributesUpdated` back to `false` even in case nothing to sync
-          evaluationStorage.clearUserAttributesUpdated()
+          evaluationStorage.clearUserAttributesUpdated(userAttributesId)
           return result
         }
 
@@ -112,7 +113,7 @@ internal class EvaluationInteractor(
             )
         }
 
-        evaluationStorage.clearUserAttributesUpdated()
+        evaluationStorage.clearUserAttributesUpdated(userAttributesId)
         // Update listeners should be called on the main thread
         // to avoid unintentional lock on Interactor's execution thread.
         if (shouldNotifyListener) {
