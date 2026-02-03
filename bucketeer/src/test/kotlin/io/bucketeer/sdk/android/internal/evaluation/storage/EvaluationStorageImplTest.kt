@@ -81,15 +81,15 @@ class EvaluationStorageImplTest {
   fun testClearUserAttributesUpdated() {
     evaluationStorage.setUserAttributesUpdated()
     assert(evaluationStorage.getUserAttributesUpdated())
-    val id = evaluationStorage.getUserAttributesId()
-    assert(id.isNotEmpty())
+    val state = evaluationStorage.getUserAttributesState()
+    assert(state.userAttributesUpdated)
     
-    // Should not clear if id does not match
-    evaluationStorage.clearUserAttributesUpdated("unmatched-id")
+    // Should not clear if version does not match
+    evaluationStorage.clearUserAttributesUpdated(state.copy(version = state.version + 1))
     assert(evaluationStorage.getUserAttributesUpdated())
     
-    // Should clear if id matches
-    evaluationStorage.clearUserAttributesUpdated(id)
+    // Should clear if version matches
+    evaluationStorage.clearUserAttributesUpdated(state)
     assert(!evaluationStorage.getUserAttributesUpdated())
   }
 

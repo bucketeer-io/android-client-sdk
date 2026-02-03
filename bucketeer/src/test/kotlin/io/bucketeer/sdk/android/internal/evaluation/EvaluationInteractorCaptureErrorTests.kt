@@ -176,13 +176,17 @@ private class MockEvaluationStorage(
 
   override fun setUserAttributesUpdated() {}
 
-  override fun clearUserAttributesUpdated(conditionId: String) {
+  override fun clearUserAttributesUpdated(state: io.bucketeer.sdk.android.internal.evaluation.storage.UserAttributesState) {
     if (clearUserAttributesUpdatedError != null) {
       throw clearUserAttributesUpdatedError
     }
   }
 
-  override fun getUserAttributesId(): String = ""
+  override fun getUserAttributesState(): io.bucketeer.sdk.android.internal.evaluation.storage.UserAttributesState =
+    io.bucketeer.sdk.android.internal.evaluation.storage.UserAttributesState(
+      userAttributesUpdated = false,
+      version = 0,
+    )
 
   override fun getUserAttributesUpdated(): Boolean {
     if (getUserAttributesUpdatedError != null) {

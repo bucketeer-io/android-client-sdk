@@ -30,11 +30,20 @@ internal class EvaluationStorageImpl(
   // the userAttributesUpdated field must be set to true in the next request.
   override fun getUserAttributesUpdated(): Boolean = evaluationSharedPrefs.userAttributesUpdated
 
-  @Volatile
-  private var userAttributesId: String = ""
+  // We use `@Synchronized` for user attribute state management because it's accessed from multiple threads:
+  // 1. Main thread: `setUserAttributesUpdated` is called when user updates attributes.
+  // 2. SDK executor thread: `getUserAttributesState` and `clearUserAttributesUpdated` are called during evaluation fetching.
+  private var userAttributesVersion: Int = 0
 
-  override fun getUserAttributesId(): String = userAttributesId
+  @Synchronized
+  override fun getUserAttributesState(): UserAttributesState {
+    return UserAttributesState(
+      userAttributesUpdated = evaluationSharedPrefs.userAttributesUpdated,
+      version = userAttributesVersion,
+    )
+  }
 
+  @Synchronized
   override fun setUserAttributesUpdated() {
     // https://github.com/bucketeer-io/ios-client-sdk/pull/116
     // We used to simple boolean flag `userAttributesUpdated` to track if the user attributes are updated.
@@ -51,12 +60,13 @@ internal class EvaluationStorageImpl(
     // To avoid this race condition, we use a versioning system `userAttributesId` to track the update.
     // The `userAttributesId` is generated when `setUserAttributesUpdated` is called.
     // When `fetchEvaluations` succeeded, we only clear the `userAttributesUpdated` if the `userAttributesId` matches.
-    userAttributesId = java.util.UUID.randomUUID().toString()
+    userAttributesVersion++
     evaluationSharedPrefs.userAttributesUpdated = true
   }
 
-  override fun clearUserAttributesUpdated(conditionId: String) {
-    if (userAttributesId == conditionId) {
+  @Synchronized
+  override fun clearUserAttributesUpdated(state: UserAttributesState) {
+    if (userAttributesVersion == state.version) {
        evaluationSharedPrefs.userAttributesUpdated = false
     }
   }
