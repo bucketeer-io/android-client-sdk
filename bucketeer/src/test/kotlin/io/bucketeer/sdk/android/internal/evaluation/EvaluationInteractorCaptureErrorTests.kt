@@ -5,6 +5,7 @@ import android.os.Looper
 import io.bucketeer.sdk.android.BKTException
 import io.bucketeer.sdk.android.internal.IdGeneratorImpl
 import io.bucketeer.sdk.android.internal.evaluation.storage.EvaluationStorage
+import io.bucketeer.sdk.android.internal.evaluation.storage.UserAttributesState
 import io.bucketeer.sdk.android.internal.model.Evaluation
 import io.bucketeer.sdk.android.internal.model.Event
 import io.bucketeer.sdk.android.internal.model.User
@@ -176,14 +177,14 @@ private class MockEvaluationStorage(
 
   override fun setUserAttributesUpdated() {}
 
-  override fun clearUserAttributesUpdated(state: io.bucketeer.sdk.android.internal.evaluation.storage.UserAttributesState) {
+  override fun clearUserAttributesUpdated(state: UserAttributesState) {
     if (clearUserAttributesUpdatedError != null) {
       throw clearUserAttributesUpdatedError
     }
   }
 
-  override fun getUserAttributesState(): io.bucketeer.sdk.android.internal.evaluation.storage.UserAttributesState =
-    io.bucketeer.sdk.android.internal.evaluation.storage.UserAttributesState(
+  override fun getUserAttributesState(): UserAttributesState =
+    UserAttributesState(
       userAttributesUpdated = false,
       version = 0,
     )
