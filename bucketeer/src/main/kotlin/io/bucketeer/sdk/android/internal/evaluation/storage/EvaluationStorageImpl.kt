@@ -36,12 +36,11 @@ internal class EvaluationStorageImpl(
   private var userAttributesVersion: Int = 0
 
   @Synchronized
-  override fun getUserAttributesState(): UserAttributesState {
-    return UserAttributesState(
+  override fun getUserAttributesState(): UserAttributesState =
+    UserAttributesState(
       userAttributesUpdated = evaluationSharedPrefs.userAttributesUpdated,
       version = userAttributesVersion,
     )
-  }
 
   @Synchronized
   override fun setUserAttributesUpdated() {
@@ -67,7 +66,7 @@ internal class EvaluationStorageImpl(
   @Synchronized
   override fun clearUserAttributesUpdated(state: UserAttributesState) {
     if (userAttributesVersion == state.version) {
-       evaluationSharedPrefs.userAttributesUpdated = false
+      evaluationSharedPrefs.userAttributesUpdated = false
     }
   }
 

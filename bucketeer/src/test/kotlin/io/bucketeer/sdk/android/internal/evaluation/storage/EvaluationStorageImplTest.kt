@@ -83,11 +83,11 @@ class EvaluationStorageImplTest {
     assert(evaluationStorage.getUserAttributesUpdated())
     val state = evaluationStorage.getUserAttributesState()
     assert(state.userAttributesUpdated)
-    
+
     // Should not clear if version does not match
     evaluationStorage.clearUserAttributesUpdated(state.copy(version = state.version + 1))
     assert(evaluationStorage.getUserAttributesUpdated())
-    
+
     // Should clear if version matches
     evaluationStorage.clearUserAttributesUpdated(state)
     assert(!evaluationStorage.getUserAttributesUpdated())

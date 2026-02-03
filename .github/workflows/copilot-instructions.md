@@ -159,4 +159,3 @@ internal fun loge(message: () -> String, throwable: Throwable? = null)
 ### CI/CD
 - `.github/workflows/build.yml` - Main build pipeline
 - `.github/workflows/e2e.yml` - End-to-end testing</content>
-<parameter name="filePath">/Users/ryan/dev/Projects/bucketeer-io/android-client-sdk/.github/copilot-instructions.md
