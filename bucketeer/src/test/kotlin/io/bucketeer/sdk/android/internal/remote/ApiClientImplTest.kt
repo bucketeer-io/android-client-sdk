@@ -24,6 +24,8 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.util.concurrent.Executors
+import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
 
 @RunWith(TestParameterInjector::class)
@@ -32,6 +34,8 @@ internal class ApiClientImplTest {
   private lateinit var client: ApiClientImpl
   private lateinit var apiEndpoint: String
   private lateinit var moshi: Moshi
+  private lateinit var executor: ScheduledExecutorService
+  private lateinit var retrier: Retrier
 
   @Suppress("unused")
   enum class SuccessWithAcceptableCodeTestCase(
@@ -104,11 +108,14 @@ internal class ApiClientImplTest {
     server = MockWebServer()
     apiEndpoint = server.url("").toString()
     moshi = DataModule.createMoshi()
+    executor = Executors.newSingleThreadScheduledExecutor()
+    retrier = Retrier(executor)
   }
 
   @After
   fun tearDown() {
     server.shutdown()
+    executor.shutdown()
   }
 
   @Test
@@ -134,6 +141,7 @@ internal class ApiClientImplTest {
         moshi = moshi,
         sourceId = SourceId.ANDROID,
         sdkVersion = BuildConfig.SDK_VERSION,
+        retrier = retrier,
       )
 
     val result =
@@ -203,6 +211,7 @@ internal class ApiClientImplTest {
         moshi = moshi,
         sourceId = SourceId.FLUTTER,
         sdkVersion = "10.2.3",
+        retrier = retrier,
       )
 
     val result =
@@ -259,6 +268,7 @@ internal class ApiClientImplTest {
         moshi = moshi,
         sourceId = SourceId.ANDROID,
         sdkVersion = BuildConfig.SDK_VERSION,
+        retrier = retrier,
       )
 
     val (millis, result) =
@@ -295,6 +305,7 @@ internal class ApiClientImplTest {
         moshi = moshi,
         sourceId = SourceId.ANDROID,
         sdkVersion = BuildConfig.SDK_VERSION,
+        retrier = retrier,
       )
 
     val timeout = TimeUnit.SECONDS.toMillis(2)
@@ -334,6 +345,7 @@ internal class ApiClientImplTest {
         moshi = moshi,
         sourceId = SourceId.ANDROID,
         sdkVersion = BuildConfig.SDK_VERSION,
+        retrier = retrier,
       )
 
     val result =
@@ -382,6 +394,7 @@ internal class ApiClientImplTest {
         moshi = moshi,
         sourceId = SourceId.ANDROID,
         sdkVersion = BuildConfig.SDK_VERSION,
+        retrier = retrier,
       )
 
     val result =
@@ -426,6 +439,7 @@ internal class ApiClientImplTest {
         moshi = moshi,
         sourceId = SourceId.ANDROID,
         sdkVersion = BuildConfig.SDK_VERSION,
+        retrier = retrier,
       )
 
     val result =
@@ -477,6 +491,7 @@ internal class ApiClientImplTest {
         moshi = moshi,
         sourceId = SourceId.ANDROID,
         sdkVersion = BuildConfig.SDK_VERSION,
+        retrier = retrier,
       )
 
     val result = client.registerEvents(events = listOf(evaluationEvent1, latencyMetricsEvent1))
@@ -545,6 +560,7 @@ internal class ApiClientImplTest {
         moshi = moshi,
         sourceId = SourceId.FLUTTER,
         sdkVersion = "1.0.1",
+        retrier = retrier,
       )
 
     val result = client.registerEvents(events = listOf(evaluationEvent1, latencyMetricsEvent1))
@@ -594,6 +610,7 @@ internal class ApiClientImplTest {
         defaultRequestTimeoutMillis = 1_000,
         sourceId = SourceId.ANDROID,
         sdkVersion = BuildConfig.SDK_VERSION,
+        retrier = retrier,
       )
 
     val (millis, result) =
@@ -620,6 +637,7 @@ internal class ApiClientImplTest {
         moshi = moshi,
         sourceId = SourceId.ANDROID,
         sdkVersion = BuildConfig.SDK_VERSION,
+        retrier = retrier,
       )
 
     val result = client.registerEvents(events = listOf(evaluationEvent1, latencyMetricsEvent1))
@@ -658,6 +676,7 @@ internal class ApiClientImplTest {
         moshi = moshi,
         sourceId = SourceId.ANDROID,
         sdkVersion = BuildConfig.SDK_VERSION,
+        retrier = retrier,
       )
 
     val result = client.registerEvents(events = listOf(evaluationEvent1, latencyMetricsEvent1))
@@ -693,6 +712,7 @@ internal class ApiClientImplTest {
         moshi = moshi,
         sourceId = SourceId.ANDROID,
         sdkVersion = BuildConfig.SDK_VERSION,
+        retrier = retrier,
       )
 
     val result = client.registerEvents(events = listOf(evaluationEvent1, latencyMetricsEvent1))
@@ -731,6 +751,7 @@ internal class ApiClientImplTest {
         moshi = moshi,
         sourceId = SourceId.ANDROID,
         sdkVersion = BuildConfig.SDK_VERSION,
+        retrier = retrier,
       )
 
     val result =

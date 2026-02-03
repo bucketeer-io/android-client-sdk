@@ -35,6 +35,7 @@ internal class BKTClientImpl(
           application = context.applicationContext as Application,
           user = user.toUser(),
           config = config,
+          executor = executor,
         ),
       interactorModule =
         InteractorModule(

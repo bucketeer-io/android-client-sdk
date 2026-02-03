@@ -35,12 +35,15 @@ import io.bucketeer.sdk.android.internal.model.jsonadapter.MetricsEventTypeAdapt
 import io.bucketeer.sdk.android.internal.model.jsonadapter.SourceIDAdapter
 import io.bucketeer.sdk.android.internal.remote.ApiClient
 import io.bucketeer.sdk.android.internal.remote.ApiClientImpl
+import io.bucketeer.sdk.android.internal.remote.Retrier
 import io.bucketeer.sdk.android.internal.user.UserHolder
+import java.util.concurrent.ScheduledExecutorService
 
 internal open class DataModule(
   val application: Application,
   user: User,
   val config: BKTConfig,
+  val executor: ScheduledExecutorService,
   val inMemoryDB: Boolean = false,
 ) {
   open val clock: Clock by lazy { ClockImpl() }
@@ -48,6 +51,8 @@ internal open class DataModule(
   open val idGenerator: IdGenerator by lazy { IdGeneratorImpl() }
 
   val moshi: Moshi by lazy { createMoshi() }
+
+  open val retrier: Retrier by lazy { Retrier(executor) }
 
   open val apiClient: ApiClient by lazy {
     ApiClientImpl(
@@ -57,6 +62,7 @@ internal open class DataModule(
       moshi = moshi,
       sourceId = config.sourceId,
       sdkVersion = config.sdkVersion,
+      retrier = retrier,
     )
   }
 

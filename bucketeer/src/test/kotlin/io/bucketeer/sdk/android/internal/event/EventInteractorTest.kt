@@ -44,6 +44,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import java.net.SocketTimeoutException
+import java.util.concurrent.Executors
+import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
 
 @RunWith(RobolectricTestRunner::class)
@@ -54,7 +56,7 @@ class EventInteractorTest {
   private lateinit var moshi: Moshi
   private lateinit var idGenerator: FakeIdGenerator
   private lateinit var clock: FakeClock
-
+  private val executor: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor()
   private lateinit var interactor: EventInteractor
   private lateinit var config: BKTConfig
 
@@ -81,6 +83,7 @@ class EventInteractorTest {
             application = ApplicationProvider.getApplicationContext(),
             config = config,
             defaultRequestTimeoutMillis = TimeUnit.SECONDS.toMillis(1),
+            executor = executor,
           ),
         interactorModule =
           InteractorModule(
@@ -1086,7 +1089,8 @@ private class TestDataModule(
   application: Application,
   config: BKTConfig,
   defaultRequestTimeoutMillis: Long,
-) : DataModule(application, user1, config, inMemoryDB = true) {
+  executor: ScheduledExecutorService,
+) : DataModule(application, user1, config, inMemoryDB = true, executor = executor) {
   override val clock: Clock by lazy { FakeClock() }
 
   override val idGenerator: IdGenerator by lazy { FakeIdGenerator() }
@@ -1100,6 +1104,7 @@ private class TestDataModule(
       defaultRequestTimeoutMillis = defaultRequestTimeoutMillis,
       sourceId = config.sourceId,
       sdkVersion = config.sdkVersion,
+      retrier = retrier,
     )
   }
 }

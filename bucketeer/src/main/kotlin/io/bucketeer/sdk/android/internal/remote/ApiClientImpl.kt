@@ -33,6 +33,7 @@ internal class ApiClientImpl(
   defaultRequestTimeoutMillis: Long = DEFAULT_REQUEST_TIMEOUT_MILLIS,
   private val sourceId: SourceId,
   private val sdkVersion: String,
+  private val retrier: Retrier,
 ) : ApiClient {
   private val apiEndpoint = apiEndpoint.toHttpUrl()
 
@@ -91,29 +92,25 @@ internal class ApiClientImpl(
           .build()
       }
 
-    var responseStatusCode = 0
-    val result =
-      runCatching {
-        retryOnException(
-          maxRetries = 3,
-          delayMillis = 1000L,
-          exceptionCheck = { err ->
-            err is BKTException.ClientClosedRequestException
-          },
-        ) {
+    // Use CountDownLatch to make the async retry synchronous for the caller
+    val latch = java.util.concurrent.CountDownLatch(1)
+    var result: GetEvaluationsResult? = null
+
+    retrier.attempt<GetEvaluationsResult>(
+      task = { completion ->
+        try {
           // Clone request to avoid issues with reusing the same request instance
           val cloneRequest = request.newBuilder().build()
-          val call =
-            actualClient.newCall(cloneRequest)
+          val call = actualClient.newCall(cloneRequest)
           logd { "--> Fetch Evaluation\n$body" }
 
           val (millis, data) =
             measureTimeMillisWithResult {
               val rawResponse = call.execute()
-              responseStatusCode = rawResponse.code
 
               if (!rawResponse.isSuccessful) {
-                throw rawResponse.toBKTException(errorResponseJsonAdapter)
+                val exception = rawResponse.toBKTException(errorResponseJsonAdapter)
+                throw exception
               }
 
               val response =
@@ -127,27 +124,43 @@ internal class ApiClientImpl(
           logd { "--> END Fetch Evaluation" }
           logd { "<-- Fetch Evaluation\n$response\n<-- END Evaluation response" }
 
-          GetEvaluationsResult.Success(
-            value = response,
-            seconds = millis / 1000.0,
-            sizeByte = contentLength,
-            featureTag = featureTag,
-          )
-        }
-      }
+          val successResult =
+            GetEvaluationsResult.Success(
+              value = response,
+              seconds = millis / 1000.0,
+              sizeByte = contentLength,
+              featureTag = featureTag,
+            )
 
-    return result.fold(
-      onSuccess = { res -> res },
-      onFailure = { e ->
-        GetEvaluationsResult.Failure(
-          e.toBKTException(
-            requestTimeoutMillis = client.callTimeoutMillis.toLong(),
-            statusCode = responseStatusCode,
-          ),
-          featureTag,
-        )
+          completion(Result.success(successResult))
+        } catch (e: Throwable) {
+          completion(Result.failure(e))
+        }
+      },
+      condition = { error ->
+        error is BKTException.ClientClosedRequestException
+      },
+      maxAttempts = 4, // 1 initial + 3 retries
+      completion = { retrierResult ->
+        result =
+          retrierResult.fold(
+            onSuccess = { res -> res },
+            onFailure = { e ->
+              GetEvaluationsResult.Failure(
+                e.toBKTException(
+                  requestTimeoutMillis = client.callTimeoutMillis.toLong(),
+                  statusCode = 0,
+                ),
+                featureTag,
+              )
+            },
+          )
+        latch.countDown()
       },
     )
+
+    latch.await()
+    return result!!
   }
 
   override fun registerEvents(events: List<Event>): RegisterEventsResult {
@@ -165,23 +178,18 @@ internal class ApiClientImpl(
         .post(body = body.toJsonRequestBody())
         .build()
 
-    var responseStatusCode = 0
-    val result =
-      runCatching {
-        retryOnException(
-          maxRetries = 3,
-          delayMillis = 1000L,
-          exceptionCheck = { err ->
-            err is BKTException.ClientClosedRequestException
-          },
-        ) {
+    // Use CountDownLatch to make the async retry synchronous for the caller
+    val latch = java.util.concurrent.CountDownLatch(1)
+    var result: RegisterEventsResult? = null
+
+    retrier.attempt<RegisterEventsResult>(
+      task = { completion ->
+        try {
           // Clone request to avoid issues with reusing the same request instance
           val cloneRequest = request.newBuilder().build()
-          val call =
-            client.newCall(cloneRequest)
+          val call = client.newCall(cloneRequest)
           logd { "--> Register events\n$body" }
           val response = call.execute()
-          responseStatusCode = response.code
 
           if (!response.isSuccessful) {
             val e = response.toBKTException(errorResponseJsonAdapter)
@@ -189,27 +197,40 @@ internal class ApiClientImpl(
             throw e
           }
 
-          val result =
+          val registerResult =
             requireNotNull(response.fromJson<RegisterEventsResponse>()) { "failed to parse RegisterEventsResponse" }
 
           logd { "--> END Register events" }
-          logd { "<-- Register events\n$result\n<-- END Register events" }
+          logd { "<-- Register events\n$registerResult\n<-- END Register events" }
 
-          RegisterEventsResult.Success(value = result)
+          completion(Result.success(RegisterEventsResult.Success(value = registerResult)))
+        } catch (e: Throwable) {
+          completion(Result.failure(e))
         }
-      }
-
-    return result.fold(
-      onSuccess = { res -> res },
-      onFailure = { e ->
-        RegisterEventsResult.Failure(
-          e.toBKTException(
-            requestTimeoutMillis = client.callTimeoutMillis.toLong(),
-            statusCode = responseStatusCode,
-          ),
-        )
+      },
+      condition = { error ->
+        error is BKTException.ClientClosedRequestException
+      },
+      maxAttempts = 4, // 1 initial + 3 retries
+      completion = { retrierResult ->
+        result =
+          retrierResult.fold(
+            onSuccess = { res -> res },
+            onFailure = { e ->
+              RegisterEventsResult.Failure(
+                e.toBKTException(
+                  requestTimeoutMillis = client.callTimeoutMillis.toLong(),
+                  statusCode = 0,
+                ),
+              )
+            },
+          )
+        latch.countDown()
       },
     )
+
+    latch.await()
+    return result!!
   }
 
   private inline fun <reified T> T.toJson(): String = moshi.adapter(T::class.java).toJson(this)

@@ -43,6 +43,7 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.LooperMode
 import org.robolectric.annotation.LooperMode.Mode
+import java.util.concurrent.Executors
 
 @RunWith(RobolectricTestRunner::class)
 class EvaluationInteractorTest {
@@ -75,6 +76,7 @@ class EvaluationInteractorTest {
             application = ApplicationProvider.getApplicationContext(),
             user = user1,
             config = config,
+            executor = Executors.newSingleThreadScheduledExecutor(),
             inMemoryDB = true,
           ),
         interactorModule =
@@ -136,6 +138,7 @@ class EvaluationInteractorTest {
             user = user1,
             config = configEmptyFeatureTag,
             inMemoryDB = true,
+            executor = Executors.newSingleThreadScheduledExecutor(),
           ),
         interactorModule =
           InteractorModule(
@@ -170,6 +173,7 @@ class EvaluationInteractorTest {
             user = user1,
             config = config,
             inMemoryDB = true,
+            executor = Executors.newSingleThreadScheduledExecutor(),
           ),
         interactorModule =
           InteractorModule(
@@ -203,6 +207,7 @@ class EvaluationInteractorTest {
             user = user1,
             config = config,
             inMemoryDB = true,
+            executor = Executors.newSingleThreadScheduledExecutor(),
           ),
         interactorModule =
           InteractorModule(

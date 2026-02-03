@@ -19,6 +19,8 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import java.util.concurrent.Executors
+import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
 
 @RunWith(RobolectricTestRunner::class)
@@ -30,12 +32,16 @@ internal class ApiClientImplRetryTest {
   private lateinit var mockClientClosedRequestResponse: MockResponse
   private lateinit var mockOtherErrorStatusResponse: MockResponse
   private lateinit var mockSuccessResponse: MockResponse
+  private lateinit var executor: ScheduledExecutorService
+  private lateinit var retrier: Retrier
 
   @Before
   fun setup() {
     server = MockWebServer()
     apiEndpoint = server.url("").toString()
     moshi = DataModule.createMoshi()
+    executor = Executors.newSingleThreadScheduledExecutor()
+    retrier = Retrier(executor)
     mockClientClosedRequestResponse =
       MockResponse()
         .setResponseCode(499)
@@ -84,6 +90,7 @@ internal class ApiClientImplRetryTest {
   @After
   fun tearDown() {
     server.shutdown()
+    executor.shutdown()
   }
 
   /*
@@ -109,6 +116,7 @@ internal class ApiClientImplRetryTest {
         moshi = moshi,
         sourceId = SourceId.ANDROID,
         sdkVersion = BuildConfig.SDK_VERSION,
+        retrier = retrier,
       )
 
     val result =
@@ -138,6 +146,7 @@ internal class ApiClientImplRetryTest {
         moshi = moshi,
         sourceId = SourceId.ANDROID,
         sdkVersion = BuildConfig.SDK_VERSION,
+        retrier = retrier,
       )
 
     val result =
@@ -170,6 +179,7 @@ internal class ApiClientImplRetryTest {
         moshi = moshi,
         sourceId = SourceId.ANDROID,
         sdkVersion = BuildConfig.SDK_VERSION,
+        retrier = retrier,
       )
 
     val result =
@@ -202,6 +212,7 @@ internal class ApiClientImplRetryTest {
         moshi = moshi,
         sourceId = SourceId.ANDROID,
         sdkVersion = BuildConfig.SDK_VERSION,
+        retrier = retrier,
       )
 
     val result =
@@ -233,6 +244,7 @@ internal class ApiClientImplRetryTest {
         moshi = moshi,
         sourceId = SourceId.ANDROID,
         sdkVersion = BuildConfig.SDK_VERSION,
+        retrier = retrier,
       )
 
     val result =
@@ -265,6 +277,7 @@ internal class ApiClientImplRetryTest {
         moshi = moshi,
         sourceId = SourceId.ANDROID,
         sdkVersion = BuildConfig.SDK_VERSION,
+        retrier = retrier,
       )
 
     val result =
@@ -297,6 +310,7 @@ internal class ApiClientImplRetryTest {
         moshi = moshi,
         sourceId = SourceId.ANDROID,
         sdkVersion = BuildConfig.SDK_VERSION,
+        retrier = retrier,
       )
 
     val result =
@@ -343,6 +357,7 @@ internal class ApiClientImplRetryTest {
         moshi = moshi,
         sourceId = SourceId.ANDROID,
         sdkVersion = BuildConfig.SDK_VERSION,
+        retrier = retrier,
       )
 
     val result =
@@ -389,6 +404,7 @@ internal class ApiClientImplRetryTest {
         moshi = moshi,
         sourceId = SourceId.ANDROID,
         sdkVersion = BuildConfig.SDK_VERSION,
+        retrier = retrier,
       )
 
     val result =
@@ -435,6 +451,7 @@ internal class ApiClientImplRetryTest {
         moshi = moshi,
         sourceId = SourceId.ANDROID,
         sdkVersion = BuildConfig.SDK_VERSION,
+        retrier = retrier,
       )
 
     val result =
@@ -476,6 +493,7 @@ internal class ApiClientImplRetryTest {
         moshi = moshi,
         sourceId = SourceId.ANDROID,
         sdkVersion = BuildConfig.SDK_VERSION,
+        retrier = retrier,
       )
 
     val result = client.registerEvents(events = listOf(evaluationEvent1))
@@ -496,6 +514,7 @@ internal class ApiClientImplRetryTest {
         moshi = moshi,
         sourceId = SourceId.ANDROID,
         sdkVersion = BuildConfig.SDK_VERSION,
+        retrier = retrier,
       )
 
     val result = client.registerEvents(events = listOf(evaluationEvent1))
@@ -519,6 +538,7 @@ internal class ApiClientImplRetryTest {
         moshi = moshi,
         sourceId = SourceId.ANDROID,
         sdkVersion = BuildConfig.SDK_VERSION,
+        retrier = retrier,
       )
 
     val result = client.registerEvents(events = listOf(evaluationEvent1))
@@ -552,6 +572,7 @@ internal class ApiClientImplRetryTest {
         moshi = moshi,
         sourceId = SourceId.ANDROID,
         sdkVersion = BuildConfig.SDK_VERSION,
+        retrier = retrier,
       )
 
     val result = client.registerEvents(events = listOf(evaluationEvent1))
@@ -584,6 +605,7 @@ internal class ApiClientImplRetryTest {
         moshi = moshi,
         sourceId = SourceId.ANDROID,
         sdkVersion = BuildConfig.SDK_VERSION,
+        retrier = retrier,
       )
 
     val result = client.registerEvents(events = listOf(evaluationEvent1))
@@ -617,6 +639,7 @@ internal class ApiClientImplRetryTest {
         moshi = moshi,
         sourceId = SourceId.ANDROID,
         sdkVersion = BuildConfig.SDK_VERSION,
+        retrier = retrier,
       )
 
     val result = client.registerEvents(events = listOf(evaluationEvent1))
@@ -640,6 +663,7 @@ internal class ApiClientImplRetryTest {
         moshi = moshi,
         sourceId = SourceId.ANDROID,
         sdkVersion = BuildConfig.SDK_VERSION,
+        retrier = retrier,
       )
 
     val result = client.registerEvents(events = listOf(evaluationEvent1))
@@ -677,6 +701,7 @@ internal class ApiClientImplRetryTest {
         moshi = moshi,
         sourceId = SourceId.ANDROID,
         sdkVersion = BuildConfig.SDK_VERSION,
+        retrier = retrier,
       )
 
     val result =
@@ -717,6 +742,7 @@ internal class ApiClientImplRetryTest {
         moshi = moshi,
         sourceId = SourceId.ANDROID,
         sdkVersion = BuildConfig.SDK_VERSION,
+        retrier = retrier,
       )
 
     val result =
@@ -757,6 +783,7 @@ internal class ApiClientImplRetryTest {
         moshi = moshi,
         sourceId = SourceId.ANDROID,
         sdkVersion = BuildConfig.SDK_VERSION,
+        retrier = retrier,
       )
 
     val result =

@@ -46,6 +46,9 @@ class EvaluationForegroundTaskTest {
         pollingInterval = 1000,
         appVersion = "1.2.3",
       )
+
+    executor = Executors.newSingleThreadScheduledExecutor()
+
     component =
       ComponentImpl(
         dataModule =
@@ -53,6 +56,7 @@ class EvaluationForegroundTaskTest {
             application = ApplicationProvider.getApplicationContext(),
             config = config,
             user = user1,
+            executor = executor,
             inMemoryDB = true,
           ),
         interactorModule =
@@ -63,7 +67,6 @@ class EvaluationForegroundTaskTest {
 
     moshi = component.dataModule.moshi
 
-    executor = Executors.newSingleThreadScheduledExecutor()
 
     task = EvaluationForegroundTask(component, executor)
   }
@@ -251,6 +254,7 @@ class EvaluationForegroundTaskTest {
             application = ApplicationProvider.getApplicationContext(),
             config = shortPollingConfig,
             user = user1,
+            executor = executor,
             inMemoryDB = true,
           ),
         interactorModule =
@@ -319,6 +323,7 @@ class EvaluationForegroundTaskTest {
             application = ApplicationProvider.getApplicationContext(),
             config = equalIntervalConfig,
             user = user1,
+            executor = executor,
             inMemoryDB = true,
           ),
         interactorModule =

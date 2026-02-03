@@ -47,6 +47,9 @@ class EventForegroundTaskTest {
         eventsMaxBatchQueueCount = 3,
         eventsFlushInterval = 1000,
       )
+
+    executor = Executors.newSingleThreadScheduledExecutor()
+
     component =
       ComponentImpl(
         dataModule =
@@ -54,6 +57,7 @@ class EventForegroundTaskTest {
             application = ApplicationProvider.getApplicationContext(),
             config = config,
             user = user1,
+            executor = executor,
             inMemoryDB = true,
           ),
         interactorModule =
@@ -64,7 +68,6 @@ class EventForegroundTaskTest {
 
     moshi = component.dataModule.moshi
 
-    executor = Executors.newSingleThreadScheduledExecutor()
 
     task = EventForegroundTask(component, executor)
   }
