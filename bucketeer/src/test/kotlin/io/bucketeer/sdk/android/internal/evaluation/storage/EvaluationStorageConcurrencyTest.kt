@@ -2,6 +2,7 @@ package io.bucketeer.sdk.android.internal.evaluation.storage
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
+import io.bucketeer.sdk.android.deleteSharedPreferences
 import io.bucketeer.sdk.android.internal.Constants
 import io.bucketeer.sdk.android.internal.cache.MemCache
 import io.bucketeer.sdk.android.internal.database.OpenHelperCallback
@@ -48,6 +49,7 @@ class EvaluationStorageConcurrencyTest {
   @After
   fun tearDown() {
     openHelper.close()
+    deleteSharedPreferences(ApplicationProvider.getApplicationContext())
   }
 
   @Test
