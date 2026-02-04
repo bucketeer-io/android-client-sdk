@@ -30,41 +30,49 @@ internal class EvaluationStorageImpl(
   // https://github.com/bucketeer-io/android-client-sdk/issues/69
   // userAttributesUpdated: when the user attributes change via the customAttributes interface,
   // the userAttributesUpdated field must be set to true in the next request.
-  // We use `@Synchronized` for user attribute state management because it's accessed from multiple threads:
+  // We use a private lock object instead of synchronizing on 'this' to prevent external callers
+  // from holding the same lock, which could lead to lock contention or deadlock issues.
+  // User attribute state is accessed from multiple threads:
   // 1. Main thread: `setUserAttributesUpdated` is called when user updates attributes.
   // 2. SDK executor thread: `getUserAttributesState` and `clearUserAttributesUpdated` are called during evaluation fetching.
-  @Synchronized
-  override fun getUserAttributesState(): UserAttributesState =
-    UserAttributesState(
-      userAttributesUpdated = evaluationSharedPrefs.userAttributesUpdated,
-      version = userAttributesVersion,
-    )
+  private val lock = Any()
 
-  @Synchronized
-  override fun setUserAttributesUpdated() {
-    // https://github.com/bucketeer-io/ios-client-sdk/pull/116
-    // We used to use a simple boolean flag `userAttributesUpdated` to track if the user attributes were updated.
-    // However, there is a race condition when the user attributes are updated while the SDK is fetching the evaluations.
-    //
-    // <pre>
-    // 1. [T1] `setUserAttributesUpdated` is called. `userAttributesUpdated` = true.
-    // 2. [T2] `fetchEvaluations` is called. The request contains `userAttributesUpdated` = true.
-    // 3. [T1] `setUserAttributesUpdated` is called again. `userAttributesUpdated` = true.
-    // 4. [T2] `fetchEvaluations` succeeded. `clearUserAttributesUpdated` is called. `userAttributesUpdated` = false.
-    // </pre>
-    //
-    // In step 4, the `userAttributesUpdated` flag is cleared, but the update in step 3 is not sent to the server.
-    // To avoid this race condition, we use a version number (`userAttributesVersion`) to track updates.
-    // The `userAttributesVersion` is incremented whenever `setUserAttributesUpdated` is called.
-    // When `fetchEvaluations` succeeds, we only clear `userAttributesUpdated` if the `userAttributesVersion` matches the one in the request state.
-    userAttributesVersion++
-    evaluationSharedPrefs.userAttributesUpdated = true
+  override fun getUserAttributesState(): UserAttributesState {
+    synchronized(lock) {
+      return UserAttributesState(
+        userAttributesUpdated = evaluationSharedPrefs.userAttributesUpdated,
+        version = userAttributesVersion,
+      )
+    }
   }
 
-  @Synchronized
+  override fun setUserAttributesUpdated() {
+    synchronized(lock) {
+      // https://github.com/bucketeer-io/ios-client-sdk/pull/116
+      // We used to use a simple boolean flag `userAttributesUpdated` to track if the user attributes were updated.
+      // However, there is a race condition when the user attributes are updated while the SDK is fetching the evaluations.
+      //
+      // <pre>
+      // 1. [T1] `setUserAttributesUpdated` is called. `userAttributesUpdated` = true.
+      // 2. [T2] `fetchEvaluations` is called. The request contains `userAttributesUpdated` = true.
+      // 3. [T1] `setUserAttributesUpdated` is called again. `userAttributesUpdated` = true.
+      // 4. [T2] `fetchEvaluations` succeeded. `clearUserAttributesUpdated` is called. `userAttributesUpdated` = false.
+      // </pre>
+      //
+      // In step 4, the `userAttributesUpdated` flag is cleared, but the update in step 3 is not sent to the server.
+      // To avoid this race condition, we use a version number (`userAttributesVersion`) to track updates.
+      // The `userAttributesVersion` is incremented whenever `setUserAttributesUpdated` is called.
+      // When `fetchEvaluations` succeeds, we only clear `userAttributesUpdated` if the `userAttributesVersion` matches the one in the request state.
+      userAttributesVersion++
+      evaluationSharedPrefs.userAttributesUpdated = true
+    }
+  }
+
   override fun clearUserAttributesUpdated(state: UserAttributesState) {
-    if (userAttributesVersion == state.version) {
-      evaluationSharedPrefs.userAttributesUpdated = false
+    synchronized(lock) {
+      if (userAttributesVersion == state.version) {
+        evaluationSharedPrefs.userAttributesUpdated = false
+      }
     }
   }
 
