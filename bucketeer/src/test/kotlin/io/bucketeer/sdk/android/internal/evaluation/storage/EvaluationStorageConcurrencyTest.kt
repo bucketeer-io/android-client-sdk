@@ -79,11 +79,11 @@ class EvaluationStorageConcurrencyTest {
     runBlocking {
       // 1. Initial State: Updated = true (v1)
       storage.setUserAttributesUpdated()
-      val stateV1 = storage.getUserAttributesState()
-      assert(stateV1.userAttributesUpdated)
 
       // 2. Simulate Fetch Start (capture stateV1)
       // ... logic inside Interactor would capture stateV1 ...
+      val stateV1 = storage.getUserAttributesState()
+      assert(stateV1.userAttributesUpdated)
 
       // 3. Concurrent Update happens (v2)
       storage.setUserAttributesUpdated()
