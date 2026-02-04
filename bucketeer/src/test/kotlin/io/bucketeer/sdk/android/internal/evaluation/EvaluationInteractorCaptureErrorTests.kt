@@ -83,10 +83,10 @@ class EvaluationInteractorCaptureErrorTests {
     ),
     STORAGE_ERROR_2(
       apiClient = MockReturnSuccessAPIClient(),
-      storage = MockEvaluationStorage("test_user_1", getUserAttributesUpdatedError = Exception("getUserAttributesUpdatedError")),
+      storage = MockEvaluationStorage("test_user_1", getUserAttributesStateError = Exception("getUserAttributesStateError")),
       expected =
         GetEvaluationsResult.Failure(
-          BKTException.IllegalStateException("failed when fetching evaluations: getUserAttributesUpdatedError"),
+          BKTException.IllegalStateException("failed when fetching evaluations: getUserAttributesStateError"),
           "feature_tag_value",
         ),
     ),
@@ -166,7 +166,7 @@ private class MockErrorAPIClient : ApiClient {
 private class MockEvaluationStorage(
   override val userId: String,
   val clearUserAttributesUpdatedError: Throwable? = null,
-  val getUserAttributesUpdatedError: Throwable? = null,
+  val getUserAttributesStateError: Throwable? = null,
   val deleteAllAndInsertError: Throwable? = null,
 ) : EvaluationStorage {
   private var featureTag = ""
@@ -183,17 +183,14 @@ private class MockEvaluationStorage(
     }
   }
 
-  override fun getUserAttributesState(): UserAttributesState =
-    UserAttributesState(
+  override fun getUserAttributesState(): UserAttributesState {
+    if (getUserAttributesStateError != null) {
+      throw getUserAttributesStateError
+    }
+    return UserAttributesState(
       userAttributesUpdated = false,
       version = 0,
     )
-
-  override fun getUserAttributesUpdated(): Boolean {
-    if (getUserAttributesUpdatedError != null) {
-      throw getUserAttributesUpdatedError
-    }
-    return false
   }
 
   override fun getEvaluatedAt(): String = "0"

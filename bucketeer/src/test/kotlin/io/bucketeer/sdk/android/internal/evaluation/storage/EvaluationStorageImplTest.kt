@@ -80,17 +80,17 @@ class EvaluationStorageImplTest {
   @Test
   fun testClearUserAttributesUpdated() {
     evaluationStorage.setUserAttributesUpdated()
-    assert(evaluationStorage.getUserAttributesUpdated())
+    assert(evaluationStorage.getUserAttributesState().userAttributesUpdated)
     val state = evaluationStorage.getUserAttributesState()
     assert(state.userAttributesUpdated)
 
     // Should not clear if version does not match
     evaluationStorage.clearUserAttributesUpdated(state.copy(version = state.version + 1))
-    assert(evaluationStorage.getUserAttributesUpdated())
+    assert(evaluationStorage.getUserAttributesState().userAttributesUpdated)
 
     // Should clear if version matches
     evaluationStorage.clearUserAttributesUpdated(state)
-    assert(!evaluationStorage.getUserAttributesUpdated())
+    assert(!evaluationStorage.getUserAttributesState().userAttributesUpdated)
   }
 
   @Test
@@ -160,7 +160,7 @@ class EvaluationStorageImplTest {
     assert(evaluationStorage.getCurrentEvaluationId() == "")
     assert(evaluationStorage.getEvaluatedAt() == "0")
     assert(evaluationStorage.getFeatureTag() == "")
-    assert(!evaluationStorage.getUserAttributesUpdated())
+    assert(!evaluationStorage.getUserAttributesState().userAttributesUpdated)
 
     evaluationStorage.setFeatureTag("tag1")
     evaluationStorage.setUserAttributesUpdated()
@@ -168,7 +168,7 @@ class EvaluationStorageImplTest {
     assert(evaluationStorage.get() == listOf(evaluation1, evaluation2))
     assert(evaluationStorage.getCurrentEvaluationId() == "2239")
     assert(evaluationStorage.getFeatureTag() == "tag1")
-    assert(evaluationStorage.getUserAttributesUpdated())
+    assert(evaluationStorage.getUserAttributesState().userAttributesUpdated)
     assert(evaluationStorage.getEvaluatedAt() == "10001")
 
     // check underlying storage
@@ -188,7 +188,7 @@ class EvaluationStorageImplTest {
     assert(evaluationStorage.get() == listOf(evaluation1, evaluation2, evaluationForTestInsert))
     assert(evaluationStorage.getCurrentEvaluationId() == "2249")
     assert(evaluationStorage.getFeatureTag() == "tag1")
-    assert(evaluationStorage.getUserAttributesUpdated())
+    assert(evaluationStorage.getUserAttributesState().userAttributesUpdated)
     assert(evaluationStorage.getEvaluatedAt() == "10002")
 
     // check underlying storage

@@ -25,16 +25,14 @@ internal class EvaluationStorageImpl(
 
   override fun getEvaluatedAt(): String = evaluationSharedPrefs.evaluatedAt
 
+  private var userAttributesVersion: Int = 0
+
   // https://github.com/bucketeer-io/android-client-sdk/issues/69
   // userAttributesUpdated: when the user attributes change via the customAttributes interface,
   // the userAttributesUpdated field must be set to true in the next request.
-  override fun getUserAttributesUpdated(): Boolean = evaluationSharedPrefs.userAttributesUpdated
-
   // We use `@Synchronized` for user attribute state management because it's accessed from multiple threads:
   // 1. Main thread: `setUserAttributesUpdated` is called when user updates attributes.
   // 2. SDK executor thread: `getUserAttributesState` and `clearUserAttributesUpdated` are called during evaluation fetching.
-  private var userAttributesVersion: Int = 0
-
   @Synchronized
   override fun getUserAttributesState(): UserAttributesState =
     UserAttributesState(
@@ -45,7 +43,7 @@ internal class EvaluationStorageImpl(
   @Synchronized
   override fun setUserAttributesUpdated() {
     // https://github.com/bucketeer-io/ios-client-sdk/pull/116
-    // We used to simple boolean flag `userAttributesUpdated` to track if the user attributes are updated.
+    // We used to use a simple boolean flag `userAttributesUpdated` to track if the user attributes were updated.
     // However, there is a race condition when the user attributes are updated while the SDK is fetching the evaluations.
     //
     // <pre>
@@ -75,6 +73,7 @@ internal class EvaluationStorageImpl(
       it.featureId == featureId
     }
 
+  // Memory cache is thread-safe in our implementation, no need to synchronize this method
   override fun get(): List<Evaluation> = memCache.get(userId) ?: emptyList()
 
   override fun deleteAllAndInsert(

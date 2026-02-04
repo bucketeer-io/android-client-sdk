@@ -51,7 +51,7 @@ class EvaluationStorageConcurrencyTest {
   }
 
   @Test
-  fun `concurrent user attributes updates should correct versioning`() =
+  fun `concurrent user attributes updates should ensure correct versioning`() =
     runBlocking {
       val updateCount = 100
       val latch = CountDownLatch(1)
@@ -70,8 +70,8 @@ class EvaluationStorageConcurrencyTest {
 
       val state = storage.getUserAttributesState()
       assert(state.userAttributesUpdated)
-      // Version should be at least updateCount (or close to it dependent on initial value, but definitely incremented)
-      assert(state.version >= updateCount)
+      // Version should be exactly updateCount
+      assert(state.version == updateCount)
     }
 
   @Test
@@ -94,10 +94,10 @@ class EvaluationStorageConcurrencyTest {
       storage.clearUserAttributesUpdated(stateV1)
 
       // 5. Result: Should STILL be updated because v2 > v1
-      assert(storage.getUserAttributesUpdated()) { "Should remain updated because a newer update occurred" }
+      assert(storage.getUserAttributesState().userAttributesUpdated) { "Should remain updated because a newer update occurred" }
 
       // 6. Finally clear using latest state
       storage.clearUserAttributesUpdated(stateV2)
-      assert(!storage.getUserAttributesUpdated()) { "Should be cleared now" }
+      assert(!storage.getUserAttributesState().userAttributesUpdated) { "Should be cleared now" }
     }
 }

@@ -21,3 +21,4 @@ build
 
 *.hprof
 *.gpg
+test_results.log

@@ -60,13 +60,12 @@ internal class EvaluationInteractor(
   ): GetEvaluationsResult {
     val currentEvaluationsId = evaluationStorage.getCurrentEvaluationId()
     val evaluatedAt = evaluationStorage.getEvaluatedAt()
-    val userAttributesUpdated = evaluationStorage.getUserAttributesUpdated()
     val userAttributesState = evaluationStorage.getUserAttributesState()
 
     val condition =
       UserEvaluationCondition(
         evaluatedAt = evaluatedAt,
-        userAttributesUpdated = userAttributesUpdated,
+        userAttributesUpdated = userAttributesState.userAttributesUpdated,
       )
 
     val result = apiClient.getEvaluations(user, currentEvaluationsId, timeoutMillis, condition)
