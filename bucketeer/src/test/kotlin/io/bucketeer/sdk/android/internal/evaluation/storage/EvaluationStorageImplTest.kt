@@ -82,7 +82,6 @@ class EvaluationStorageImplTest {
   @Test
   fun testClearUserAttributesUpdated() {
     evaluationStorage.setUserAttributesUpdated()
-    assert(evaluationStorage.getUserAttributesState().userAttributesUpdated)
     val state = evaluationStorage.getUserAttributesState()
     assert(state.userAttributesUpdated)
 

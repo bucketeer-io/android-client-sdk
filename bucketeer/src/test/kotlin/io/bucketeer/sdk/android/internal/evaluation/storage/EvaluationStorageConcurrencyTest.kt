@@ -99,8 +99,6 @@ class EvaluationStorageConcurrencyTest {
     val step2Done = CountDownLatch(1)
     val step3Done = CountDownLatch(1)
     val allDone = CountDownLatch(2)
-
-
     // Thread 1: Updates attributes twice
     thread {
       // Step 1: First update
