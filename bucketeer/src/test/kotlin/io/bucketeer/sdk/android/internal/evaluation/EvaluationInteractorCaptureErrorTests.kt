@@ -189,7 +189,7 @@ private class MockEvaluationStorage(
     }
     return UserAttributesState(
       userAttributesUpdated = false,
-      version = 0,
+      version = 0L,
     )
   }
 

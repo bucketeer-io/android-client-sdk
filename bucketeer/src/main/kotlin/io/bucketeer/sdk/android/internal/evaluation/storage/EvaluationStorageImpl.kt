@@ -25,7 +25,7 @@ internal class EvaluationStorageImpl(
 
   override fun getEvaluatedAt(): String = evaluationSharedPrefs.evaluatedAt
 
-  private var userAttributesVersion: Int = 0
+  private var userAttributesVersion: Long = 0
 
   // https://github.com/bucketeer-io/android-client-sdk/issues/69
   // userAttributesUpdated: when the user attributes change via the customAttributes interface,

@@ -83,7 +83,7 @@ class EvaluationStorageConcurrencyTest {
     val state = storage.getUserAttributesState()
     assert(state.userAttributesUpdated)
     // Version should be exactly updateCount
-    assert(state.version == updateCount)
+    assert(state.version == updateCount.toLong())
   }
 
   @Test
@@ -100,7 +100,6 @@ class EvaluationStorageConcurrencyTest {
     val step3Done = CountDownLatch(1)
     val allDone = CountDownLatch(2)
 
-    var capturedState: UserAttributesState? = null
 
     // Thread 1: Updates attributes twice
     thread {
@@ -124,14 +123,14 @@ class EvaluationStorageConcurrencyTest {
       step1Done.await()
 
       // Step 2: Capture state (simulating start of fetch)
-      capturedState = storage.getUserAttributesState()
+      val capturedState = storage.getUserAttributesState()
       step2Done.countDown()
 
       // Wait for second update to happen
       step3Done.await()
 
       // Step 4: Try to clear with old state (simulating fetch completion)
-      storage.clearUserAttributesUpdated(capturedState!!)
+      storage.clearUserAttributesUpdated(capturedState)
 
       allDone.countDown()
     }
@@ -143,7 +142,7 @@ class EvaluationStorageConcurrencyTest {
     assert(finalState.userAttributesUpdated) {
       "userAttributesUpdated should still be true after clearing with old state"
     }
-    assert(finalState.version == 2) {
+    assert(finalState.version == 2L) {
       "version should be 2 (two updates), got ${finalState.version}"
     }
   }
