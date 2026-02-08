@@ -1,5 +1,6 @@
 package io.bucketeer.sdk.android.internal.scheduler
 
+import io.bucketeer.sdk.android.BKTClientImpl
 import io.bucketeer.sdk.android.internal.di.Component
 import io.bucketeer.sdk.android.internal.event.EventInteractor
 import io.bucketeer.sdk.android.internal.event.SendEventsResult
@@ -29,26 +30,37 @@ internal class EventForegroundTask(
         val result = component.eventInteractor.sendEvents(force = false)
         if (result is SendEventsResult.Success && result.sent) {
           // reschedule the background task if event is actually sent.
-          reschedule()
+          reschedule(component.config.eventsFlushInterval)
         }
       }
     }
 
-  private fun reschedule() {
+
+
+  private fun reschedule(interval: Long) {
     scheduledFuture?.cancel(false)
     scheduledFuture =
       executor.scheduleWithFixedDelay(
-        // background task should flush(force-send) events
-        { component.eventInteractor.sendEvents(force = true) },
-        component.config.eventsFlushInterval,
-        component.config.eventsFlushInterval,
+        { sendEvents() },
+        interval,
+        interval,
         TimeUnit.MILLISECONDS,
       )
   }
 
+  private fun sendEvents() {
+    component.eventCancellationRunner.scheduleTask(
+      block = { component.eventInteractor.sendEvents(force = true) },
+      retryPredicate = { result ->
+        result is SendEventsResult.Failure &&
+          result.error is io.bucketeer.sdk.android.BKTException.ClientClosedRequestException
+      },
+    )
+  }
+
   override fun start() {
     component.eventInteractor.setEventUpdateListener(this.eventUpdateListener)
-    reschedule()
+    reschedule(component.config.eventsFlushInterval)
   }
 
   override fun stop() {

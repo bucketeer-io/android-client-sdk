@@ -4,7 +4,9 @@ import android.content.Context
 import io.bucketeer.sdk.android.BKTConfig
 import io.bucketeer.sdk.android.internal.evaluation.EvaluationInteractor
 import io.bucketeer.sdk.android.internal.event.EventInteractor
+import io.bucketeer.sdk.android.internal.remote.NetworkCancellationRunner
 import io.bucketeer.sdk.android.internal.user.UserHolder
+import java.util.concurrent.ScheduledExecutorService
 
 internal interface Component {
   val context: Context
@@ -12,6 +14,8 @@ internal interface Component {
   val userHolder: UserHolder
   val evaluationInteractor: EvaluationInteractor
   val eventInteractor: EventInteractor
+  val evaluationCancellationRunner: NetworkCancellationRunner
+  val eventCancellationRunner: NetworkCancellationRunner
 
   fun destroy()
 }
@@ -19,6 +23,7 @@ internal interface Component {
 internal class ComponentImpl(
   val dataModule: DataModule,
   val interactorModule: InteractorModule,
+  val executor: ScheduledExecutorService,
 ) : Component {
   override val context: Context
     get() = dataModule.application
@@ -50,6 +55,14 @@ internal class ComponentImpl(
       sourceId = dataModule.config.sourceId,
       sdkVersion = dataModule.config.sdkVersion,
     )
+  }
+
+  override val evaluationCancellationRunner: NetworkCancellationRunner by lazy {
+    NetworkCancellationRunner(executor, dataModule.idGenerator)
+  }
+
+  override val eventCancellationRunner: NetworkCancellationRunner by lazy {
+    NetworkCancellationRunner(executor, dataModule.idGenerator)
   }
 
   override fun destroy() {

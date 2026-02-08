@@ -81,6 +81,7 @@ class EvaluationInteractorTest {
           InteractorModule(
             mainHandler = Handler(Looper.getMainLooper()),
           ),
+        executor = java.util.concurrent.Executors.newSingleThreadScheduledExecutor(),
       )
     interactor = component.evaluationInteractor
     moshi = component.dataModule.moshi
@@ -141,6 +142,7 @@ class EvaluationInteractorTest {
           InteractorModule(
             mainHandler = Handler(Looper.getMainLooper()),
           ),
+        executor = java.util.concurrent.Executors.newSingleThreadScheduledExecutor(),
       )
 
     componentBuildWithEmptyFeatureTag.evaluationInteractor.prepareDependencyAndRun {
@@ -175,6 +177,7 @@ class EvaluationInteractorTest {
           InteractorModule(
             mainHandler = Handler(Looper.getMainLooper()),
           ),
+        executor = java.util.concurrent.Executors.newSingleThreadScheduledExecutor(),
       )
 
     component.evaluationInteractor.prepareDependencyAndRun {
@@ -208,6 +211,7 @@ class EvaluationInteractorTest {
           InteractorModule(
             mainHandler = Handler(Looper.getMainLooper()),
           ),
+        executor = java.util.concurrent.Executors.newSingleThreadScheduledExecutor(),
       )
     component.evaluationInteractor.prepareDependencyAndRun {
       assertThat(component.dataModule.evaluationStorage.getCurrentEvaluationId()).isEqualTo("should_not_change")
