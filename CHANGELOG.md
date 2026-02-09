@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.3.0](https://github.com/bucketeer-io/android-client-sdk/compare/v2.2.5...v2.3.0) (2026-02-09)
+
+
+### Features
+
+* add detailed reason error types ([#241](https://github.com/bucketeer-io/android-client-sdk/issues/241)) ([0838963](https://github.com/bucketeer-io/android-client-sdk/commit/08389639590d761dda875e885bc32f9e050081d7))
+* auto retry on deployment-related 499 errors ([#240](https://github.com/bucketeer-io/android-client-sdk/issues/240)) ([53c283b](https://github.com/bucketeer-io/android-client-sdk/commit/53c283b2cd006db4e57a1ac635e8009c64ad630c))
+
+
+### Bug Fixes
+
+* missing request read and write timeout settings ([#237](https://github.com/bucketeer-io/android-client-sdk/issues/237)) ([362e315](https://github.com/bucketeer-io/android-client-sdk/commit/362e3156685a3af36edc30de2df3b343fdf64505))
+
 ## [2.2.5](https://github.com/bucketeer-io/android-client-sdk/compare/v2.2.4...v2.2.5) (2025-06-17)
 
 
