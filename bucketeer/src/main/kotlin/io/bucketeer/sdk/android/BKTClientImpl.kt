@@ -12,6 +12,7 @@ import io.bucketeer.sdk.android.internal.di.InteractorModule
 import io.bucketeer.sdk.android.internal.evaluation.getVariationValue
 import io.bucketeer.sdk.android.internal.event.SendEventsResult
 import io.bucketeer.sdk.android.internal.logd
+import io.bucketeer.sdk.android.internal.model.ReasonType
 import io.bucketeer.sdk.android.internal.remote.GetEvaluationsResult
 import io.bucketeer.sdk.android.internal.scheduler.TaskScheduler
 import io.bucketeer.sdk.android.internal.user.toBKTUser
@@ -186,11 +187,31 @@ internal class BKTClientImpl(
     logd { "BKTClient.getVariation(featureId = $featureId) called" }
 
     val raw = component.evaluationInteractor.getLatest(featureId)
-    val value: T? = raw.getVariationValue()
-
     val user = component.userHolder.get()
     val featureTag = config.featureTag
-    if (raw != null && value != null) {
+
+    if (raw == null) {
+      // Flag not found in cache
+      executor.execute {
+        component.eventInteractor.trackDefaultEvaluationEvent(
+          featureTag = featureTag,
+          user = user,
+          featureId = featureId,
+          reason = ReasonType.ERROR_FLAG_NOT_FOUND,
+        )
+      }
+      return BKTEvaluationDetails.newDefaultInstance(
+        featureId = featureId,
+        userId = user.id,
+        defaultValue = defaultValue,
+        reason = BKTEvaluationDetails.Reason.ERROR_FLAG_NOT_FOUND,
+      )
+    }
+
+    val value: T? = raw.getVariationValue()
+
+    if (value != null) {
+      // Success case
       executor.execute {
         component.eventInteractor.trackEvaluationEvent(
           featureTag = featureTag,
@@ -208,17 +229,20 @@ internal class BKTClientImpl(
         reason = BKTEvaluationDetails.Reason.from(raw.reason.type.name),
       )
     } else {
+      // Type mismatch
       executor.execute {
         component.eventInteractor.trackDefaultEvaluationEvent(
           featureTag = featureTag,
           user = user,
           featureId = featureId,
+          reason = ReasonType.ERROR_WRONG_TYPE,
         )
       }
       return BKTEvaluationDetails.newDefaultInstance(
         featureId = featureId,
         userId = user.id,
         defaultValue = defaultValue,
+        reason = BKTEvaluationDetails.Reason.ERROR_WRONG_TYPE,
       )
     }
   }

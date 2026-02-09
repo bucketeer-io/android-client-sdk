@@ -150,7 +150,12 @@ class EventInteractorTest {
 
     interactor.setEventUpdateListener(listener)
 
-    interactor.trackDefaultEvaluationEvent("feature_tag_value", user1, "feature_id_value")
+    interactor.trackDefaultEvaluationEvent(
+      "feature_tag_value",
+      user1,
+      "feature_id_value",
+      ReasonType.ERROR_FLAG_NOT_FOUND,
+    )
 
     assertThat(listener.calls).hasSize(1)
     assertThat(listener.calls[0]).hasSize(1)
@@ -170,7 +175,7 @@ class EventInteractorTest {
             featureId = "feature_id_value",
             userId = user1.id,
             user = user1,
-            reason = Reason(ReasonType.CLIENT),
+            reason = Reason(ReasonType.ERROR_FLAG_NOT_FOUND),
             tag = "feature_tag_value",
             sourceId = config.sourceId,
             sdkVersion = config.sdkVersion,
