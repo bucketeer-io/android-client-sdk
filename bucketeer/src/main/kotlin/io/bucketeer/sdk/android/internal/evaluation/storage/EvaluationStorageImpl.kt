@@ -25,14 +25,55 @@ internal class EvaluationStorageImpl(
 
   override fun getEvaluatedAt(): String = evaluationSharedPrefs.evaluatedAt
 
-  override fun getUserAttributesUpdated(): Boolean = evaluationSharedPrefs.userAttributesUpdated
+  private var userAttributesVersion: Long = 0
 
-  override fun setUserAttributesUpdated() {
-    evaluationSharedPrefs.userAttributesUpdated = true
+  // https://github.com/bucketeer-io/android-client-sdk/issues/69
+  // userAttributesUpdated: when the user attributes change via the customAttributes interface,
+  // the userAttributesUpdated field must be set to true in the next request.
+  // We use a private lock object instead of synchronizing on 'this' to prevent external callers
+  // from holding the same lock, which could lead to lock contention or deadlock issues.
+  // User attribute state is accessed from multiple threads:
+  // 1. Main thread: `setUserAttributesUpdated` is called when user updates attributes.
+  // 2. SDK executor thread: `getUserAttributesState` and `clearUserAttributesUpdated` are called during evaluation fetching.
+  private val lock = Any()
+
+  override fun getUserAttributesState(): UserAttributesState {
+    synchronized(lock) {
+      return UserAttributesState(
+        userAttributesUpdated = evaluationSharedPrefs.userAttributesUpdated,
+        version = userAttributesVersion,
+      )
+    }
   }
 
-  override fun clearUserAttributesUpdated() {
-    evaluationSharedPrefs.userAttributesUpdated = false
+  override fun setUserAttributesUpdated() {
+    synchronized(lock) {
+      // https://github.com/bucketeer-io/ios-client-sdk/pull/116
+      // We used to use a simple boolean flag `userAttributesUpdated` to track if the user attributes were updated.
+      // However, there is a race condition when the user attributes are updated while the SDK is fetching the evaluations.
+      //
+      // <pre>
+      // 1. [T1] `setUserAttributesUpdated` is called. `userAttributesUpdated` = true.
+      // 2. [T2] `fetchEvaluations` is called. The request contains `userAttributesUpdated` = true.
+      // 3. [T1] `setUserAttributesUpdated` is called again. `userAttributesUpdated` = true.
+      // 4. [T2] `fetchEvaluations` succeeded. `clearUserAttributesUpdated` is called. `userAttributesUpdated` = false.
+      // </pre>
+      //
+      // In step 4, the `userAttributesUpdated` flag is cleared, but the update in step 3 is not sent to the server.
+      // To avoid this race condition, we use a version number (`userAttributesVersion`) to track updates.
+      // The `userAttributesVersion` is incremented whenever `setUserAttributesUpdated` is called.
+      // When `fetchEvaluations` succeeds, we only clear `userAttributesUpdated` if the `userAttributesVersion` matches the one in the request state.
+      userAttributesVersion++
+      evaluationSharedPrefs.userAttributesUpdated = true
+    }
+  }
+
+  override fun clearUserAttributesUpdated(state: UserAttributesState) {
+    synchronized(lock) {
+      if (userAttributesVersion == state.version) {
+        evaluationSharedPrefs.userAttributesUpdated = false
+      }
+    }
   }
 
   override fun getBy(featureId: String): Evaluation? =
@@ -40,6 +81,7 @@ internal class EvaluationStorageImpl(
       it.featureId == featureId
     }
 
+  // Memory cache is thread-safe in our implementation, no need to synchronize this method
   override fun get(): List<Evaluation> = memCache.get(userId) ?: emptyList()
 
   override fun deleteAllAndInsert(

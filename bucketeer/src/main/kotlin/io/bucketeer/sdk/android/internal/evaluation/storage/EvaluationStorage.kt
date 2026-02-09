@@ -13,9 +13,9 @@ internal interface EvaluationStorage {
 
   fun setUserAttributesUpdated()
 
-  fun clearUserAttributesUpdated()
+  fun clearUserAttributesUpdated(state: UserAttributesState)
 
-  fun getUserAttributesUpdated(): Boolean
+  fun getUserAttributesState(): UserAttributesState
 
   fun getEvaluatedAt(): String
 
