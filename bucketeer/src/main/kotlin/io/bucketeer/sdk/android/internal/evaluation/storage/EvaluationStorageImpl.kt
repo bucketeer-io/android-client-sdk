@@ -25,7 +25,7 @@ internal class EvaluationStorageImpl(
 
   override fun getEvaluatedAt(): String = evaluationSharedPrefs.evaluatedAt
 
-  private var userAttributesVersion: Long = 0
+  private var updateSequence: Long = 0
 
   // https://github.com/bucketeer-io/android-client-sdk/issues/69
   // userAttributesUpdated: when the user attributes change via the customAttributes interface,
@@ -41,7 +41,7 @@ internal class EvaluationStorageImpl(
     synchronized(lock) {
       return UserAttributesState(
         userAttributesUpdated = evaluationSharedPrefs.userAttributesUpdated,
-        version = userAttributesVersion,
+        version = updateSequence,
       )
     }
   }
@@ -60,17 +60,17 @@ internal class EvaluationStorageImpl(
       // </pre>
       //
       // In step 4, the `userAttributesUpdated` flag is cleared, but the update in step 3 is not sent to the server.
-      // To avoid this race condition, we use a version number (`userAttributesVersion`) to track updates.
-      // The `userAttributesVersion` is incremented whenever `setUserAttributesUpdated` is called.
-      // When `fetchEvaluations` succeeds, we only clear `userAttributesUpdated` if the `userAttributesVersion` matches the one in the request state.
-      userAttributesVersion++
+      // To avoid this race condition, we use a version number (`updateSequence`) to track updates.
+      // The `updateSequence` is incremented whenever `setUserAttributesUpdated` is called.
+      // When `fetchEvaluations` succeeds, we only clear `userAttributesUpdated` if the `updateSequence` matches the one in the request state.
+      updateSequence++
       evaluationSharedPrefs.userAttributesUpdated = true
     }
   }
 
   override fun clearUserAttributesUpdated(state: UserAttributesState) {
     synchronized(lock) {
-      if (userAttributesVersion == state.version) {
+      if (updateSequence == state.version) {
         evaluationSharedPrefs.userAttributesUpdated = false
       }
     }
