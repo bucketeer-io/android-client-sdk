@@ -41,7 +41,7 @@ internal class EvaluationStorageImpl(
     synchronized(lock) {
       return UserAttributesState(
         userAttributesUpdated = evaluationSharedPrefs.userAttributesUpdated,
-        version = updateSequence,
+        updateSequence = updateSequence,
       )
     }
   }
@@ -70,7 +70,7 @@ internal class EvaluationStorageImpl(
 
   override fun clearUserAttributesUpdated(state: UserAttributesState) {
     synchronized(lock) {
-      if (updateSequence == state.version) {
+      if (updateSequence == state.updateSequence) {
         evaluationSharedPrefs.userAttributesUpdated = false
       }
     }

@@ -83,7 +83,7 @@ class EvaluationStorageConcurrencyTest {
     val state = storage.getUserAttributesState()
     assert(state.userAttributesUpdated)
     // Version should be exactly updateCount
-    assert(state.version == updateCount.toLong())
+    assert(state.updateSequence == updateCount.toLong())
   }
 
   @Test
@@ -140,8 +140,8 @@ class EvaluationStorageConcurrencyTest {
     assert(finalState.userAttributesUpdated) {
       "userAttributesUpdated should still be true after clearing with old state"
     }
-    assert(finalState.version == 2L) {
-      "version should be 2 (two updates), got ${finalState.version}"
+    assert(finalState.updateSequence == 2L) {
+      "version should be 2 (two updates), got ${finalState.updateSequence}"
     }
   }
 }

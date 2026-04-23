@@ -86,7 +86,7 @@ class EvaluationStorageImplTest {
     assert(state.userAttributesUpdated)
 
     // Should not clear if version does not match
-    evaluationStorage.clearUserAttributesUpdated(state.copy(version = state.version + 1))
+    evaluationStorage.clearUserAttributesUpdated(state.copy(updateSequence = state.updateSequence + 1))
     assert(evaluationStorage.getUserAttributesState().userAttributesUpdated)
 
     // Should clear if version matches
