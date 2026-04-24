@@ -105,14 +105,14 @@ class EvaluationInteractorTest {
     // the evaluatedAt should be 0
     assertThat(storage.getEvaluatedAt()).isEqualTo("0")
     // the userAttributesUpdated should be false
-    assertThat(storage.getUserAttributesUpdated()).isEqualTo(false)
+    assertThat(storage.getUserAttributesState().userAttributesUpdated).isEqualTo(false)
   }
 
   @Test
   fun `set userAttributesUpdated`() {
     interactor.setUserAttributesUpdated()
     // the userAttributesUpdated should be true
-    assertThat(storage.getUserAttributesUpdated()).isEqualTo(true)
+    assertThat(storage.getUserAttributesState().userAttributesUpdated).isEqualTo(true)
   }
 
   @Test
@@ -334,7 +334,7 @@ class EvaluationInteractorTest {
     // the evaluatedAt should be updated
     assertThat(storage.getEvaluatedAt()).isEqualTo("1690798021")
     // the userAttributesUpdated should be false after success request
-    assertThat(storage.getUserAttributesUpdated()).isEqualTo(false)
+    assertThat(storage.getUserAttributesState().userAttributesUpdated).isEqualTo(false)
 
     shadowOf(Looper.getMainLooper()).idle()
 
@@ -392,7 +392,7 @@ class EvaluationInteractorTest {
     // the evaluatedAt should be updated
     assertThat(storage.getEvaluatedAt()).isEqualTo("1690798025")
     // the userAttributesUpdated should be false after success request
-    assertThat(storage.getUserAttributesUpdated()).isEqualTo(false)
+    assertThat(storage.getUserAttributesState().userAttributesUpdated).isEqualTo(false)
 
     shadowOf(Looper.getMainLooper()).idle()
 
@@ -462,7 +462,7 @@ class EvaluationInteractorTest {
     // the evaluatedAt should be updated
     assertThat(storage.getEvaluatedAt()).isEqualTo("16907999999")
     // the userAttributesUpdated should be false after success request
-    assertThat(storage.getUserAttributesUpdated()).isEqualTo(false)
+    assertThat(storage.getUserAttributesState().userAttributesUpdated).isEqualTo(false)
 
     shadowOf(Looper.getMainLooper()).idle()
 
