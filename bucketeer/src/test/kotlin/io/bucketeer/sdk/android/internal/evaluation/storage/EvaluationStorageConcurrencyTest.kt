@@ -3,6 +3,8 @@ package io.bucketeer.sdk.android.internal.evaluation.storage
 import android.content.Context
 import androidx.sqlite.db.SupportSQLiteOpenHelper
 import androidx.test.core.app.ApplicationProvider
+import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.Truth.assertWithMessage
 import io.bucketeer.sdk.android.deleteSharedPreferences
 import io.bucketeer.sdk.android.internal.Constants
 import io.bucketeer.sdk.android.internal.cache.MemCache
@@ -78,12 +80,14 @@ class EvaluationStorageConcurrencyTest {
     }
 
     startLatch.countDown() // Start all threads
-    assert(doneLatch.await(10, TimeUnit.SECONDS)) { "Timeout waiting for threads to complete" }
+    assertWithMessage("Timeout waiting for threads to complete")
+      .that(doneLatch.await(10, TimeUnit.SECONDS))
+      .isTrue()
 
     val state = storage.getUserAttributesState()
-    assert(state.userAttributesUpdated)
+    assertThat(state.userAttributesUpdated).isTrue()
     // Version should be exactly updateCount
-    assert(state.updateSequence == updateCount.toLong())
+    assertThat(state.updateSequence).isEqualTo(updateCount.toLong())
   }
 
   @Test
@@ -133,15 +137,17 @@ class EvaluationStorageConcurrencyTest {
       allDone.countDown()
     }
 
-    assert(allDone.await(10, TimeUnit.SECONDS)) { "Timeout waiting for threads to complete" }
+    assertWithMessage("Timeout waiting for threads to complete")
+      .that(allDone.await(10, TimeUnit.SECONDS))
+      .isTrue()
 
     // The second update should NOT be cleared because version doesn't match
     val finalState = storage.getUserAttributesState()
-    assert(finalState.userAttributesUpdated) {
-      "userAttributesUpdated should still be true after clearing with old state"
-    }
-    assert(finalState.updateSequence == 2L) {
-      "version should be 2 (two updates), got ${finalState.updateSequence}"
-    }
+    assertWithMessage("userAttributesUpdated should still be true after clearing with old state")
+      .that(finalState.userAttributesUpdated)
+      .isTrue()
+    assertWithMessage("version should be 2 (two updates), got ${finalState.updateSequence}")
+      .that(finalState.updateSequence)
+      .isEqualTo(2L)
   }
 }
