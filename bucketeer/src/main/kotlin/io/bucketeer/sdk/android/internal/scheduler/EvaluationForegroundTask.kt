@@ -31,7 +31,16 @@ internal class EvaluationForegroundTask(
   }
 
   private fun fetchEvaluations() {
-    val result = BKTClientImpl.fetchEvaluationsSync(component, executor, null)
+    component.evaluationCancellationRunner.scheduleTaskWithCallback(
+      block = { BKTClientImpl.fetchEvaluationsSync(component, executor, null) },
+      retryPredicate = { it is io.bucketeer.sdk.android.BKTException.ClientClosedRequestException },
+      completionCallback = { result ->
+        updateSchedule(result)
+      },
+    )
+  }
+
+  private fun updateSchedule(result: io.bucketeer.sdk.android.BKTException?) {
     if (result == null) {
       // success
       if (retryCount > 0) {
@@ -45,6 +54,7 @@ internal class EvaluationForegroundTask(
         // pollingInterval is short enough, do nothing
         return
       }
+
       val retried = retryCount > 0
       val canRetry = retryCount < maxRetryCount
       if (canRetry) {

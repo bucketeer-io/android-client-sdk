@@ -60,6 +60,7 @@ class EventForegroundTaskTest {
           InteractorModule(
             mainHandler = Handler(Looper.getMainLooper()),
           ),
+        executor = Executors.newSingleThreadScheduledExecutor(),
       )
 
     moshi = component.dataModule.moshi

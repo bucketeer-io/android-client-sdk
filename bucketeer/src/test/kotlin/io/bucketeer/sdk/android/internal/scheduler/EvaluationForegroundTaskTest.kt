@@ -59,6 +59,7 @@ class EvaluationForegroundTaskTest {
           InteractorModule(
             mainHandler = Handler(Looper.getMainLooper()),
           ),
+        executor = Executors.newSingleThreadScheduledExecutor(),
       )
 
     moshi = component.dataModule.moshi
@@ -257,6 +258,7 @@ class EvaluationForegroundTaskTest {
           InteractorModule(
             mainHandler = Handler(Looper.getMainLooper()),
           ),
+        executor = Executors.newSingleThreadScheduledExecutor(),
       )
 
     task =
@@ -325,6 +327,7 @@ class EvaluationForegroundTaskTest {
           InteractorModule(
             mainHandler = Handler(Looper.getMainLooper()),
           ),
+        executor = Executors.newSingleThreadScheduledExecutor(),
       )
 
     task =

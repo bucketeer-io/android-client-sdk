@@ -41,6 +41,7 @@ internal class BKTClientImpl(
         InteractorModule(
           mainHandler = mainHandler,
         ),
+      executor = executor,
     ),
 ) : BKTClient {
   private var taskScheduler: TaskScheduler? = null
@@ -128,14 +129,17 @@ internal class BKTClientImpl(
   }
 
   override fun fetchEvaluations(timeoutMillis: Long?): Future<BKTException?> =
-    executor.submit<BKTException?> {
-      fetchEvaluationsSync(component, executor, timeoutMillis)
-    }
+    component.evaluationCancellationRunner.scheduleTask(
+      block = { fetchEvaluationsSync(component, executor, timeoutMillis) },
+      retryPredicate = { it is BKTException.ClientClosedRequestException },
+    )
+
 
   override fun flush(): Future<BKTException?> =
-    executor.submit<BKTException?> {
-      flushSync(component)
-    }
+    component.eventCancellationRunner.scheduleTask(
+      block = { flushSync(component) },
+      retryPredicate = { it is BKTException.ClientClosedRequestException },
+    )
 
   @Deprecated(message = "evaluationDetails() is deprecated. Use stringEvaluationDetails() instead.")
   @Suppress("DEPRECATION")
@@ -341,4 +345,5 @@ internal class BKTClientImpl(
       }
     }
   }
+
 }

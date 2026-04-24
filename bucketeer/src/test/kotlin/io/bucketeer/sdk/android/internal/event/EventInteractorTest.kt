@@ -86,6 +86,7 @@ class EventInteractorTest {
           InteractorModule(
             mainHandler = Handler(Looper.getMainLooper()),
           ),
+        executor = java.util.concurrent.Executors.newSingleThreadScheduledExecutor(),
       )
 
     interactor = component.eventInteractor
