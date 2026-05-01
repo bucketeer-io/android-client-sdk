@@ -6,8 +6,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 /**
- * Regression tests for the "duration is nil and latencySecond is 0"
- * backend warning.
+ * Regression tests for [measureTimeSecondsWithResult] — the fix for the
+ * "duration is nil and latencySecond is 0" backend warning.
  *
  * Before the fix, [measureTimeMillisWithResult] used
  * `System.currentTimeMillis()`, which has 1ms resolution and is wall-clock.
@@ -16,11 +16,21 @@ import org.junit.runner.RunWith
  * `latencySecond = 0.0` which the backend rejected.
  *
  * The fix adds [measureTimeSecondsWithResult] which uses
- * `System.nanoTime()` (monotonic, sub-millisecond resolution) and returns
- * seconds as a Double. Any work that actually executed must measure > 0.
+ * `SystemClock.elapsedRealtimeNanos()` (monotonic, sub-millisecond resolution,
+ * and crucially counts time during Android deep sleep unlike `System.nanoTime()`)
+ * and returns seconds as a Double. Any work that actually executed must measure > 0.
+ *
+ * **Why two test files exist:**
+ * The unit test counterpart (`test/.../MeasureTimeSecondsWithResultTest`) runs
+ * on the JVM using a Robolectric shadow that substitutes
+ * `SystemClock.elapsedRealtimeNanos()` with `System.nanoTime()`. That shadow
+ * does *not* advance during Android deep sleep, so it cannot fully validate the
+ * production clock. This instrumentation test runs against the real
+ * `SystemClock` on an actual Android device, verifying that the sleep-aware
+ * clock path works correctly in production.
  */
 @RunWith(AndroidJUnit4::class)
-internal class ApiClientExtTest {
+internal class MeasureTimeSecondsWithResultTest {
   @Test
   fun measureTimeSecondsWithResultReturnsTheBlockResult() {
     val (_, result) = measureTimeSecondsWithResult { 42 }
@@ -37,7 +47,7 @@ internal class ApiClientExtTest {
   @Test
   fun measureTimeSecondsWithResultYieldsStrictlyPositiveSecondsForNonTrivialWork() {
     // Even cheap-but-real work (a few iterations of a method call) takes
-    // dozens of nanoseconds at minimum; with the new System.nanoTime()
+    // dozens of nanoseconds at minimum; with the new SystemClock.elapsedRealtimeNanos()
     // backed timer this must always measure > 0.
     repeat(100_000) { iter ->
       val (seconds, _) =
@@ -61,7 +71,7 @@ internal class ApiClientExtTest {
   fun measureTimeSecondsWithResultHasSubMillisecondResolution() {
     // The pre-fix `System.currentTimeMillis()` timer rounded to whole
     // milliseconds, so a < 1ms measurement was impossible. With
-    // `System.nanoTime()` we should easily measure a sub-ms interval.
+    // `SystemClock.elapsedRealtimeNanos()` we should easily measure a sub-ms interval.
     var sawSubMs = false
     for (i in 0 until 50) {
       val (seconds, _) = measureTimeSecondsWithResult { Unit }
