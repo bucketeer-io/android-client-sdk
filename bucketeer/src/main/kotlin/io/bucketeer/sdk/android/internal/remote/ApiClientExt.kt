@@ -140,3 +140,24 @@ inline fun <T> measureTimeMillisWithResult(block: () -> T): Pair<Long, T> {
   val result = block()
   return (System.currentTimeMillis() - start) to result
 }
+
+// Measures the elapsed time of `block` with sub-millisecond,
+// monotonic resolution and returns it as seconds (Double).
+//
+// Why this exists: System.currentTimeMillis() has 1ms resolution and is also
+// subject to NTP / user clock changes, which on AndroidTV and similar
+// devices regularly produced an elapsed time of 0ms for fast operations.
+// That made the SDK send `latencySecond = 0.0`, which the backend rejected
+// as "duration is nil and latencySecond is 0". System.nanoTime() is
+// monotonic and has nanosecond precision, so any work that actually
+// executed will be measured as > 0.
+@OptIn(ExperimentalContracts::class)
+inline fun <T> measureTimeSecondsWithResult(block: () -> T): Pair<Double, T> {
+  kotlin.contracts.contract {
+    callsInPlace(block, kotlin.contracts.InvocationKind.EXACTLY_ONCE)
+  }
+  val startNanos = System.nanoTime()
+  val result = block()
+  val seconds = (System.nanoTime() - startNanos) / 1_000_000_000.0
+  return seconds to result
+}
