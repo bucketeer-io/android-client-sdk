@@ -1,5 +1,6 @@
 package io.bucketeer.sdk.android.internal.remote
 
+import android.os.SystemClock
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.JsonDataException
 import com.squareup.moshi.JsonEncodingException
@@ -156,7 +157,7 @@ inline fun <T> measureTimeSecondsWithResult(block: () -> T): Pair<Double, T> {
   kotlin.contracts.contract {
     callsInPlace(block, kotlin.contracts.InvocationKind.EXACTLY_ONCE)
   }
-  val startNanos = System.nanoTime()
+  val startNanos = SystemClock.elapsedRealtimeNanos()
   val result = block()
   val seconds = (System.nanoTime() - startNanos) / 1_000_000_000.0
   return seconds to result
