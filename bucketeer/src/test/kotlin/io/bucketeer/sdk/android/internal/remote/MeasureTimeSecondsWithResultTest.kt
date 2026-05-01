@@ -17,7 +17,7 @@ import org.junit.Test
  * `System.nanoTime()` (monotonic, sub-millisecond resolution) and returns
  * seconds as a Double. Any work that actually executed must measure > 0.
  */
-internal class ApiClientExtTest {
+internal class MeasureTimeSecondsWithResultTest {
   @Test
   fun `measureTimeSecondsWithResult returns the block's result`() {
     val (_, result) = measureTimeSecondsWithResult { 42 }
@@ -36,13 +36,17 @@ internal class ApiClientExtTest {
     // Even cheap-but-real work (a few iterations of a method call) takes
     // dozens of nanoseconds at minimum; with the new System.nanoTime()
     // backed timer this must always measure > 0.
-    repeat(100) { iter ->
+    repeat(5_000) { iter ->
       val (seconds, _) =
         measureTimeSecondsWithResult {
-          // small amount of real work to ensure at least one nanosecond
-          // elapses between the two nanoTime() reads.
+          // Perform a small amount of real work to ensure that at least one
+          // nanosecond elapses between the two nanoTime() reads.
+          // Keep the loop at 50 iterations so the test stays fast while still
+          // making it very likely that measurable time has elapsed.
+          // The production work covered by this regression test, such as
+          // network requests, is much more expensive than this synthetic loop.
           var acc = 0L
-          for (i in 0 until 1_000) {
+          for (i in 0 until 50) {
             acc += i.toLong()
           }
           acc
@@ -60,7 +64,7 @@ internal class ApiClientExtTest {
     // milliseconds, so a < 1ms measurement was impossible. With
     // `System.nanoTime()` we should easily measure a sub-ms interval.
     var sawSubMs = false
-    for (i in 0 until 50) {
+    for (i in 0 until 1000) {
       val (seconds, _) = measureTimeSecondsWithResult { Unit }
       if (seconds > 0.0 && seconds < 0.001) {
         sawSubMs = true

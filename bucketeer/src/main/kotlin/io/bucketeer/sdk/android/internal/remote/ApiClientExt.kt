@@ -141,7 +141,7 @@ inline fun <T> measureTimeMillisWithResult(block: () -> T): Pair<Long, T> {
   return (System.currentTimeMillis() - start) to result
 }
 
-// Measures the elapsed wall-clock time of `block` with sub-millisecond,
+// Measures the elapsed time of `block` with sub-millisecond,
 // monotonic resolution and returns it as seconds (Double).
 //
 // Why this exists: System.currentTimeMillis() has 1ms resolution and is also
