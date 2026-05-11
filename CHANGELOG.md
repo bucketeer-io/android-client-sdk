@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.1](https://github.com/bucketeer-io/android-client-sdk/compare/v2.3.0...v2.3.1) (2026-05-11)
+
+
+### Bug Fixes
+
+* measure latencySecond with monotonic high-resolution clock ([#250](https://github.com/bucketeer-io/android-client-sdk/issues/250)) ([edeaa0b](https://github.com/bucketeer-io/android-client-sdk/commit/edeaa0b623f5265e9540db51ddd2d3ec35424614))
+
 ## [2.3.0](https://github.com/bucketeer-io/android-client-sdk/compare/v2.2.5...v2.3.0) (2026-04-24)
 
 
