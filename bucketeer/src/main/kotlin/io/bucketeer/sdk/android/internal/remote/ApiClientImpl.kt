@@ -107,8 +107,8 @@ internal class ApiClientImpl(
             actualClient.newCall(cloneRequest)
           logd { "--> Fetch Evaluation\n$body" }
 
-          val (millis, data) =
-            measureTimeMillisWithResult {
+          val (seconds, data) =
+            measureTimeSecondsWithResult {
               val rawResponse = call.execute()
               responseStatusCode = rawResponse.code
 
@@ -129,7 +129,7 @@ internal class ApiClientImpl(
 
           GetEvaluationsResult.Success(
             value = response,
-            seconds = millis / 1000.0,
+            seconds = seconds,
             sizeByte = contentLength,
             featureTag = featureTag,
           )
