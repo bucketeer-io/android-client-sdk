@@ -1585,6 +1585,186 @@ class BKTClientImplTest {
   }
 
   @Test
+  fun `stringVariation returns cached value without blocking while fetchEvaluations is retrying on 499`() {
+    // Step 1: Queue the response for BKTClient.initialize().
+    // This 200 populates the evaluation cache with user1Evaluations (evaluation1, evaluation2).
+    // We need at least one successful fetch before the retry scenario so the cache is non-empty.
+    server.enqueue(
+      MockResponse()
+        .setResponseCode(200)
+        .setBody(
+          moshi.adapter(GetEvaluationsResponse::class.java).toJson(
+            GetEvaluationsResponse(
+              evaluations = user1Evaluations,
+              userEvaluationsId = "user_evaluations_id_value",
+            ),
+          ),
+        ),
+    )
+
+    // Step 2: Queue a slow 499 for the upcoming fetchEvaluations() call.
+    // The 1-second body delay parks the executor thread on this response, which is
+    // orders of magnitude longer than the in-memory cache read we are about to perform.
+    server.enqueue(
+      MockResponse()
+        .setResponseCode(499)
+        .setBodyDelay(1, TimeUnit.SECONDS)
+        .setBody(
+          moshi.adapter(ErrorResponse::class.java).toJson(
+            ErrorResponse(
+              ErrorResponse.ErrorDetail(
+                code = 499,
+                message = "client closed request",
+              ),
+            ),
+          ),
+        ),
+    )
+
+    // Step 3: Queue a success response so the retry eventually resolves and the
+    // executor thread can finish cleanly (avoids lingering background work during teardown).
+    server.enqueue(
+      MockResponse()
+        .setResponseCode(200)
+        .setBody(
+          moshi.adapter(GetEvaluationsResponse::class.java).toJson(
+            GetEvaluationsResponse(
+              evaluations = user1Evaluations,
+              userEvaluationsId = "user_evaluations_id_value_updated",
+            ),
+          ),
+        ),
+    )
+
+    // Step 4: Initialize the client and WAIT for it to complete.
+    // After this, evaluation1 (featureId="test-feature-1", value="test variation value1")
+    // is stored in MemCache and SQLite.
+    BKTClient
+      .initialize(
+        ApplicationProvider.getApplicationContext(),
+        config,
+        user1.toBKTUser(),
+        3000,
+      ).get()
+
+    val client = BKTClient.getInstance() as BKTClientImpl
+
+    // Step 5: Drain the request the server already recorded during initialize() so the
+    // next takeRequest() below corresponds to the fetch, not the init call.
+    server.takeRequest()
+
+    // Step 6: Start a fetchEvaluations() on the executor - but do NOT call .get().
+    // The executor thread begins processing and blocks on the slow 499 response.
+    // The Future is returned instantly; the test thread continues without waiting.
+    val fetchFuture = client.fetchEvaluations()
+
+    // Step 7: Block until the executor has actually sent the fetch request and is now
+    // parked reading the 1s-delayed 499. This makes "during retry" deterministic instead
+    // of racing the executor's startup. Non-null assert fails fast if it never fires.
+    assertThat(server.takeRequest(2, TimeUnit.SECONDS)).isNotNull()
+
+    // Step 8: On the test thread, call stringVariation() while the executor is parked.
+    // getBKTEvaluationDetails() reads directly from MemCache - it never touches the executor.
+    val variationValue = client.stringVariation("test-feature-1", "default")
+
+    // Step 9: Timing-independent proof of non-blocking - the fetch CANNOT be done yet
+    // (executor still parked on the 1s body delay), yet variation already returned.
+    assertThat(fetchFuture.isDone()).isFalse()
+
+    // Step 10: The variation value must come from the cache populated in Step 4, not the
+    // default - proving the cache was readable while the executor was blocked retrying.
+    assertThat(variationValue).isEqualTo("test variation value1")
+
+    // Step 11: Drain the fetch Future so the executor finishes cleanly before teardown.
+    // Without this, the background retry could still be running when BKTClient.destroy()
+    // is called in @After, potentially causing flakiness in subsequent tests.
+    fetchFuture.get()
+  }
+
+  @Test
+  fun `stringVariation returns default value without blocking when cache is empty and initialize is retrying on 499`() {
+    // Step 1: Queue a slow 499 as the very first server response.
+    // This is the response the executor hits during BKTClient.initialize().
+    // The 1-second body delay holds the executor thread while the cache is still empty:
+    // initialize() runs refreshCache() first (finds nothing in SQLite -> MemCache stays empty),
+    // then calls fetchEvaluationsSync() which blocks here on the 499.
+    server.enqueue(
+      MockResponse()
+        .setResponseCode(499)
+        .setBodyDelay(1, TimeUnit.SECONDS)
+        .setBody(
+          moshi.adapter(ErrorResponse::class.java).toJson(
+            ErrorResponse(
+              ErrorResponse.ErrorDetail(
+                code = 499,
+                message = "client closed request",
+              ),
+            ),
+          ),
+        ),
+    )
+
+    // Step 2: Queue a success for the retry so the executor can eventually finish cleanly.
+    server.enqueue(
+      MockResponse()
+        .setResponseCode(200)
+        .setBody(
+          moshi.adapter(GetEvaluationsResponse::class.java).toJson(
+            GetEvaluationsResponse(
+              evaluations = user1Evaluations,
+              userEvaluationsId = "user_evaluations_id_value",
+            ),
+          ),
+        ),
+    )
+
+    // Step 3: Call initialize() but do NOT await the returned Future.
+    // BKTClient.initialize() sets `instance = client` synchronously (before submitting
+    // to the executor), so BKTClient.getInstance() is available immediately after this line.
+    // The executor begins the background task: refreshCache() (no-op, DB is empty),
+    // then fetchEvaluationsSync() which hits the slow 499 above.
+    val initFuture =
+      BKTClient.initialize(
+        ApplicationProvider.getApplicationContext(),
+        config,
+        user1.toBKTUser(),
+        10_000, // long timeout so the retry can complete; we don't await this
+      )
+
+    // Step 4: Block until the executor has run refreshCache() (empty DB -> empty MemCache)
+    // and sent the get_evaluations request, where it is now parked on the 1s-delayed 499.
+    // Because the HTTP request only fires AFTER refreshCache completes, this guarantees the
+    // empty-cache state is settled by the time we read - no race with the executor.
+    assertThat(server.takeRequest(2, TimeUnit.SECONDS)).isNotNull()
+
+    // Step 5: Call stringVariation() on the test thread while the executor is parked.
+    // MemCache is empty so getLatest() returns null. The variation path never touches the
+    // executor - it returns a default BKTEvaluationDetails instantly.
+    val variationValue = BKTClient.getInstance().stringVariation("test-feature-1", "default")
+
+    // Step 6: Timing-independent proof of non-blocking - init's fetch CANNOT be done yet
+    // (executor parked on the 1s body delay), yet variation already returned.
+    assertThat(initFuture.isDone()).isFalse()
+
+    // Step 7: Must return the caller-supplied default - there is nothing in cache yet.
+    assertThat(variationValue).isEqualTo("default")
+
+    // Step 8: Drain the initialize Future so the executor finishes before @After teardown.
+    // This also confirms the SDK self-recovers: after the 499 retry succeeds,
+    // the cache is populated and future variation calls would return real values.
+    initFuture.get()
+
+    // Step 9 (sanity): After the fetch completes, the cache must now be populated.
+    // This confirms the retry itself succeeded - the test only delayed variation,
+    // it did not break the eventual fetch.
+    val clientImpl = BKTClient.getInstance() as BKTClientImpl
+    assertThat(
+      clientImpl.componentImpl.dataModule.evaluationStorage
+        .get(),
+    ).isNotEmpty()
+  }
+
+  @Test
   fun `fetchEvaluations - onUpdateListener failure`() {
     server.enqueue(
       MockResponse()
