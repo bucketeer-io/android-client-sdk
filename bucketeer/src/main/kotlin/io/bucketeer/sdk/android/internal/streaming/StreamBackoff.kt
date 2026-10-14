@@ -31,8 +31,8 @@ internal class StreamBackoff(
    * attempt: the base delay doubles (capped at the max) and is then reduced by a random amount
    * up to [JITTER_RATIO] of the base, so many clients don't reconnect at the same moment.
    *
-   * Computed in Double: as a Long, `initial * 2^attempt` would overflow to a negative delay after
-   * about 53 attempts. In Double it becomes Infinity instead, which the max caps.
+   * Computed in Double, with the exponent capped at [MAX_EXPONENT] so the value stays finite. As a
+   * Long, `initial * 2^attempt` would overflow to a negative delay after about 53 attempts.
    */
   fun nextDelayMillis(): Long {
     val exponent = minOf(attempt, MAX_EXPONENT)
@@ -54,10 +54,12 @@ internal class StreamBackoff(
     const val DEFAULT_MAX_DELAY_MILLIS = 30_000L
     const val JITTER_RATIO = 0.5
 
+    // Keeps 2^exponent finite: in Double, 2^attempt becomes Infinity after about 1,000 attempts.
     // 2^30 ms is about 12 days, far above any real max delay, so this cap never changes a
-    // reachable delay. It is a second guard: the floor of 1 in the constructor is what keeps
-    // `0 * Infinity` (NaN, whose toLong() is 0, a reconnect loop with no wait) from happening.
-    // The cap keeps the value finite even if that floor is ever removed.
+    // reachable delay. Two guards keep the delay from reaching 0 (a reconnect loop with no wait):
+    // the floor of 1 in the constructor, and this cap, which keeps `0 * Infinity` (NaN, whose
+    // toLong() is 0) from happening even if the floor is ever removed. While the floor is in
+    // place, the max alone would also cap Infinity, so no test can tell whether this cap is there.
     const val MAX_EXPONENT = 30
   }
 }
