@@ -177,6 +177,16 @@ class SSEParserTest {
   }
 
   @Test
+  fun `offset without length reads to the end of the array`() {
+    val before = bytes("data: before\n\n")
+    val array = before + bytes("data: x\n\n")
+
+    val events = SSEParser().append(array, offset = before.size)
+
+    assertThat(events).containsExactly(SSEEvent("message", "x"))
+  }
+
+  @Test
   fun `empty chunk between CR and LF keeps one line break`() {
     val events = parse(bytes("data: a\r"), ByteArray(0), bytes("\ndata: b\n\n"))
 

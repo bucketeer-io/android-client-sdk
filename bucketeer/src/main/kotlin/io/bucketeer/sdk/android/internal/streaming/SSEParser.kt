@@ -42,7 +42,7 @@ internal class SSEParser {
   fun append(
     bytes: ByteArray,
     offset: Int = 0,
-    length: Int = bytes.size,
+    length: Int = bytes.size - offset,
   ): List<SSEEvent> {
     if (length == 0) return emptyList()
 
