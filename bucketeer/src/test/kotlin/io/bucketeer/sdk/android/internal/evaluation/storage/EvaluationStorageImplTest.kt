@@ -220,7 +220,7 @@ class EvaluationStorageImplTest {
         listOf(evaluation1, evaluation2),
         emptyList(),
         "12340",
-      ),
+      ) == EvaluationWriteResult.Landed(true),
     )
     assert(evaluationStorage.get() == listOf(evaluation1, evaluation2))
 
@@ -238,7 +238,7 @@ class EvaluationStorageImplTest {
         listOf(evaluation2ForUpdate),
         listOf(evaluation1.featureId),
         "12341",
-      ),
+      ) == EvaluationWriteResult.Landed(true),
     )
     assert(evaluationStorage.get() == listOf(evaluation2ForUpdate))
 
@@ -256,7 +256,7 @@ class EvaluationStorageImplTest {
         listOf(evaluation2ForUpdate, evaluationForTestInsert),
         listOf(evaluation1.featureId),
         "12342",
-      ),
+      ) == EvaluationWriteResult.Landed(true),
     )
     assert(evaluationStorage.get() == listOf(evaluation2ForUpdate, evaluationForTestInsert))
 
@@ -274,7 +274,7 @@ class EvaluationStorageImplTest {
         listOf(evaluationForTestInsert),
         listOf(evaluation1.featureId, evaluation2.featureId),
         "12343",
-      ),
+      ) == EvaluationWriteResult.Landed(true),
     )
     assert(evaluationStorage.get() == listOf(evaluationForTestInsert))
 

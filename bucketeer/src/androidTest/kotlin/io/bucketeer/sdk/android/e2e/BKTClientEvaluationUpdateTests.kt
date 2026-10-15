@@ -84,7 +84,10 @@ class BKTClientEvaluationUpdateTests {
             type = ReasonType.DEFAULT,
           ),
       )
-    evaluationStorage.deleteAllAndInsert("", listOf(tobeRemoveEvaluation), "0")
+    // Write with the stored evaluatedAt so the stale-write check lets it through,
+    // then make evaluatedAt "too old" directly, which is what this test needs.
+    evaluationStorage.deleteAllAndInsert("", listOf(tobeRemoveEvaluation), evaluationStorage.getEvaluatedAt())
+    (client.component as ComponentImpl).dataModule.evaluationSharedPrefs.evaluatedAt = "0"
     assert(evaluationStorage.get() == listOf(tobeRemoveEvaluation))
     assert(evaluationSQLDao.get(USER_ID).contains(tobeRemoveEvaluation))
 
@@ -155,7 +158,8 @@ class BKTClientEvaluationUpdateTests {
             type = ReasonType.DEFAULT,
           ),
       )
-    evaluationStorage.deleteAllAndInsert("", listOf(tobeRemoveEvaluation), "0")
+    // Use the stored evaluatedAt so the stale-write check lets this write through.
+    evaluationStorage.deleteAllAndInsert("", listOf(tobeRemoveEvaluation), evaluationStorage.getEvaluatedAt())
     assert(evaluationStorage.get() == listOf(tobeRemoveEvaluation))
     assert(evaluationSQLDao.get(USER_ID).contains(tobeRemoveEvaluation))
     // Prepare for switch tag
