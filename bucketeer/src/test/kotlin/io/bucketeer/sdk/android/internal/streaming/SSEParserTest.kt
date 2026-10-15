@@ -1,6 +1,7 @@
 package io.bucketeer.sdk.android.internal.streaming
 
 import com.google.common.truth.Truth.assertThat
+import org.junit.Assert.assertThrows
 import org.junit.Test
 
 class SSEParserTest {
@@ -184,6 +185,22 @@ class SSEParserTest {
     val events = SSEParser().append(array, offset = before.size)
 
     assertThat(events).containsExactly(SSEEvent("message", "x"))
+  }
+
+  @Test
+  fun `invalid offset or length is rejected without changing parser state`() {
+    val parser = SSEParser()
+    val array = bytes("data: x\n\n")
+    // Ends with a bare CR, so the parser is waiting to skip a following LF.
+    assertThat(parser.append(bytes("data: a\r"))).isEmpty()
+
+    assertThrows(IllegalArgumentException::class.java) { parser.append(array, 0, -1) }
+    assertThrows(IllegalArgumentException::class.java) { parser.append(array, 0, array.size + 1) }
+    assertThrows(IllegalArgumentException::class.java) { parser.append(array, -1, 1) }
+    assertThrows(IllegalArgumentException::class.java) { parser.append(array, array.size + 1) }
+
+    // Positive control: the pending CRLF and data line survived the rejected calls.
+    assertThat(parser.append(bytes("\ndata: b\n\n"))).containsExactly(SSEEvent("message", "a\nb"))
   }
 
   @Test

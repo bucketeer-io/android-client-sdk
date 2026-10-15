@@ -38,12 +38,21 @@ internal class SSEParser {
   /** `data:` lines seen so far in the current block. */
   private val dataLines = mutableListOf<String>()
 
-  /** Feeds the next network chunk. Returns the events that became complete (often none). */
+  /**
+   * Feeds the next network chunk. Returns the events that became complete (often none).
+   *
+   * Throws IllegalArgumentException when [offset] and [length] don't select a slice of [bytes]
+   * (for example the -1 that InputStream.read returns at the end of the stream), before any
+   * parser state changes.
+   */
   fun append(
     bytes: ByteArray,
     offset: Int = 0,
     length: Int = bytes.size - offset,
   ): List<SSEEvent> {
+    require(offset >= 0 && length >= 0 && offset <= bytes.size - length) {
+      "Invalid slice: offset=$offset, length=$length, size=${bytes.size}"
+    }
     if (length == 0) return emptyList()
 
     val events = mutableListOf<SSEEvent>()
