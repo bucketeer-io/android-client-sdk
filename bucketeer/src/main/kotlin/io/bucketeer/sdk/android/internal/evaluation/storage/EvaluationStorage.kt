@@ -31,14 +31,28 @@ internal interface EvaluationStorage {
     evaluationsId: String,
     evaluations: List<Evaluation>,
     evaluatedAt: String,
-  )
+  ): EvaluationWriteResult
 
   fun update(
     evaluationsId: String,
     evaluations: List<Evaluation>,
     archivedFeatureIds: List<String>,
     evaluatedAt: String,
-  ): Boolean
+  ): EvaluationWriteResult
 
   fun refreshCache()
+}
+
+/**
+ * What a storage write did. Callers must not notify listeners, or clear the
+ * user-attributes-updated flag, on [SkippedStale].
+ */
+internal sealed class EvaluationWriteResult {
+  /** Nothing changed: the incoming evaluatedAt is older than the stored one. */
+  data object SkippedStale : EvaluationWriteResult()
+
+  /** Written. [shouldNotify] means "worth telling listeners", not "stored values changed". */
+  data class Landed(
+    val shouldNotify: Boolean,
+  ) : EvaluationWriteResult()
 }

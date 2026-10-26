@@ -16,6 +16,8 @@ import io.bucketeer.sdk.android.internal.evaluation.cache.EvaluationSharedPrefsI
 import io.bucketeer.sdk.android.internal.evaluation.db.EvaluationSQLDao
 import io.bucketeer.sdk.android.internal.evaluation.db.EvaluationSQLDaoImpl
 import io.bucketeer.sdk.android.internal.model.Evaluation
+import io.bucketeer.sdk.android.mocks.evaluation1
+import io.bucketeer.sdk.android.mocks.evaluation2
 import io.bucketeer.sdk.android.mocks.user1
 import org.junit.After
 import org.junit.Before
@@ -24,6 +26,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.concurrent.thread
 
 @RunWith(RobolectricTestRunner::class)
@@ -149,5 +152,73 @@ class EvaluationStorageConcurrencyTest {
     assertWithMessage("version should be 2 (two updates), got ${finalState.updateSequence}")
       .that(finalState.updateSequence)
       .isEqualTo(2L)
+  }
+
+  @Test
+  fun `an older write cannot commit after a newer one`() {
+    evaluationSharedPrefs.evaluatedAt = "0"
+    val blockingDao = BlockingFirstPutEvaluationSQLDao(evaluationSQLDao)
+    val storage =
+      EvaluationStorageImpl(
+        userId,
+        blockingDao,
+        evaluationSharedPrefs,
+        memCache,
+      )
+
+    // Thread A (newer) blocks inside its database write.
+    var newerResult: EvaluationWriteResult? = null
+    val newer =
+      thread {
+        newerResult = storage.deleteAllAndInsert("newer_id", listOf(evaluation1), "2000")
+      }
+    assertWithMessage("newer writer never reached the database write")
+      .that(blockingDao.firstPutEntered.await(5, TimeUnit.SECONDS))
+      .isTrue()
+
+    // Thread B (older) starts while A is still writing. Its check would pass against the
+    // "0" still stored, so only a lock held across check and write keeps it out.
+    val olderReturned = AtomicBoolean(false)
+    var olderResult: EvaluationWriteResult? = null
+    val older =
+      thread {
+        olderResult = storage.deleteAllAndInsert("older_id", listOf(evaluation2), "1000")
+        olderReturned.set(true)
+      }
+    Thread.sleep(300)
+    assertWithMessage("older writer must wait while the newer write is in progress")
+      .that(olderReturned.get())
+      .isFalse()
+
+    blockingDao.releaseFirstPut.countDown()
+    newer.join(5_000)
+    older.join(5_000)
+
+    assertThat(newerResult).isEqualTo(EvaluationWriteResult.Landed(shouldNotify = true))
+    assertThat(olderResult).isEqualTo(EvaluationWriteResult.SkippedStale)
+    assertThat(evaluationSharedPrefs.evaluatedAt).isEqualTo("2000")
+    assertThat(evaluationSharedPrefs.currentEvaluationsId).isEqualTo("newer_id")
+    assertThat(evaluationSQLDao.get(userId)).containsExactly(evaluation1)
+    assertThat(memCache.get(userId)).containsExactly(evaluation1)
+  }
+}
+
+/** Blocks the first put until released, so a second writer can start during that write. */
+private class BlockingFirstPutEvaluationSQLDao(
+  private val real: EvaluationSQLDao,
+) : EvaluationSQLDao by real {
+  val firstPutEntered = CountDownLatch(1)
+  val releaseFirstPut = CountDownLatch(1)
+  private val isFirstPut = AtomicBoolean(true)
+
+  override fun put(
+    userId: String,
+    list: List<Evaluation>,
+  ) {
+    if (isFirstPut.getAndSet(false)) {
+      firstPutEntered.countDown()
+      releaseFirstPut.await(5, TimeUnit.SECONDS)
+    }
+    real.put(userId, list)
   }
 }
