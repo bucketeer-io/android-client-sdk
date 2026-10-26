@@ -30,6 +30,9 @@ internal interface EventSource {
 
   fun open(request: Request)
 
-  /** Safe from any thread. No callback runs after it returns. */
+  /**
+   * Safe from any thread. After it returns, no new callback starts. A callback that already
+   * passed its closed check may still run, so callers must ignore callbacks after they stop.
+   */
   fun close()
 }
