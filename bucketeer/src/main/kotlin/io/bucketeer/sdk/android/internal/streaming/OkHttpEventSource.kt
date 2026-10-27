@@ -142,7 +142,7 @@ internal class OkHttpEventSource(
     val listener = listeners[event.name]
     when {
       listener != null -> listener(event)
-      event.name == SSEParser.DEFAULT_EVENT_NAME || event.name.isEmpty() -> onMessage?.invoke(event)
+      event.name == SSEParser.DEFAULT_EVENT_NAME -> onMessage?.invoke(event)
       else -> logd { "Dropped stream event with no listener: ${event.name}" }
     }
   }
