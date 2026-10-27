@@ -7,6 +7,7 @@ import io.bucketeer.sdk.android.internal.loge
 import io.bucketeer.sdk.android.internal.remote.FixJsonContentTypeInterceptor
 import okhttp3.Call
 import okhttp3.Callback
+import okhttp3.ConnectionPool
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
@@ -175,8 +176,12 @@ internal fun createStreamHttpClient(): OkHttpClient =
     .callTimeout(0, TimeUnit.MILLISECONDS)
     // Above the 70 s silence timer, so our own timer fires first.
     .readTimeout(Constants.Streaming.READ_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)
-    // Our backoff decides when to retry, not OkHttp.
-    .retryOnConnectionFailure(false)
+    // The same 90 s as iOS, whose request timeout also covers connecting and sending.
+    .connectTimeout(Constants.Streaming.READ_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)
+    .writeTimeout(Constants.Streaming.READ_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)
+    // No idle connections: every attempt dials a new one, like iOS's new URLSession per attempt.
+    // A pooled connection that died silently would otherwise be reused by every retry.
+    .connectionPool(ConnectionPool(0, 1, TimeUnit.MINUTES))
     // A network interceptor, as in ApiClientImpl: as a normal interceptor, OkHttp would add
     // "; charset=utf-8" back to Content-Type after it ran.
     .addNetworkInterceptor(FixJsonContentTypeInterceptor())

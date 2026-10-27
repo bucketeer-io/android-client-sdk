@@ -215,13 +215,27 @@ class OkHttpEventSourceTest {
   }
 
   @Test
-  fun `stream client has no call timeout and a 90 second read timeout`() {
+  fun `stream client has no call timeout and 90 second connect read and write timeouts`() {
     assertThat(client.callTimeoutMillis).isEqualTo(0)
+    assertThat(client.connectTimeoutMillis).isEqualTo(90_000)
     assertThat(client.readTimeoutMillis).isEqualTo(90_000)
-    assertThat(client.retryOnConnectionFailure).isFalse()
+    assertThat(client.writeTimeoutMillis).isEqualTo(90_000)
+    assertThat(client.retryOnConnectionFailure).isTrue()
     assertThat(client.interceptors).isEmpty()
     assertThat(client.networkInterceptors).hasSize(1)
     assertThat(client.networkInterceptors[0]).isInstanceOf(FixJsonContentTypeInterceptor::class.java)
+  }
+
+  @Test
+  fun `stream connection is closed when its call ends`() {
+    server.enqueue(sse("data: a\n\n"))
+    val (es, r) = newSource()
+
+    es.open(request())
+
+    r.awaitEvent("error:null")
+    // A pooled connection would be reused by the next attempt, even after a silent drop.
+    awaitUntil { client.connectionPool.connectionCount() == 0 }
   }
 
   @Test
