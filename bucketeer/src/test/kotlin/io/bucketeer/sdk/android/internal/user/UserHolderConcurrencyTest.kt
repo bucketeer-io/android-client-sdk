@@ -3,6 +3,7 @@ package io.bucketeer.sdk.android.internal.user
 import com.google.common.truth.Truth.assertThat
 import io.bucketeer.sdk.android.internal.model.User
 import org.junit.Test
+import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
@@ -10,8 +11,8 @@ import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * The user is written on the app's thread (updateUserAttributes) and read on the SDK executor
- * (polling, the stream request, events). May pass even without @Volatile on the field: the
- * annotation itself is checked in review.
+ * (polling, the stream request, events). The first test may pass even without @Volatile on the
+ * field: the annotation itself is checked in review.
  */
 class UserHolderConcurrencyTest {
   @Test
@@ -48,5 +49,28 @@ class UserHolderConcurrencyTest {
       writing.set(false)
       executor.shutdownNow()
     }
+  }
+
+  @Test
+  fun `attribute updates from two threads at once are never lost`() {
+    val holder = UserHolder(User(id = "user-1", data = mapOf("count" to "0")))
+    val start = CountDownLatch(1)
+
+    val writers =
+      List(2) {
+        Thread {
+          start.await()
+          repeat(10_000) {
+            holder.updateAttributes { previous ->
+              previous + ("count" to "${previous.getValue("count").toInt() + 1}")
+            }
+          }
+        }
+      }
+    writers.forEach { it.start() }
+    start.countDown()
+    writers.forEach { it.join(10_000) }
+
+    assertThat(holder.get().data["count"]).isEqualTo("20000")
   }
 }
