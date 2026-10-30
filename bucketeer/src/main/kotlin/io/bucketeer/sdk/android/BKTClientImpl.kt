@@ -46,7 +46,8 @@ internal class BKTClientImpl(
   // Tests only: replaces the stream's executor, timers, event sources and fallback.
   private val streamingTaskDependencies: StreamingTaskDependencies? = null,
 ) : BKTClient {
-  private var taskScheduler: TaskScheduler? = null
+  // Written on the main thread, read on the app's thread (updateUserAttributes, resetTasks).
+  @Volatile private var taskScheduler: TaskScheduler? = null
 
   override fun booleanVariation(
     featureId: String,
@@ -128,6 +129,7 @@ internal class BKTClientImpl(
     // userAttributesUpdated: when the user attributes change via the customAttributes interface,
     // the userAttributesUpdated field must be set to true in the next request.
     component.evaluationInteractor.setUserAttributesUpdated()
+    taskScheduler?.onUserAttributesUpdated()
   }
 
   override fun fetchEvaluations(timeoutMillis: Long?): Future<BKTException?> =
@@ -179,7 +181,10 @@ internal class BKTClientImpl(
     listenEvaluationInteractorError()
     return executor.submit<BKTException?> {
       refreshCache()
-      fetchEvaluationsSync(component, executor, timeoutMillis)
+      val result = fetchEvaluationsSync(component, executor, timeoutMillis)
+      // Posted after scheduleTasks() posted its block, so taskScheduler exists by then.
+      runOnMainThread { taskScheduler?.enableEvaluationTask() }
+      result
     }
   }
 
@@ -266,12 +271,16 @@ internal class BKTClientImpl(
   private fun scheduleTasks() {
     // Lifecycle observer must be executed on the main thread
     runOnMainThread {
-      taskScheduler = TaskScheduler(component, executor)
+      taskScheduler = TaskScheduler(component, executor, streamingTaskDependencies)
       ProcessLifecycleOwner.get().lifecycle.addObserver(taskScheduler!!)
     }
   }
 
   internal fun resetTasks() {
+    // On the calling thread: off the main thread the block below only gets posted, and destroy()
+    // could cancel the stream call first. Its error would then start polling on a destroyed
+    // client.
+    taskScheduler?.destroyStreaming()
     runOnMainThread {
       taskScheduler?.let {
         it.stop()

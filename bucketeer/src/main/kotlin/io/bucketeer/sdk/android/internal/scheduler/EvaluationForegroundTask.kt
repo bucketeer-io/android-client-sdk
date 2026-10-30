@@ -20,12 +20,15 @@ internal class EvaluationForegroundTask(
 
   private var retryCount: Int = 0
 
-  private fun reschedule(interval: Long) {
+  private fun reschedule(
+    interval: Long,
+    initialDelay: Long = interval,
+  ) {
     scheduledFuture?.cancel(false)
     scheduledFuture =
       executor.scheduleWithFixedDelay(
         { fetchEvaluations() },
-        interval,
+        initialDelay,
         interval,
         TimeUnit.MILLISECONDS,
       )
@@ -66,8 +69,13 @@ internal class EvaluationForegroundTask(
     reschedule(component.config.pollingInterval)
   }
 
+  /**
+   * Same as start(), but the first fetch runs right away when [immediately] is true, so a stream
+   * drop doesn't leave evaluations stale for a whole pollingInterval.
+   */
   override fun start(immediately: Boolean) {
-    start()
+    val interval = component.config.pollingInterval
+    reschedule(interval, if (immediately) 0 else interval)
   }
 
   override fun stop() {

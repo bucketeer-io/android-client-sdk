@@ -4,17 +4,32 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import io.bucketeer.sdk.android.internal.di.Component
 import io.bucketeer.sdk.android.internal.di.StreamingTaskDependencies
+import io.bucketeer.sdk.android.internal.di.StreamingTaskDependenciesImpl
 import java.util.concurrent.ScheduledExecutorService
 
 internal class TaskScheduler(
   private val component: Component,
   private val executor: ScheduledExecutorService,
   // Tests only.
-  private val streamingTaskDependencies: StreamingTaskDependencies? = null,
+  streamingTaskDependencies: StreamingTaskDependencies? = null,
 ) : DefaultLifecycleObserver {
+  // Declared before foregroundSchedulers, which reads it: properties initialize in order.
+  private val streamingTask: StreamingTask? =
+    if (component.config.enableStreaming) {
+      StreamingTask(
+        config = component.config,
+        userProvider = { component.userHolder.get() },
+        interactor = component.evaluationInteractor,
+        moshi = component.moshi,
+        dependencies = streamingTaskDependencies ?: StreamingTaskDependenciesImpl(component, executor),
+      )
+    } else {
+      null
+    }
+
   private val foregroundSchedulers: List<ScheduledTask> =
     listOf(
-      EvaluationForegroundTask(component, executor),
+      streamingTask ?: EvaluationForegroundTask(component, executor),
       EventForegroundTask(component, executor),
     )
 
@@ -59,11 +74,17 @@ internal class TaskScheduler(
   }
 
   /** Called once the initial fetch has finished. Opens the stream if streaming is on. Thread-safe. */
-  fun enableEvaluationTask() {}
+  fun enableEvaluationTask() {
+    streamingTask?.enable()
+  }
 
   /** Called by BKTClient.updateUserAttributes. Only forwards; StreamingTask merges and reconnects. */
-  fun onUserAttributesUpdated() {}
+  fun onUserAttributesUpdated() {
+    streamingTask?.onUserAttributesUpdated()
+  }
 
   /** Thread-safe. Lets BKTClient close the stream, for good, before its own destroy runs. */
-  fun destroyStreaming() {}
+  fun destroyStreaming() {
+    streamingTask?.destroy()
+  }
 }

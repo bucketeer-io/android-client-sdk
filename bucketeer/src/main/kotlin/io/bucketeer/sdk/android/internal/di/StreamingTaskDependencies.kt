@@ -1,7 +1,10 @@
 package io.bucketeer.sdk.android.internal.di
 
+import io.bucketeer.sdk.android.internal.scheduler.EvaluationForegroundTask
 import io.bucketeer.sdk.android.internal.scheduler.StreamingFallbackTask
 import io.bucketeer.sdk.android.internal.streaming.EventSource
+import io.bucketeer.sdk.android.internal.streaming.ExecutorStreamScheduler
+import io.bucketeer.sdk.android.internal.streaming.OkHttpEventSource
 import io.bucketeer.sdk.android.internal.streaming.StreamBackoff
 import io.bucketeer.sdk.android.internal.streaming.StreamScheduler
 import java.util.concurrent.Executor
@@ -28,12 +31,11 @@ internal class StreamingTaskDependenciesImpl(
   private val component: Component,
   override val executor: ScheduledExecutorService,
 ) : StreamingTaskDependencies {
-  override val scheduler: StreamScheduler
-    get() = TODO()
+  override val scheduler: StreamScheduler by lazy { ExecutorStreamScheduler(executor) }
 
-  override fun makeEventSource(): EventSource = TODO()
+  override fun makeEventSource(): EventSource = OkHttpEventSource(component.streamHttpClient, executor)
 
-  override fun makeFallbackTask(): StreamingFallbackTask = TODO()
+  override fun makeFallbackTask(): StreamingFallbackTask = EvaluationForegroundTask(component, executor)
 
-  override fun makeBackoff(): StreamBackoff = TODO()
+  override fun makeBackoff(): StreamBackoff = StreamBackoff()
 }
