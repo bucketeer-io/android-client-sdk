@@ -1,10 +1,12 @@
 package io.bucketeer.sdk.android.internal.di
 
 import android.content.Context
+import com.squareup.moshi.Moshi
 import io.bucketeer.sdk.android.BKTConfig
 import io.bucketeer.sdk.android.internal.evaluation.EvaluationInteractor
 import io.bucketeer.sdk.android.internal.event.EventInteractor
 import io.bucketeer.sdk.android.internal.user.UserHolder
+import okhttp3.OkHttpClient
 
 internal interface Component {
   val context: Context
@@ -12,6 +14,10 @@ internal interface Component {
   val userHolder: UserHolder
   val evaluationInteractor: EvaluationInteractor
   val eventInteractor: EventInteractor
+  val moshi: Moshi
+
+  /** Shared by every stream connection. */
+  val streamHttpClient: OkHttpClient
 
   fun destroy()
 }
@@ -28,6 +34,12 @@ internal class ComponentImpl(
 
   override val userHolder: UserHolder
     get() = dataModule.userHolder
+
+  override val moshi: Moshi
+    get() = dataModule.moshi
+
+  override val streamHttpClient: OkHttpClient
+    get() = dataModule.streamHttpClient
 
   override val evaluationInteractor: EvaluationInteractor by lazy {
     interactorModule.evaluationInteractor(

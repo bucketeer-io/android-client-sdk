@@ -378,4 +378,46 @@ class EvaluationForegroundTaskTest {
       equalIntervalComponent.dataModule.destroy()
     }
   }
+
+  @Test
+  fun `start immediately fetches right away then keeps polling`() {
+    repeat(2) {
+      server.enqueueResponse(
+        moshi,
+        200,
+        GetEvaluationsResponse(
+          evaluations = user1Evaluations,
+          userEvaluationsId = "user_evaluations_id_value",
+        ),
+      )
+    }
+
+    task.start(immediately = true)
+
+    val (time1, _) = measureTimeMillisWithResult { server.takeRequest(2, TimeUnit.SECONDS) }
+    assertThat(server.requestCount).isEqualTo(1)
+    assertThat(time1).isLessThan(500L)
+
+    val (time2, _) = measureTimeMillisWithResult { server.takeRequest(2, TimeUnit.SECONDS) }
+    assertThat(server.requestCount).isEqualTo(2)
+    assertThat(time2).isAtLeast(980L)
+  }
+
+  @Test
+  fun `start without immediately waits for the interval`() {
+    server.enqueueResponse(
+      moshi,
+      200,
+      GetEvaluationsResponse(
+        evaluations = user1Evaluations,
+        userEvaluationsId = "user_evaluations_id_value",
+      ),
+    )
+
+    task.start(immediately = false)
+
+    val (time, _) = measureTimeMillisWithResult { server.takeRequest(2, TimeUnit.SECONDS) }
+    assertThat(server.requestCount).isEqualTo(1)
+    assertThat(time).isAtLeast(980L)
+  }
 }

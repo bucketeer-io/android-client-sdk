@@ -29,7 +29,7 @@ internal class EvaluationInteractor(
   private val idGenerator: IdGenerator,
   featureTag: String,
   private val mainHandler: Handler,
-) {
+) : StreamingEvaluationInteractor {
   @VisibleForTesting
   internal val updateListeners = mutableMapOf<String, BKTClient.EvaluationUpdateListener>()
 
@@ -110,17 +110,17 @@ internal class EvaluationInteractor(
     return result
   }
 
-  val cachedEvaluationsState: CachedEvaluationsState
+  override val cachedEvaluationsState: CachedEvaluationsState
     get() =
       CachedEvaluationsState(
         userEvaluationsId = evaluationStorage.getCurrentEvaluationId(),
         evaluatedAt = evaluationStorage.getEvaluatedAt(),
       )
 
-  val userAttributesState: UserAttributesState
+  override val userAttributesState: UserAttributesState
     get() = evaluationStorage.getUserAttributesState()
 
-  fun clearUserAttributesUpdated(state: UserAttributesState) {
+  override fun clearUserAttributesUpdated(state: UserAttributesState) {
     evaluationStorage.clearUserAttributesUpdated(state)
   }
 
@@ -135,9 +135,9 @@ internal class EvaluationInteractor(
    * destroy after the write still suppresses callbacks into torn-down app code. The write is not
    * rolled back.
    */
-  fun applyStreamedEvaluations(
+  override fun applyStreamedEvaluations(
     response: GetEvaluationsResponse,
-    shouldNotify: () -> Boolean = { true },
+    shouldNotify: () -> Boolean,
   ) {
     // Without a readable timestamp the stale check cannot order this payload, so applying it
     // could rewind the cache.
