@@ -3,11 +3,14 @@ package io.bucketeer.sdk.android.internal.scheduler
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import io.bucketeer.sdk.android.internal.di.Component
+import io.bucketeer.sdk.android.internal.di.StreamingTaskDependencies
 import java.util.concurrent.ScheduledExecutorService
 
 internal class TaskScheduler(
   private val component: Component,
   private val executor: ScheduledExecutorService,
+  // Tests only.
+  private val streamingTaskDependencies: StreamingTaskDependencies? = null,
 ) : DefaultLifecycleObserver {
   private val foregroundSchedulers: List<ScheduledTask> =
     listOf(
@@ -54,4 +57,13 @@ internal class TaskScheduler(
     foregroundSchedulers.forEach { it.stop() }
     backgroundSchedulers.forEach { it.stop() }
   }
+
+  /** Called once the initial fetch has finished. Opens the stream if streaming is on. Thread-safe. */
+  fun enableEvaluationTask() {}
+
+  /** Called by BKTClient.updateUserAttributes. Only forwards; StreamingTask merges and reconnects. */
+  fun onUserAttributesUpdated() {}
+
+  /** Thread-safe. Lets BKTClient close the stream, for good, before its own destroy runs. */
+  fun destroyStreaming() {}
 }

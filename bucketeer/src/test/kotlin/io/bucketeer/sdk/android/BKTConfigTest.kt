@@ -1,6 +1,7 @@
 package io.bucketeer.sdk.android
 
 import com.google.common.truth.Truth.assertThat
+import io.bucketeer.sdk.android.internal.Constants
 import io.bucketeer.sdk.android.internal.model.SourceId
 import org.junit.Assert.assertThrows
 import org.junit.Test
@@ -32,6 +33,7 @@ class BKTConfigTest {
         logger = DefaultLogger("Bucketeer"),
         sourceIdValue = SourceId.ANDROID.value,
         sdkVersion = BuildConfig.SDK_VERSION,
+        enableStreaming = false,
       )
     assertThat(actual).isEqualTo(
       expected,
@@ -64,6 +66,7 @@ class BKTConfigTest {
         logger = DefaultLogger("Bucketeer"),
         sourceIdValue = SourceId.FLUTTER.value,
         sdkVersion = "0.0.1-beta-op-ft-kt",
+        enableStreaming = false,
       )
     assertThat(actual).isEqualTo(
       expected,
@@ -276,6 +279,7 @@ class BKTConfigTest {
         logger = null,
         sourceIdValue = SourceId.ANDROID.value,
         sdkVersion = BuildConfig.SDK_VERSION,
+        enableStreaming = false,
       ),
     )
   }
@@ -342,6 +346,7 @@ class BKTConfigTest {
           logger = DefaultLogger("Bucketeer"),
           sourceIdValue = sourceId.value,
           sdkVersion = "0.0.1",
+          enableStreaming = false,
         )
       assertThat(actual).isEqualTo(
         expected,
@@ -438,5 +443,43 @@ class BKTConfigTest {
     assertThat(error)
       .hasMessageThat()
       .contains("wrapperSdkVersion is required when sourceId is not ANDROID")
+  }
+
+  @Test
+  fun `enableStreaming defaults to false`() {
+    val config =
+      BKTConfig
+        .builder()
+        .apiKey("api-key")
+        .apiEndpoint("https://example.com")
+        .appVersion("1.2.3")
+        .build()
+
+    assertThat(config.enableStreaming).isFalse()
+  }
+
+  @Test
+  fun `enableStreaming can be set with the builder`() {
+    val config =
+      BKTConfig
+        .builder()
+        .apiKey("api-key")
+        .apiEndpoint("https://example.com")
+        .appVersion("1.2.3")
+        .enableStreaming(true)
+        .build()
+
+    assertThat(config.enableStreaming).isTrue()
+  }
+
+  @Test
+  fun `streaming constants`() {
+    assertThat(Constants.Streaming.WATCHDOG_TIMEOUT_MILLIS).isEqualTo(70_000L)
+    assertThat(Constants.Streaming.UNHEALTHY_FALLBACK_TIMEOUT_MILLIS).isEqualTo(120_000L)
+    assertThat(Constants.Streaming.RESET_INTERVAL_MILLIS).isEqualTo(60_000L)
+    assertThat(Constants.Streaming.READ_TIMEOUT_MILLIS).isEqualTo(90_000L)
+    assertThat(Constants.Streaming.STREAM_EVALUATIONS_PATH).isEqualTo("v1/gateway/stream_evaluations")
+    assertThat(Constants.Streaming.RECOVERY_INTERVAL_MILLIS).isEqualTo(300_000L)
+    assertThat(Constants.Streaming.RECONNECT_DEBOUNCE_MILLIS).isEqualTo(200L)
   }
 }

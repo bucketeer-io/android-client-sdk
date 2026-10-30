@@ -14,7 +14,8 @@ internal class EvaluationForegroundTask(
   private val executor: ScheduledExecutorService,
   private val retryPollingInterval: Long = RETRY_POLLING_INTERVAL,
   private val maxRetryCount: Int = MAX_RETRY_COUNT,
-) : ScheduledTask {
+) : ScheduledTask,
+  StreamingFallbackTask {
   private var scheduledFuture: ScheduledFuture<*>? = null
 
   private var retryCount: Int = 0
@@ -63,6 +64,10 @@ internal class EvaluationForegroundTask(
 
   override fun start() {
     reschedule(component.config.pollingInterval)
+  }
+
+  override fun start(immediately: Boolean) {
+    start()
   }
 
   override fun stop() {

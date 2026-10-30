@@ -9,6 +9,7 @@ import io.bucketeer.sdk.android.internal.di.Component
 import io.bucketeer.sdk.android.internal.di.ComponentImpl
 import io.bucketeer.sdk.android.internal.di.DataModule
 import io.bucketeer.sdk.android.internal.di.InteractorModule
+import io.bucketeer.sdk.android.internal.di.StreamingTaskDependencies
 import io.bucketeer.sdk.android.internal.evaluation.getVariationValue
 import io.bucketeer.sdk.android.internal.event.SendEventsResult
 import io.bucketeer.sdk.android.internal.logd
@@ -42,6 +43,8 @@ internal class BKTClientImpl(
           mainHandler = mainHandler,
         ),
     ),
+  // Tests only: replaces the stream's executor, timers, event sources and fallback.
+  private val streamingTaskDependencies: StreamingTaskDependencies? = null,
 ) : BKTClient {
   private var taskScheduler: TaskScheduler? = null
 

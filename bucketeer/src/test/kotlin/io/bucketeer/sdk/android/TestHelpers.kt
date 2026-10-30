@@ -48,6 +48,7 @@ internal fun createTestBKTConfig(
   backgroundPollingInterval: Long = DEFAULT_BACKGROUND_POLLING_INTERVAL_MILLIS,
   appVersion: String = "1.2.3",
   logger: BKTLogger? = null,
+  enableStreaming: Boolean = false,
 ): BKTConfig =
   BKTConfig(
     apiKey = apiKey,
@@ -61,4 +62,5 @@ internal fun createTestBKTConfig(
     logger = logger,
     sourceIdValue = SourceId.ANDROID.value,
     sdkVersion = BuildConfig.SDK_VERSION,
+    enableStreaming = enableStreaming,
   )
