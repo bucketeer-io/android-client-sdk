@@ -65,9 +65,7 @@ internal class EvaluationForegroundTask(
     }
   }
 
-  override fun start() {
-    reschedule(component.config.pollingInterval)
-  }
+  override fun start() = start(immediately = false)
 
   /**
    * Same as start(), but the first fetch runs right away when [immediately] is true, so a stream

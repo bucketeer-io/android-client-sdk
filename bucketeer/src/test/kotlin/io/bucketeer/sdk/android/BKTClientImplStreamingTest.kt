@@ -186,6 +186,37 @@ class BKTClientImplStreamingTest {
   }
 
   @Test
+  fun `destroy before the main thread creates the tasks opens no stream`() {
+    val fakeScheduler = FakeStreamScheduler()
+    val dependencies = FakeStreamingTaskDependencies(fakeScheduler, fakeScheduler)
+    val client = client(dependencies)
+    enqueueEvaluations()
+    moveAppTo(Lifecycle.State.STARTED)
+
+    // Both off the main thread: initialize posts the block that creates the tasks, the finished
+    // fetch posts the enable call, then destroy posts its cleanup. None of them has run yet.
+    val init = Thread { client.initializeInternal(1_000).get(5, TimeUnit.SECONDS) }
+    init.start()
+    init.join(5_000)
+    val destroy = Thread { destroyClient(client) }
+    destroy.start()
+    destroy.join(5_000)
+    clients.remove(client)
+
+    // The executor runs between the enable call and the cleanup, as it can in production. Without
+    // the fix, the start (from onStart) and the enable call each post one block to the executor.
+    val mainLooper = shadowOf(Looper.getMainLooper())
+    repeat(10) {
+      if (fakeScheduler.pendingCount < 2 && !mainLooper.isIdle) mainLooper.runOneTask()
+    }
+    fakeScheduler.runCurrent()
+    mainLooper.idle()
+    fakeScheduler.advanceBy(1_000)
+
+    assertThat(dependencies.sources).isEmpty()
+  }
+
+  @Test
   fun `updateUserAttributes racing destroy on another thread neither crashes nor opens a stream`() {
     val fakeScheduler = FakeStreamScheduler()
     val dependencies = FakeStreamingTaskDependencies(fakeScheduler, fakeScheduler)

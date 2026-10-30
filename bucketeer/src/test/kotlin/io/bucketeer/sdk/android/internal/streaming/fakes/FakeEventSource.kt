@@ -5,6 +5,7 @@ import io.bucketeer.sdk.android.internal.streaming.SSEEvent
 import okhttp3.Request
 import java.util.concurrent.Executor
 import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * Scripted event source. Like the real one, every callback is posted through [executor]: nothing
@@ -26,6 +27,7 @@ internal class FakeEventSource(
 
   // close() may come from another thread, as in production.
   val closed = AtomicBoolean(false)
+  val closeCount = AtomicInteger(0)
 
   /**
    * Also posts after [close]. Stands in for a block the real source posted just before
@@ -46,6 +48,7 @@ internal class FakeEventSource(
 
   override fun close() {
     closed.set(true)
+    closeCount.incrementAndGet()
   }
 
   fun simulateOpen() = post { onOpen?.invoke() }

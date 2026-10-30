@@ -216,6 +216,18 @@ class StreamingTaskFallbackTest {
   }
 
   @Test
+  fun `stop after a give-up does not close the given-up source again`() {
+    h.startOpenStream()
+    h.giveUpNonTerminal()
+    assertThat(h.latest.closeCount.get()).isEqualTo(1)
+
+    h.task.stop()
+    h.scheduler.runCurrent()
+
+    assertThat(h.latest.closeCount.get()).isEqualTo(1)
+  }
+
+  @Test
   fun `connection error after stop starts no fallback`() {
     // Error queued before stop().
     h.startOpenStream()

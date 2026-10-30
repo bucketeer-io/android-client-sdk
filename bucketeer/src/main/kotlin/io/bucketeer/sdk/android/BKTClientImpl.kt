@@ -49,6 +49,10 @@ internal class BKTClientImpl(
   // Written on the main thread, read on the app's thread (updateUserAttributes, resetTasks).
   @Volatile private var taskScheduler: TaskScheduler? = null
 
+  // Set by resetTasks() on the calling thread. Off the main thread, destroy() can run before the
+  // block that creates taskScheduler: that block must then start nothing.
+  @Volatile private var tasksReset = false
+
   override fun booleanVariation(
     featureId: String,
     defaultValue: Boolean,
@@ -271,8 +275,15 @@ internal class BKTClientImpl(
   private fun scheduleTasks() {
     // Lifecycle observer must be executed on the main thread
     runOnMainThread {
-      taskScheduler = TaskScheduler(component, executor, streamingTaskDependencies)
-      ProcessLifecycleOwner.get().lifecycle.addObserver(taskScheduler!!)
+      val scheduler = TaskScheduler(component, executor, streamingTaskDependencies)
+      taskScheduler = scheduler
+      // resetTasks() sets the flag, then reads taskScheduler; this block does the reverse. So
+      // either resetTasks() destroys this scheduler, or this block sees the flag.
+      if (tasksReset) {
+        scheduler.destroyStreaming()
+        return@runOnMainThread
+      }
+      ProcessLifecycleOwner.get().lifecycle.addObserver(scheduler)
     }
   }
 
@@ -280,6 +291,7 @@ internal class BKTClientImpl(
     // On the calling thread: off the main thread the block below only gets posted, and destroy()
     // could cancel the stream call first. Its error would then start polling on a destroyed
     // client.
+    tasksReset = true
     taskScheduler?.destroyStreaming()
     runOnMainThread {
       taskScheduler?.let {

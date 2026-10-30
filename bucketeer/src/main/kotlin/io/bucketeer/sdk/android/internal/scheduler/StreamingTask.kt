@@ -47,8 +47,8 @@ internal class StreamingTask(
   private val dependencies: StreamingTaskDependencies,
 ) : ScheduledTask {
   // Any thread. Written by the entry points, read on the executor and, for isRunning, on the main
-  // thread (shouldNotify). Connection callbacks and timers check isRunning on the executor, as iOS
-  // does: work queued before a quick stop() + start() still runs.
+  // thread (shouldNotify). Connection callbacks and timers check isActive() on the executor, as
+  // iOS checks isRunning: work queued before a quick stop() + start() still runs.
   private val isRunning = AtomicBoolean(false)
   private val isEnabled = AtomicBoolean(false)
 
@@ -105,7 +105,7 @@ internal class StreamingTask(
   /** Merges a burst of updates into one reconnect, 200 ms after the last one. */
   fun onUserAttributesUpdated() {
     post {
-      if (!isRunning.get()) return@post
+      if (!isActive()) return@post
       pendingReconnect?.cancel()
       pendingReconnect =
         dependencies.scheduler.schedule(Constants.Streaming.RECONNECT_DEBOUNCE_MILLIS) {
@@ -131,7 +131,11 @@ internal class StreamingTask(
     }
   }
 
-  private fun canOpen(): Boolean = isRunning.get() && isEnabled.get() && !destroyed.get()
+  // Also checks destroyed: a start() racing destroy() can pass its destroyed check, then set
+  // isRunning after destroy() cleared it.
+  private fun isActive(): Boolean = isRunning.get() && !destroyed.get()
+
+  private fun canOpen(): Boolean = isActive() && isEnabled.get()
 
   private fun openIfReady() {
     if (!canOpen() || connection != null || fallbackTask != null) return
@@ -206,21 +210,21 @@ internal class StreamingTask(
   }
 
   private fun handleOpen() {
-    if (!isRunning.get()) return
+    if (!isActive()) return
     stopFallback()
     lastRequestAttributesState?.let { interactor.clearUserAttributesUpdated(it) }
     logd { "[StreamingTask] stream opened" }
   }
 
   private fun handleData(data: String) {
-    if (!isRunning.get()) return
+    if (!isActive()) return
     val response = parseStreamedEvaluations(moshi, data)
     if (response == null) {
       logd { "[StreamingTask] dropped a payload that is not valid evaluations" }
       return
     }
     try {
-      interactor.applyStreamedEvaluations(response) { isRunning.get() }
+      interactor.applyStreamedEvaluations(response) { isActive() }
     } catch (e: Exception) {
       loge(e) { "[StreamingTask] failed to apply streamed evaluations" }
     }
@@ -238,9 +242,11 @@ internal class StreamingTask(
   }
 
   private fun handleError(info: StreamConnectionErrorInfo) {
-    if (!isRunning.get()) return
+    if (!isActive()) return
     connection?.stop()
     connection = null
+    // Already closed by the connection: stop() has nothing left to close.
+    liveSource.set(null)
     startFallback(immediately = true)
     logd { "[StreamingTask] falling back to polling (terminal=${info.terminal})" }
     if (info.terminal) {
@@ -256,7 +262,7 @@ internal class StreamingTask(
     recovery =
       dependencies.scheduler.schedule(Constants.Streaming.RECOVERY_INTERVAL_MILLIS) {
         recovery = null
-        if (isRunning.get()) openStream()
+        if (isActive()) openStream()
       }
     logd { "[StreamingTask] stream recovery scheduled" }
   }
