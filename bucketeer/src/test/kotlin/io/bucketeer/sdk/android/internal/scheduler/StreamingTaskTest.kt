@@ -208,4 +208,18 @@ class StreamingTaskTest {
     assertThat(logger.throwables(Log.ERROR).map { it.message }).containsExactly("apply failed")
     assertThat(h.interactor.applied.map { it.first.userEvaluationsId }).containsExactly("second")
   }
+
+  @Test
+  fun `an exception inside posted work is logged and the task keeps working`() {
+    h.dependencies.makeEventSourceThrowsOnce = IllegalStateException("source failed")
+
+    h.startStreaming()
+
+    assertThat(logger.throwables(Log.ERROR).map { it.message }).containsExactly("source failed")
+    assertThat(h.sources).isEmpty()
+
+    h.reconnect()
+
+    assertThat(h.sources).hasSize(1)
+  }
 }

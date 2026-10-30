@@ -354,10 +354,11 @@ class StreamingTaskLifecycleTest {
     h.scheduler.advanceBy(100)
 
     h.task.stop()
+    h.scheduler.runCurrent()
+    assertThat(h.scheduler.pendingCount).isEqualTo(0)
     h.scheduler.advanceBy(200)
 
     assertThat(h.sources).hasSize(1)
-    assertThat(h.scheduler.pendingCount).isEqualTo(0)
   }
 
   @Test

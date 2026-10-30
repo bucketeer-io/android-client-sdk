@@ -108,7 +108,16 @@ internal class FakeStreamingTaskDependencies(
   val fallbacks = CopyOnWriteArrayList<FakeFallbackTask>()
   val backoffs = CopyOnWriteArrayList<StreamBackoff>()
 
-  override fun makeEventSource(): EventSource = FakeEventSource(sourceExecutor).also { sources.add(it) }
+  /** When set, the next makeEventSource call throws it, once. */
+  @Volatile var makeEventSourceThrowsOnce: RuntimeException? = null
+
+  override fun makeEventSource(): EventSource {
+    makeEventSourceThrowsOnce?.let {
+      makeEventSourceThrowsOnce = null
+      throw it
+    }
+    return FakeEventSource(sourceExecutor).also { sources.add(it) }
+  }
 
   override fun makeFallbackTask(): StreamingFallbackTask = FakeFallbackTask().also { fallbacks.add(it) }
 

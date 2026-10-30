@@ -116,6 +116,8 @@ class BKTClientImplStreamingTest {
     enqueueEvaluations(bodyDelayMillis = 500)
 
     val future = client.initializeInternal(2_000)
+    // The fetch is in flight (its reply body is delayed): an enable posted too early is queued by now.
+    assertThat(server.takeRequest(5, TimeUnit.SECONDS)).isNotNull()
     shadowOf(Looper.getMainLooper()).idle()
     moveAppTo(Lifecycle.State.STARTED)
     fakeScheduler.runCurrent()
@@ -171,8 +173,14 @@ class BKTClientImplStreamingTest {
     source.deliverEvenIfClosed = true
     source.simulateError(400)
     fakeScheduler.runCurrent()
+    // The observer is removed by a block posted to the main thread, not run yet: a foreground
+    // now still reaches this TaskScheduler and must open nothing.
+    moveAppTo(Lifecycle.State.CREATED)
+    moveAppTo(Lifecycle.State.STARTED)
+    fakeScheduler.runCurrent()
     shadowOf(Looper.getMainLooper()).idle()
 
+    assertThat(dependencies.sources).hasSize(1)
     assertThat(dependencies.fallbacks).isEmpty()
     assertThat(server.requestCount).isEqualTo(requestsBefore)
   }
