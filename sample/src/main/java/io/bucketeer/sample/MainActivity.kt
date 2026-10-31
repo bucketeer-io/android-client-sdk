@@ -144,7 +144,8 @@ class MainActivity : ComponentActivity() {
       putString(Constants.PREFERENCE_KEY_FEATURE_FLAG_ID, featureId)
       commit()
     }
-    refreshFlagValue()
+    // Reuse the value: each variation call queues an evaluation event.
+    findViewById<TextView>(R.id.flag_value).text = getString(R.string.flag_value, valueString)
     showDialog(getString(R.string.dialog_get_variation, valueString))
   }
 
