@@ -19,7 +19,7 @@ Settings, read from `local.properties` or the environment:
 Backend setup the tests expect, for the `android` tag:
 
 - `feature-android-e2e-string`: default `value-1`; a rule that serves `value-2` (reason `RULE`) when the user's `app_version` attribute is `0.0.1`.
-- `feature-android-e2e-sse-string`: a string flag that only the streaming patch tests write to. Each run writes a fresh value, and no test reads a previous value back, so it is never restored.
+- `feature-android-e2e-sse-string` and `feature-android-e2e-sse-direct-string`: string flags written only by the streaming patch tests, one flag per test (proxy and direct). Each run writes a fresh value, and no test reads a previous value back, so they are never restored.
 
 ## Streaming tests
 
@@ -85,4 +85,4 @@ The tests start no activity, so the app never reaches the foreground on its own,
 
 Each test runs in its own process (the test orchestrator, with `clearPackageData`), and the streaming classes also clear the database and preferences after each test. The proxy class starts a new proxy for each test and stops it after `BKTClient.destroy()`.
 
-The E2E backend is shared between CI runs, and the patch tests write a shared flag. An update listener reads the current value only when it is called, so two runs at once can hide each other's values. The `e2e` workflow therefore runs in one concurrency group (`android-e2e-backend`): one run at a time, every other run waits its turn, and none is cancelled. Within one run, the two patch tests can still run at the same time in different shards; each writes its own unique value and checks every value its listener saw, so only a write landing in the moment between the other test's push and its listener call could hide a value.
+The E2E backend is shared between CI runs, and the patch tests write flags on it. An update listener reads the current value only when it is called, so two writes to the same flag close together can hide one of the values. The `e2e` workflow therefore runs in one concurrency group (`android-e2e-backend`): one run at a time, every other run waits its turn, and none is cancelled. Within one run, the two patch tests run at the same time in different shards, so each writes its own flag.

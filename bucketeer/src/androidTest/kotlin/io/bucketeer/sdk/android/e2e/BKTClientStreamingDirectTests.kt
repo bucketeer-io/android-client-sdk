@@ -72,18 +72,18 @@ class BKTClientStreamingDirectTests {
     val client = BKTClient.getInstance()
 
     // Both are sent back with the new value: the server replaces the whole variation.
-    val details = client.stringVariationDetails(FEATURE_ID_STREAMING, "")
-    assertWithMessage("$FEATURE_ID_STREAMING has no evaluation for tag $FEATURE_TAG; create it in the console")
+    val details = client.stringVariationDetails(FEATURE_ID_STREAMING_DIRECT, "")
+    assertWithMessage("$FEATURE_ID_STREAMING_DIRECT has no evaluation for tag $FEATURE_TAG; create it in the console")
       .that(details.variationId)
       .isNotEmpty()
 
     val value = FeatureFlagApi.newStreamingTestValue()
-    val listener = RecordingEvaluationListener { client.stringVariation(FEATURE_ID_STREAMING, "") }
+    val listener = RecordingEvaluationListener { client.stringVariation(FEATURE_ID_STREAMING_DIRECT, "") }
     client.addEvaluationUpdateListener(listener)
 
     // No wait for the stream to open: an app cannot see that. If the write lands before the
     // stream opens, the value may never arrive and this test fails on its own message.
-    FeatureFlagApi.setVariationValue(FEATURE_ID_STREAMING, details.variationId, details.variationName, value)
+    FeatureFlagApi.setVariationValue(FEATURE_ID_STREAMING_DIRECT, details.variationId, details.variationName, value)
 
     // Every observed value is checked, not only the latest: an overlapping run can overwrite
     // the flag right after our write.

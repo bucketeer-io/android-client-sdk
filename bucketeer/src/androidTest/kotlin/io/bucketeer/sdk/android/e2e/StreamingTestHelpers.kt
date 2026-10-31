@@ -25,10 +25,12 @@ import java.util.concurrent.Future
 import java.util.concurrent.TimeUnit
 
 /**
- * The flag the streaming patch tests write to. Each run writes a fresh value, and no test reads
- * it back as a baseline, so it is never restored.
+ * The flags the streaming patch tests write to, one per test. CI shards run the two patch tests
+ * at the same time, and a write to a shared flag could hide the other test's value. Each run
+ * writes a fresh value, and no test reads it back as a baseline, so they are never restored.
  */
 const val FEATURE_ID_STREAMING = "feature-android-e2e-sse-string"
+const val FEATURE_ID_STREAMING_DIRECT = "feature-android-e2e-sse-direct-string"
 
 const val GET_EVALUATIONS_PATH = "/get_evaluations"
 const val STREAM_EVALUATIONS_PATH = "/${Constants.Streaming.STREAM_EVALUATIONS_PATH}"
