@@ -9,10 +9,12 @@ import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.textfield.TextInputLayout
@@ -68,6 +70,8 @@ class MainActivity : ComponentActivity() {
 
   private lateinit var variantTypeSpinner: Spinner
 
+  private var evaluationUpdateListenerKey: String? = null
+
   public override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
@@ -100,8 +104,14 @@ class MainActivity : ComponentActivity() {
     setGoalId()
     setSwitchUser()
     setTag()
+    setStreaming()
 
     askNotificationPermission()
+  }
+
+  override fun onDestroy() {
+    removeEvaluationUpdateListener()
+    super.onDestroy()
   }
 
   private fun setDefaultVariation() {
@@ -129,23 +139,43 @@ class MainActivity : ComponentActivity() {
       return
     }
     inputGetVariation.error = null
-    val type = VariantType.entries.getOrNull(variantTypeSpinner.selectedItemPosition) ?: VariantType.BOOLEAN
-    val client = BKTClient.getInstance()
-    val variation: Any =
-      when (type) {
-        VariantType.INT -> client.intVariation(featureId, 0)
-        VariantType.STRING -> client.stringVariation(featureId, "")
-        VariantType.BOOLEAN -> client.booleanVariation(featureId, false)
-        VariantType.DOUBLE -> client.doubleVariation(featureId, 0.0)
-        VariantType.JSON -> client.jsonVariation(featureId, JSONObject())
-        VariantType.OBJECT -> client.objectVariation(featureId, BKTValue.Structure(mapOf()))
-      }
+    val valueString = getVariation(featureId).toString()
     with(sharedPref.edit()) {
       putString(Constants.PREFERENCE_KEY_FEATURE_FLAG_ID, featureId)
       commit()
     }
-    val valueString = variation.toString()
+    refreshFlagValue()
     showDialog(getString(R.string.dialog_get_variation, valueString))
+  }
+
+  private fun getVariation(featureId: String): Any {
+    val type = VariantType.entries.getOrNull(variantTypeSpinner.selectedItemPosition) ?: VariantType.BOOLEAN
+    val client = BKTClient.getInstance()
+    return when (type) {
+      VariantType.INT -> client.intVariation(featureId, 0)
+      VariantType.STRING -> client.stringVariation(featureId, "")
+      VariantType.BOOLEAN -> client.booleanVariation(featureId, false)
+      VariantType.DOUBLE -> client.doubleVariation(featureId, 0.0)
+      VariantType.JSON -> client.jsonVariation(featureId, JSONObject())
+      VariantType.OBJECT -> client.objectVariation(featureId, BKTValue.Structure(mapOf()))
+    }
+  }
+
+  // Shows the value of the flag in the "Feature Flag Id" field, so a change
+  // pushed by the server is visible without pressing "Get variation".
+  private fun refreshFlagValue() {
+    val featureId =
+      findViewById<TextInputLayout>(R.id.get_variation)
+        .editText
+        ?.text
+        .toString()
+        .trim()
+    val flagValue = findViewById<TextView>(R.id.flag_value)
+    if (featureId.isEmpty()) {
+      flagValue.text = getString(R.string.flag_value_empty)
+      return
+    }
+    flagValue.text = getString(R.string.flag_value, getVariation(featureId).toString())
   }
 
   private fun setGoalId() {
@@ -241,7 +271,32 @@ class MainActivity : ComponentActivity() {
     }
   }
 
+  // Streaming is part of BKTConfig, which is fixed per client,
+  // so changing it needs a destroy and initialize.
+  private fun setStreaming() {
+    val switchStreaming = findViewById<SwitchCompat>(R.id.switch_streaming)
+    switchStreaming.isChecked = isStreamingEnabled()
+    switchStreaming.setOnCheckedChangeListener { _, isChecked ->
+      with(sharedPref.edit()) {
+        putBoolean(Constants.PREFERENCE_KEY_ENABLE_STREAMING, isChecked)
+        commit()
+      }
+      lifecycleScope.launch {
+        val rs = reInitializeTheSDK()
+        if (rs == null) {
+          val state = if (isChecked) "on" else "off"
+          Toast.makeText(this@MainActivity, "Streaming is $state.", Toast.LENGTH_LONG).show()
+        } else {
+          Toast
+            .makeText(this@MainActivity, "Failed with error ${rs.message}", Toast.LENGTH_LONG)
+            .show()
+        }
+      }
+    }
+  }
+
   private suspend fun reInitializeTheSDK(): BKTException? {
+    removeEvaluationUpdateListener()
     BKTClient.destroy()
     return initBucketeer()
   }
@@ -267,6 +322,7 @@ class MainActivity : ComponentActivity() {
         .pollingInterval(TimeUnit.SECONDS.toMillis(20))
         .backgroundPollingInterval(TimeUnit.SECONDS.toMillis(60))
         .eventsFlushInterval(TimeUnit.SECONDS.toMillis(20))
+        .enableStreaming(isStreamingEnabled())
         .build()
 
     val user =
@@ -276,14 +332,40 @@ class MainActivity : ComponentActivity() {
         .build()
 
     val future = BKTClient.initialize(this, config, user)
+    addEvaluationUpdateListener()
 
     val result =
       withContext(Dispatchers.IO) {
         future.get()
       }
     println("Initialize result: $result")
+    refreshFlagValue()
     return result
   }
+
+  private fun addEvaluationUpdateListener() {
+    removeEvaluationUpdateListener()
+    evaluationUpdateListenerKey =
+      BKTClient.getInstance().addEvaluationUpdateListener {
+        refreshFlagValue()
+        Toast
+          .makeText(this, getString(R.string.dialog_evaluations_updated), Toast.LENGTH_SHORT)
+          .show()
+      }
+  }
+
+  private fun removeEvaluationUpdateListener() {
+    val key = evaluationUpdateListenerKey ?: return
+    evaluationUpdateListenerKey = null
+    // getInstance() throws if the client was already destroyed.
+    runCatching { BKTClient.getInstance().removeEvaluationUpdateListener(key) }
+  }
+
+  private fun isStreamingEnabled(): Boolean =
+    sharedPref.getBoolean(
+      Constants.PREFERENCE_KEY_ENABLE_STREAMING,
+      false,
+    )
 
   private fun getTag(): String =
     sharedPref.getString(

@@ -57,6 +57,13 @@
             android:text="@string/btn_get_variation" />
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/flag_value"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="16dp"
+        android:text="@string/flag_value_empty" />
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/goal_id"
         android:layout_width="match_parent"
@@ -131,5 +138,12 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:text="@string/btn_switch_tag" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/switch_streaming"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_16"
+        android:text="@string/streaming" />
 
 </LinearLayout>

@@ -78,6 +78,18 @@ Deletes the build directory and assembles all Release builds. (Create `./sample/
 ./gradlew clean :sample:assembleRelease
 ```
 
+#### Try a real-time flag update (SSE)
+
+The sample app uses the feature tag `android` and the user `bucketeer-android-user-id` by default. You can change both on the screen.<br />
+Before you run it, create a feature flag with the feature tag `android` in your Bucketeer console.
+
+- Set `api_key` and `api_endpoint` in `local.properties` (see [Setup](#setup)).
+- Install and run the sample app: `./gradlew :sample:installDebug`.
+- Turn on the **Streaming** switch at the bottom of the screen (off by default, the same as the SDK). Flipping it destroys the client and starts it again in the new mode. The setting is kept after the app restarts.
+- Enter your flag in **Feature Flag Id**, choose its **Variant Type**, and press **Get variation**.
+- In the Bucketeer console, change the value of the flag.
+- Watch the **Current value** line. It changes and a `User Evaluations has been updated` toast appears, pushed by SSE in about a second. With the switch off, the same change takes up to 20 seconds (the polling interval).
+
 ### Tips
 
 #### Use published SDK in Sample
