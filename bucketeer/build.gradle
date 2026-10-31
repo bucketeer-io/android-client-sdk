@@ -40,6 +40,10 @@ android {
       def API_ENDPOINT = properties.getProperty("api_endpoint") ?: System.getenv("API_ENDPOINT")
       buildConfigField("String", "API_KEY", "\"${API_KEY}\"")
       buildConfigField("String", "API_ENDPOINT", "\"${API_ENDPOINT}\"")
+      // Key that can update flags, used only by the streaming patch E2E tests. Empty when unset,
+      // so those tests fail with a message naming it.
+      def PUBLIC_API_KEY = properties.getProperty("public_api_key") ?: System.getenv("PUBLIC_API_KEY") ?: ""
+      buildConfigField("String", "PUBLIC_API_KEY", "\"${PUBLIC_API_KEY}\"")
     }
     release {
       consumerProguardFiles 'proguard-rules.pro'
@@ -63,6 +67,13 @@ android {
 
   buildFeatures {
     buildConfig = true
+  }
+
+  sourceSets {
+    // The proxy server the streaming E2E tests run through. Shared, so its own tests run in the
+    // unit suite without a backend or keys.
+    test.java.srcDirs += "src/sharedTest/kotlin"
+    androidTest.java.srcDirs += "src/sharedTest/kotlin"
   }
 }
 
