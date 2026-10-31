@@ -4,6 +4,15 @@ on:
   workflow_dispatch:
   workflow_call:
 
+# One E2E run at a time against the shared E2E backend: the streaming patch tests write a shared
+# flag, and two runs at once can hide each other's values. Set for the whole workflow, not the
+# job, so the shards of one run still run side by side. Other runs wait their turn (queue: max
+# keeps every waiting run instead of only the newest), and a running one is never cancelled.
+# https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/control-workflow-concurrency#example-queueing-multiple-pending-runs
+concurrency:
+  group: android-e2e-backend
+  queue: max
+
 jobs:
   e2e:
     runs-on: ubuntu-latest
@@ -75,6 +84,7 @@ jobs:
         env:
           API_KEY: ${{ secrets.E2E_API_KEY }}
           API_ENDPOINT: ${{ secrets.E2E_API_ENDPOINT }}
+          PUBLIC_API_KEY: ${{ secrets.E2E_PUBLIC_API_KEY }}
           # Optimized Gradle options for CI
           GRADLE_OPTS: -Dorg.gradle.daemon=true -Dorg.gradle.parallel=true -Dorg.gradle.caching=true -Dorg.gradle.jvmargs="-Xmx2g -XX:MaxMetaspaceSize=1g -XX:+HeapDumpOnOutOfMemoryError"
           # Test sharding configuration

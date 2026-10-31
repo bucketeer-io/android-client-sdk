@@ -30,3 +30,16 @@ fun <T> assertEvaluationDetails(
   assertThat(actual.variationValue).isEqualTo(expected.variationValue)
   assertThat(actual.reason).isEqualTo(expected.reason)
 }
+
+/** Polls [condition] until it is true. Returns false if [timeoutMillis] passes first. */
+fun awaitUntil(
+  timeoutMillis: Long,
+  condition: () -> Boolean,
+): Boolean {
+  val deadline = System.currentTimeMillis() + timeoutMillis
+  while (System.currentTimeMillis() < deadline) {
+    if (condition()) return true
+    Thread.sleep(100)
+  }
+  return condition()
+}
