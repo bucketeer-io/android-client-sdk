@@ -11,6 +11,7 @@ class Constants {
     const val PREFERENCE_KEY_GOAL_ID = "goal_id"
     const val PREFERENCE_KEY_USER_ID = "user_id"
     const val PREFERENCE_KEY_TAG = "tag"
+    const val PREFERENCE_KEY_ENABLE_STREAMING = "enable_streaming"
 
     const val FCM_FEATURE_FLAG_ID = "fcm-feature"
   }

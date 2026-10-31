@@ -5,6 +5,9 @@
     <string name="feature_flag_id">Feature Flag Id</string>
     <string name="goal_id">Goal Id</string>
     <string name="user_id">User Id</string>
+    <string name="streaming">Streaming</string>
+    <string name="flag_value">Current value: %1$s</string>
+    <string name="flag_value_empty">Current value: -</string>
     <string name="app_will_be_restarted">The app will be restarted for the changes to take effect</string>
 
     <string name="btn_switch_tag">Switch Tag</string>
