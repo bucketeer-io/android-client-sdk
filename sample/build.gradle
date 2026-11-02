@@ -5,7 +5,12 @@ plugins {
   alias(libs.plugins.android.application)
   alias(libs.plugins.kotlin.android)
   alias(libs.plugins.kotlinter)
-  alias(libs.plugins.google.services)
+  alias(libs.plugins.google.services) apply false
+}
+
+// Firebase (FCM) is optional: drop your own google-services.json into sample/src to enable it.
+if (file("src/google-services.json").exists()) {
+  apply plugin: "com.google.gms.google-services"
 }
 
 def properties = new Properties()
