@@ -89,8 +89,10 @@ jobs:
           force-avd-creation: false
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -memory 2048
           disable-animations: true
-          # Run tests with sharding
-          script: ./gradlew uninstallAll connectedCheck --stacktrace --build-cache -Pandroid.testInstrumentationRunnerArguments.numShards=$ANDROID_TEST_NUM_SHARDS -Pandroid.testInstrumentationRunnerArguments.shardIndex=$ANDROID_TEST_SHARD_INDEX
+          # Run tests with sharding. Only the SDK module: the sample app has no instrumented tests,
+          # and building it here would compile the E2E key into its BuildConfig, which the Gradle
+          # build cache would then save.
+          script: ./gradlew uninstallAll :bucketeer:connectedCheck --stacktrace --build-cache -Pandroid.testInstrumentationRunnerArguments.numShards=$ANDROID_TEST_NUM_SHARDS -Pandroid.testInstrumentationRunnerArguments.shardIndex=$ANDROID_TEST_SHARD_INDEX
 
       - name: Upload Bucketeer build reports
         if: always()
