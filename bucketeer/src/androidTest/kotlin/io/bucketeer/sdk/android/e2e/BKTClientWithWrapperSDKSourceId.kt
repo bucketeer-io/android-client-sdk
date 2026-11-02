@@ -9,7 +9,6 @@ import io.bucketeer.sdk.android.BKTClient
 import io.bucketeer.sdk.android.BKTClientImpl
 import io.bucketeer.sdk.android.BKTConfig
 import io.bucketeer.sdk.android.BKTUser
-import io.bucketeer.sdk.android.BuildConfig
 import io.bucketeer.sdk.android.internal.Constants
 import io.bucketeer.sdk.android.internal.database.OpenHelperCallback
 import io.bucketeer.sdk.android.internal.di.ComponentImpl
@@ -36,8 +35,8 @@ class BKTClientWithWrapperSDKSourceId {
     config =
       BKTConfig
         .builder()
-        .apiKey(BuildConfig.API_KEY)
-        .apiEndpoint(BuildConfig.API_ENDPOINT)
+        .apiKey(E2EArguments.apiKey)
+        .apiEndpoint(E2EArguments.apiEndpoint)
         .featureTag(FEATURE_TAG)
         .wrapperSdkSourceId(SourceId.FLUTTER.value)
         .wrapperSdkVersion("3.2.1")

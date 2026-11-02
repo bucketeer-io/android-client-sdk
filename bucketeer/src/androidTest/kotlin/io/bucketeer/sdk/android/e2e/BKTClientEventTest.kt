@@ -38,8 +38,8 @@ class BKTClientEventTest {
     config =
       BKTConfig
         .builder()
-        .apiKey(BuildConfig.API_KEY)
-        .apiEndpoint(BuildConfig.API_ENDPOINT)
+        .apiKey(E2EArguments.apiKey)
+        .apiEndpoint(E2EArguments.apiEndpoint)
         .featureTag(FEATURE_TAG)
         .appVersion("1.2.3")
         .build()
