@@ -16,6 +16,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.textfield.TextInputLayout
+import com.google.firebase.FirebaseApp
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.ktx.messaging
 import io.bucketeer.sdk.android.BKTClient
@@ -298,6 +299,13 @@ class MainActivity : ComponentActivity() {
     ) ?: Constants.DEFAULT_USER_ID
 
   private fun askNotificationPermission() {
+    // Firebase is configured only when a google-services.json is present at build time
+    // (see sample/build.gradle). Without it there is no FCM feature to request the
+    // notification permission for, so the whole FCM sample is skipped instead of crashing.
+    if (FirebaseApp.getApps(this).isEmpty()) {
+      Log.w(TAG, "Firebase is not configured. Skipping the FCM real-time update sample.")
+      return
+    }
     // This is only necessary for API level >= 33 (TIRAMISU)
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
       if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
@@ -320,7 +328,17 @@ class MainActivity : ComponentActivity() {
   }
 
   private suspend fun onGrantedNotificationPermission() {
-    val token = Firebase.messaging.token.await()
+    val token =
+      try {
+        Firebase.messaging.token.await()
+      } catch (e: Exception) {
+        Log.w(
+          TAG,
+          "Failed to get the FCM token. Check google-services.json and the API key restrictions.",
+          e,
+        )
+        return
+      }
     println("FCM Token $token")
 
     subscribeToTopic()
@@ -328,7 +346,8 @@ class MainActivity : ComponentActivity() {
 
   // In order to receive the update notification when the flag value changed
   // We need subscribe to topic, with the topic name is in this format bucketeer-<YOUR_FEATURE_TAG>
-  // Please put your Firebase project's google-services.json under the folder `sample/src` before test this.
+  // To try it, put your Firebase project's google-services.json under `sample/src` (it is git-ignored)
+  // and rebuild. See README "Firebase Cloud Messaging (optional)".
   private fun subscribeToTopic() {
     val tag = getTag()
     Firebase.messaging
