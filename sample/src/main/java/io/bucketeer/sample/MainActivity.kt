@@ -299,6 +299,13 @@ class MainActivity : ComponentActivity() {
     ) ?: Constants.DEFAULT_USER_ID
 
   private fun askNotificationPermission() {
+    // Firebase is configured only when a google-services.json is present at build time
+    // (see sample/build.gradle). Without it there is no FCM feature to request the
+    // notification permission for, so the whole FCM sample is skipped instead of crashing.
+    if (FirebaseApp.getApps(this).isEmpty()) {
+      Log.w(TAG, "Firebase is not configured. Skipping the FCM real-time update sample.")
+      return
+    }
     // This is only necessary for API level >= 33 (TIRAMISU)
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
       if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
@@ -321,12 +328,6 @@ class MainActivity : ComponentActivity() {
   }
 
   private suspend fun onGrantedNotificationPermission() {
-    // Firebase is configured only when a google-services.json is present at build time
-    // (see sample/build.gradle). Without it the FCM sample is skipped instead of crashing.
-    if (FirebaseApp.getApps(this).isEmpty()) {
-      Log.w(TAG, "Firebase is not configured. Skipping the FCM real-time update sample.")
-      return
-    }
     val token =
       try {
         Firebase.messaging.token.await()
