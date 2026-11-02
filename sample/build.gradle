@@ -5,7 +5,15 @@ plugins {
   alias(libs.plugins.android.application)
   alias(libs.plugins.kotlin.android)
   alias(libs.plugins.kotlinter)
-  alias(libs.plugins.google.services)
+}
+
+// Firebase is optional and only used by the FCM (real-time update) sample.
+// google-services.json is developer specific and git-ignored, and the
+// google-services plugin fails the build when the file is missing, so the
+// plugin is applied only when a developer has dropped in their own config.
+// See README "Firebase Cloud Messaging (optional)".
+if (file("google-services.json").exists() || file("src/google-services.json").exists()) {
+  apply plugin: libs.plugins.google.services.get().pluginId
 }
 
 def properties = new Properties()
@@ -39,6 +47,12 @@ android {
     }
   }
   buildTypes {
+    debug {
+      // Sign every variant with the checked-in keystore so the sample always has
+      // the same SHA-1. Firebase API keys restricted to an Android app
+      // (package name + SHA-1) reject builds signed with a random debug keystore.
+      signingConfig signingConfigs.release
+    }
     release {
       minifyEnabled true
       consumerProguardFiles 'proguard-rules.pro'

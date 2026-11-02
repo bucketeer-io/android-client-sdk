@@ -94,6 +94,18 @@ sample.sdk_version=X.Y.Z
 
 then build and start the sample app.
 
+#### Firebase Cloud Messaging (optional)
+
+The sample can receive real-time flag update notifications through FCM. This is optional and disabled by default.
+
+To try it, download `google-services.json` from your own Firebase project (Project settings > Your apps > Android app `io.bucketeer.sample`) and place it at `sample/src/google-services.json`, then rebuild. The file is git-ignored and must never be committed: the `google-services` plugin is applied only when the file exists, and without it the sample simply skips the FCM setup.
+
+Every variant of the sample is signed with the checked-in `debug.keystore`, so if your Firebase API key is restricted to an Android app, register the package name `io.bucketeer.sample` with this fingerprint:
+
+```
+SHA-1: BE:9D:25:89:DF:3D:B2:D1:48:41:08:09:64:08:4A:53:24:68:8E:14
+```
+
 ## Contributing
 
 [CONTRIBUTING.md](./CONTRIBUTING.md)

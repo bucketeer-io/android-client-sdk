@@ -16,6 +16,11 @@ build
 /local.properties
 /captures
 
+# Firebase config for the FCM sample. Developer specific, never commit it.
+# See README "Firebase Cloud Messaging (optional)".
+sample/google-services.json
+sample/src/google-services.json
+
 # Mac OS
 .DS_Store
 
