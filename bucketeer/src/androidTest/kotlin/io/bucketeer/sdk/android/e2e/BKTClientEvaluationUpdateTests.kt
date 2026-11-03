@@ -9,7 +9,6 @@ import io.bucketeer.sdk.android.BKTClient
 import io.bucketeer.sdk.android.BKTClientImpl
 import io.bucketeer.sdk.android.BKTConfig
 import io.bucketeer.sdk.android.BKTUser
-import io.bucketeer.sdk.android.BuildConfig
 import io.bucketeer.sdk.android.internal.Constants
 import io.bucketeer.sdk.android.internal.database.OpenHelperCallback
 import io.bucketeer.sdk.android.internal.di.ComponentImpl
@@ -52,8 +51,8 @@ class BKTClientEvaluationUpdateTests {
     config =
       BKTConfig
         .builder()
-        .apiKey(BuildConfig.API_KEY)
-        .apiEndpoint(BuildConfig.API_ENDPOINT)
+        .apiKey(E2EArguments.apiKey)
+        .apiEndpoint(E2EArguments.apiEndpoint)
         .featureTag("Android")
         .appVersion("1.2.3")
         .build()
@@ -101,8 +100,8 @@ class BKTClientEvaluationUpdateTests {
     val configWithNewTag =
       BKTConfig
         .builder()
-        .apiKey(BuildConfig.API_KEY)
-        .apiEndpoint(BuildConfig.API_ENDPOINT)
+        .apiKey(E2EArguments.apiKey)
+        .apiEndpoint(E2EArguments.apiEndpoint)
         .featureTag(FEATURE_TAG)
         .appVersion("1.2.3")
         .build()
@@ -126,8 +125,8 @@ class BKTClientEvaluationUpdateTests {
     config =
       BKTConfig
         .builder()
-        .apiKey(BuildConfig.API_KEY)
-        .apiEndpoint(BuildConfig.API_ENDPOINT)
+        .apiKey(E2EArguments.apiKey)
+        .apiEndpoint(E2EArguments.apiEndpoint)
         .featureTag("Android_E2E_TEST_2023")
         .appVersion("1.2.3")
         .build()
@@ -167,8 +166,8 @@ class BKTClientEvaluationUpdateTests {
     val configWithNewTag =
       BKTConfig
         .builder()
-        .apiKey(BuildConfig.API_KEY)
-        .apiEndpoint(BuildConfig.API_ENDPOINT)
+        .apiKey(E2EArguments.apiKey)
+        .apiEndpoint(E2EArguments.apiEndpoint)
         .featureTag(FEATURE_TAG)
         .appVersion("1.2.3")
         .build()
@@ -198,8 +197,8 @@ class BKTClientEvaluationUpdateTests {
     config =
       BKTConfig
         .builder()
-        .apiKey(BuildConfig.API_KEY)
-        .apiEndpoint(BuildConfig.API_ENDPOINT)
+        .apiKey(E2EArguments.apiKey)
+        .apiEndpoint(E2EArguments.apiEndpoint)
         .appVersion("1.2.3")
         .build()
 

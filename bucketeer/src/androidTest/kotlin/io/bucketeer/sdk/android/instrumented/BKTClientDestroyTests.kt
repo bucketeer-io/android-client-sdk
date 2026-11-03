@@ -9,7 +9,7 @@ import io.bucketeer.sdk.android.BKTClient
 import io.bucketeer.sdk.android.BKTClientImpl
 import io.bucketeer.sdk.android.BKTConfig
 import io.bucketeer.sdk.android.BKTUser
-import io.bucketeer.sdk.android.BuildConfig
+import io.bucketeer.sdk.android.e2e.E2EArguments
 import io.bucketeer.sdk.android.e2e.FEATURE_TAG
 import io.bucketeer.sdk.android.e2e.USER_ID
 import io.bucketeer.sdk.android.internal.Constants
@@ -35,8 +35,8 @@ class BKTClientDestroyTests {
     config =
       BKTConfig
         .builder()
-        .apiKey(BuildConfig.API_KEY)
-        .apiEndpoint(BuildConfig.API_ENDPOINT)
+        .apiKey(E2EArguments.apiKey)
+        .apiEndpoint(E2EArguments.apiEndpoint)
         .featureTag(FEATURE_TAG)
         .appVersion("1.2.3")
         .build()
