@@ -14,17 +14,21 @@ internal class EvaluationForegroundTask(
   private val executor: ScheduledExecutorService,
   private val retryPollingInterval: Long = RETRY_POLLING_INTERVAL,
   private val maxRetryCount: Int = MAX_RETRY_COUNT,
-) : ScheduledTask {
+) : ScheduledTask,
+  StreamingFallbackTask {
   private var scheduledFuture: ScheduledFuture<*>? = null
 
   private var retryCount: Int = 0
 
-  private fun reschedule(interval: Long) {
+  private fun reschedule(
+    interval: Long,
+    initialDelay: Long = interval,
+  ) {
     scheduledFuture?.cancel(false)
     scheduledFuture =
       executor.scheduleWithFixedDelay(
         { fetchEvaluations() },
-        interval,
+        initialDelay,
         interval,
         TimeUnit.MILLISECONDS,
       )
@@ -61,8 +65,15 @@ internal class EvaluationForegroundTask(
     }
   }
 
-  override fun start() {
-    reschedule(component.config.pollingInterval)
+  override fun start() = start(immediately = false)
+
+  /**
+   * Same as start(), but the first fetch runs right away when [immediately] is true, so a stream
+   * drop doesn't leave evaluations stale for a whole pollingInterval.
+   */
+  override fun start(immediately: Boolean) {
+    val interval = component.config.pollingInterval
+    reschedule(interval, if (immediately) 0 else interval)
   }
 
   override fun stop() {

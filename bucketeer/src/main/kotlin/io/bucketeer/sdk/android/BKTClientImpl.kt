@@ -9,6 +9,7 @@ import io.bucketeer.sdk.android.internal.di.Component
 import io.bucketeer.sdk.android.internal.di.ComponentImpl
 import io.bucketeer.sdk.android.internal.di.DataModule
 import io.bucketeer.sdk.android.internal.di.InteractorModule
+import io.bucketeer.sdk.android.internal.di.StreamingTaskDependencies
 import io.bucketeer.sdk.android.internal.evaluation.getVariationValue
 import io.bucketeer.sdk.android.internal.event.SendEventsResult
 import io.bucketeer.sdk.android.internal.logd
@@ -42,8 +43,15 @@ internal class BKTClientImpl(
           mainHandler = mainHandler,
         ),
     ),
+  // Tests only: replaces the stream's executor, timers, event sources and fallback.
+  private val streamingTaskDependencies: StreamingTaskDependencies? = null,
 ) : BKTClient {
-  private var taskScheduler: TaskScheduler? = null
+  // Written on the main thread, read on the app's thread (updateUserAttributes, resetTasks).
+  @Volatile private var taskScheduler: TaskScheduler? = null
+
+  // Set by resetTasks() on the calling thread. Off the main thread, destroy() can run before the
+  // block that creates taskScheduler: that block must then start nothing.
+  @Volatile private var tasksReset = false
 
   override fun booleanVariation(
     featureId: String,
@@ -125,6 +133,7 @@ internal class BKTClientImpl(
     // userAttributesUpdated: when the user attributes change via the customAttributes interface,
     // the userAttributesUpdated field must be set to true in the next request.
     component.evaluationInteractor.setUserAttributesUpdated()
+    taskScheduler?.onUserAttributesUpdated()
   }
 
   override fun fetchEvaluations(timeoutMillis: Long?): Future<BKTException?> =
@@ -176,7 +185,10 @@ internal class BKTClientImpl(
     listenEvaluationInteractorError()
     return executor.submit<BKTException?> {
       refreshCache()
-      fetchEvaluationsSync(component, executor, timeoutMillis)
+      val result = fetchEvaluationsSync(component, executor, timeoutMillis)
+      // Posted after scheduleTasks() posted its block, so taskScheduler exists by then.
+      runOnMainThread { taskScheduler?.enableEvaluationTask() }
+      result
     }
   }
 
@@ -263,12 +275,24 @@ internal class BKTClientImpl(
   private fun scheduleTasks() {
     // Lifecycle observer must be executed on the main thread
     runOnMainThread {
-      taskScheduler = TaskScheduler(component, executor)
-      ProcessLifecycleOwner.get().lifecycle.addObserver(taskScheduler!!)
+      val scheduler = TaskScheduler(component, executor, streamingTaskDependencies)
+      taskScheduler = scheduler
+      // resetTasks() sets the flag, then reads taskScheduler; this block does the reverse. So
+      // either resetTasks() destroys this scheduler, or this block sees the flag.
+      if (tasksReset) {
+        scheduler.destroyStreaming()
+        return@runOnMainThread
+      }
+      ProcessLifecycleOwner.get().lifecycle.addObserver(scheduler)
     }
   }
 
   internal fun resetTasks() {
+    // On the calling thread: off the main thread the block below only gets posted, and destroy()
+    // could cancel the stream call first. Its error would then start polling on a destroyed
+    // client.
+    tasksReset = true
+    taskScheduler?.destroyStreaming()
     runOnMainThread {
       taskScheduler?.let {
         it.stop()
