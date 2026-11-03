@@ -1,0 +1,9 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--
+      Test APK only: plain HTTP to the streaming E2E tests' local proxy server. Android 14 already
+      allows 127.0.0.1 without it (checked on the emulator); it makes sure older API levels, such
+      as the E2E job's API 32, allow it too.
+    -->
+    <application android:networkSecurityConfig="@xml/e2e_network_security_config" />
+</manifest>

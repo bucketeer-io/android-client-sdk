@@ -28,6 +28,21 @@ android {
 
     testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     testInstrumentationRunnerArguments clearPackageData: "true"
+    // E2E settings, read by the tests through E2EArguments. Passed to the test runner when the
+    // tests start, not compiled into BuildConfig: CI saves compiled classes in the Gradle build
+    // cache, which pull requests from forks can read.
+    def e2eArguments = [
+      apiKey: properties.getProperty("api_key") ?: System.getenv("API_KEY"),
+      apiEndpoint: properties.getProperty("api_endpoint") ?: System.getenv("API_ENDPOINT"),
+      // Key that can update flags, used only by the streaming patch tests. When unset, those
+      // tests fail with a message naming it.
+      publicApiKey: properties.getProperty("public_api_key") ?: System.getenv("PUBLIC_API_KEY"),
+    ]
+    e2eArguments.each { name, value ->
+      if (value) {
+        testInstrumentationRunnerArgument(name, value)
+      }
+    }
 
     testOptions {
       execution "ANDROIDX_TEST_ORCHESTRATOR"
@@ -35,12 +50,6 @@ android {
   }
 
   buildTypes {
-    debug {
-      def API_KEY = properties.getProperty("api_key") ?: System.getenv("API_KEY")
-      def API_ENDPOINT = properties.getProperty("api_endpoint") ?: System.getenv("API_ENDPOINT")
-      buildConfigField("String", "API_KEY", "\"${API_KEY}\"")
-      buildConfigField("String", "API_ENDPOINT", "\"${API_ENDPOINT}\"")
-    }
     release {
       consumerProguardFiles 'proguard-rules.pro'
       proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -63,6 +72,13 @@ android {
 
   buildFeatures {
     buildConfig = true
+  }
+
+  sourceSets {
+    // The proxy server the streaming E2E tests run through. Shared, so its own tests run in the
+    // unit suite without a backend or keys.
+    test.java.srcDirs += "src/sharedTest/kotlin"
+    androidTest.java.srcDirs += "src/sharedTest/kotlin"
   }
 }
 
