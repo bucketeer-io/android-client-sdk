@@ -5,6 +5,7 @@ import android.os.Looper
 import io.bucketeer.sdk.android.BKTException
 import io.bucketeer.sdk.android.internal.IdGeneratorImpl
 import io.bucketeer.sdk.android.internal.evaluation.storage.EvaluationStorage
+import io.bucketeer.sdk.android.internal.evaluation.storage.EvaluationWriteResult
 import io.bucketeer.sdk.android.internal.evaluation.storage.UserAttributesState
 import io.bucketeer.sdk.android.internal.model.Evaluation
 import io.bucketeer.sdk.android.internal.model.Event
@@ -209,10 +210,11 @@ private class MockEvaluationStorage(
     evaluationsId: String,
     evaluations: List<Evaluation>,
     evaluatedAt: String,
-  ) {
+  ): EvaluationWriteResult {
     if (deleteAllAndInsertError != null) {
       throw deleteAllAndInsertError
     }
+    return EvaluationWriteResult.Landed(shouldNotify = true)
   }
 
   override fun update(
@@ -220,7 +222,7 @@ private class MockEvaluationStorage(
     evaluations: List<Evaluation>,
     archivedFeatureIds: List<String>,
     evaluatedAt: String,
-  ): Boolean = true
+  ): EvaluationWriteResult = EvaluationWriteResult.Landed(shouldNotify = true)
 
   override fun refreshCache() {}
 }

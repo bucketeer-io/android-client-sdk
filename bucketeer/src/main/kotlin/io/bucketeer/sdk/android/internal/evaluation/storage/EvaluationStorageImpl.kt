@@ -84,7 +84,65 @@ internal class EvaluationStorageImpl(
   // Memory cache is thread-safe in our implementation, no need to synchronize this method
   override fun get(): List<Evaluation> = memCache.get(userId) ?: emptyList()
 
+  // Serializes the stale check with the write it guards. Without it, two writers could both
+  // pass the check against the same stored evaluatedAt, and the older one could commit last.
+  // Separate from `lock`, which guards the unrelated user attributes state.
+  private val writeLock = Any()
+
   override fun deleteAllAndInsert(
+    evaluationsId: String,
+    evaluations: List<Evaluation>,
+    evaluatedAt: String,
+  ): EvaluationWriteResult {
+    synchronized(writeLock) {
+      if (isStale(evaluatedAt)) return EvaluationWriteResult.SkippedStale
+      performWrite(evaluationsId, evaluations, evaluatedAt)
+      return EvaluationWriteResult.Landed(shouldNotify = true)
+    }
+  }
+
+  override fun update(
+    evaluationsId: String,
+    evaluations: List<Evaluation>,
+    archivedFeatureIds: List<String>,
+    evaluatedAt: String,
+  ): EvaluationWriteResult {
+    synchronized(writeLock) {
+      // Checked before the database read, so a stale write costs no read.
+      if (isStale(evaluatedAt)) return EvaluationWriteResult.SkippedStale
+      // We will use `featureId` to filter the data
+      // Details -> https://github.com/bucketeer-io/android-client-sdk/pull/88/files#r1333847962
+      val currentEvaluationsByFeaturedId =
+        evaluationSQLDao.get(userId).associateBy { it.featureId }.toMutableMap()
+      // 1- Check the evaluation list in the response and upsert them in the DB if the list is not empty
+      evaluations.forEach { evaluation ->
+        currentEvaluationsByFeaturedId[evaluation.featureId] = evaluation
+      }
+      // 2- Check the list of the feature flags that were archived on the console and delete them from the DB
+      val currentEvaluations =
+        currentEvaluationsByFeaturedId.values.filterNot {
+          archivedFeatureIds.contains(it.featureId)
+        }
+      performWrite(
+        evaluationsId = evaluationsId,
+        evaluations = currentEvaluations,
+        evaluatedAt = evaluatedAt,
+      )
+      return EvaluationWriteResult.Landed(evaluations.isNotEmpty() || archivedFeatureIds.isNotEmpty())
+    }
+  }
+
+  // True when the incoming evaluatedAt is strictly older than the stored one. An equal value
+  // still applies: two payloads from the same clock tick are not stale relative to each other.
+  // If either value is not a readable number, the write is allowed, as before this check existed.
+  private fun isStale(incoming: String): Boolean {
+    val incomingValue = incoming.toLongOrNull() ?: return false
+    val storedValue = evaluationSharedPrefs.evaluatedAt.toLongOrNull() ?: return false
+    return incomingValue < storedValue
+  }
+
+  // Unguarded write. Callers must hold `writeLock` and must have checked `isStale`.
+  private fun performWrite(
     evaluationsId: String,
     evaluations: List<Evaluation>,
     evaluatedAt: String,
@@ -96,33 +154,6 @@ internal class EvaluationStorageImpl(
     evaluationSharedPrefs.currentEvaluationsId = evaluationsId
     evaluationSharedPrefs.evaluatedAt = evaluatedAt
     memCache.set(userId, evaluations)
-  }
-
-  override fun update(
-    evaluationsId: String,
-    evaluations: List<Evaluation>,
-    archivedFeatureIds: List<String>,
-    evaluatedAt: String,
-  ): Boolean {
-    // We will use `featureId` to filter the data
-    // Details -> https://github.com/bucketeer-io/android-client-sdk/pull/88/files#r1333847962
-    val currentEvaluationsByFeaturedId =
-      evaluationSQLDao.get(userId).associateBy { it.featureId }.toMutableMap()
-    // 1- Check the evaluation list in the response and upsert them in the DB if the list is not empty
-    evaluations.forEach { evaluation ->
-      currentEvaluationsByFeaturedId[evaluation.featureId] = evaluation
-    }
-    // 2- Check the list of the feature flags that were archived on the console and delete them from the DB
-    val currentEvaluations =
-      currentEvaluationsByFeaturedId.values.filterNot {
-        archivedFeatureIds.contains(it.featureId)
-      }
-    deleteAllAndInsert(
-      evaluationsId = evaluationsId,
-      evaluations = currentEvaluations,
-      evaluatedAt = evaluatedAt,
-    )
-    return evaluations.isNotEmpty() || archivedFeatureIds.isNotEmpty()
   }
 
   override fun refreshCache() {
