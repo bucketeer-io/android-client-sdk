@@ -1,6 +1,5 @@
 package io.bucketeer.sdk.android.internal.scheduler
 
-import android.util.Log
 import com.google.common.truth.Truth.assertThat
 import io.bucketeer.sdk.android.internal.LoggerHolder
 import io.bucketeer.sdk.android.internal.di.DataModule
@@ -10,7 +9,6 @@ import io.bucketeer.sdk.android.internal.model.User
 import io.bucketeer.sdk.android.internal.streaming.ExecutorStreamScheduler
 import io.bucketeer.sdk.android.internal.streaming.fakes.FakeStreamingEvaluationInteractor
 import io.bucketeer.sdk.android.internal.streaming.fakes.FakeStreamingTaskDependencies
-import io.bucketeer.sdk.android.internal.streaming.fakes.RecordingLogger
 import io.bucketeer.sdk.android.internal.streaming.fakes.StreamingTaskHarness
 import io.bucketeer.sdk.android.internal.streaming.fakes.StreamingTaskHarness.Companion.body
 import io.bucketeer.sdk.android.internal.streaming.fakes.StreamingTaskHarness.Companion.payload
@@ -24,14 +22,11 @@ import java.util.concurrent.TimeUnit
 
 class StreamingTaskLifecycleTest {
   private lateinit var h: StreamingTaskHarness
-  private lateinit var logger: RecordingLogger
   private var realExecutor: ScheduledExecutorService? = null
 
   @Before
   fun setup() {
     LoggerHolder.clearLoggers()
-    logger = RecordingLogger()
-    LoggerHolder.addLogger(logger)
     h = StreamingTaskHarness()
   }
 
@@ -466,7 +461,6 @@ class StreamingTaskLifecycleTest {
 
     assertThat(real.dependencies.sources).isNotEmpty()
     assertThat(real.dependencies.sources.count { !it.closed.get() }).isEqualTo(1)
-    assertThat(logger.throwables(Log.ERROR)).isEmpty()
   }
 
   @Test

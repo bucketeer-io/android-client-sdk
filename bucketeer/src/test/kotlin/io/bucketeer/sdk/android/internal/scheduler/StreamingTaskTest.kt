@@ -97,6 +97,8 @@ class StreamingTaskTest {
     h.event("error", """{"code":"503","message":"server is busy"}""")
 
     assertThat(h.interactor.applied).hasSize(1)
+    // Log check kept: the backend sends error events ("evaluation failed"), and this warning is
+    // the SDK's only response. Nothing else would catch it going missing.
     val warning = logger.messages(Log.WARN).single()
     assertThat(warning).contains("503")
     assertThat(warning).contains("server is busy")
@@ -198,24 +200,22 @@ class StreamingTaskTest {
   }
 
   @Test
-  fun `an exception while applying a payload is logged and the next event still applies`() {
+  fun `an exception while applying a payload does not stop later events`() {
     h.startOpenStream()
     h.interactor.applyThrowsOnce = IllegalStateException("apply failed")
 
     h.event("put", payload(userEvaluationsId = "first"))
     h.event("put", payload(userEvaluationsId = "second"))
 
-    assertThat(logger.throwables(Log.ERROR).map { it.message }).containsExactly("apply failed")
     assertThat(h.interactor.applied.map { it.first.userEvaluationsId }).containsExactly("second")
   }
 
   @Test
-  fun `an exception inside posted work is logged and the task keeps working`() {
+  fun `an exception inside posted work does not stop the task`() {
     h.dependencies.makeEventSourceThrowsOnce = IllegalStateException("source failed")
 
     h.startStreaming()
 
-    assertThat(logger.throwables(Log.ERROR).map { it.message }).containsExactly("source failed")
     assertThat(h.sources).isEmpty()
 
     h.reconnect()

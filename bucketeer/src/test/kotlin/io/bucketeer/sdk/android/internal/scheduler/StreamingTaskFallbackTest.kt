@@ -102,7 +102,10 @@ class StreamingTaskFallbackTest {
     h.giveUpTerminal()
     h.scheduler.advanceBy(600_000)
 
+    // Log check kept: the warning is the only sign that streaming stopped for good.
     assertThat(logger.messages(Log.WARN)).hasSize(1)
+    assertThat(h.fallbacks).hasSize(1)
+    assertThat(h.latestFallback.startCalls).containsExactly(true)
   }
 
   @Test
@@ -111,7 +114,11 @@ class StreamingTaskFallbackTest {
 
     h.giveUpNonTerminal()
 
+    // Log check kept: only this test catches the "stopped for good" warning on a give-up that
+    // still retries.
     assertThat(logger.messages(Log.WARN)).isEmpty()
+    assertThat(h.fallbacks).hasSize(1)
+    assertThat(h.latestFallback.startCalls).containsExactly(true)
 
     // Control: a terminal give-up does warn.
     val terminal = StreamingTaskHarness()
