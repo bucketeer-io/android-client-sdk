@@ -35,7 +35,9 @@ import io.bucketeer.sdk.android.internal.model.jsonadapter.MetricsEventTypeAdapt
 import io.bucketeer.sdk.android.internal.model.jsonadapter.SourceIDAdapter
 import io.bucketeer.sdk.android.internal.remote.ApiClient
 import io.bucketeer.sdk.android.internal.remote.ApiClientImpl
+import io.bucketeer.sdk.android.internal.streaming.createStreamHttpClient
 import io.bucketeer.sdk.android.internal.user.UserHolder
+import okhttp3.OkHttpClient
 
 internal open class DataModule(
   val application: Application,
@@ -95,7 +97,24 @@ internal open class DataModule(
 
   internal val userHolder: UserHolder by lazy { UserHolder(user) }
 
+  private val streamHttpClientLazy = lazy { createStreamHttpClient() }
+
+  /** Shared by every stream connection. Created on first use. */
+  internal val streamHttpClient: OkHttpClient by streamHttpClientLazy
+
+  @get:VisibleForTesting
+  internal val isStreamHttpClientCreated: Boolean
+    get() = streamHttpClientLazy.isInitialized()
+
   internal fun destroy() {
+    // First and on its own, so a failing database close can't skip it. Checks isInitialized()
+    // so a client that was never used isn't created just to be closed.
+    runCatching {
+      if (streamHttpClientLazy.isInitialized()) {
+        streamHttpClient.dispatcher.cancelAll()
+        streamHttpClient.connectionPool.evictAll()
+      }
+    }
     runCatching {
       eventSQLDao.close()
       evaluationSQLDao.close()
