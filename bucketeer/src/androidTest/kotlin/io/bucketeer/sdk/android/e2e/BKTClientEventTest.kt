@@ -132,7 +132,8 @@ class BKTClientEventTest {
   fun testDefaultEvaluationEvents() {
     val client = BKTClient.getInstance() as BKTClientImpl
     val evaluationStorage = (client.component as ComponentImpl).dataModule.evaluationStorage
-    evaluationStorage.deleteAllAndInsert("", listOf(), "0")
+    // Use the stored evaluatedAt so the stale-write check lets this write through.
+    evaluationStorage.deleteAllAndInsert("", listOf(), evaluationStorage.getEvaluatedAt())
 
     assertThat(client.stringVariation(FEATURE_ID_STRING, "test")).isEqualTo("test")
     assertThat(client.intVariation(FEATURE_ID_INT, 0)).isEqualTo(0)

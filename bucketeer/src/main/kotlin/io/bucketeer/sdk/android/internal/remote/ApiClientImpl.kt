@@ -234,7 +234,7 @@ internal class ApiClientImpl(
  *
  * https://github.com/square/okhttp/issues/3081#issuecomment-508387187
  */
-private class FixJsonContentTypeInterceptor : Interceptor {
+internal class FixJsonContentTypeInterceptor : Interceptor {
   override fun intercept(chain: Interceptor.Chain): Response {
     val original = chain.request()
 

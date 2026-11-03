@@ -28,6 +28,7 @@ data class BKTConfig internal constructor(
   val logger: BKTLogger?,
   val sourceIdValue: Int,
   val sdkVersion: String,
+  val enableStreaming: Boolean,
 ) {
   companion object {
     fun builder(): Builder = Builder()
@@ -48,6 +49,7 @@ data class BKTConfig internal constructor(
     private var logger: BKTLogger? = DefaultLogger()
     private var wrapperSdkVersion: String? = null
     private var wrapperSdkSourceId: Int? = null
+    private var enableStreaming: Boolean = false
 
     fun apiKey(apiKey: String): Builder {
       this.apiKey = apiKey
@@ -115,6 +117,15 @@ data class BKTConfig internal constructor(
       return this
     }
 
+    /**
+     * Receive evaluation updates over a streaming connection instead of waiting for the next
+     * poll. Polling is still used while the stream is unavailable. Default: false.
+     */
+    fun enableStreaming(enable: Boolean): Builder {
+      this.enableStreaming = enable
+      return this
+    }
+
     private fun logWarning(messageCreator: (() -> String?)? = null) {
       // LoggerHolder.log() is not available here, so we use the logger directly.
       logger?.log(
@@ -166,6 +177,7 @@ data class BKTConfig internal constructor(
         logger = this.logger,
         sourceIdValue = resolvedSourceId.value,
         sdkVersion = resolvedSdkVersion,
+        enableStreaming = this.enableStreaming,
       )
     }
   }

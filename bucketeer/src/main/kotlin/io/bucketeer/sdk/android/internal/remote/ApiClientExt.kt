@@ -12,6 +12,9 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import kotlin.contracts.ExperimentalContracts
 
+// "Client closed request": sent during backend deployments. Polling retries it, and the stream treats it as recoverable.
+internal const val CLIENT_CLOSED_REQUEST_CODE = 499
+
 fun Response.toBKTException(adapter: JsonAdapter<ErrorResponse>): BKTException {
   val bodyString = body?.string() ?: ""
   val errorBody: ErrorResponse? =
@@ -83,7 +86,7 @@ fun Response.toBKTException(adapter: JsonAdapter<ErrorResponse>): BKTException {
         message = errorBody?.error?.message ?: "PayloadTooLarge error",
       )
     }
-    499 -> {
+    CLIENT_CLOSED_REQUEST_CODE -> {
       // ClientClosedRequest
       BKTException.ClientClosedRequestException(
         message = errorBody?.error?.message ?: "ClientClosedRequest error",
