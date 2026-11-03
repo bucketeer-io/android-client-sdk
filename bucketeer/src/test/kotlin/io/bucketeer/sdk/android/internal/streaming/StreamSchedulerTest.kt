@@ -147,6 +147,8 @@ class StreamSchedulerTest {
     scheduler.schedule(50) { laterRan.countDown() }
 
     assertThat(laterRan.await(2, TimeUnit.SECONDS)).isTrue()
+    // Log check kept: the executor drops an uncaught exception silently and still runs later
+    // tasks, so the log is the only thing that shows the exception was caught.
     val errors = logger.throwables(Log.ERROR)
     assertThat(errors).hasSize(1)
     assertThat(errors[0]).hasMessageThat().isEqualTo("timer failed")

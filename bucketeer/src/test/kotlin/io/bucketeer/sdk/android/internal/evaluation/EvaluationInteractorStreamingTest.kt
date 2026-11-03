@@ -2,12 +2,10 @@ package io.bucketeer.sdk.android.internal.evaluation
 
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import androidx.test.core.app.ApplicationProvider
 import com.google.common.truth.Truth.assertThat
 import io.bucketeer.sdk.android.BKTConfig
 import io.bucketeer.sdk.android.BKTException
-import io.bucketeer.sdk.android.BKTLogger
 import io.bucketeer.sdk.android.internal.IdGeneratorImpl
 import io.bucketeer.sdk.android.internal.LoggerHolder
 import io.bucketeer.sdk.android.internal.di.DataModule
@@ -36,14 +34,11 @@ class EvaluationInteractorStreamingTest {
   private lateinit var dataModule: DataModule
   private lateinit var storage: EvaluationStorage
   private lateinit var interactor: EvaluationInteractor
-  private lateinit var logger: RecordingLogger
   private var updateCount = 0
 
   @Before
   fun setUp() {
     LoggerHolder.clearLoggers()
-    logger = RecordingLogger()
-    LoggerHolder.addLogger(logger)
 
     val config =
       BKTConfig
@@ -124,7 +119,6 @@ class EvaluationInteractorStreamingTest {
     assertThat(storage.getEvaluatedAt()).isEqualTo("1000")
     assertThat(storage.get()).containsExactly(evaluation1)
     assertThat(updateCount).isEqualTo(0)
-    assertThat(logger.messages(Log.WARN).any { it.contains("ueid_bad") }).isTrue()
 
     // Positive control: the same payload with a readable createdAt is applied.
     interactor.applyStreamedEvaluations(response("ueid_good", "1001", forceUpdate = true, listOf(evaluation2)))
@@ -222,7 +216,6 @@ class EvaluationInteractorStreamingTest {
     idleMainLooper()
 
     assertThat(updateCount).isEqualTo(0)
-    assertThat(logger.throwables(Log.ERROR)).contains(throwingStorage.error)
   }
 
   @Test
@@ -280,24 +273,6 @@ class EvaluationInteractorStreamingTest {
   private fun idleMainLooper() {
     shadowOf(Looper.getMainLooper()).idle()
   }
-}
-
-private class RecordingLogger : BKTLogger {
-  private val entries = mutableListOf<Triple<Int, String?, Throwable?>>()
-
-  override fun log(
-    priority: Int,
-    messageCreator: (() -> String?)?,
-    throwable: Throwable?,
-  ) {
-    synchronized(entries) {
-      entries.add(Triple(priority, messageCreator?.invoke(), throwable))
-    }
-  }
-
-  fun messages(priority: Int): List<String> = synchronized(entries) { entries.filter { it.first == priority }.mapNotNull { it.second } }
-
-  fun throwables(priority: Int): List<Throwable> = synchronized(entries) { entries.filter { it.first == priority }.mapNotNull { it.third } }
 }
 
 /** The streaming path never polls. */

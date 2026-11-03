@@ -325,6 +325,8 @@ class OkHttpEventSourceTest {
 
     r.awaitEvent("error:null")
     assertThat(r.nonBytes()).containsExactly("open", "put:first", "put:second", "error:null").inOrder()
+    // Log check kept: the executor drops an uncaught exception silently and still runs later
+    // events, so the log is the only thing that shows the exception was caught.
     assertThat(logger.throwables(Log.ERROR).map { it.message })
       .containsExactly("open handler failed", "put handler failed")
   }
