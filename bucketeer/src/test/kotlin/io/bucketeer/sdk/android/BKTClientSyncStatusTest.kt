@@ -24,8 +24,10 @@ import io.bucketeer.sdk.android.internal.remote.UserEvaluationCondition
 import io.bucketeer.sdk.android.internal.user.toBKTUser
 import io.bucketeer.sdk.android.mocks.user1
 import io.bucketeer.sdk.android.mocks.user1Evaluations
+import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
+import okhttp3.mockwebserver.RecordedRequest
 import org.junit.After
 import org.junit.Assert.assertThrows
 import org.junit.Before
@@ -33,6 +35,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
+import java.util.concurrent.CountDownLatch
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.TimeUnit
 
@@ -107,7 +110,10 @@ class BKTClientSyncStatusTest {
         user = user1.toBKTUser(),
         component =
           ComponentImpl(
-            dataModule = ErrorThrowingDataModule(ApplicationProvider.getApplicationContext(), config),
+            dataModule =
+              ThrowingApiDataModule(ApplicationProvider.getApplicationContext(), config) {
+                AssertionError("simulated VM error")
+              },
             interactorModule = InteractorModule(mainHandler = Handler(Looper.getMainLooper())),
           ),
       )
@@ -123,6 +129,83 @@ class BKTClientSyncStatusTest {
       client.destroy()
       idleMain()
     }
+  }
+
+  // The error is caught before any server answer, so nothing reports it: lastError stays null.
+  @Test
+  fun `an init that fails before reaching the server returns the error and gives FAILING with no lastError`() {
+    val client =
+      BKTClientImpl(
+        context = ApplicationProvider.getApplicationContext(),
+        config = config,
+        user = user1.toBKTUser(),
+        component =
+          ComponentImpl(
+            dataModule =
+              ThrowingApiDataModule(ApplicationProvider.getApplicationContext(), config) {
+                IllegalStateException("simulated read failure")
+              },
+            interactorModule = InteractorModule(mainHandler = Handler(Looper.getMainLooper())),
+          ),
+      )
+    try {
+      val result = client.initializeInternal(1000).get()
+      idleMain()
+
+      assertThat(result).isInstanceOf(BKTException.IllegalStateException::class.java)
+      val status = client.evaluationSyncStatus()
+      assertThat(status.state).isEqualTo(FAILING)
+      assertThat(status.lastError).isNull()
+    } finally {
+      client.resetTasks()
+      client.destroy()
+      idleMain()
+    }
+  }
+
+  @Test
+  fun `destroy while the first init fetch waits for a 200 response gives DESTROYED once, and init returns no error`() {
+    val result = destroyWhileFirstInitFetchWaits(evaluationsResponse())
+
+    assertThat(result).isNull()
+  }
+
+  @Test
+  fun `destroy while the first init fetch waits for a 500 response gives DESTROYED once, and init returns the error`() {
+    val result = destroyWhileFirstInitFetchWaits(errorResponse(500))
+
+    assertThat(result).isInstanceOf(BKTException.InternalServerErrorException::class.java)
+  }
+
+  /**
+   * Destroys the client while the first init fetch waits for its response, then releases the
+   * response. Checks that DESTROYED is the only listener call and that the status keeps no sync
+   * time and no error. Returns what init returned.
+   */
+  private fun destroyWhileFirstInitFetchWaits(response: MockResponse): BKTException? {
+    val held = holdResponse(response)
+    val init = initialize()
+    val client = BKTClient.getInstance()
+    val listener = RecordingListener().also { client.addEvaluationSyncStatusListener(it) }
+
+    // Destroy only after the request reached the server, so init waits for the first fetch.
+    assertThat(held.awaitRequest()).isTrue()
+    BKTClient.destroy()
+    idleMain()
+    assertThat(listener.calls.map { it.state }).containsExactly(DESTROYED)
+
+    held.release()
+    // The init future completes only after its finally block ran, so the checks below see every
+    // listener call that init can make.
+    val result = init.get(5, TimeUnit.SECONDS)
+    idleMain()
+
+    assertThat(listener.calls.map { it.state }).containsExactly(DESTROYED)
+    val status = client.evaluationSyncStatus()
+    assertThat(status.state).isEqualTo(DESTROYED)
+    assertThat(status.lastSyncedAt).isNull()
+    assertThat(status.lastError).isNull()
+    return result
   }
 
   @Test
@@ -148,22 +231,28 @@ class BKTClientSyncStatusTest {
   }
 
   @Test
-  fun `destroy gives the listener DESTROYED once, and a fetch that ends later calls no listener`() {
+  fun `destroy gives the listener DESTROYED once, and a fetch that ends later calls no listener and changes nothing`() {
     enqueueEvaluations()
     initialize().get()
     idleMain()
     val client = BKTClient.getInstance()
     val listener = RecordingListener().also { client.addEvaluationSyncStatusListener(it) }
-    // Still in flight when destroy() runs.
-    server.enqueue(errorResponse(500).setHeadersDelay(300, TimeUnit.MILLISECONDS))
+    val held = holdResponse(errorResponse(500))
     val fetch = client.fetchEvaluations()
 
+    // Destroy only after the request reached the server, so the fetch ends after destroy().
+    assertThat(held.awaitRequest()).isTrue()
     BKTClient.destroy()
-    fetch.get()
+    val destroyed = client.evaluationSyncStatus()
+    held.release()
+    fetch.get(5, TimeUnit.SECONDS)
     idleMain()
 
-    assertThat(listener.calls.map { it.state }).containsExactly(DESTROYED)
-    assertThat(client.evaluationSyncStatus().state).isEqualTo(DESTROYED)
+    assertThat(destroyed.state).isEqualTo(DESTROYED)
+    assertThat(listener.calls).containsExactly(destroyed)
+    // The whole status, not only the state: a result after destroy must not move lastError or
+    // lastSyncedAt either.
+    assertThat(client.evaluationSyncStatus()).isEqualTo(destroyed)
   }
 
   @Test
@@ -247,22 +336,26 @@ class BKTClientSyncStatusTest {
     shadowOf(Looper.getMainLooper()).idle()
   }
 
+  /** From now on, every request gets [response], but only after [HeldResponse.release]. */
+  private fun holdResponse(response: MockResponse): HeldResponse = HeldResponse(response).also { server.dispatcher = it }
+
   private fun enqueueEvaluations() {
-    server.enqueue(
-      MockResponse()
-        .setResponseCode(200)
-        .setBody(
-          moshi
-            .adapter(GetEvaluationsResponse::class.java)
-            .toJson(
-              GetEvaluationsResponse(
-                evaluations = user1Evaluations,
-                userEvaluationsId = "user_evaluations_id_value",
-              ),
-            ),
-        ),
-    )
+    server.enqueue(evaluationsResponse())
   }
+
+  private fun evaluationsResponse(): MockResponse =
+    MockResponse()
+      .setResponseCode(200)
+      .setBody(
+        moshi
+          .adapter(GetEvaluationsResponse::class.java)
+          .toJson(
+            GetEvaluationsResponse(
+              evaluations = user1Evaluations,
+              userEvaluationsId = "user_evaluations_id_value",
+            ),
+          ),
+      )
 
   private fun enqueueError(code: Int) {
     server.enqueue(errorResponse(code))
@@ -278,6 +371,26 @@ class BKTClientSyncStatusTest {
       )
 }
 
+private class HeldResponse(
+  private val response: MockResponse,
+) : Dispatcher() {
+  private val requestReceived = CountDownLatch(1)
+  private val releaseResponse = CountDownLatch(1)
+
+  override fun dispatch(request: RecordedRequest): MockResponse {
+    requestReceived.countDown()
+    releaseResponse.await(5, TimeUnit.SECONDS)
+    return response
+  }
+
+  /** True once the server got a request. */
+  fun awaitRequest(): Boolean = requestReceived.await(5, TimeUnit.SECONDS)
+
+  fun release() {
+    releaseResponse.countDown()
+  }
+}
+
 private class RecordingListener : BKTClient.EvaluationSyncStatusListener {
   val calls = mutableListOf<BKTEvaluationSyncStatus>()
 
@@ -286,10 +399,14 @@ private class RecordingListener : BKTClient.EvaluationSyncStatusListener {
   }
 }
 
-/** Its ApiClient throws an Error, which fetch() does not catch: the init block ends by a throw. */
-private class ErrorThrowingDataModule(
+/**
+ * Its ApiClient throws instead of returning a result. fetch() turns an Exception into an error
+ * result with no report, and lets an Error through, so the init block ends by a throw.
+ */
+private class ThrowingApiDataModule(
   application: Application,
   config: BKTConfig,
+  private val createThrowable: () -> Throwable,
 ) : DataModule(application, user1, config, inMemoryDB = true) {
   override val apiClient: ApiClient by lazy {
     object : ApiClient {
@@ -298,7 +415,7 @@ private class ErrorThrowingDataModule(
         userEvaluationsId: String,
         timeoutMillis: Long?,
         condition: UserEvaluationCondition,
-      ): GetEvaluationsResult = throw AssertionError("simulated VM error")
+      ): GetEvaluationsResult = throw createThrowable()
 
       override fun registerEvents(events: List<Event>): RegisterEventsResult = throw UnsupportedOperationException("not used in this test")
     }

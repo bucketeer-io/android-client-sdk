@@ -316,6 +316,30 @@ class EvaluationSyncStatusTrackerTest {
     assertThat(other.calls).hasSize(1)
   }
 
+  // An Error, not only an Exception: for example a listener left as TODO().
+  @Test
+  fun `a listener that throws an Error does not stop other listeners and does not throw to the reporter`() {
+    tracker.addListener { throw NotImplementedError("app not done") }
+    val other = RecordingListener().also { tracker.addListener(it) }
+
+    tracker.reportFailure(POLLING, error500)
+    mainQueue.drain()
+
+    assertThat(other.calls).hasSize(1)
+  }
+
+  @Test
+  fun `a listener that throws an Error on DESTROYED does not stop other listeners or the removal of listeners`() {
+    tracker.addListener { throw NotImplementedError("app not done") }
+    val other = RecordingListener().also { tracker.addListener(it) }
+
+    tracker.markDestroyed()
+    mainQueue.drain()
+
+    assertThat(other.calls.map { it.state }).containsExactly(DESTROYED)
+    assertThat(tracker.listeners).isEmpty()
+  }
+
   // Listener calls are queued to the main thread, one task per change.
   @Test
   fun `each change queues one main-thread task with its own status, in report order`() {

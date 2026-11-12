@@ -164,8 +164,9 @@ internal class EvaluationSyncStatusTrackerImpl(
       if (!shouldCall) continue
       try {
         listener.onStatusChanged(snapshot)
-      } catch (e: Exception) {
-        // App code must not break polling or the stream.
+      } catch (e: Throwable) {
+        // App code must not break polling, the stream, or the other listeners. Throwable, not only
+        // Exception: a listener left as TODO() throws an Error.
         loge(e) { "EvaluationSyncStatusListener threw: ${e.message}" }
       }
     }
