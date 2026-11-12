@@ -34,6 +34,7 @@ class EvaluationInteractorCaptureErrorTests {
           idGenerator = IdGeneratorImpl(),
           featureTag = "feature_tag_value",
           mainHandler = Handler(Looper.getMainLooper()),
+          syncReporter = RecordingSyncReporter(),
         )
 
       val user =
