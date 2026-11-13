@@ -4,6 +4,8 @@ import android.os.Handler
 import io.bucketeer.sdk.android.internal.Clock
 import io.bucketeer.sdk.android.internal.IdGenerator
 import io.bucketeer.sdk.android.internal.evaluation.EvaluationInteractor
+import io.bucketeer.sdk.android.internal.evaluation.EvaluationSyncReporter
+import io.bucketeer.sdk.android.internal.evaluation.EvaluationSyncStatusTrackerImpl
 import io.bucketeer.sdk.android.internal.evaluation.storage.EvaluationStorage
 import io.bucketeer.sdk.android.internal.event.EventInteractor
 import io.bucketeer.sdk.android.internal.event.db.EventSQLDao
@@ -18,6 +20,7 @@ internal class InteractorModule(
     evaluationStorage: EvaluationStorage,
     idGenerator: IdGenerator,
     featureTag: String,
+    syncReporter: EvaluationSyncReporter,
   ): EvaluationInteractor =
     EvaluationInteractor(
       apiClient = apiClient,
@@ -25,6 +28,17 @@ internal class InteractorModule(
       idGenerator = idGenerator,
       mainHandler = mainHandler,
       featureTag = featureTag,
+      syncReporter = syncReporter,
+    )
+
+  fun evaluationSyncStatusTracker(
+    clock: Clock,
+    idGenerator: IdGenerator,
+  ): EvaluationSyncStatusTrackerImpl =
+    EvaluationSyncStatusTrackerImpl(
+      clock = clock,
+      idGenerator = idGenerator,
+      postToMain = { mainHandler.post(it) },
     )
 
   fun eventInteractor(

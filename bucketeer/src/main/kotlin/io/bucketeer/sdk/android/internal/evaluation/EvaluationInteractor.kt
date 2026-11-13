@@ -3,6 +3,7 @@ package io.bucketeer.sdk.android.internal.evaluation
 import android.os.Handler
 import androidx.annotation.VisibleForTesting
 import io.bucketeer.sdk.android.BKTClient
+import io.bucketeer.sdk.android.BKTEvaluationSyncStatus
 import io.bucketeer.sdk.android.BKTException
 import io.bucketeer.sdk.android.internal.IdGenerator
 import io.bucketeer.sdk.android.internal.evaluation.storage.EvaluationStorage
@@ -25,6 +26,7 @@ internal class EvaluationInteractor(
   private val idGenerator: IdGenerator,
   featureTag: String,
   private val mainHandler: Handler,
+  private val syncReporter: EvaluationSyncReporter,
 ) {
   @VisibleForTesting
   internal val updateListeners = mutableMapOf<String, BKTClient.EvaluationUpdateListener>()
@@ -72,6 +74,9 @@ internal class EvaluationInteractor(
 
     when (result) {
       is GetEvaluationsResult.Success -> {
+        // Reported before the "Nothing to sync" return and the storage write: the server answered,
+        // so a storage problem below is not a server problem.
+        syncReporter.reportSuccess(BKTEvaluationSyncStatus.Source.POLLING)
         val response = result.value
         val newEvaluationsId = response.userEvaluationsId
 
@@ -131,6 +136,7 @@ internal class EvaluationInteractor(
 
       is GetEvaluationsResult.Failure -> {
         logd(result.error) { "ApiError: ${result.error.message}" }
+        syncReporter.reportFailure(BKTEvaluationSyncStatus.Source.POLLING, result.error)
       }
     }
     return result

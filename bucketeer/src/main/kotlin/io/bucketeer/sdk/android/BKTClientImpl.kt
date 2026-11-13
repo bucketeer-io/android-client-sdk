@@ -167,6 +167,27 @@ internal class BKTClientImpl(
     component.evaluationInteractor.clearUpdateListeners()
   }
 
+  override fun evaluationSyncStatus(): BKTEvaluationSyncStatus = component.evaluationSyncStatusTracker.getStatus()
+
+  override fun addEvaluationSyncStatusListener(listener: BKTClient.EvaluationSyncStatusListener): String =
+    component.evaluationSyncStatusTracker.addListener(listener)
+
+  override fun removeEvaluationSyncStatusListener(key: String) {
+    component.evaluationSyncStatusTracker.removeListener(key)
+  }
+
+  override fun clearEvaluationSyncStatusListeners() {
+    component.evaluationSyncStatusTracker.clearListeners()
+  }
+
+  /**
+   * Sends DESTROYED to the sync status listeners once, then removes them. Only
+   * [BKTClient.destroy] calls this.
+   */
+  internal fun markSyncStatusDestroyed() {
+    component.evaluationSyncStatusTracker.markDestroyed()
+  }
+
   private fun refreshCache() {
     component.evaluationInteractor.refreshCache()
   }
@@ -175,8 +196,16 @@ internal class BKTClientImpl(
     scheduleTasks()
     listenEvaluationInteractorError()
     return executor.submit<BKTException?> {
-      refreshCache()
-      fetchEvaluationsSync(component, executor, timeoutMillis)
+      var succeeded = false
+      try {
+        refreshCache()
+        val result = fetchEvaluationsSync(component, executor, timeoutMillis)
+        succeeded = result == null
+        result
+      } finally {
+        // Every exit, a throw included, ends INITIALIZING. A failed init sets FAILING.
+        component.evaluationSyncStatusTracker.finishInitializing(succeeded)
+      }
     }
   }
 
