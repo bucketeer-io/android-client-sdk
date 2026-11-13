@@ -10,8 +10,7 @@ package io.bucketeer.sdk.android
  * @property lastSyncedAt the last time the SDK confirmed its flag values are current. null if it
  * never worked yet.
  * @property lastError the last error from updating flag values. Kept after recovery. null if no
- * update failed yet. Can be null in [State.FAILING] when initialize failed before reaching the
- * server.
+ * update failed yet.
  */
 data class BKTEvaluationSyncStatus(
   val state: State,

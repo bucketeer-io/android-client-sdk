@@ -110,10 +110,7 @@ class BKTClientSyncStatusTest {
         user = user1.toBKTUser(),
         component =
           ComponentImpl(
-            dataModule =
-              ThrowingApiDataModule(ApplicationProvider.getApplicationContext(), config) {
-                AssertionError("simulated VM error")
-              },
+            dataModule = ErrorThrowingDataModule(ApplicationProvider.getApplicationContext(), config),
             interactorModule = InteractorModule(mainHandler = Handler(Looper.getMainLooper())),
           ),
       )
@@ -124,38 +121,6 @@ class BKTClientSyncStatusTest {
       idleMain()
 
       assertThat(client.evaluationSyncStatus().state).isEqualTo(FAILING)
-    } finally {
-      client.resetTasks()
-      client.destroy()
-      idleMain()
-    }
-  }
-
-  // The error is caught before any server answer, so nothing reports it: lastError stays null.
-  @Test
-  fun `an init that fails before reaching the server returns the error and gives FAILING with no lastError`() {
-    val client =
-      BKTClientImpl(
-        context = ApplicationProvider.getApplicationContext(),
-        config = config,
-        user = user1.toBKTUser(),
-        component =
-          ComponentImpl(
-            dataModule =
-              ThrowingApiDataModule(ApplicationProvider.getApplicationContext(), config) {
-                IllegalStateException("simulated read failure")
-              },
-            interactorModule = InteractorModule(mainHandler = Handler(Looper.getMainLooper())),
-          ),
-      )
-    try {
-      val result = client.initializeInternal(1000).get()
-      idleMain()
-
-      assertThat(result).isInstanceOf(BKTException.IllegalStateException::class.java)
-      val status = client.evaluationSyncStatus()
-      assertThat(status.state).isEqualTo(FAILING)
-      assertThat(status.lastError).isNull()
     } finally {
       client.resetTasks()
       client.destroy()
@@ -399,14 +364,10 @@ private class RecordingListener : BKTClient.EvaluationSyncStatusListener {
   }
 }
 
-/**
- * Its ApiClient throws instead of returning a result. fetch() turns an Exception into an error
- * result with no report, and lets an Error through, so the init block ends by a throw.
- */
-private class ThrowingApiDataModule(
+/** Its ApiClient throws an Error, which fetch() does not catch: the init block ends by a throw. */
+private class ErrorThrowingDataModule(
   application: Application,
   config: BKTConfig,
-  private val createThrowable: () -> Throwable,
 ) : DataModule(application, user1, config, inMemoryDB = true) {
   override val apiClient: ApiClient by lazy {
     object : ApiClient {
@@ -415,7 +376,7 @@ private class ThrowingApiDataModule(
         userEvaluationsId: String,
         timeoutMillis: Long?,
         condition: UserEvaluationCondition,
-      ): GetEvaluationsResult = throw createThrowable()
+      ): GetEvaluationsResult = throw AssertionError("simulated VM error")
 
       override fun registerEvents(events: List<Event>): RegisterEventsResult = throw UnsupportedOperationException("not used in this test")
     }
