@@ -102,30 +102,65 @@ class BKTClientSyncStatusTest {
   }
 
   @Test
-  fun `an init that ends with a throw still leaves INITIALIZING`() {
-    val client =
-      BKTClientImpl(
-        context = ApplicationProvider.getApplicationContext(),
-        config = config,
-        user = user1.toBKTUser(),
-        component =
-          ComponentImpl(
-            dataModule = ErrorThrowingDataModule(ApplicationProvider.getApplicationContext(), config),
-            interactorModule = InteractorModule(mainHandler = Handler(Looper.getMainLooper())),
-          ),
-      )
+  fun `an init task that ends with a throw gives FAILING with that error, in one listener call`() {
+    val client = newClient(ErrorThrowingDataModule(ApplicationProvider.getApplicationContext(), config))
+    val listener = RecordingListener().also { client.addEvaluationSyncStatusListener(it) }
     try {
       val future = client.initializeInternal(1000)
 
       assertThrows(ExecutionException::class.java) { future.get() }
       idleMain()
 
-      assertThat(client.evaluationSyncStatus().state).isEqualTo(FAILING)
+      assertFailingWithInitError(client, listener, "simulated VM error")
     } finally {
-      client.resetTasks()
-      client.destroy()
-      idleMain()
+      closeClient(client)
     }
+  }
+
+  @Test
+  fun `an init that throws before its task starts still throws, and gives FAILING with that error`() {
+    val client = newClient(SetupThrowingDataModule(ApplicationProvider.getApplicationContext(), config))
+    val listener = RecordingListener().also { client.addEvaluationSyncStatusListener(it) }
+    try {
+      val thrown = assertThrows(IllegalStateException::class.java) { client.initializeInternal(1000) }
+      idleMain()
+
+      assertThat(thrown).hasMessageThat().isEqualTo("simulated setup error")
+      assertFailingWithInitError(client, listener, "simulated setup error")
+    } finally {
+      closeClient(client)
+    }
+  }
+
+  private fun newClient(dataModule: DataModule): BKTClientImpl =
+    BKTClientImpl(
+      context = ApplicationProvider.getApplicationContext(),
+      config = config,
+      user = user1.toBKTUser(),
+      component =
+        ComponentImpl(
+          dataModule = dataModule,
+          interactorModule = InteractorModule(mainHandler = Handler(Looper.getMainLooper())),
+        ),
+    )
+
+  private fun closeClient(client: BKTClientImpl) {
+    client.resetTasks()
+    client.destroy()
+    idleMain()
+  }
+
+  private fun assertFailingWithInitError(
+    client: BKTClientImpl,
+    listener: RecordingListener,
+    message: String,
+  ) {
+    val status = client.evaluationSyncStatus()
+    assertThat(status.state).isEqualTo(FAILING)
+    assertThat(status.lastError?.cause).isInstanceOf(BKTException.IllegalStateException::class.java)
+    assertThat(status.lastError?.cause).hasMessageThat().isEqualTo("failed when initializing: $message")
+    assertThat(status.lastError?.source).isEqualTo(POLLING)
+    assertThat(listener.calls).containsExactly(status)
   }
 
   @Test
@@ -381,4 +416,25 @@ private class ErrorThrowingDataModule(
       override fun registerEvents(events: List<Event>): RegisterEventsResult = throw UnsupportedOperationException("not used in this test")
     }
   }
+}
+
+/**
+ * Building the evaluation interactor throws on the caller's thread, before the init task starts, as
+ * a SharedPreferences access that throws would. The ApiClient is the first thing it reads. Only the
+ * first read throws, so the test cleanup (which also reads it) still works.
+ */
+private class SetupThrowingDataModule(
+  application: Application,
+  config: BKTConfig,
+) : DataModule(application, user1, config, inMemoryDB = true) {
+  private var thrown = false
+
+  override val apiClient: ApiClient
+    get() {
+      if (!thrown) {
+        thrown = true
+        throw IllegalStateException("simulated setup error")
+      }
+      return super.apiClient
+    }
 }

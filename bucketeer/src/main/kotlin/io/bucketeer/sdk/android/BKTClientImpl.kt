@@ -192,21 +192,37 @@ internal class BKTClientImpl(
     component.evaluationInteractor.refreshCache()
   }
 
+  // Every exit, a throw included, ends INITIALIZING. A failed init sets FAILING, and a throw also
+  // sets lastError.
   internal fun initializeInternal(timeoutMillis: Long): Future<BKTException?> {
-    scheduleTasks()
-    listenEvaluationInteractorError()
-    return executor.submit<BKTException?> {
-      var succeeded = false
-      try {
-        refreshCache()
-        val result = fetchEvaluationsSync(component, executor, timeoutMillis)
-        succeeded = result == null
+    try {
+      scheduleTasks()
+      listenEvaluationInteractorError()
+      return executor.submit<BKTException?> {
+        val result =
+          try {
+            refreshCache()
+            fetchEvaluationsSync(component, executor, timeoutMillis)
+          } catch (e: Throwable) {
+            finishInitializingAfterThrow(e)
+            throw e
+          }
+        component.evaluationSyncStatusTracker.finishInitializing(succeeded = result == null)
         result
-      } finally {
-        // Every exit, a throw included, ends INITIALIZING. A failed init sets FAILING.
-        component.evaluationSyncStatusTracker.finishInitializing(succeeded)
       }
+    } catch (e: Throwable) {
+      // The setup above runs on the caller's thread, before the task, for example building the
+      // evaluation interactor, which reads SharedPreferences.
+      finishInitializingAfterThrow(e)
+      throw e
     }
+  }
+
+  private fun finishInitializingAfterThrow(e: Throwable) {
+    component.evaluationSyncStatusTracker.finishInitializing(
+      succeeded = false,
+      error = BKTException.IllegalStateException("failed when initializing: ${e.message}"),
+    )
   }
 
   private inline fun <reified T : Any> getBKTEvaluationDetails(

@@ -109,6 +109,27 @@ class EvaluationSyncStatusTrackerTest {
   }
 
   @Test
+  fun `an init that ended with a throw sets FAILING and lastError together, in one listener call`() {
+    tracker.reportFailure(POLLING, error503)
+    val listener = RecordingListener().also { tracker.addListener(it) }
+    val thrown = BKTException.IllegalStateException("failed when initializing: boom")
+
+    clock.now = 3_000L
+    tracker.finishInitializing(succeeded = false, error = thrown)
+    mainQueue.drain()
+
+    val expected =
+      BKTEvaluationSyncStatus(
+        state = FAILING,
+        changedAt = 3_000L,
+        lastSyncedAt = null,
+        lastError = BKTEvaluationSyncError(thrown, occurredAt = 3_000L, source = POLLING),
+      )
+    assertThat(tracker.getStatus()).isEqualTo(expected)
+    assertThat(listener.calls).containsExactly(expected)
+  }
+
+  @Test
   fun `a failed init changes nothing when a success already set SYNCED`() {
     tracker.reportSuccess(POLLING)
     mainQueue.drain()
@@ -116,7 +137,8 @@ class EvaluationSyncStatusTrackerTest {
     val listener = RecordingListener().also { tracker.addListener(it) }
 
     clock.now = 3_000L
-    tracker.finishInitializing(succeeded = false)
+    // With an error too: the error is ignored like the rest.
+    tracker.finishInitializing(succeeded = false, error = error500)
     mainQueue.drain()
 
     assertThat(tracker.getStatus()).isEqualTo(before)

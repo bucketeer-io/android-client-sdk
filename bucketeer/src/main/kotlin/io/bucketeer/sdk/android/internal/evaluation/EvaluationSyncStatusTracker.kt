@@ -20,8 +20,14 @@ internal interface EvaluationSyncStatusTracker {
 
   fun clearListeners()
 
-  /** Does nothing unless the state is still INITIALIZING. */
-  fun finishInitializing(succeeded: Boolean)
+  /**
+   * Does nothing unless the state is still INITIALIZING. [error] is for an initialize that ended
+   * with a throw: it becomes lastError, so a failed init does not end with no error.
+   */
+  fun finishInitializing(
+    succeeded: Boolean,
+    error: BKTException? = null,
+  )
 
   fun markDestroyed()
 }
@@ -81,10 +87,15 @@ internal class EvaluationSyncStatusTrackerImpl(
     synchronized(lock) { listeners.clear() }
   }
 
-  override fun finishInitializing(succeeded: Boolean) {
+  override fun finishInitializing(
+    succeeded: Boolean,
+    error: BKTException?,
+  ) {
     synchronized(lock) {
       if (succeeded || status.state != State.INITIALIZING) return
       setState(State.FAILING)
+      // Set together with the state, so listeners get one call with both.
+      if (error != null) setLastError(BKTEvaluationSyncStatus.Source.POLLING, error)
       postNotification()
     }
   }
@@ -118,21 +129,29 @@ internal class EvaluationSyncStatusTrackerImpl(
       // INITIALIZING keeps its state: finishInitializing() decides it. FAILING stays FAILING, but
       // listeners still get the new error.
       if (status.state == State.SYNCED) setState(State.FAILING)
-      status =
-        status.copy(
-          lastError =
-            BKTEvaluationSyncError(
-              cause = error,
-              occurredAt = clock.currentTimeMillis(),
-              source = source,
-            ),
-        )
+      setLastError(source, error)
       postNotification()
     }
   }
 
   // Call with lock held.
   private fun isDestroyed(): Boolean = status.state == State.DESTROYED
+
+  // Call with lock held.
+  private fun setLastError(
+    source: BKTEvaluationSyncStatus.Source,
+    error: BKTException,
+  ) {
+    status =
+      status.copy(
+        lastError =
+          BKTEvaluationSyncError(
+            cause = error,
+            occurredAt = clock.currentTimeMillis(),
+            source = source,
+          ),
+      )
+  }
 
   // Call with lock held.
   private fun setState(state: State) {
