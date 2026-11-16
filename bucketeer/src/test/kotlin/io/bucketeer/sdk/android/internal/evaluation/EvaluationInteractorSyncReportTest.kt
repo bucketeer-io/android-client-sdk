@@ -26,8 +26,9 @@ import org.robolectric.RobolectricTestRunner
 
 /**
  * How EvaluationInteractor.fetch() reports to the sync status: a success is reported as soon as
- * the server answers (before the storage write and the "Nothing to sync" return), a failure with
- * the same error fetch() returns, and a storage problem is not reported as a server problem.
+ * the server answers (before the storage write and the "Nothing to sync" return), and a failure
+ * with the same error fetch() returns. A storage read that fails before the request is a failure.
+ * A storage write that fails after the server answered is not reported.
  */
 @RunWith(RobolectricTestRunner::class)
 class EvaluationInteractorSyncReportTest {
@@ -137,14 +138,16 @@ class EvaluationInteractorSyncReportTest {
   }
 
   @Test
-  fun `a storage read failure before the request reports nothing`() {
+  fun `a storage read failure before the request reports a polling failure with the same error it returns`() {
     storage.throwOnRead = true
 
     val result = interactor.fetch(user1, null)
 
     assertThat(result).isInstanceOf(GetEvaluationsResult.Failure::class.java)
     assertThat(server.requestCount).isEqualTo(0)
-    assertThat(reporter.reports).isEmpty()
+    val report = reporter.reports.single() as Report.Failure
+    assertThat(report.source).isEqualTo(POLLING)
+    assertThat(report.error).isSameInstanceAs((result as GetEvaluationsResult.Failure).error)
   }
 
   private fun enqueueEvaluations(userEvaluationsId: String) {

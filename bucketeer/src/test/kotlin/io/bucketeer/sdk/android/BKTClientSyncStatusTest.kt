@@ -1,6 +1,7 @@
 package io.bucketeer.sdk.android
 
 import android.app.Application
+import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import androidx.test.core.app.ApplicationProvider
@@ -9,7 +10,9 @@ import com.squareup.moshi.Moshi
 import io.bucketeer.sdk.android.BKTEvaluationSyncStatus.Source.POLLING
 import io.bucketeer.sdk.android.BKTEvaluationSyncStatus.State.DESTROYED
 import io.bucketeer.sdk.android.BKTEvaluationSyncStatus.State.FAILING
+import io.bucketeer.sdk.android.BKTEvaluationSyncStatus.State.INITIALIZING
 import io.bucketeer.sdk.android.BKTEvaluationSyncStatus.State.SYNCED
+import io.bucketeer.sdk.android.internal.Constants
 import io.bucketeer.sdk.android.internal.di.ComponentImpl
 import io.bucketeer.sdk.android.internal.di.DataModule
 import io.bucketeer.sdk.android.internal.di.InteractorModule
@@ -127,6 +130,37 @@ class BKTClientSyncStatusTest {
 
       assertThat(thrown).hasMessageThat().isEqualTo("simulated setup error")
       assertFailingWithInitError(client, listener, "simulated setup error")
+    } finally {
+      closeClient(client)
+    }
+  }
+
+  @Test
+  fun `a storage read that fails before the request at init returns the error, and gives FAILING with that error`() {
+    // A wrong type under the evaluation ID key makes its read throw inside fetch(). The feature tag is
+    // saved first, so setup does not clear that key.
+    ApplicationProvider
+      .getApplicationContext<Application>()
+      .getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE)
+      .edit()
+      .putString(Constants.PREFERENCE_KEY_FEATURE_TAG, "feature_tag_value")
+      .putInt(Constants.PREFERENCE_KEY_USER_EVALUATION_ID, 1)
+      .commit()
+    val client = newClient(DataModule(ApplicationProvider.getApplicationContext(), user1, config, inMemoryDB = true))
+    val listener = RecordingListener().also { client.addEvaluationSyncStatusListener(it) }
+    try {
+      val result = client.initializeInternal(1000).get()
+      idleMain()
+
+      assertThat(result).isInstanceOf(BKTException.IllegalStateException::class.java)
+      assertThat(server.requestCount).isEqualTo(0)
+      val status = client.evaluationSyncStatus()
+      assertThat(status.state).isEqualTo(FAILING)
+      assertThat(status.lastError?.cause).isSameInstanceAs(result)
+      assertThat(status.lastError?.source).isEqualTo(POLLING)
+      // One call for the failure while INITIALIZING, one for FAILING.
+      assertThat(listener.calls.map { it.state }).containsExactly(INITIALIZING, FAILING).inOrder()
+      assertThat(listener.calls.last()).isEqualTo(status)
     } finally {
       closeClient(client)
     }
