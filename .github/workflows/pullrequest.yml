@@ -19,20 +19,21 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set up JDK 17
-        uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 # v4.7.1
+        uses: actions/setup-java@d1374f8ac74474200d16ef8ecee22c7ae7a51880 # v6.3.0
         with:
           distribution: "temurin"
           java-version: 17
 
       - name: Setup gradle
-        uses: gradle/actions/setup-gradle@ac638b010cf58a27ee6c972d7336334ccaf61c96 # v4.4.1
+        uses: gradle/actions/setup-gradle@8da46b539cd8fe6ab27ca75128919a18d757604c # v6.4.1
         id: gradle
         continue-on-error: true
         with:
-          gradle-home-cache-cleanup: true
+          # MIT-licensed provider; the default "enhanced" one is proprietary
+          cache-provider: basic
           cache-read-only: false
         env:
           SEGMENT_DOWNLOAD_TIMEOUT_MINS: 2  # Reduce timeout from default 5 minutes
@@ -41,9 +42,10 @@ jobs:
       # Retry gradle setup if it failed (usually due to cache timeout)
       - name: Retry Setup gradle
         if: steps.gradle.outcome == 'failure'
-        uses: gradle/actions/setup-gradle@ac638b010cf58a27ee6c972d7336334ccaf61c96 # v4.4.1
+        uses: gradle/actions/setup-gradle@8da46b539cd8fe6ab27ca75128919a18d757604c # v6.4.1
         with:
-          gradle-home-cache-cleanup: true
+          # MIT-licensed provider; the default "enhanced" one is proprietary
+          cache-provider: basic
           cache-read-only: false
           cache-disabled: true  # Disable cache on retry to avoid timeout
 
@@ -56,7 +58,7 @@ jobs:
 
       - name: Upload Bucketeer build reports
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: bucketeer-build-reports
           path: bucketeer/build/reports
