@@ -90,6 +90,30 @@ interface BKTClient {
 
   fun clearEvaluationUpdateListeners()
 
+  /**
+   * Returns whether updating flag values from the server works right now.
+   */
+  fun evaluationSyncStatus(): BKTEvaluationSyncStatus
+
+  /**
+   * Adds a listener that is called on every state change, and on every reported error even if the
+   * state stays [BKTEvaluationSyncStatus.State.FAILING]. To be told when flag values change, use
+   * [addEvaluationUpdateListener] instead.
+   *
+   * @return the key for [removeEvaluationSyncStatusListener].
+   */
+  fun addEvaluationSyncStatusListener(listener: EvaluationSyncStatusListener): String
+
+  /**
+   * Removes the listener with the key that [addEvaluationSyncStatusListener] returned.
+   */
+  fun removeEvaluationSyncStatusListener(key: String)
+
+  /**
+   * Removes every listener added with [addEvaluationSyncStatusListener].
+   */
+  fun clearEvaluationSyncStatusListeners()
+
   companion object {
     @Volatile
     private var instance: BKTClient? = null
@@ -125,20 +149,28 @@ interface BKTClient {
     }
 
     fun destroy() {
+      val destroyed: BKTClientImpl
       synchronized(this) {
         val client = instance ?: return
-        (client as BKTClientImpl).let { clientImpl ->
-          clientImpl.resetTasks()
-          clientImpl.destroy()
-        }
+        destroyed = client as BKTClientImpl
+        destroyed.resetTasks()
+        destroyed.destroy()
         instance = null
         LoggerHolder.clearLoggers()
       }
+      // After `instance` is cleared and outside the lock, so a listener that gets DESTROYED can
+      // call initialize() for a new client. Reports that arrive after this are ignored.
+      destroyed.markSyncStatusDestroyed()
     }
   }
 
   fun interface EvaluationUpdateListener {
     // The listener callback is called on the main thread.
     fun onUpdate()
+  }
+
+  fun interface EvaluationSyncStatusListener {
+    // Called on the main thread.
+    fun onStatusChanged(status: BKTEvaluationSyncStatus)
   }
 }

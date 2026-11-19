@@ -167,17 +167,59 @@ internal class BKTClientImpl(
     component.evaluationInteractor.clearUpdateListeners()
   }
 
+  override fun evaluationSyncStatus(): BKTEvaluationSyncStatus = component.evaluationSyncStatusTracker.getStatus()
+
+  override fun addEvaluationSyncStatusListener(listener: BKTClient.EvaluationSyncStatusListener): String =
+    component.evaluationSyncStatusTracker.addListener(listener)
+
+  override fun removeEvaluationSyncStatusListener(key: String) {
+    component.evaluationSyncStatusTracker.removeListener(key)
+  }
+
+  override fun clearEvaluationSyncStatusListeners() {
+    component.evaluationSyncStatusTracker.clearListeners()
+  }
+
+  /**
+   * Sends DESTROYED to the sync status listeners once, then removes them. Only
+   * [BKTClient.destroy] calls this.
+   */
+  internal fun markSyncStatusDestroyed() {
+    component.evaluationSyncStatusTracker.markDestroyed()
+  }
+
   private fun refreshCache() {
     component.evaluationInteractor.refreshCache()
   }
 
+  // Every exit, a throw included, ends INITIALIZING. A failed init sets FAILING, and a throw also
+  // sets lastError.
   internal fun initializeInternal(timeoutMillis: Long): Future<BKTException?> {
-    scheduleTasks()
-    listenEvaluationInteractorError()
-    return executor.submit<BKTException?> {
-      refreshCache()
-      fetchEvaluationsSync(component, executor, timeoutMillis)
+    try {
+      scheduleTasks()
+      listenEvaluationInteractorError()
+      return executor.submit<BKTException?> {
+        runCatching {
+          refreshCache()
+          fetchEvaluationsSync(component, executor, timeoutMillis)
+        }.also { finishInitializing(it) }
+          .getOrThrow()
+      }
+    } catch (e: Throwable) {
+      // The setup above runs on the caller's thread, before the task, for example building the
+      // evaluation interactor, which reads SharedPreferences.
+      finishInitializing(Result.failure(e))
+      throw e
     }
+  }
+
+  // A failed fetch already set lastError when it was reported, so only a throw passes an error.
+  private fun finishInitializing(outcome: Result<BKTException?>) {
+    val thrown = outcome.exceptionOrNull()
+    component.evaluationSyncStatusTracker.finishInitializing(
+      succeeded = thrown == null && outcome.getOrNull() == null,
+      error = thrown?.let { BKTException.IllegalStateException("failed when initializing: ${it.message}") },
+    )
   }
 
   private inline fun <reified T : Any> getBKTEvaluationDetails(

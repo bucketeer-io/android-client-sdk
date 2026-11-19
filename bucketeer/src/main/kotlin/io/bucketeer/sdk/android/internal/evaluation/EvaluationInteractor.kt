@@ -3,9 +3,11 @@ package io.bucketeer.sdk.android.internal.evaluation
 import android.os.Handler
 import androidx.annotation.VisibleForTesting
 import io.bucketeer.sdk.android.BKTClient
+import io.bucketeer.sdk.android.BKTEvaluationSyncStatus
 import io.bucketeer.sdk.android.BKTException
 import io.bucketeer.sdk.android.internal.IdGenerator
 import io.bucketeer.sdk.android.internal.evaluation.storage.EvaluationStorage
+import io.bucketeer.sdk.android.internal.evaluation.storage.UserAttributesState
 import io.bucketeer.sdk.android.internal.logd
 import io.bucketeer.sdk.android.internal.loge
 import io.bucketeer.sdk.android.internal.model.Evaluation
@@ -25,6 +27,7 @@ internal class EvaluationInteractor(
   private val idGenerator: IdGenerator,
   featureTag: String,
   private val mainHandler: Handler,
+  private val syncReporter: EvaluationSyncReporter,
 ) {
   @VisibleForTesting
   internal val updateListeners = mutableMapOf<String, BKTClient.EvaluationUpdateListener>()
@@ -57,14 +60,14 @@ internal class EvaluationInteractor(
   private fun getEvaluations(
     user: User,
     timeoutMillis: Long?,
+    inputs: StoredRequestInputs,
   ): GetEvaluationsResult {
-    val currentEvaluationsId = evaluationStorage.getCurrentEvaluationId()
-    val evaluatedAt = evaluationStorage.getEvaluatedAt()
-    val userAttributesState = evaluationStorage.getUserAttributesState()
+    val currentEvaluationsId = inputs.currentEvaluationsId
+    val userAttributesState = inputs.userAttributesState
 
     val condition =
       UserEvaluationCondition(
-        evaluatedAt = evaluatedAt,
+        evaluatedAt = inputs.evaluatedAt,
         userAttributesUpdated = userAttributesState.userAttributesUpdated,
       )
 
@@ -72,6 +75,9 @@ internal class EvaluationInteractor(
 
     when (result) {
       is GetEvaluationsResult.Success -> {
+        // Reported before the "Nothing to sync" return and the storage write: the server answered,
+        // so a storage problem below is not a server problem.
+        syncReporter.reportSuccess(BKTEvaluationSyncStatus.Source.POLLING)
         val response = result.value
         val newEvaluationsId = response.userEvaluationsId
 
@@ -131,6 +137,7 @@ internal class EvaluationInteractor(
 
       is GetEvaluationsResult.Failure -> {
         logd(result.error) { "ApiError: ${result.error.message}" }
+        syncReporter.reportFailure(BKTEvaluationSyncStatus.Source.POLLING, result.error)
       }
     }
     return result
@@ -151,17 +158,47 @@ internal class EvaluationInteractor(
     timeoutMillis: Long?,
   ): GetEvaluationsResult {
     var featureTag: String? = null
+    val inputs: StoredRequestInputs
     try {
       featureTag = evaluationStorage.getFeatureTag()
-      return getEvaluations(user = user, timeoutMillis = timeoutMillis)
+      inputs =
+        StoredRequestInputs(
+          currentEvaluationsId = evaluationStorage.getCurrentEvaluationId(),
+          evaluatedAt = evaluationStorage.getEvaluatedAt(),
+          userAttributesState = evaluationStorage.getUserAttributesState(),
+        )
     } catch (ex: Exception) {
-      loge(ex) { "failed when fetching evaluations: ${ex.message}" }
-      return GetEvaluationsResult.Failure(
-        BKTException.IllegalStateException("failed when fetching evaluations: ${ex.message}"),
-        featureTag ?: "",
-      )
+      // The request is not sent, so nothing was reported yet: this is a sync failure.
+      val failure = fetchFailure(ex, featureTag)
+      syncReporter.reportFailure(BKTEvaluationSyncStatus.Source.POLLING, failure.error)
+      return failure
+    }
+    try {
+      return getEvaluations(user = user, timeoutMillis = timeoutMillis, inputs = inputs)
+    } catch (ex: Exception) {
+      // The server answered and that was already reported. A storage write failure after that is
+      // not a sync failure.
+      return fetchFailure(ex, featureTag)
     }
   }
+
+  private fun fetchFailure(
+    ex: Exception,
+    featureTag: String?,
+  ): GetEvaluationsResult.Failure {
+    loge(ex) { "failed when fetching evaluations: ${ex.message}" }
+    return GetEvaluationsResult.Failure(
+      BKTException.IllegalStateException("failed when fetching evaluations: ${ex.message}"),
+      featureTag ?: "",
+    )
+  }
+
+  /** The values read from storage that the request needs. */
+  private class StoredRequestInputs(
+    val currentEvaluationsId: String,
+    val evaluatedAt: String,
+    val userAttributesState: UserAttributesState,
+  )
 
   fun refreshCache() {
     evaluationStorage.refreshCache()
